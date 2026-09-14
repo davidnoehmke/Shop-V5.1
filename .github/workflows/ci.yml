@@ -1,0 +1,102 @@
+name: LEAF CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leaf-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repository-validation:
+    name: Repository validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            jq empty "$file"
+          done < <(find . -type f -name '*.json' -not -path './.git/*' -print0)
+      - name: Validate agent contract
+        run: |
+          jq -e '.ssot == "supabase"' automation/content-agent/agent-contract.json
+          jq -e '.write_gate.requires_explicit_human_approval == true' automation/content-agent/agent-contract.json
+          jq -e '.write_gate.allow_automatic_publish == false' automation/content-agent/agent-contract.json
+      - name: Check repository for committed secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE '(shpat_[A-Za-z0-9_-]{20,}|sk-proj-[A-Za-z0-9_-]{20,}|SUPABASE_SERVICE_ROLE_KEY[[:space:]]*=|SHOPIFY_ADMIN_TOKEN[[:space:]]*=)' -- ':!*.example' ':!*.md'; then
+            echo 'Potential committed secret detected.' >&2
+            exit 1
+          fi
+
+  theme-check:
+    name: Shopify Theme Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: theme
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: false
+      - name: Install Shopify Theme Check
+        run: gem install theme-check
+      - name: Run Theme Check
+        run: theme-check .
+
+  theme-structure:
+    name: Theme structure
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate required Shopify theme structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f theme/layout/theme.liquid
+          test -d theme/templates
+          test -d theme/sections
+          test -d theme/snippets
+          test -d theme/assets
+          test -d theme/config
+      - name: Validate template JSON
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            jq empty "$file"
+          done < <(find theme/templates theme/sections theme/config -type f -name '*.json' -print0)
+
+  migration-validation:
+    name: Supabase migration validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate migration naming and safety invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d supabase/migrations
+          count=$(find supabase/migrations -maxdepth 1 -type f -name '*.sql' | wc -l)
+          test "$count" -gt 0
+          bad=$(find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' | grep -Ev '^[0-9]{14}_[a-z0-9_]+\.sql$' || true)
+          if [ -n "$bad" ]; then
+            echo "Invalid migration filenames:" >&2
+            echo "$bad" >&2
+            exit 1
+          fi
+          grep -q 'enable row level security' supabase/migrations/20260914190200_content_approval_queue.sql
+          grep -q 'service_role' supabase/migrations/20260914190200_content_approval_queue.sql
