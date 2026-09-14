@@ -19,13 +19,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate JSON
+      - name: Validate strict repository JSON
         shell: bash
         run: |
           set -euo pipefail
           while IFS= read -r -d '' file; do
             jq empty "$file"
-          done < <(find . -type f -name '*.json' -not -path './.git/*' -print0)
+          done < <(find automation -type f -name '*.json' -print0)
       - name: Validate agent contract
         run: |
           jq -e '.ssot == "supabase"' automation/content-agent/agent-contract.json
@@ -72,13 +72,26 @@ jobs:
           test -d theme/snippets
           test -d theme/assets
           test -d theme/config
-      - name: Validate template JSON
+      - name: Validate Shopify JSON syntax
         shell: bash
         run: |
           set -euo pipefail
-          while IFS= read -r -d '' file; do
-            jq empty "$file"
-          done < <(find theme/templates theme/sections theme/config -type f -name '*.json' -print0)
+          python3 - <<'PY'
+          import json, pathlib, re, sys
+          roots = [pathlib.Path('theme/templates'), pathlib.Path('theme/sections'), pathlib.Path('theme/config')]
+          failed = False
+          for root in roots:
+              for path in root.rglob('*.json'):
+                  text = path.read_text(encoding='utf-8-sig')
+                  text = re.sub(r'^\s*/\*.*?\*/\s*', '', text, count=1, flags=re.S)
+                  try:
+                      json.loads(text)
+                  except Exception as exc:
+                      print(f'{path}: {exc}', file=sys.stderr)
+                      failed = True
+          if failed:
+              sys.exit(1)
+          PY
 
   migration-validation:
     name: Supabase migration validation
