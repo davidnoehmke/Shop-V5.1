@@ -43,9 +43,6 @@ jobs:
   theme-check:
     name: Shopify Theme Check
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: theme
     steps:
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
@@ -66,19 +63,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -f theme/layout/theme.liquid
-          test -d theme/templates
-          test -d theme/sections
-          test -d theme/snippets
-          test -d theme/assets
-          test -d theme/config
+          test -f layout/theme.liquid
+          test -d templates
+          test -d sections
+          test -d snippets
+          test -d assets
+          test -d config
       - name: Validate Shopify JSON syntax
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           import json, pathlib, re, sys
-          roots = [pathlib.Path('theme/templates'), pathlib.Path('theme/sections'), pathlib.Path('theme/config')]
+          roots = [pathlib.Path('templates'), pathlib.Path('sections'), pathlib.Path('config')]
           failed = False
           for root in roots:
               for path in root.rglob('*.json'):
