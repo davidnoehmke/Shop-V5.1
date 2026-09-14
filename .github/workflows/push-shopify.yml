@@ -1,0 +1,88 @@
+name: Push to Shopify
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_theme_id:
+        description: 'UNPUBLISHED Shopify theme ID'
+        required: true
+        type: string
+      confirm:
+        description: 'Type PUSH to confirm deployment'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: shopify-theme-push
+  cancel-in-progress: false
+
+jobs:
+  preflight:
+    name: Security preflight
+    runs-on: ubuntu-latest
+    outputs:
+      theme_id: ${{ steps.guard.outputs.theme_id }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Guard explicit confirmation and target
+        id: guard
+        shell: bash
+        env:
+          CONFIRM: ${{ inputs.confirm }}
+          THEME_ID: ${{ inputs.target_theme_id }}
+        run: |
+          set -euo pipefail
+          test "$CONFIRM" = "PUSH"
+          [[ "$THEME_ID" =~ ^[0-9]+$ ]]
+          echo "theme_id=$THEME_ID" >> "$GITHUB_OUTPUT"
+      - name: Validate theme
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f theme/layout/theme.liquid
+          gem install theme-check
+          theme-check theme
+
+  push-preview:
+    name: Push unpublished Shopify theme
+    needs: preflight
+    runs-on: ubuntu-latest
+    environment: shopify-preview
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli@latest
+      - name: Verify deployment credentials
+        shell: bash
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+        run: |
+          set -euo pipefail
+          test -n "$SHOPIFY_STORE"
+          test -n "$SHOPIFY_CLI_THEME_TOKEN"
+      - name: Push exact repository theme to unpublished target
+        working-directory: theme
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          THEME_ID: ${{ needs.preflight.outputs.theme_id }}
+        run: |
+          set -euo pipefail
+          shopify theme push --theme "$THEME_ID" --path . --store "$SHOPIFY_FLAG_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --nodelete
+
+      - name: Deployment summary
+        shell: bash
+        env:
+          THEME_ID: ${{ needs.preflight.outputs.theme_id }}
+        run: |
+          echo '### Shopify preview push complete' >> "$GITHUB_STEP_SUMMARY"
+          echo "Theme ID: $THEME_ID" >> "$GITHUB_STEP_SUMMARY"
+          echo "Commit: $GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+          echo 'Production publication is intentionally not performed.' >> "$GITHUB_STEP_SUMMARY"
