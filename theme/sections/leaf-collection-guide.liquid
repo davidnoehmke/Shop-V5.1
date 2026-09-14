@@ -1,0 +1,66 @@
+{% liquid
+  assign collection_intro = collection.metafields.leafer.intro.value
+  assign collection_faq = collection.metafields.leafer.faq.value
+  assign collection_keywords = collection.metafields.leafer.keywords.value
+  assign collection_guide = collection.metafields.leafer.guide.value
+  assign has_guide = false
+  if collection_intro != blank or collection_guide != blank or collection_faq != blank or collection_keywords != blank
+    assign has_guide = true
+  endif
+%}
+
+{% if has_guide %}
+  <section class="leaf-collection-guide page-width" aria-labelledby="LeafCollectionGuideHeading-{{ section.id }}">
+    <header>
+      <p>{{ 'collection.guide.eyebrow' | t }}</p>
+      <h2 id="LeafCollectionGuideHeading-{{ section.id }}">{{ 'collection.guide.heading' | t: collection: collection.title }}</h2>
+      {% if collection_intro != blank %}<div class="rte">{{ collection_intro | escape | newline_to_br }}</div>{% endif %}
+    </header>
+
+    {% if collection_guide != blank %}<div class="leaf-collection-guide__body rte">{{ collection_guide | escape | newline_to_br }}</div>{% endif %}
+
+    {% if collection_keywords != blank %}
+      <div class="leaf-collection-guide__topics" aria-label="{{ 'collection.guide.topics' | t }}">
+        {% for keyword in collection_keywords %}<span>{{ keyword | escape }}</span>{% endfor %}
+      </div>
+    {% endif %}
+
+    {% if collection_faq != blank %}
+      <div class="leaf-collection-guide__faq">
+        {% for item in collection_faq %}
+          {% if item.question != blank and item.answer != blank %}
+            <details>
+              <summary>{{ item.question | escape }} <span aria-hidden="true">+</span></summary>
+              <div class="rte">{{ item.answer.value | escape | newline_to_br }}</div>
+            </details>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .leaf-collection-guide { margin-block: var(--space-section); padding-block: clamp(2rem,5vw,4rem); border-block: 1px solid var(--border); }
+  .leaf-collection-guide > header { max-width: 820px; }
+  .leaf-collection-guide > header > p { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leaf-collection-guide h2 { margin: 0; max-width: 18ch; font-size: clamp(2rem,5vw,4rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-collection-guide header .rte { margin-top: 1rem; color: var(--muted); }
+  .leaf-collection-guide__body { max-width: 840px; margin-top: 2rem; }
+  .leaf-collection-guide__topics { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: .5rem; }
+  .leaf-collection-guide__topics span { padding: .5rem .7rem; border: 1px solid var(--border); border-radius: 999px; background: var(--surface); font-size: .78rem; font-weight: 750; }
+  .leaf-collection-guide__faq { max-width: 900px; margin-top: 2rem; border-top: 1px solid var(--border); }
+  .leaf-collection-guide__faq details { border-bottom: 1px solid var(--border); }
+  .leaf-collection-guide__faq summary { min-height: 60px; display: flex; justify-content: space-between; gap: 1rem; align-items: center; cursor: pointer; font-weight: 800; list-style: none; }
+  .leaf-collection-guide__faq summary::-webkit-details-marker { display: none; }
+  .leaf-collection-guide__faq details[open] summary span { transform: rotate(45deg); }
+  .leaf-collection-guide__faq .rte { padding-bottom: 1rem; color: var(--muted); }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kollektions-Ratgeber",
+  "settings": [],
+  "presets": [{ "name": "Kollektions-Ratgeber" }]
+}
+{% endschema %}

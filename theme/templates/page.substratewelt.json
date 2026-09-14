@@ -1,0 +1,183 @@
+{
+  "sections": {
+    "main": {
+      "type": "leafer-substrate-selector",
+      "blocks": {
+        "profile_aroids": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Aroids / Tropical",
+            "badge": "Luftig und grob",
+            "title": "Aroids / Tropical",
+            "description": "Für Monstera, Philodendron, Alocasia und weitere Aroiden mit grober, luftiger Wurzelzone."
+          }
+        },
+        "profile_herbs": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Kräuter & Balkon",
+            "badge": "Ausgewogen",
+            "title": "Kräuter & Balkon",
+            "description": "Für Kräuter und Balkonpflanzen mit ausgewogener Feuchteführung und Drainage."
+          }
+        },
+        "profile_cactus": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Kakteen & Sukkulenten",
+            "badge": "Mineralisch",
+            "title": "Kakteen & Sukkulenten",
+            "description": "Für trockenheitsverträgliche Pflanzen mit hohem Mineralanteil und zügigem Wasserabzug."
+          }
+        },
+        "profile_orchid": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Orchideen",
+            "badge": "Rindenbetont",
+            "title": "Orchideen",
+            "description": "Rindenbetonte, sehr luftige Struktur für epiphytische Orchideen."
+          }
+        },
+        "profile_palms": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Palmen & Grünpflanzen",
+            "badge": "Strukturstabil",
+            "title": "Palmen & Grünpflanzen",
+            "description": "Strukturstabile Mischung für Palmen und kräftige Grünpflanzen."
+          }
+        },
+        "profile_seedlings": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Anzucht & Jungpflanzen",
+            "badge": "Fein und locker",
+            "title": "Anzucht & Jungpflanzen",
+            "description": "Feinere, lockere Basis für Aussaat, Keimlinge und Jungpflanzen."
+          }
+        },
+        "step_profile": {
+          "type": "step",
+          "settings": {
+            "heading": "Pflanzengruppe wählen",
+            "text": "<p>Ordne dein Projekt Aroids, Kräutern, Sukkulenten, Orchideen, Palmen oder der Anzucht zu.</p>"
+          }
+        },
+        "step_volume": {
+          "type": "step",
+          "settings": {
+            "heading": "Volumen festlegen",
+            "text": "<p>Wähle 2, 5 oder 10 Liter passend zum geplanten Umtopf- oder Anzuchtprojekt.</p>"
+          }
+        },
+        "step_recipe": {
+          "type": "step",
+          "settings": {
+            "heading": "Rezeptur prüfen und bestellen",
+            "text": "<p>Du siehst Anteile und Liter je Bestandteil, bevor du die Variante in den Warenkorb legst.</p>"
+          }
+        },
+        "faq_function": {
+          "type": "faq",
+          "settings": {
+            "question": "Wie funktioniert der Substrat-Konfigurator?",
+            "answer": "<p>Wähle zuerst die Pflanzengruppe und danach 2, 5 oder 10 Liter. Shopify ordnet deiner Kombination die passende Variante und die fest hinterlegte Volumenrezeptur zu.</p>"
+          }
+        },
+        "faq_volume": {
+          "type": "faq",
+          "settings": {
+            "question": "Welche Mengen kann ich bestellen?",
+            "answer": "<p>Für jedes Pflanzenprofil stehen 2 L, 5 L und 10 L zur Auswahl. Preis und Verfügbarkeit werden direkt aus dem Produkt geladen.</p>"
+          }
+        },
+        "faq_fixed": {
+          "type": "faq",
+          "settings": {
+            "question": "Sind die Mischverhältnisse frei veränderbar?",
+            "answer": "<p>Nein. Die sechs Grundrezepturen sind bewusst fest hinterlegt. Dadurch bleiben Zusammensetzung, Preis und Bestellung nachvollziehbar. Bei sehr empfindlichen Pflanzen kann die Mischung nachträglich gezielt angepasst werden.</p>"
+          }
+        },
+        "faq_beginner": {
+          "type": "faq",
+          "settings": {
+            "question": "Eignet sich die Auswahl auch für Einsteiger?",
+            "answer": "<p>Ja. Starte mit der Pflanzengruppe, die deinem Projekt am nächsten kommt. Die Rezeptur wird transparent angezeigt, damit du die Funktion der Bestandteile nachvollziehen kannst.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "profile_aroids",
+        "profile_herbs",
+        "profile_cactus",
+        "profile_orchid",
+        "profile_palms",
+        "profile_seedlings",
+        "step_profile",
+        "step_volume",
+        "step_recipe",
+        "faq_function",
+        "faq_volume",
+        "faq_fixed",
+        "faq_beginner"
+      ],
+      "settings": {
+        "product": "leafer-substrat-konfigurator",
+        "image": "shopify://shop_images/Orchidee_Premium_Substrat.jpg",
+        "image_alt": "LEAFerservice Substrat-Konfigurator mit Bestandteilen für verschiedene Pflanzenprofile",
+        "eyebrow": "LEAFerservice · Substrat-Konfigurator",
+        "heading": "Passendes Substrat nach Pflanzentyp und Menge",
+        "intro": "<p>Wähle zuerst deine Pflanzengruppe und danach 2, 5 oder 10 Liter. Für jede Kombination ist eine feste, nachvollziehbare Volumenrezeptur hinterlegt.</p>",
+        "selection_eyebrow": "Deine Mischung",
+        "selection_heading": "Pflanzenprofil und Menge auswählen",
+        "selection_text": "<p>Varianten, Preise und Verfügbarkeit kommen direkt aus Shopify. Nach deiner Auswahl siehst du die hinterlegte Rezeptur und die genaue Literverteilung.</p>",
+        "profile_option_name": "Pflanzentyp",
+        "volume_option_name": "Menge",
+        "profile_legend": "1. Pflanzentyp wählen",
+        "volume_legend": "2. Menge wählen",
+        "native_label": "Pflanzentyp und Menge",
+        "quantity_label": "Anzahl",
+        "add_label": "Ausgewählte Mischung in den Warenkorb",
+        "sold_out_label": "Ausgewählte Variante nicht verfügbar",
+        "available_label": "Verfügbar",
+        "unavailable_label": "Derzeit nicht verfügbar",
+        "recipe_eyebrow": "Transparent hinterlegt",
+        "recipe_heading": "Deine hinterlegte Rezeptur",
+        "recipe_intro": "<p>Volumenanteile und Literangaben für die gewählte Menge. Die Summe bleibt bei 100 Prozent.</p>",
+        "steps_eyebrow": "In drei Schritten",
+        "steps_heading": "So kommst du zur passenden Grundrezeptur",
+        "show_description": true,
+        "details_eyebrow": "Entscheidungshilfe",
+        "details_heading": "Was die Mischung leistet",
+        "faq_eyebrow": "Gut zu wissen",
+        "faq_heading": "Fragen vor der Auswahl",
+        "show_components": true,
+        "components_eyebrow": "Einzeln entdecken",
+        "components_heading": "Bestandteile der Rezepturen",
+        "components_text": "<p>Die Komponenten stammen aus der am Produkt gepflegten Bundle-Liste und führen zu den jeweiligen Shopify-Produktseiten.</p>",
+        "padding_top": 64,
+        "padding_bottom": 96
+      }
+    },
+    "product_recipe_bzM3LF": {
+      "type": "product-recipe",
+      "name": "Rezeptur & Bestandteile",
+      "settings": {}
+    },
+    "project_configurator": {
+      "type": "leaf-project-configurator",
+      "settings": {}
+    },
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "project_configurator",
+    "main",
+    "product_recipe_bzM3LF"
+  ]
+}

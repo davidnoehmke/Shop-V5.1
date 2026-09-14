@@ -1,0 +1,70 @@
+.template-index main {
+  overflow: clip;
+}
+
+.template-index .featured__header > a {
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 30%);
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 780;
+}
+
+.template-index .featured__header > a:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.template-index .trust-bar__item,
+.template-index .faq details {
+  transition: transform .3s var(--ease-out), background-color .25s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .template-index .trust-bar__item:hover { transform: translateY(-3px); }
+  .template-index .faq details:hover { background: color-mix(in srgb, var(--surface), transparent 35%); }
+}
+
+html.leaf-motion-ready .template-index [data-leaf-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .7s var(--ease-out) var(--leaf-delay, 0ms), transform .8s var(--ease-out) var(--leaf-delay, 0ms);
+}
+html.leaf-motion-ready .template-index [data-leaf-reveal].is-visible { opacity: 1; transform: none; }
+
+/* Mobile-first hero: keep proposition + CTA in the first viewport. */
+@media (max-width: 700px) {
+  .template-index .hero { min-height: clamp(560px, 72svh, 650px); }
+  .template-index .hero__image { height: 39%; object-position: center 38%; }
+  .template-index .hero__shade { background: linear-gradient(0deg, rgba(232,226,213,1) 0 60%, rgba(232,226,213,.78) 72%, rgba(232,226,213,.08) 100%); }
+  .template-index .hero__inner { padding-block: 1rem 1.05rem; }
+  .template-index .hero__content { padding-top: 29svh; }
+  .template-index .hero__eyebrow { margin-bottom: .45rem; font-size: .68rem; }
+  .template-index .hero h1 { max-width: 14ch; margin-bottom: .65rem; font-size: clamp(2rem, 9.2vw, 3.15rem); line-height: .98; }
+  .template-index .hero__text, .template-index .hero__content > p { font-size: .93rem; line-height: 1.45; }
+  .template-index .hero__buttons { gap: .5rem; margin-top: .85rem; }
+  .template-index .hero__buttons .button { min-height: 46px; padding-block: .65rem; }
+  .template-index .hero__benefits { gap: .55rem .75rem; margin-top: .8rem; }
+  .template-index .hero__benefit { gap: .5rem; }
+  .template-index .hero__benefit svg { width: 25px; }
+  .template-index .hero__benefit strong { font-size: .75rem; }
+  .template-index .hero__benefit span { font-size: .68rem; }
+
+  .template-index .featured__header { align-items: stretch; flex-direction: column; }
+  .template-index .featured__header > a { width: 100%; }
+}
+
+@media (max-width: 420px) {
+  .template-index .hero { min-height: clamp(570px, 76svh, 640px); }
+  .template-index .hero__image { height: 35%; }
+  .template-index .hero__content { padding-top: 25svh; }
+  .template-index .hero h1 { font-size: clamp(1.95rem, 9.5vw, 2.8rem); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.leaf-motion-ready .template-index [data-leaf-reveal] { opacity: 1; transform: none; transition: none; }
+}

@@ -1,0 +1,88 @@
+<section class="leaf-method page-width" aria-labelledby="LeafMethodHeading-{{ section.id }}">
+  <header class="leaf-method__head">
+    <p class="leaf-method__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 id="LeafMethodHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+    {% if section.settings.text != blank %}<div class="leaf-method__lead rte">{{ section.settings.text }}</div>{% endif %}
+  </header>
+
+  <div class="leaf-method__paths">
+    {% for block in section.blocks %}
+      <article class="leaf-method__path" {{ block.shopify_attributes }}>
+        <span class="leaf-method__number" aria-hidden="true">0{{ forloop.index }}</span>
+        <p class="leaf-method__label">{{ block.settings.label | escape }}</p>
+        <h3>{{ block.settings.heading | escape }}</h3>
+        <p>{{ block.settings.text | escape }}</p>
+        {% if block.settings.detail != blank %}<p class="leaf-method__detail">{{ block.settings.detail | escape }}</p>{% endif %}
+        {% if block.settings.link != blank %}<a href="{{ block.settings.link }}">{{ block.settings.link_label | escape }} <span aria-hidden="true">→</span></a>{% endif %}
+      </article>
+    {% endfor %}
+  </div>
+
+  <div class="leaf-method__principles" aria-label="{{ 'home.method.principles_label' | t }}">
+    <div><strong>{{ 'home.method.transparent_title' | t }}</strong><span>{{ 'home.method.transparent_text' | t }}</span></div>
+    <div><strong>{{ 'home.method.context_title' | t }}</strong><span>{{ 'home.method.context_text' | t }}</span></div>
+    <div><strong>{{ 'home.method.system_title' | t }}</strong><span>{{ 'home.method.system_text' | t }}</span></div>
+    <div><strong>{{ 'home.method.choice_title' | t }}</strong><span>{{ 'home.method.choice_text' | t }}</span></div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .leaf-method { margin-block: var(--space-section); padding-block: clamp(2.5rem,6vw,5.5rem); border-block: 1px solid var(--border); }
+  .leaf-method__head { max-width: 820px; margin-bottom: clamp(2rem,5vw,4rem); }
+  .leaf-method__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leaf-method h2 { margin: 0; max-width: 13ch; font-size: clamp(2.3rem,6vw,5.2rem); line-height: .94; letter-spacing: -.055em; }
+  .leaf-method__lead { margin-top: 1.15rem; max-width: 65ch; color: var(--muted); font-size: 1.05rem; line-height: 1.7; }
+  .leaf-method__paths { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--border); border-radius: var(--radius-large); overflow: hidden; }
+  .leaf-method__path { position: relative; min-height: 310px; padding: clamp(1.25rem,3vw,2rem); display: flex; flex-direction: column; background: var(--surface); }
+  .leaf-method__path + .leaf-method__path { border-left: 1px solid var(--border); }
+  .leaf-method__number { color: color-mix(in srgb,var(--accent) 42%,transparent); font-size: clamp(2.5rem,5vw,5rem); font-weight: 900; line-height: .9; letter-spacing: -.08em; }
+  .leaf-method__label { margin: auto 0 .55rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+  .leaf-method__path h3 { margin: 0; font-size: clamp(1.35rem,2.3vw,2rem); line-height: 1.05; letter-spacing: -.03em; }
+  .leaf-method__path > p:not(.leaf-method__label):not(.leaf-method__detail) { color: var(--muted); line-height: 1.55; }
+  .leaf-method__detail { margin: .25rem 0 1rem; padding-top: .85rem; border-top: 1px solid var(--border); font-size: .82rem; line-height: 1.45; }
+  .leaf-method__path a { margin-top: auto; color: var(--text); font-weight: 800; text-decoration-thickness: 1px; text-underline-offset: .28em; }
+  .leaf-method__principles { margin-top: 1.2rem; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1px; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--border); }
+  .leaf-method__principles > div { padding: 1rem; background: var(--surface); }
+  .leaf-method__principles strong, .leaf-method__principles span { display: block; }
+  .leaf-method__principles strong { font-size: .86rem; }
+  .leaf-method__principles span { margin-top: .25rem; color: var(--muted); font-size: .78rem; line-height: 1.45; }
+  @media (max-width: 900px) { .leaf-method__paths { grid-template-columns: 1fr; } .leaf-method__path { min-height: 250px; } .leaf-method__path + .leaf-method__path { border-left: 0; border-top: 1px solid var(--border); } .leaf-method__principles { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+  @media (max-width: 520px) { .leaf-method__principles { grid-template-columns: 1fr; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAF Methode",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Drei Wege, ein Ziel" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Nicht jeder braucht dieselbe Lösung." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Wähle, wie viel Führung du möchtest: eine fertige Mischung, volle Kontrolle über deine Rezeptur oder ein komplettes Pflanzprojekt.</p>" }
+  ],
+  "blocks": [
+    {
+      "type": "path",
+      "name": "Weg",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Kurzlabel", "default": "Schnell starten" },
+        { "type": "text", "id": "heading", "label": "Überschrift", "default": "Fertige Mischung" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Abgestimmte Rezeptur auswählen und direkt bestellen." },
+        { "type": "textarea", "id": "detail", "label": "Detail", "default": "Geeignet, wenn du eine klare Empfehlung ohne eigene Rezeptarbeit möchtest." },
+        { "type": "text", "id": "link_label", "label": "Linktext", "default": "Passende Mischung finden" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "LEAF Methode",
+      "blocks": [
+        { "type": "path", "settings": { "label": "Schnell starten", "heading": "Fertige Mischung", "text": "Abgestimmte Rezeptur auswählen und direkt bestellen.", "detail": "Für eine klare Empfehlung ohne eigene Rezeptarbeit.", "link_label": "Substrate entdecken", "link": "/collections/substrate-verbesserer" } },
+        { "type": "path", "settings": { "label": "Selbst bestimmen", "heading": "Profi-Konfigurator", "text": "Komponenten und Anteile selbst festlegen – mit fachlichen Grenzen statt starrer Vorgaben.", "detail": "Für alle, die ihre Mischung bewusst steuern möchten.", "link_label": "Eigene Mischung bauen", "link": "/pages/individuelles-substrat#Profi-Konfigurator" } },
+        { "type": "path", "settings": { "label": "Ganzheitlich planen", "heading": "Pflanzprojekt", "text": "Pflanze, Standort, Gießverhalten, Gefäß und Substrat gemeinsam betrachten.", "detail": "Für ein Setup, bei dem die Komponenten als System zusammenpassen.", "link_label": "Projekt planen", "link": "/pages/individuelles-substrat#Projekt-Konfigurator" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

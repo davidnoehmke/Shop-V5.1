@@ -1,0 +1,85 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_type_filters": true
+      }
+    },
+    "interieur_guide": {
+      "type": "interieur-solutions-guide",
+      "settings": {
+        "heading": "Pflanzenwelten, die zum Raum passen",
+        "text": "<p>Entdecke Terrarien, Pflanzenstationen und Beleuchtung als ganzheitliche Lösungen für moderne Innenräume.</p>"
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "recipe": {
+          "type": "benefit",
+          "settings": {
+            "icon": "handmade",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "function": {
+          "type": "benefit",
+          "settings": {
+            "icon": "natural",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "sizes": {
+          "type": "benefit",
+          "settings": {
+            "icon": "small_batches",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "range": {
+          "type": "benefit",
+          "settings": {
+            "icon": "versatile",
+            "heading": "",
+            "text": ""
+          }
+        }
+      },
+      "block_order": [
+        "recipe",
+        "function",
+        "sizes",
+        "range"
+      ],
+      "settings": {}
+    },
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "leaf_guide": {
+      "type": "leaf-collection-guide",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "leaf_guide",
+    "trust",
+    "interieur_guide"
+  ]
+}

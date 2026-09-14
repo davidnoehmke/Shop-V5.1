@@ -1,0 +1,330 @@
+<custom-grow-creator
+  class="grow-creator page-width"
+  data-cart-url="{{ routes.cart_url }}"
+  data-add-url="{{ routes.cart_add_url }}.js"
+  data-valid-message="{{ section.settings.valid_message | escape }}"
+  data-recipe-missing="{{ section.settings.recipe_missing | escape }}"
+  style="--creator-top: {{ section.settings.padding_top }}px; --creator-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <header class="grow-creator__header">
+    {% if section.settings.eyebrow != blank %}<p>{{ section.settings.eyebrow }}</p>{% endif %}
+    <h2>{{ section.settings.heading }}</h2>
+    {% if section.settings.intro != blank %}<div class="rte">{{ section.settings.intro }}</div>{% endif %}
+  </header>
+
+  <div class="grow-creator__layout">
+    <div class="grow-creator__builder">
+      <section class="grow-creator__step">
+        <span class="grow-creator__step-number">1</span>
+        <div>
+          <h3>{{ section.settings.step_mix_heading }}</h3>
+          <p>{{ section.settings.step_mix_text }}</p>
+          {% if section.settings.mix_product != blank %}
+            <label class="grow-creator__field">
+              <span>{{ section.settings.size_label }}</span>
+              <select data-mix-variant>
+                {% for variant in section.settings.mix_product.variants %}
+                  <option value="{{ variant.id }}" data-litres="{{ variant.title | escape }}" {% unless variant.available %}disabled{% endunless %}>
+                    {{ variant.title }} · {{ variant.price | money }}{% unless variant.available %} · Ausverkauft{% endunless %}
+                  </option>
+                {% endfor %}
+              </select>
+            </label>
+          {% else %}
+            <p class="grow-creator__notice">{{ section.settings.product_missing }}</p>
+          {% endif %}
+          <div class="grow-creator__recipe" data-recipe-preview>{{ section.settings.recipe_waiting }}</div>
+        </div>
+      </section>
+
+      <section class="grow-creator__step">
+        <span class="grow-creator__step-number">2</span>
+        <div>
+          <h3>{{ section.settings.step_system_heading }}</h3>
+          <p>{{ section.settings.step_system_text }}</p>
+          <label class="grow-creator__field">
+            <span>{{ section.settings.system_label }}</span>
+            <select data-system-select>
+              <option value="">{{ section.settings.system_placeholder }}</option>
+              {% for block in section.blocks %}
+                {% if block.type == 'system' %}
+                  {% assign system_product = block.settings.product %}
+                  <option value="{{ block.id }}" {% if system_product == blank %}data-no-product="true"{% endif %}>{{ block.settings.title | default: system_product.title }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </label>
+
+          {% for block in section.blocks %}
+            {% if block.type == 'system' %}
+              {% liquid
+                assign system_product = block.settings.product
+                assign system_image = block.settings.image
+                if system_image == blank and system_product != blank
+                  assign system_image = system_product.featured_image
+                endif
+              %}
+              <div class="grow-creator__system" data-system-panel="{{ block.id }}" hidden {{ block.shopify_attributes }}>
+                <div class="grow-creator__system-copy">
+                  <p class="grow-creator__tag">{{ block.settings.badge }}</p>
+                  <h4>{{ block.settings.title | default: system_product.title }}</h4>
+                  {% if block.settings.explanation != blank %}<div class="rte">{{ block.settings.explanation }}</div>{% endif %}
+                  {% if system_product != blank %}
+                    <label class="grow-creator__field">
+                      <span>{{ block.settings.variant_label }}</span>
+                      <select data-system-variant>
+                        {% for variant in system_product.variants %}
+                          <option value="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}>{{ variant.title }} · {{ variant.price | money }}{% unless variant.available %} · Ausverkauft{% endunless %}</option>
+                        {% endfor %}
+                      </select>
+                    </label>
+                  {% endif %}
+                </div>
+                <div class="grow-creator__system-media">
+                  {% if block.settings.video != blank %}
+                    {{ block.settings.video | video_tag: autoplay: true, loop: true, muted: true, controls: true, playsinline: true, poster: system_image }}
+                  {% elsif system_image != blank %}
+                    {{ system_image | image_url: width: 1100 | image_tag: widths: '420, 700, 900, 1100', sizes: '(min-width: 990px) 32vw, 90vw', loading: 'lazy', alt: block.settings.image_alt }}
+                  {% else %}
+                    <div class="grow-creator__media-placeholder"><span>{{ block.settings.video_placeholder }}</span></div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="grow-creator__step">
+        <span class="grow-creator__step-number">3</span>
+        <div>
+          <h3>{{ section.settings.step_addons_heading }}</h3>
+          <p>{{ section.settings.step_addons_text }}</p>
+          <div class="grow-creator__addons">
+            {% for block in section.blocks %}
+              {% if block.type == 'addon' %}
+                {% assign addon_product = block.settings.product %}
+                <label class="grow-creator__addon" {{ block.shopify_attributes }}>
+                  <input type="checkbox" data-addon value="{% if addon_product != blank %}{{ addon_product.selected_or_first_available_variant.id }}{% endif %}" {% if addon_product == blank or addon_product.available == false %}disabled{% endif %}>
+                  <span>
+                    <strong>{{ block.settings.title | default: addon_product.title }}</strong>
+                    <small>{{ block.settings.explanation }}</small>
+                    {% if addon_product != blank %}<b>{{ addon_product.price | money }}</b>{% endif %}
+                  </span>
+                </label>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <aside class="grow-creator__summary">
+      <p class="grow-creator__tag">{{ section.settings.summary_eyebrow }}</p>
+      <h3>{{ section.settings.summary_heading }}</h3>
+      <ol data-summary-list>
+        <li>{{ section.settings.summary_mix }}</li>
+        <li>{{ section.settings.summary_system }}</li>
+        <li>{{ section.settings.summary_addons }}</li>
+      </ol>
+      <p class="grow-creator__status" data-status aria-live="polite"></p>
+      <button type="button" class="grow-creator__submit" data-submit {% if section.settings.mix_product == blank %}disabled{% endif %}>{{ section.settings.cart_label }}</button>
+      <p class="grow-creator__fineprint">{{ section.settings.fineprint }}</p>
+    </aside>
+  </div>
+</custom-grow-creator>
+
+{% stylesheet %}
+  .grow-creator { display: block; padding-block: var(--creator-top) var(--creator-bottom); }
+  .grow-creator__header { max-width: 860px; }
+  .grow-creator__header > p, .grow-creator__tag { margin: 0 0 .6rem; color: var(--accent); font-size: .74rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
+  .grow-creator__header h2 { max-width: 980px; margin: 0; font-size: clamp(2.6rem, 7vw, 6.2rem); line-height: .92; letter-spacing: -.06em; text-wrap: balance; }
+  .grow-creator__header .rte { margin-top: 1.25rem; font-size: clamp(1rem, 2vw, 1.25rem); }
+  .grow-creator__layout { margin-top: clamp(2.5rem, 6vw, 5rem); display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 390px); gap: clamp(1.5rem, 4vw, 4rem); align-items: start; }
+  .grow-creator__builder { display: grid; gap: 1rem; }
+  .grow-creator__step { padding: clamp(1.25rem, 3vw, 2rem); display: grid; grid-template-columns: 42px 1fr; gap: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); }
+  .grow-creator__step-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; background: var(--text); color: var(--background); font-weight: 900; }
+  .grow-creator__step h3 { margin: .35rem 0 .45rem; font-size: clamp(1.45rem, 3vw, 2.2rem); }
+  .grow-creator__step > div > p { margin-top: 0; color: color-mix(in srgb, var(--text), transparent 25%); }
+  .grow-creator__field { margin-top: 1rem; display: grid; gap: .45rem; font-weight: 750; }
+  .grow-creator__field select { width: 100%; min-height: 48px; padding: .7rem 2.5rem .7rem .85rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); color: var(--text); font: inherit; }
+  .grow-creator__recipe { margin-top: 1rem; padding: 1rem; border-radius: var(--radius); background: color-mix(in srgb, var(--accent), transparent 90%); line-height: 1.55; }
+  .grow-creator__notice { padding: .8rem; border: 1px solid #b76d4c; border-radius: var(--radius); }
+  .grow-creator__system { margin-top: 1rem; display: grid; grid-template-columns: 1fr minmax(240px, .8fr); gap: 1.25rem; padding: 1rem; border-radius: var(--radius); background: color-mix(in srgb, var(--background), var(--text) 4%); }
+  .grow-creator__system[hidden] { display: none; }
+  .grow-creator__system h4 { margin: 0; font-size: 1.4rem; }
+  .grow-creator__system-media { min-height: 220px; overflow: hidden; border-radius: var(--radius); background: #dfe4d6; }
+  .grow-creator__system-media img, .grow-creator__system-media video, .grow-creator__media-placeholder { width: 100%; height: 100%; min-height: 220px; display: block; object-fit: cover; }
+  .grow-creator__media-placeholder { display: grid; place-items: center; padding: 1rem; text-align: center; background: radial-gradient(circle at 70% 25%, #9cad87, transparent 30%), linear-gradient(135deg, #2d4227, #728368); color: #fff; }
+  .grow-creator__addons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .grow-creator__addon { position: relative; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; }
+  .grow-creator__addon:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: color-mix(in srgb, var(--accent), transparent 92%); }
+  .grow-creator__addon input { position: absolute; top: 1rem; right: 1rem; accent-color: var(--accent); }
+  .grow-creator__addon span, .grow-creator__addon small, .grow-creator__addon b { display: block; }
+  .grow-creator__addon span { padding-right: 1.5rem; }
+  .grow-creator__addon small { margin-top: .35rem; color: color-mix(in srgb, var(--text), transparent 30%); }
+  .grow-creator__addon b { margin-top: .6rem; }
+  .grow-creator__summary { position: sticky; top: 1rem; padding: clamp(1.25rem, 3vw, 2rem); border-radius: var(--radius-large); background: var(--text); color: var(--background); }
+  .grow-creator__summary .grow-creator__tag { color: var(--accent-soft); }
+  .grow-creator__summary h3 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+  .grow-creator__summary ol { padding-left: 1.25rem; line-height: 1.65; }
+  .grow-creator__status { min-height: 1.5em; color: var(--accent-soft); }
+  .grow-creator__submit { width: 100%; min-height: 52px; border: 0; border-radius: 999px; background: var(--accent-soft); color: #172112; font: inherit; font-weight: 900; cursor: pointer; }
+  .grow-creator__submit[disabled] { opacity: .48; cursor: not-allowed; }
+  .grow-creator__fineprint { margin-bottom: 0; font-size: .78rem; opacity: .75; }
+  @media (max-width: 989px) { .grow-creator__layout { grid-template-columns: 1fr; } .grow-creator__summary { position: static; } }
+  @media (max-width: 649px) {
+    .grow-creator__header h2 { font-size: clamp(2.45rem, 13vw, 4.3rem); }
+    .grow-creator__step { grid-template-columns: 34px 1fr; padding: 1rem; gap: .75rem; }
+    .grow-creator__step-number { width: 34px; height: 34px; }
+    .grow-creator__system { grid-template-columns: 1fr; }
+    .grow-creator__addons { grid-template-columns: 1fr; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class CustomGrowCreator extends HTMLElement {
+    connectedCallback() {
+      this.systemSelect = this.querySelector('[data-system-select]');
+      this.submit = this.querySelector('[data-submit]');
+      this.status = this.querySelector('[data-status]');
+      this.recipePreview = this.querySelector('[data-recipe-preview]');
+      this.systemSelect?.addEventListener('change', () => this.updateSystem());
+      this.querySelectorAll('[data-addon]').forEach((input) => input.addEventListener('change', () => this.updateSummary()));
+      this.submit?.addEventListener('click', () => this.addToCart());
+      document.querySelectorAll('substrate-configurator [data-mix-part]').forEach((input) => input.addEventListener('input', () => this.updateRecipe()));
+      this.updateRecipe();
+      this.updateSummary();
+    }
+    get recipe() {
+      return document.querySelector('substrate-configurator [data-recipe]')?.value?.trim() || '';
+    }
+    get recipeTotal() {
+      return [...document.querySelectorAll('substrate-configurator [data-mix-part]')].reduce((sum, input) => sum + Number(input.value), 0);
+    }
+    updateRecipe() {
+      this.recipePreview.textContent = this.recipe || this.dataset.recipeMissing;
+      this.updateSummary();
+    }
+    updateSystem() {
+      this.querySelectorAll('[data-system-panel]').forEach((panel) => { panel.hidden = panel.dataset.systemPanel !== this.systemSelect.value; });
+      this.updateSummary();
+    }
+    updateSummary() {
+      const items = this.querySelectorAll('[data-summary-list] li');
+      const mixVariant = this.querySelector('[data-mix-variant] option:checked');
+      const systemOption = this.systemSelect?.selectedOptions[0];
+      const addons = [...this.querySelectorAll('[data-addon]:checked')].map((input) => input.closest('label').querySelector('strong').textContent.trim());
+      if (items[0] && mixVariant) items[0].textContent = `Substratmischung: ${mixVariant.dataset.litres}`;
+      if (items[1]) items[1].textContent = systemOption?.value ? `Topfsystem: ${systemOption.textContent.trim()}` : 'Topfsystem noch auswählen';
+      if (items[2]) items[2].textContent = addons.length ? `Add-ons: ${addons.join(', ')}` : 'Keine Add-ons ausgewählt';
+    }
+    async addToCart() {
+      const mixVariant = this.querySelector('[data-mix-variant]')?.value;
+      const systemPanel = this.querySelector(`[data-system-panel="${this.systemSelect?.value}"]`);
+      const systemVariant = systemPanel?.querySelector('[data-system-variant]')?.value;
+      if (!mixVariant || !systemVariant) {
+        this.status.textContent = 'Bitte wähle eine Substratgröße und ein Topfsystem.';
+        return;
+      }
+      if (!this.recipe || this.recipeTotal !== 100) {
+        this.status.textContent = this.dataset.recipeMissing;
+        return;
+      }
+      const items = [{ id: Number(mixVariant), quantity: 1, properties: { 'Individuelle Rezeptur': this.recipe, 'Mischung gesamt': '100 %' } }, { id: Number(systemVariant), quantity: 1 }];
+      this.querySelectorAll('[data-addon]:checked').forEach((input) => { if (input.value) items.push({ id: Number(input.value), quantity: 1 }); });
+      this.submit.disabled = true;
+      this.status.textContent = 'Dein Grow-Setup wird zusammengestellt …';
+      try {
+        const response = await fetch(this.dataset.addUrl, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ items }) });
+        if (!response.ok) throw new Error('Cart request failed');
+        this.status.textContent = this.dataset.validMessage;
+        window.location.href = this.dataset.cartUrl;
+      } catch (error) {
+        this.status.textContent = 'Das Setup konnte nicht hinzugefügt werden. Bitte prüfe die Verfügbarkeit.';
+        this.submit.disabled = false;
+      }
+    }
+  }
+  if (!customElements.get('custom-grow-creator')) customElements.define('custom-grow-creator', CustomGrowCreator);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "CustomGrowCreator",
+  "tag": "section",
+  "class": "section-custom-grow-creator",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "LEAFers CustomGrowCreator" },
+    { "type": "inline_richtext", "id": "heading", "label": "Überschrift", "default": "Aus einzelnen Entscheidungen wird dein Grow-Setup" },
+    { "type": "richtext", "id": "intro", "label": "Einleitung", "default": "<p>Kombiniere deine individuelle Substratrezeptur mit einem passenden Topfsystem und sinnvollen Erweiterungen. Jede Auswahl wird erklärt – du behältst jederzeit die Kontrolle.</p>" },
+    { "type": "product", "id": "mix_product", "label": "Grundprodukt individuelle Substratmischung", "info": "Varianten dieses Produkts werden als Größen, zum Beispiel 2 L, 5 L und 10 L, angeboten." },
+    { "type": "header", "content": "Schritt 1 – Substrat" },
+    { "type": "text", "id": "step_mix_heading", "label": "Überschrift", "default": "Rezeptur und Menge übernehmen" },
+    { "type": "textarea", "id": "step_mix_text", "label": "Erklärung", "default": "Die oben per Slider eingestellte Rezeptur wird automatisch mit deiner Bestellung gespeichert." },
+    { "type": "text", "id": "size_label", "label": "Feldbeschriftung", "default": "Gesamtmenge auswählen" },
+    { "type": "text", "id": "recipe_waiting", "label": "Text ohne Rezeptur", "default": "Stelle oben zunächst deine Mischung auf genau 100 % ein." },
+    { "type": "text", "id": "product_missing", "label": "Hinweis bei fehlendem Grundprodukt", "default": "Bitte im Theme-Editor das Shopify-Produkt „Individuelle Substratmischung“ auswählen." },
+    { "type": "header", "content": "Schritt 2 – Topfsystem" },
+    { "type": "text", "id": "step_system_heading", "label": "Überschrift", "default": "Topfsystem auswählen" },
+    { "type": "textarea", "id": "step_system_text", "label": "Erklärung", "default": "Wähle einen atmungsaktiven Stofftopf oder ein System mit Wasserreservoir – passend zu Standort und Gießroutine." },
+    { "type": "text", "id": "system_label", "label": "Dropdown-Beschriftung", "default": "Stofftopf oder Eigenbewässerung" },
+    { "type": "text", "id": "system_placeholder", "label": "Dropdown-Platzhalter", "default": "Topfsystem auswählen …" },
+    { "type": "header", "content": "Schritt 3 – Add-ons" },
+    { "type": "text", "id": "step_addons_heading", "label": "Überschrift", "default": "Setup sinnvoll erweitern" },
+    { "type": "textarea", "id": "step_addons_text", "label": "Erklärung", "default": "Ergänze nur, was dein Projekt wirklich braucht – zum Beispiel Rankhilfe, Untersetzer, Messgerät oder Pflanzenlicht." },
+    { "type": "header", "content": "Zusammenfassung und Warenkorb" },
+    { "type": "text", "id": "summary_eyebrow", "label": "Kleine Überschrift", "default": "Dein Setup" },
+    { "type": "text", "id": "summary_heading", "label": "Überschrift", "default": "Bereit zum Wachsen" },
+    { "type": "text", "id": "summary_mix", "label": "Ausgangstext Substrat", "default": "Substratgröße noch auswählen" },
+    { "type": "text", "id": "summary_system", "label": "Ausgangstext System", "default": "Topfsystem noch auswählen" },
+    { "type": "text", "id": "summary_addons", "label": "Ausgangstext Add-ons", "default": "Keine Add-ons ausgewählt" },
+    { "type": "text", "id": "cart_label", "label": "Warenkorb-Button", "default": "Grow-Setup in den Warenkorb" },
+    { "type": "text", "id": "valid_message", "label": "Erfolgsmeldung", "default": "Dein individuelles Setup wurde hinzugefügt." },
+    { "type": "text", "id": "recipe_missing", "label": "Hinweis bei ungültiger Rezeptur", "default": "Die Substratanteile müssen zusammen genau 100 % ergeben." },
+    { "type": "textarea", "id": "fineprint", "label": "Hinweis unter Button", "default": "Alle ausgewählten Produkte werden als einzelne Positionen in den Warenkorb gelegt. Deine Rezeptur bleibt an der Substratposition gespeichert." },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 24, "max": 120, "step": 8, "default": 80, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 24, "max": 120, "step": 8, "default": 96, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "system",
+      "name": "Topfsystem",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Shopify-Produkt" },
+        { "type": "text", "id": "title", "label": "Eigener Titel (optional)" },
+        { "type": "text", "id": "badge", "label": "Kennzeichnung", "default": "Topfsystem" },
+        { "type": "richtext", "id": "explanation", "label": "Erklärung", "default": "<p>Beschreibe hier, für welche Pflanzen, Standorte und Gießroutinen dieses System besonders gut geeignet ist.</p>" },
+        { "type": "text", "id": "variant_label", "label": "Varianten-Beschriftung", "default": "Größe und Ausführung" },
+        { "type": "image_picker", "id": "image", "label": "Vorschaubild (optional)" },
+        { "type": "text", "id": "image_alt", "label": "Alternativtext Bild" },
+        { "type": "video", "id": "video", "label": "Shopify-Vorschauvideo" },
+        { "type": "text", "id": "video_placeholder", "label": "Platzhalter ohne Video", "default": "Produktvideo im Theme-Editor zuordnen" }
+      ]
+    },
+    {
+      "type": "addon",
+      "name": "Add-on",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Shopify-Produkt" },
+        { "type": "text", "id": "title", "label": "Eigener Titel (optional)" },
+        { "type": "textarea", "id": "explanation", "label": "Kurzer Nutzen", "default": "Sinnvolle Ergänzung für dein individuelles Pflanzenprojekt." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LEAFers CustomGrowCreator",
+      "blocks": [
+        { "type": "system", "settings": { "title": "Atmungsaktiver Stofftopf", "badge": "Aktive Wurzelzone", "explanation": "<p>Die luftdurchlässige Topfwand unterstützt Sauerstoffaustausch und schnellen Wasserablauf. Ideal, wenn du Gießintervalle aktiv kontrollieren möchtest.</p>" } },
+        { "type": "system", "settings": { "title": "Eigenbewässerung mit Reservoir", "badge": "Konstante Versorgung", "explanation": "<p>Ein Wasserreservoir kann die Versorgung gleichmäßiger machen. Besonders praktisch bei größeren Pflanzen oder unregelmäßigen Gießintervallen.</p>" } },
+        { "type": "addon", "settings": { "title": "Passender Untersetzer", "explanation": "Schützt Boden und Regal vor überschüssigem Gießwasser." } },
+        { "type": "addon", "settings": { "title": "Rankhilfe", "explanation": "Gibt kletternden Aroids Halt und unterstützt einen geordneten Wuchs." } },
+        { "type": "addon", "settings": { "title": "Feuchtigkeitsmesser", "explanation": "Hilft dabei, den richtigen Gießzeitpunkt besser einzuschätzen." } },
+        { "type": "addon", "settings": { "title": "Pflanzenlicht", "explanation": "Ergänzt fehlendes Tageslicht an dunkleren Standorten." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

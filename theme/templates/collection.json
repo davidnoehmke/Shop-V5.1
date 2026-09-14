@@ -1,0 +1,76 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_type_filters": true
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "blocks": {
+        "recipe": {
+          "type": "benefit",
+          "settings": {
+            "icon": "handmade",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "function": {
+          "type": "benefit",
+          "settings": {
+            "icon": "natural",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "sizes": {
+          "type": "benefit",
+          "settings": {
+            "icon": "small_batches",
+            "heading": "",
+            "text": ""
+          }
+        },
+        "range": {
+          "type": "benefit",
+          "settings": {
+            "icon": "versatile",
+            "heading": "",
+            "text": ""
+          }
+        }
+      },
+      "block_order": [
+        "recipe",
+        "function",
+        "sizes",
+        "range"
+      ],
+      "settings": {}
+    },
+    "seo_copy": {
+      "type": "collection-seo-copy",
+      "custom_css": [
+        "section {padding: 0;}"
+      ],
+      "settings": {}
+    },
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "leaf_guide": {
+      "type": "leaf-collection-guide",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "leaf_guide",
+    "trust",
+    "seo_copy"
+  ]
+}

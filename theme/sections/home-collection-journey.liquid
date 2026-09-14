@@ -1,0 +1,245 @@
+{% liquid
+  assign section_heading = section.settings.heading
+  assign section_intro = section.settings.intro
+%}
+
+<section class="home-journey" id="HomeJourney-{{ section.id }}" data-home-journey data-result-prefix="{{ section.settings.result_prefix | escape }}" data-result-suffix="{{ section.settings.result_suffix | escape }}" aria-labelledby="HomeJourneyHeading-{{ section.id }}">
+  <div class="page-width">
+    <header class="home-journey__header" data-leaf-reveal>
+      <div>
+        {% if section.settings.eyebrow != blank %}<p class="home-journey__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+        {% if section_heading != blank %}<h2 id="HomeJourneyHeading-{{ section.id }}">{{ section_heading | escape }}</h2>{% endif %}
+        {% if section_intro != blank %}<div class="home-journey__intro rte">{{ section_intro }}</div>{% endif %}
+      </div>
+      <div class="home-journey__status" data-journey-status aria-live="polite">{{ section.settings.result_prefix }} {{ section.blocks.size }} {{ section.settings.result_suffix }}</div>
+    </header>
+
+    <div class="home-journey__filters" role="group" aria-label="{{ section.settings.filter_label | escape }}">
+      <button type="button" class="home-journey__filter is-active" data-journey-filter="all" aria-pressed="true">{{ section.settings.filter_all | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="substrate" aria-pressed="false">{{ section.settings.filter_substrate | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="interieur" aria-pressed="false">{{ section.settings.filter_interieur | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="grow" aria-pressed="false">{{ section.settings.filter_grow | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="equipment" aria-pressed="false">{{ section.settings.filter_equipment | escape }}</button>
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <div class="home-journey__grid" role="list" id="HomeJourneyGrid-{{ section.id }}">
+        {% for block in section.blocks %}
+          {% liquid
+            assign selected_collection = block.settings.collection
+            assign destination = block.settings.fallback_link
+            assign card_title = block.settings.title
+            assign card_eyebrow = block.settings.eyebrow
+            assign card_badge = block.settings.badge
+            assign card_copy = block.settings.copy
+            assign card_cta = block.settings.cta_label
+            assign card_category = block.settings.category
+
+            if selected_collection != blank
+              assign destination = selected_collection.url
+              assign collection_eyebrow = selected_collection.metafields.custom.homepage_eyebrow.value
+              assign collection_intro = selected_collection.metafields.custom.homepage_intro.value
+              assign collection_badge = selected_collection.metafields.custom.homepage_badge.value
+              assign collection_cta = selected_collection.metafields.custom.homepage_cta.value
+
+              if card_title == blank
+                assign card_title = selected_collection.title
+              endif
+              if card_eyebrow == blank
+                assign card_eyebrow = collection_eyebrow
+              endif
+              if card_badge == blank
+                assign card_badge = collection_badge
+              endif
+              if card_copy == blank
+                assign card_copy = collection_intro
+              endif
+              if card_cta == blank
+                assign card_cta = collection_cta
+              endif
+            endif
+
+            if card_title == blank
+              assign card_title = block.settings.fallback_title
+            endif
+            if card_copy == blank
+              assign card_copy = block.settings.fallback_copy
+            endif
+            if card_cta == blank
+              assign card_cta = section.settings.card_cta
+            endif
+            if destination == blank
+              assign destination = routes.collections_url
+            endif
+
+            assign card_image_alt = card_title
+            if selected_collection.featured_image.alt != blank
+              assign card_image_alt = selected_collection.featured_image.alt
+            elsif block.settings.image.alt != blank
+              assign card_image_alt = block.settings.image.alt
+            endif
+
+            assign featured_class = ''
+            if forloop.index <= 2
+              assign featured_class = ' home-journey__card--featured'
+            endif
+          %}
+
+          {% if card_title != blank %}
+            <article class="home-journey__card{{ featured_class }}" role="listitem" data-journey-card data-category="{{ card_category | escape }}" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 70 }}ms" {{ block.shopify_attributes }}>
+              <a class="home-journey__media" href="{{ destination }}" aria-label="{{ card_title | escape }}">
+                {% if selected_collection.featured_image != blank %}
+                  {{ selected_collection.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 600, 900, 1200', sizes: '(min-width: 1180px) 50vw, (min-width: 760px) 50vw, 100vw', alt: card_image_alt }}
+                {% elsif block.settings.image != blank %}
+                  {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 600, 900, 1200', sizes: '(min-width: 1180px) 50vw, (min-width: 760px) 50vw, 100vw', alt: card_image_alt }}
+                {% else %}
+                  <span class="home-journey__placeholder" aria-hidden="true">{{ 'collection-1' | placeholder_svg_tag }}</span>
+                {% endif %}
+                {% if card_badge != blank %}<span class="home-journey__badge">{{ card_badge | escape }}</span>{% endif %}
+              </a>
+
+              <div class="home-journey__body">
+                {% if card_eyebrow != blank %}<p class="home-journey__eyebrow">{{ card_eyebrow | escape }}</p>{% endif %}
+                <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
+                {% if card_copy != blank %}<p>{{ card_copy | escape }}</p>{% endif %}
+                {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ section.settings.product_label | escape }}</span>{% endif %}
+                <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape }} <span aria-hidden="true">→</span></a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p class="home-journey__empty" data-journey-empty hidden>{{ section.settings.empty_label | escape }}</p>
+    {% endif %}
+
+    {% if section.settings.all_link != blank %}
+      <div class="home-journey__footer" data-leaf-reveal>
+        <a class="button" href="{{ section.settings.all_link }}">{{ section.settings.all_label | escape }} <span aria-hidden="true">→</span></a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .home-journey { padding: var(--space-section) 0; background: linear-gradient(135deg, color-mix(in srgb, var(--surface), var(--background) 28%), var(--background)); }
+  .home-journey__header { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: 1.6rem; }
+  .home-journey__header > div:first-child { max-width: 800px; }
+  .home-journey__eyebrow { margin: 0 0 .8rem; color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .home-journey h2 { margin: 0 0 1rem; font-size: clamp(2.2rem, 5vw, 5rem); line-height: .96; letter-spacing: -.055em; }
+  .home-journey__intro { max-width: 64ch; color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.12rem); }
+  .home-journey__status { flex: 0 0 auto; color: var(--muted); font-size: .78rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+  .home-journey__filters { display: flex; flex-wrap: wrap; gap: .55rem; margin-bottom: 1.35rem; }
+  .home-journey__filter { min-height: 42px; padding-inline: 1rem; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--text); font-size: .8rem; }
+  .home-journey__filter:hover, .home-journey__filter.is-active { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .home-journey__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1rem; }
+  .home-journey__card { grid-column: span 3; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--background); box-shadow: 0 14px 38px color-mix(in srgb, var(--text), transparent 94%); transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .25s ease; }
+  .home-journey__card--featured { grid-column: span 6; }
+  .home-journey__media { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--accent-soft); }
+  .home-journey__card--featured .home-journey__media { aspect-ratio: 16 / 9; }
+  .home-journey__media img, .home-journey__placeholder, .home-journey__placeholder svg { width: 100%; height: 100%; object-fit: cover; }
+  .home-journey__media img { transition: transform .65s var(--ease-out), filter .35s ease; }
+  .home-journey__badge { position: absolute; top: .8rem; left: .8rem; padding: .4rem .65rem; border: 1px solid color-mix(in srgb, #fff, transparent 50%); border-radius: 999px; background: color-mix(in srgb, var(--text), transparent 12%); color: #fff; font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; backdrop-filter: blur(8px); }
+  .home-journey__body { flex: 1; display: flex; flex-direction: column; padding: 1.2rem; }
+  .home-journey__body .home-journey__eyebrow { margin-bottom: .45rem; font-size: .68rem; }
+  .home-journey h3 { margin: 0 0 .6rem; font-size: clamp(1.25rem, 2.2vw, 2.15rem); line-height: 1.02; letter-spacing: -.03em; }
+  .home-journey h3 a { text-decoration: none; }
+  .home-journey__body > p:not(.home-journey__eyebrow) { margin: 0 0 .8rem; color: var(--muted); font-size: .86rem; line-height: 1.55; }
+  .home-journey__count { margin-top: auto; color: var(--muted); font-size: .72rem; font-weight: 750; }
+  .home-journey__link { width: 100%; min-height: 44px; margin-top: 1rem; padding-inline: .9rem; gap: .45rem; font-size: .78rem; }
+  .home-journey__link span, .home-journey__footer .button span { transition: transform .25s var(--ease-out); }
+  .home-journey__link:hover span, .home-journey__footer .button:hover span { transform: translateX(.2rem); }
+  .home-journey__empty { margin: 1.5rem 0 0; color: var(--muted); text-align: center; }
+  .home-journey__footer { display: flex; justify-content: center; margin-top: 2rem; }
+  .home-journey__footer .button { gap: .6rem; }
+  .home-journey__card[hidden] { display: none; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .home-journey__card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--accent), transparent 58%); box-shadow: var(--shadow-soft); }
+    .home-journey__card:hover .home-journey__media img { transform: scale(1.05); filter: saturate(1.04); }
+  }
+
+  @media (max-width: 1000px) { .home-journey__card { grid-column: span 4; } .home-journey__card--featured { grid-column: span 6; } }
+  @media (max-width: 760px) { .home-journey__header { align-items: start; flex-direction: column; gap: .7rem; } .home-journey__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .home-journey__card, .home-journey__card--featured { grid-column: span 1; } .home-journey__card--featured .home-journey__media { aspect-ratio: 4 / 3; } }
+  @media (max-width: 560px) { .home-journey { padding-block: 3.2rem; } .home-journey__filters { flex-wrap: nowrap; overflow-x: auto; padding-bottom: .3rem; } .home-journey__filter { flex: 0 0 auto; } .home-journey__grid { grid-template-columns: 1fr; } .home-journey__footer .button { width: 100%; } }
+{% endstylesheet %}
+
+{% javascript %}
+  document.querySelectorAll('[data-home-journey]').forEach((root) => {
+    const buttons = [...root.querySelectorAll('[data-journey-filter]')];
+    const cards = [...root.querySelectorAll('[data-journey-card]')];
+    const status = root.querySelector('[data-journey-status]');
+    const empty = root.querySelector('[data-journey-empty]');
+    const prefix = root.dataset.resultPrefix || '';
+    const suffix = root.dataset.resultSuffix || '';
+
+    const update = (filter) => {
+      let visible = 0;
+      cards.forEach((card) => {
+        const isVisible = filter === 'all' || card.dataset.category === filter;
+        card.hidden = !isVisible;
+        card.setAttribute('aria-hidden', String(!isVisible));
+        if (isVisible) visible += 1;
+      });
+      buttons.forEach((button) => {
+        const isActive = button.dataset.journeyFilter === filter;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+      if (status) status.textContent = `${prefix} ${visible} ${suffix}`.trim();
+      if (empty) empty.hidden = visible !== 0;
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => update(button.dataset.journeyFilter)));
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Home Systemfinder",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kicker", "default": "Nach deinem Projekt" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Finde den passenden Einstieg" },
+    { "type": "richtext", "id": "intro", "label": "Einleitung", "default": "<p>Substrat, Raumgestaltung, Anzucht oder Ausstattung: Wähle deinen nächsten sinnvollen Schritt.</p>" },
+    { "type": "text", "id": "filter_label", "label": "Filterbezeichnung", "default": "Sortiment filtern" },
+    { "type": "text", "id": "filter_all", "label": "Filter alle", "default": "Alles" },
+    { "type": "text", "id": "filter_substrate", "label": "Filter Substrat", "default": "Substrat & Wurzelraum" },
+    { "type": "text", "id": "filter_interieur", "label": "Filter Interieur", "default": "Interieur Solutions" },
+    { "type": "text", "id": "filter_grow", "label": "Filter Anzucht", "default": "Anzucht & Aussaat" },
+    { "type": "text", "id": "filter_equipment", "label": "Filter Ausstattung", "default": "Gefäße & Pflege" },
+    { "type": "text", "id": "result_prefix", "label": "Ergebnis-Präfix", "default": "Sichtbar:" },
+    { "type": "text", "id": "result_suffix", "label": "Ergebnis-Suffix", "default": "Bereiche" },
+    { "type": "text", "id": "product_label", "label": "Produktbezeichnung", "default": "Produkte" },
+    { "type": "text", "id": "card_cta", "label": "Standard-CTA", "default": "Entdecken" },
+    { "type": "text", "id": "empty_label", "label": "Leertext", "default": "Für diesen Filter sind aktuell keine Bereiche hinterlegt." },
+    { "type": "text", "id": "all_label", "label": "CTA gesamtes Sortiment", "default": "Gesamtes Sortiment ansehen" },
+    { "type": "url", "id": "all_link", "label": "Link gesamtes Sortiment" }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "select", "id": "category", "label": "Bereich", "options": [
+          { "value": "substrate", "label": "Substrat & Wurzelraum" },
+          { "value": "interieur", "label": "Interieur Solutions" },
+          { "value": "grow", "label": "Anzucht & Aussaat" },
+          { "value": "equipment", "label": "Gefäße & Pflege" }
+        ], "default": "substrate" },
+        { "type": "image_picker", "id": "image", "label": "Fallback-Bild" },
+        { "type": "text", "id": "eyebrow", "label": "Eyebrow-Override" },
+        { "type": "text", "id": "badge", "label": "Badge-Override" },
+        { "type": "text", "id": "title", "label": "Titel-Override" },
+        { "type": "textarea", "id": "copy", "label": "Text-Override" },
+        { "type": "text", "id": "cta_label", "label": "CTA-Override" },
+        { "type": "url", "id": "fallback_link", "label": "Fallback-Link" },
+        { "type": "text", "id": "fallback_title", "label": "Fallback-Titel" },
+        { "type": "textarea", "id": "fallback_copy", "label": "Fallback-Text" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Home Systemfinder", "blocks": [{ "type": "collection" }, { "type": "collection" }, { "type": "collection" }, { "type": "collection" }] }]
+}
+{% endschema %}

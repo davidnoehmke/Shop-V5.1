@@ -1,0 +1,398 @@
+{
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "menu": "Open menu",
+    "close": "Close",
+    "footer_menu": "Footer menu"
+  },
+  "general": {
+    "shop_now": "Shop now",
+    "view_all": "View all",
+    "discover": "Discover now",
+    "continue_shopping": "Continue shopping",
+    "pagination": "Pagination",
+    "meta": {
+      "tags": "Tags: {{ tags }}",
+      "page": "Page {{ page }}"
+    },
+    "breadcrumbs": {
+      "label": "Breadcrumbs",
+      "home": "Home"
+    }
+  },
+  "header": {
+    "home": "Home",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Cart ({{ count }})"
+  },
+  "announcement": {
+    "label": "Store benefits",
+    "text": "Hand-mixed in Germany · Fast shipping · Secure payment"
+  },
+  "hero": {
+    "heading": "Hand-mixed substrates for healthy plants & strong roots",
+    "text": "Natural ingredients. Thoughtful blends. For houseplants, herbs, vegetables and more.",
+    "configure": "Substrate configurator",
+    "benefits": {
+      "shipping_title": "Fast shipping",
+      "shipping_text": "in 1–2 business days",
+      "quality_title": "Hand-mixed quality",
+      "quality_text": "carefully made",
+      "natural_title": "Natural ingredients",
+      "natural_text": "for optimal growth"
+    }
+  },
+  "featured_collection": {
+    "heading": "Our bestsellers",
+    "highlights": "Current highlights",
+    "empty": "Choose a collection in the theme editor.",
+    "placeholder_title": "Example product"
+  },
+  "categories": {
+    "empty": "Create at least one collection in Shopify.",
+    "substrates": "Substrates & additives",
+    "planters": "Planters",
+    "seeds": "Seeds",
+    "kits": "Starter kits",
+    "accessories": "Accessories",
+    "young_plants": "Young plants"
+  },
+  "trust": {
+    "handmade_title": "Hand-mixed",
+    "handmade_text": "in Germany",
+    "natural_title": "Natural ingredients",
+    "natural_text": "conscious & sustainable",
+    "small_batches_title": "Small quantities",
+    "small_batches_text": "instead of large bags",
+    "versatile_title": "For many projects",
+    "versatile_text": "herbs, vegetables & plants"
+  },
+  "starter": {
+    "heading": "Starter kits for your plant project",
+    "text": "Everything you need, perfectly coordinated.",
+    "herbs": "Herbs",
+    "houseplants": "Houseplants",
+    "vegetables": "Vegetables",
+    "exotics": "Exotics"
+  },
+  "community": {
+    "heading": "Inspiration from our community",
+    "handle": "#plantlove"
+  },
+  "newsletter": {
+    "heading": "Subscribe and save 10%",
+    "email": "Your email address",
+    "submit": "Subscribe",
+    "success": "Thanks for subscribing."
+  },
+  "services": {
+    "shipping_title": "Fast shipping",
+    "shipping_text": "in 1–2 business days",
+    "payment_title": "Secure payment",
+    "payment_text": "with SSL encryption",
+    "support_title": "Customer service",
+    "support_text": "We are here for you"
+  },
+  "product": {
+    "quantity": "Quantity",
+    "variant": "Variant",
+    "add_to_cart": "Add to cart",
+    "quick_add": "Add {{ product }} to cart",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "purchase_benefits": "Purchase benefits",
+    "breadcrumbs": "Breadcrumbs",
+    "bestseller": "Bestseller",
+    "special_mix": "Special mix",
+    "from_price": "From {{ price }}",
+    "choose_options": "Choose options",
+    "usps": {
+      "label": "Product benefits"
+    },
+    "availability": {
+      "available": "In stock · ready to ship",
+      "unavailable": "This variant is currently unavailable.",
+      "unavailable_short": "Unavailable",
+      "invalid_combination": "Combination unavailable",
+      "choose_available": "Please choose an available combination."
+    },
+    "trust": {
+      "label": "Purchase benefits",
+      "shipping": "Free shipping within Germany",
+      "payment": "Secure payment via Shopify",
+      "support": "Personal help when needed"
+    },
+    "decision": {
+      "eyebrow": "Decision support",
+      "heading": "What this product does in the system",
+      "function": "Primary function",
+      "suitable_for": "Suitable for",
+      "water": "Water behavior",
+      "ratio": "Mixing ratio",
+      "application": "Application",
+      "volume": "Volume",
+      "configurator_role": "Configurator role",
+      "plant_groups": "Plant groups",
+      "notice": "Note:",
+      "configurator_title": "Use in your own mix",
+      "configurator_text": "Open the LEAFerservice configurator and combine suitable components.",
+      "configurator_cta": "Open configurator"
+    },
+    "media": {
+      "label": "Product images"
+    },
+    "signature": {
+      "eyebrow": "Component profile",
+      "heading": "What this component changes in the root zone",
+      "intro": "Its role is not only described but shown as a technical profile, making dosage and combinations easier to understand.",
+      "metrics_label": "Technical component profile",
+      "aeration": "Aeration",
+      "drainage": "Drainage",
+      "water": "Water retention",
+      "structure": "Structural stability",
+      "nutrient": "Nutrient effect",
+      "category": "Role",
+      "range": "Pro range",
+      "warning": "Caution from",
+      "from_percent": "from %{percent}%",
+      "note": "Technical note",
+      "cta": "Use in the pro configurator"
+    }
+  },
+  "product_variant_guide": {
+    "steps_heading": "How to sow successfully",
+    "facts_heading": "Product details",
+    "faq_heading": "Good to know",
+    "notice_label": "Note:"
+  },
+  "collection": {
+    "products_count": "{{ count }} products",
+    "sort_by": "Sort by",
+    "apply": "Apply",
+    "filter": "Filter by product type",
+    "all": "All",
+    "guide": {
+      "eyebrow": "Buying guide & knowledge",
+      "heading": "How to choose {{ collection }}",
+      "topics": "Collection topics"
+    }
+  },
+  "recipe": {
+    "eyebrow": "Transparently mixed",
+    "heading": "Recipe and ingredients",
+    "intro": "The composition is loaded from maintained product data for consistent information across every product page.",
+    "ratio": "Mixing ratio",
+    "ingredients": "Ingredients",
+    "note": "Volume shares are guidelines. Plant, pot, location and watering habits may require adjustments."
+  },
+  "cross_sell": {
+    "eyebrow": "Useful additions",
+    "heading": "Perfect additions"
+  },
+  "configurator": {
+    "eyebrow": "Your mix",
+    "heading": "Configure your substrate",
+    "intro": "Adjust the shares to the plant, pot and watering habits. The total should equal 100%.",
+    "total": "Total",
+    "valid": "Recipe is complete",
+    "invalid": "Please adjust shares to 100%",
+    "copy": "Copy recipe",
+    "recipe": "Created recipe",
+    "project": {
+      "eyebrow": "Plan a plant project",
+      "heading": "From plant to the right setup",
+      "intro": "Choose plant, light, watering behaviour, planting system and volume. Recommendations use the stored plant profiles, recipes and project rules.",
+      "pro_link": "I know my mix → Pro mode",
+      "plant": "Plant or plant group",
+      "choose": "Please choose",
+      "light": "Light conditions",
+      "light_low": "Low light",
+      "light_medium": "Medium / bright indirect",
+      "light_high": "Very bright",
+      "watering": "Watering behaviour",
+      "water_frequent": "Rather frequent",
+      "water_normal": "Balanced",
+      "water_rare": "Rather infrequent",
+      "system": "Planting system",
+      "system_classic": "Classic pot",
+      "system_self": "Self watering",
+      "system_semi": "Semi-hydro",
+      "system_fabric": "Fabric pot",
+      "volume": "Required volume",
+      "calculate": "Calculate project",
+      "result_eyebrow": "Your recommendation",
+      "result_empty": "Choose project parameters",
+      "result_empty_text": "After selection, the matching recipe, technical characteristics and useful additions are shown.",
+      "adjust": "Adjust mix in pro configurator"
+    }
+  },
+  "search": {
+    "title": "Search",
+    "label": "Search products and content",
+    "submit": "Search",
+    "results": "Search results for “{{ terms }}”",
+    "empty": "No matching results found."
+  },
+  "faq": {
+    "eyebrow": "Good to know",
+    "heading": "Frequently asked questions",
+    "intro": "Short answers to help you choose well and get off to a good start.",
+    "substrate_question": "Which substrate is right for my plant?",
+    "substrate_answer": "Tropical aroids usually need a particularly airy, free-draining mix. Herbs and seedlings benefit from finer mixes with even moisture. Use the substrate configurator when unsure.",
+    "application_question": "How should I use substrate additives?",
+    "application_answer": "Dose additives according to the plant and the structure you want. Start conservatively, mix thoroughly and make sure excess water can continue to drain evenly.",
+    "plants_question": "How are plants prepared for shipping?",
+    "plants_answer": "Plants are carefully checked, securely packed and protected as compactly as possible. Minor changes to leaves or growth are normal for living natural products.",
+    "shipping_question": "How quickly will my order ship?",
+    "shipping_answer": "Available items are usually prepared promptly. The exact delivery time depends on the product, weather, carrier and destination and is shown during checkout."
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty.",
+    "quantity": "Quantity",
+    "remove": "Remove",
+    "subtotal": "Subtotal",
+    "update": "Update cart",
+    "checkout": "Checkout"
+  },
+  "footer": {
+    "text": "Specialist substrates, functional ingredients, planters and grow equipment for people who want to understand what happens below the surface.",
+    "copyright": "© {{ year }} {{ shop }}"
+  },
+  "brand_story": {
+    "eyebrow": "The LEAFerservice principle",
+    "heading": "Plant care gets easier when every material has a clear purpose",
+    "text_one": "A good substrate is not universal soil but a balanced root environment. Coarse ingredients create air, mineral components preserve structure and organic shares buffer moisture. LEAFerservice therefore explains both the purpose of each ingredient and the exact ratio of specialist mixes.",
+    "text_two": "Finished mixes sit alongside individual components, allowing you to follow a proven recipe or adapt it to the plant, location and watering routine. Planters, propagation tools and accessories complete the same practical system.",
+    "link": "Explore all LEAFerservice products"
+  },
+  "collection_seo": {
+    "eyebrow": "LEAFerservice collection knowledge",
+    "faq_heading": "Questions before choosing",
+    "substrates": {
+      "heading": "Specialist substrates and ingredients for controlled root environments",
+      "lead": "Monstera, Philodendron, Alocasia, orchids, palms and succulents need different balances of air, moisture and structural stability.",
+      "body": "Finished LEAFerservice mixes provide a balanced starting point, while pine bark, perlite, pumice, lava, clay pebbles, coconut chips, sphagnum, vermiculite, zeolite, charcoal and worm castings allow precise adjustments. The important question is not how many ingredients a mix contains, but what each one contributes.",
+      "question_one": "Which substrate suits Monstera and Philodendron?",
+      "answer_one": "Many aroids benefit from a coarse, airy mix that drains freely while retaining balanced residual moisture. Pot size, light and watering habits still matter.",
+      "question_two": "Can I mix substrate ingredients myself?",
+      "answer_two": "Yes. Give every ingredient a purpose and make sure all volume shares add up to 100 percent. The substrate configurator helps you plan the ratio."
+    },
+    "planters": {
+      "heading": "Planters, fabric pots and watering systems matched to the root zone",
+      "lead": "Volume, material, drainage and water reservoirs change how quickly a substrate dries and how much oxygen reaches the roots.",
+      "body": "LEAFerservice brings together breathable fabric pots, decorative planters and proven LECHUZA watering systems. Choose size based on the existing root ball rather than foliage alone, leaving room to grow without creating an oversized volume that stays wet for too long.",
+      "question_one": "Which pot size should I choose when repotting?",
+      "answer_one": "The next practical size above the current root ball is usually enough. A much larger pot dries more slowly and can create persistently wet areas.",
+      "question_two": "Does a fabric pot need a saucer?",
+      "answer_two": "Yes indoors. Breathable fabric allows excess water to escape, so a waterproof saucer or cachepot protects floors and shelves."
+    },
+    "smart_grow": {
+      "heading": "Smart grow equipment for propagation, cuttings and controlled plant light",
+      "lead": "Germination and young plant growth become more reliable when moisture, warmth and light are actively managed.",
+      "body": "LEAFerservice combines coconut propagation plugs, rockwool cubes, heat mats and dimmable full-spectrum LEDs. Match every tool to the growing area and stage rather than running equipment permanently at maximum output.",
+      "question_one": "When is a heat mat useful?",
+      "answer_one": "It is useful on cool windowsills and for warmth-loving seeds. Monitor the actual temperature in the growing medium to prevent overheating and drying.",
+      "question_two": "How much LED power do I need?",
+      "answer_two": "That depends on the lit area, hanging distance, plant and growth stage. Start seedlings conservatively and focus on even coverage."
+    },
+    "care": {
+      "heading": "Plant care tools for precise watering, training and repotting",
+      "lead": "Useful accessories solve a specific problem: water reaches the substrate, climbing plants gain support and repotting stays controlled.",
+      "body": "The LEAFerservice care range includes narrow-spout watering cans and modular supports for Monstera and Philodendron. Choose accessories for pot size, plant height and placement rather than appearance alone.",
+      "question_one": "Why is a long watering spout useful?",
+      "answer_one": "It reaches the substrate between large leaves and closely grouped pots, allowing slow and precise watering near the root ball.",
+      "question_two": "Which plants benefit from a moss pole?",
+      "answer_two": "Climbing aroids such as Monstera, Philodendron, Epipremnum and Scindapsus benefit from stable, correctly attached support."
+    },
+    "sets": {
+      "heading": "Propagation kits and plant bundles with a clear purpose",
+      "lead": "A good kit reduces decisions without hiding the essentials. LEAFerservice combines products by application rather than availability.",
+      "body": "Herb and microgreen kits simplify starting on a windowsill or kitchen shelf. Check available light, space and the time you can spend monitoring moisture before choosing.",
+      "question_one": "What should a propagation kit contain?",
+      "answer_one": "A suitable container, appropriate growing medium and clear guidance on light, moisture and temperature.",
+      "question_two": "Are these kits suitable for beginners?",
+      "answer_two": "Yes, provided the care guidance and actual site conditions are taken into account."
+    },
+    "default": {
+      "heading": "Selected products for well-planned plant projects",
+      "lead": "LEAFerservice connects substrates, planters, propagation tools and accessories around a clear practical purpose.",
+      "body": "Every product page explains benefits, use and suitable additions. Filter by product type and compare variants to find a solution that matches the plant and location.",
+      "question_one": "How do I find the right product?",
+      "answer_one": "Start with the plant, location and problem you want to solve. Product filters and usage details narrow the choice.",
+      "question_two": "Are matching additions shown?",
+      "answer_two": "Yes. Product pages display complementary items such as substrate ingredients, planters or propagation equipment."
+    }
+  },
+  "page_404": {
+    "title": "Page not found",
+    "text": "This page has disappeared or moved."
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
+    }
+  },
+  "shopify": {
+    "checkout": {
+      "shipping": {
+        "split_shipping_merchandise_quantity_label_inline_primary": "Quantity: %{quantity}",
+        "split_shipping_merchandise_quantity_label_inline": "%{merchandise_title} × %{quantity}"
+      }
+    }
+  },
+  "home": {
+    "method": {
+      "principles_label": "Principles of the LEAF method",
+      "transparent_title": "No black box",
+      "transparent_text": "Composition, function and limits are made visible.",
+      "context_title": "Context over blanket rules",
+      "context_text": "Plant, light, container and watering habits are considered together.",
+      "system_title": "System over isolated products",
+      "system_text": "Substrate, pot, support and lighting are combined only when they fit the project.",
+      "choice_title": "You stay in control",
+      "choice_text": "Recommendations explain the why and leave room for your own decisions."
+    }
+  }
+}

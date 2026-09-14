@@ -1,0 +1,484 @@
+{% doc %}
+  @prompt
+    schaufenster über ein produkt wo alle metafelder gelesen werden
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-product-metafields-{{ ai_gen_id }} {
+    display: block;
+    width: {{ block.settings.desktop_width_percent }}%;
+    max-width: 100%;
+    padding: {{ block.settings.padding }}px;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+  }
+
+  .ai-product-metafields__header-{{ ai_gen_id }} {
+    margin: 0 0 {{ block.settings.spacing }}px 0;
+  }
+
+  .ai-product-metafields__title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 8px 0;
+    font-weight: 600;
+  }
+
+  .ai-product-metafields__description-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-product-metafields__grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat({{ block.settings.columns_desktop }}, 1fr);
+    gap: {{ block.settings.spacing }}px;
+  }
+
+  .ai-product-metafields__item-{{ ai_gen_id }} {
+    padding: {{ block.settings.item_padding }}px;
+    background-color: {{ block.settings.item_background_color }};
+    border: 1px solid {{ block.settings.item_border_color }};
+    border-radius: {{ block.settings.item_border_radius }}px;
+  }
+
+  .ai-product-metafields__label-{{ ai_gen_id }} {
+    font-size: {{ block.settings.label_size }}px;
+    color: {{ block.settings.label_color }};
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    display: block;
+  }
+
+  .ai-product-metafields__value-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size }}px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+    word-wrap: break-word;
+  }
+
+  .ai-product-metafields__namespace-{{ ai_gen_id }} {
+    font-size: {{ block.settings.text_size | minus: 2 }}px;
+    color: {{ block.settings.muted_color }};
+    font-family: monospace;
+    margin-top: 4px;
+  }
+
+  .ai-product-metafields__type-{{ ai_gen_id }} {
+    display: inline-block;
+    font-size: {{ block.settings.text_size | minus: 3 }}px;
+    color: {{ block.settings.muted_color }};
+    background-color: {{ block.settings.surface_color }};
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+
+  .ai-product-metafields__empty-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: {{ block.settings.muted_color }};
+    font-size: {{ block.settings.text_size }}px;
+  }
+
+  .ai-product-metafields__image-{{ ai_gen_id }} {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+
+  .ai-product-metafields__list-{{ ai_gen_id }} {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+  }
+
+  .ai-product-metafields__list-{{ ai_gen_id }} li {
+    margin-bottom: 4px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-product-metafields__grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+  }
+{% endstyle %}
+
+<product-metafields-{{ ai_gen_id }}
+  class="ai-product-metafields-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.show_header %}
+    <div class="ai-product-metafields__header-{{ ai_gen_id }}">
+      {% if block.settings.title != blank %}
+        <h2 class="ai-product-metafields__title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+      {% endif %}
+      {% if block.settings.description != blank %}
+        <div class="ai-product-metafields__description-{{ ai_gen_id }}">{{ block.settings.description }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if product %}
+    {% assign metafield_count = 0 %}
+    {% for metafield in product.metafields %}
+      {% assign metafield_count = metafield_count | plus: 1 %}
+    {% endfor %}
+
+    {% if metafield_count > 0 %}
+      <div class="ai-product-metafields__grid-{{ ai_gen_id }}">
+        {% for metafield in product.metafields %}
+          <div class="ai-product-metafields__item-{{ ai_gen_id }}">
+            <span class="ai-product-metafields__label-{{ ai_gen_id }}">
+              {{ metafield.key | replace: '_', ' ' | capitalize }}
+            </span>
+
+            <div class="ai-product-metafields__value-{{ ai_gen_id }}">
+              {% case metafield.type %}
+                {% when 'single_line_text_field' or 'multi_line_text_field' %}
+                  {{ metafield.value }}
+                {% when 'number_integer' or 'number_decimal' %}
+                  {{ metafield.value }}
+                {% when 'date' %}
+                  {{ metafield.value | date: '%B %d, %Y' }}
+                {% when 'date_time' %}
+                  {{ metafield.value | date: '%B %d, %Y at %H:%M' }}
+                {% when 'url' %}
+                  <a href="{{ metafield.value }}" target="_blank" rel="noopener">{{ metafield.value }}</a>
+                {% when 'json' %}
+                  <pre style="font-size: 12px; overflow-x: auto;">{{ metafield.value | json }}</pre>
+                {% when 'boolean' %}
+                  {% if metafield.value %}
+                    Ja
+                  {% else %}
+                    Nein
+                  {% endif %}
+                {% when 'color' %}
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="display: inline-block; width: 24px; height: 24px; background-color: {{ metafield.value }}; border: 1px solid #ddd; border-radius: 4px;"></span>
+                    {{ metafield.value }}
+                  </div>
+                {% when 'file_reference' %}
+                  {% if metafield.value.content_type contains 'image' %}
+                    <img
+                      src="{{ metafield.value | image_url: width: 400 }}"
+                      alt="{{ metafield.key }}"
+                      class="ai-product-metafields__image-{{ ai_gen_id }}"
+                      width="{{ metafield.value.width }}"
+                      height="{{ metafield.value.height }}"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <a href="{{ metafield.value.url }}" target="_blank" rel="noopener">{{ metafield.value.url }}</a>
+                  {% endif %}
+                {% when 'list.single_line_text_field' %}
+                  <ul class="ai-product-metafields__list-{{ ai_gen_id }}">
+                    {% for item in metafield.value %}
+                      <li>{{ item }}</li>
+                    {% endfor %}
+                  </ul>
+                {% when 'product_reference' %}
+                  {% if metafield.value %}
+                    <a href="{{ metafield.value.url }}">{{ metafield.value.title }}</a>
+                  {% endif %}
+                {% when 'variant_reference' %}
+                  {% if metafield.value %}
+                    {{ metafield.value.title }}
+                  {% endif %}
+                {% when 'page_reference' %}
+                  {% if metafield.value %}
+                    <a href="{{ metafield.value.url }}">{{ metafield.value.title }}</a>
+                  {% endif %}
+                {% when 'collection_reference' %}
+                  {% if metafield.value %}
+                    <a href="{{ metafield.value.url }}">{{ metafield.value.title }}</a>
+                  {% endif %}
+                {% else %}
+                  {{ metafield.value }}
+              {% endcase %}
+            </div>
+
+            {% if block.settings.show_technical_info %}
+              <div class="ai-product-metafields__namespace-{{ ai_gen_id }}">
+                {{ metafield.namespace }}.{{ metafield.key }}
+              </div>
+              <span class="ai-product-metafields__type-{{ ai_gen_id }}">
+                {{ metafield.type }}
+              </span>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="ai-product-metafields__empty-{{ ai_gen_id }}">
+        Keine Metafelder für dieses Produkt gefunden
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="ai-product-metafields__empty-{{ ai_gen_id }}">
+      Bitte wählen Sie ein Produkt aus, um dessen Metafelder anzuzeigen
+    </div>
+  {% endif %}
+</product-metafields-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ProductMetafields{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.initializeMetafields();
+      }
+
+      initializeMetafields() {
+        const items = this.querySelectorAll('.ai-product-metafields__item-{{ ai_gen_id }}');
+        items.forEach((item) => {
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(10px)';
+        });
+
+        setTimeout(() => {
+          items.forEach((item, index) => {
+            setTimeout(() => {
+              item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+              item.style.opacity = '1';
+              item.style.transform = 'translateY(0)';
+            }, index * 50);
+          });
+        }, 100);
+      }
+    }
+
+    customElements.define('product-metafields-{{ ai_gen_id }}', ProductMetafields{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Product metafields",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Produktinformationen"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Alle Metafelder für dieses Produkt"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "spacing",
+      "label": "Spacing",
+      "min": 8,
+      "max": 40,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Container padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "item_padding",
+      "label": "Item padding",
+      "min": 8,
+      "max": 32,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Display options"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_technical_info",
+      "label": "Show technical info",
+      "info": "Display namespace and type information",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f3f0e9"
+    },
+    {
+      "type": "color",
+      "id": "item_background_color",
+      "label": "Item background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "item_border_color",
+      "label": "Item border",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "surface_color",
+      "label": "Surface",
+      "default": "#f9f9f9"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title",
+      "default": "#171717"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Label",
+      "default": "#394f2d"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#171717"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Muted text",
+      "default": "#6b6a63"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "label": "Title size",
+      "min": 16,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "label": "Text size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Container border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "item_border_radius",
+      "label": "Item border radius",
+      "min": 0,
+      "max": 16,
+      "step": 2,
+      "unit": "px",
+      "default": 6
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product metafields"
+    }
+  ]
+}
+{% endschema %}

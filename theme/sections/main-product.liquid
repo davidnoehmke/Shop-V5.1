@@ -1,0 +1,295 @@
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'product-form-' | append: section.id
+  assign product_subtitle = product.metafields.leafer.subtitle.value
+  assign selected_on_sale = false
+
+  if selected_variant.compare_at_price != blank and selected_variant.compare_at_price > selected_variant.price
+    assign selected_on_sale = true
+  endif
+
+  if request.locale.iso_code == 'de'
+    assign available_label = 'Verfügbar'
+    assign unavailable_label = 'Derzeit nicht verfügbar'
+    assign sku_label = 'Artikelnummer'
+    assign selling_plan_label = 'Kaufoption'
+    assign one_time_label = 'Einmaliger Kauf'
+    assign purchase_note = 'Preis und Versandoptionen werden vor Abschluss der Bestellung bestätigt.'
+    assign form_error_heading = 'Bitte prüfe deine Auswahl'
+  else
+    assign available_label = 'Available'
+    assign unavailable_label = 'Currently unavailable'
+    assign sku_label = 'SKU'
+    assign selling_plan_label = 'Purchase option'
+    assign one_time_label = 'One-time purchase'
+    assign purchase_note = 'Price and shipping options are confirmed before completing the order.'
+    assign form_error_heading = 'Please check your selection'
+  endif
+%}
+
+{% capture selected_unit_price %}{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}{% endcapture %}
+
+<section class="main-product page-width">
+  <nav class="main-product__breadcrumbs" aria-label="{{ 'product.breadcrumbs' | t }}">
+    <a href="{{ routes.root_url }}">{{ 'header.home' | t }}</a><span aria-hidden="true">/</span>
+    {% if collection != blank %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a><span aria-hidden="true">/</span>{% endif %}
+    <span aria-current="page">{{ product.title | escape }}</span>
+  </nav>
+
+  <div class="main-product__media" aria-label="{{ product.title | escape }}">
+    {% if product.images.size > 0 %}
+      {% for image in product.images limit: 8 %}
+        {% liquid
+          assign image_loading = 'lazy'
+          assign image_priority = 'auto'
+          assign image_alt = image.alt | default: product.title
+          if forloop.first
+            assign image_loading = 'eager'
+            assign image_priority = 'high'
+          endif
+        %}
+        <div class="main-product__image">
+          {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 88vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="main-product__image">{{ 'product-1' | placeholder_svg_tag }}</div>
+    {% endif %}
+  </div>
+
+  <product-purchase
+    class="main-product__details"
+    data-add-label="{{ 'product.add_to_cart' | t | escape }}"
+    data-sold-out-label="{{ 'product.sold_out' | t | escape }}"
+    data-available-label="{{ available_label | escape }}"
+    data-unavailable-label="{{ unavailable_label | escape }}"
+  >
+    {% if product.type != blank or product.vendor != blank %}<p class="main-product__eyebrow">{% if product.type != blank %}{{ product.type | escape }}{% else %}{{ product.vendor | escape }}{% endif %}</p>{% endif %}
+    <h1>{{ product.title | escape }}</h1>
+    {% if product_subtitle != blank %}<p class="main-product__claim">{{ product_subtitle | escape }}</p>{% endif %}
+    {% assign product_rating = product.metafields.reviews.rating.value %}
+    {% assign product_rating_count = product.metafields.reviews.rating_count.value %}
+    {% if product_rating != blank and product_rating_count != blank and product_rating_count > 0 %}
+      <div class="main-product__rating" aria-label="{{ product_rating.rating }} von {{ product_rating.scale_max }} Sternen bei {{ product_rating_count }} Bewertungen">
+        <span aria-hidden="true">★★★★★</span>
+        <span>{{ product_rating.rating }} / {{ product_rating.scale_max }} · {{ product_rating_count }} {% if product_rating_count == 1 %}Bewertung{% else %}Bewertungen{% endif %}</span>
+      </div>
+    {% endif %}
+
+    <div class="main-product__price-wrap" aria-live="polite">
+      <p class="main-product__price" data-product-price>{{ selected_variant.price | money }}</p>
+      <s class="main-product__compare" data-product-compare{% unless selected_on_sale %} hidden{% endunless %}>{% if selected_on_sale %}{{ selected_variant.compare_at_price | money }}{% endif %}</s>
+    </div>
+    <p class="main-product__unit-price" data-product-unit-price{% if selected_unit_price == blank %} hidden{% endif %}>{{ selected_unit_price }}</p>
+    <p class="main-product__availability{% unless selected_variant.available %} is-unavailable{% endunless %}" data-product-availability aria-live="polite">{% if selected_variant.available %}{{ available_label }}{% else %}{{ unavailable_label }}{% endif %}</p>
+    <p class="main-product__sku" data-product-sku-row{% if selected_variant.sku == blank %} hidden{% endif %}><span>{{ sku_label }}:</span> <b data-product-sku>{{ selected_variant.sku | escape }}</b></p>
+
+    {% form 'product', product, id: product_form_id, class: 'main-product__form' %}
+      {% if form.errors %}
+        <div class="main-product__errors" role="alert">
+          <strong>{{ form_error_heading }}</strong>
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+
+      {% unless product.has_only_default_variant %}
+        <label for="Variant-{{ section.id }}">{{ 'product.variant' | t }}</label>
+        <select id="Variant-{{ section.id }}" name="id" data-product-variant>
+          {% for variant in product.variants %}
+            {% liquid
+              assign variant_on_sale = false
+              if variant.compare_at_price != blank and variant.compare_at_price > variant.price
+                assign variant_on_sale = true
+              endif
+            %}
+            {% capture variant_unit_price %}{% if variant.unit_price_measurement %}{{ variant.unit_price | unit_price_with_measurement: variant.unit_price_measurement }}{% endif %}{% endcapture %}
+            <option
+              value="{{ variant.id }}"
+              data-price="{{ variant.price | money | escape }}"
+              data-compare-at="{% if variant_on_sale %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+              data-unit-price="{{ variant_unit_price | strip | escape }}"
+              data-available="{{ variant.available }}"
+              data-sku="{{ variant.sku | escape }}"\n              data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
+              {% if variant == selected_variant %}selected{% endif %}
+            >
+              {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.sold_out' | t }}{% endunless %}
+            </option>
+          {% endfor %}
+        </select>
+      {% else %}
+        <input type="hidden" name="id" value="{{ selected_variant.id }}">
+      {% endunless %}
+
+      {% if product.selling_plan_groups.size > 0 %}
+        <label for="SellingPlan-{{ section.id }}">{{ selling_plan_label }}</label>
+        <select id="SellingPlan-{{ section.id }}" name="selling_plan"{% if product.requires_selling_plan %} required{% endif %}>
+          {% unless product.requires_selling_plan %}<option value="">{{ one_time_label }}</option>{% endunless %}
+          {% for group in product.selling_plan_groups %}
+            <optgroup label="{{ group.name | escape }}">
+              {% for selling_plan in group.selling_plans %}<option value="{{ selling_plan.id }}">{{ selling_plan.name | escape }}</option>{% endfor %}
+            </optgroup>
+          {% endfor %}
+        </select>
+      {% endif %}
+
+      <label for="Quantity-{{ section.id }}">{{ 'product.quantity' | t }}</label>
+      <input id="Quantity-{{ section.id }}" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+
+      <button type="submit" name="add" data-product-submit{% unless selected_variant.available %} disabled{% endunless %}>
+        {% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
+      </button>
+      <p class="main-product__purchase-note">{{ purchase_note }}</p>
+    {% endform %}
+
+    {% render 'product-pass-download', product_pass_pdf: product.metafields.leafer.product_pass_pdf, variant_pass_pdf: selected_variant.metafields.leafer.product_pass_pdf %}
+
+    <div class="main-product__reassurance" aria-label="{{ 'product.purchase_benefits' | t }}">
+      <span>✓ {{ 'services.shipping_title' | t }}</span>
+      <span>✓ {{ 'services.payment_title' | t }}</span>
+      <span>✓ {{ 'services.support_title' | t }}</span>
+    </div>
+
+    {% if section.settings.show_description and product.description != blank %}<div class="main-product__description rte">{{ product.description }}</div>{% endif %}
+  </product-purchase>
+
+  <div class="main-product__dock" aria-label="{{ product.title | escape }}">
+    <div><small>{{ product.title | truncate: 42 | escape }}</small><strong data-product-price>{{ selected_variant.price | money }}</strong></div>
+    <button type="submit" form="{{ product_form_id }}" name="add" data-product-submit{% unless selected_variant.available %} disabled{% endunless %}>{% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+  </div>
+</section>
+
+{% render 'product-howto', product: product %}
+
+{% render 'product-faq', product: product %}
+
+{% stylesheet %}
+  .main-product { padding-block: clamp(1rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(340px, .72fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: start; }
+  .main-product__breadcrumbs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); font-size: .75rem; }
+  .main-product__breadcrumbs a { color: inherit; }
+  .main-product__media { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+  .main-product__image { aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; padding: clamp(.8rem, 2.5vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
+  .main-product__image img, .main-product__image svg { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+  .main-product__details { position: sticky; top: 108px; min-width: 0; }
+  .main-product__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .main-product h1 { margin: 0; font-size: clamp(2.55rem, 4.8vw, 5rem); line-height: .95; letter-spacing: -.06em; overflow-wrap: anywhere; }
+  .main-product__claim { max-width: 58ch; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; }
+  .main-product__rating { display: flex; align-items: center; gap: .6rem; margin-top: 1rem; color: #79551b; font-size: .9rem; }
+  .main-product__rating span:first-child { letter-spacing: .08em; }
+  .main-product__price-wrap { display: flex; align-items: baseline; gap: .75rem; margin-top: 1.35rem; }
+  .main-product__price { margin: 0; font-size: 1.45rem; font-weight: 800; }
+  .main-product__compare { color: var(--muted); font-size: 1rem; }
+  .main-product__unit-price { margin: .25rem 0 0; color: var(--muted); font-size: .78rem; }
+  .main-product__availability { display: flex; align-items: center; gap: .45rem; margin: .75rem 0 0; color: var(--accent); font-size: .82rem; font-weight: 800; }
+  .main-product__availability::before { width: .55rem; height: .55rem; border-radius: 50%; background: currentColor; content: ''; }
+  .main-product__availability.is-unavailable { color: #9a4f42; }
+  .main-product__sku { margin: .35rem 0 0; color: var(--muted); font-size: .76rem; }
+  .main-product__sku b { color: var(--text); }
+  .main-product__form { display: grid; gap: .72rem; margin-block: 1.75rem; }
+  .main-product__form > label { font-size: .82rem; font-weight: 800; }
+  .main-product select, .main-product input { width: 100%; min-height: 50px; border: 1px solid color-mix(in srgb, var(--text), transparent 70%); border-radius: 10px; background: var(--background); padding: .72rem .9rem; }
+  .main-product__form > button { width: 100%; margin-top: .4rem; }
+  .main-product button[disabled] { cursor: not-allowed; opacity: .48; transform: none; box-shadow: none; }
+  .main-product__purchase-note { margin: 0; color: var(--muted); font-size: .72rem; text-align: center; }
+  .main-product__errors { padding: .9rem 1rem; border: 1px solid #9e493c; border-radius: var(--radius); background: #fff2ef; color: #6c2d24; }
+  .main-product__errors ul { margin-bottom: 0; }
+  .main-product__reassurance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: 1rem 0 1.4rem; border-block: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
+  .main-product__description { padding-top: 1.25rem; font-size: .95rem; }
+  .main-product__description > *:first-child { margin-top: 0; }
+  .main-product__description > *:last-child { margin-bottom: 0; }
+  .main-product__dock { display: none; }
+  @media (max-width: 800px) {
+    .main-product { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: 7rem; }
+    .main-product__details { position: static; }
+    .main-product__media { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -.75rem; padding-inline: .75rem; }
+    .main-product__media::-webkit-scrollbar { display: none; }
+    .main-product__image { min-width: 88%; padding: .55rem; aspect-ratio: 1 / 1.12; scroll-snap-align: center; }
+    .main-product h1 { font-size: clamp(2.35rem, 11vw, 4rem); line-height: .94; }
+    .main-product__claim { font-size: 1rem; line-height: 1.5; }
+    .main-product__reassurance { grid-template-columns: 1fr; }
+    .main-product__dock { position: fixed; z-index: 25; inset: auto .65rem .65rem; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .8rem; padding: .7rem; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb, var(--background), transparent 3%); box-shadow: 0 16px 42px color-mix(in srgb, var(--text), transparent 78%); backdrop-filter: blur(18px); }
+    .main-product__dock small, .main-product__dock strong { display: block; }
+    .main-product__dock small { overflow: hidden; color: var(--muted); font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
+    .main-product__dock strong { font-size: 1rem; }
+    .main-product__dock button { min-height: 50px; padding-inline: 1rem; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class ProductPurchase extends HTMLElement {
+    connectedCallback() {
+      this.select = this.querySelector('[data-product-variant]');
+      if (!this.select) return;
+      this.handleChange = () => this.updateVariant(true);
+      this.select.addEventListener('change', this.handleChange);
+      this.updateVariant(false);
+    }
+
+    disconnectedCallback() {
+      this.select?.removeEventListener('change', this.handleChange);
+    }
+
+    updateVariant(updateUrl) {
+      const option = this.select?.selectedOptions?.[0];
+      const section = this.closest('.main-product');
+      if (!option || !section) return;
+
+      const available = option.dataset.available === 'true';
+      const compareAt = option.dataset.compareAt || '';
+      const unitPrice = option.dataset.unitPrice || '';
+      const sku = option.dataset.sku || '';
+
+      section.querySelectorAll('[data-product-price]').forEach((element) => { element.textContent = option.dataset.price || ''; });
+      section.querySelectorAll('[data-product-compare]').forEach((element) => {
+        element.textContent = compareAt;
+        element.hidden = !compareAt;
+      });
+      section.querySelectorAll('[data-product-unit-price]').forEach((element) => {
+        element.textContent = unitPrice;
+        element.hidden = !unitPrice;
+      });
+      section.querySelectorAll('[data-product-sku]').forEach((element) => { element.textContent = sku; });
+      section.querySelectorAll('[data-product-sku-row]').forEach((element) => { element.hidden = !sku; });
+
+      section.querySelectorAll('[data-product-availability]').forEach((element) => {
+        element.textContent = available ? this.dataset.availableLabel : this.dataset.unavailableLabel;
+        element.classList.toggle('is-unavailable', !available);
+      });
+
+      const passDownload = section.querySelector('[data-product-pass-download]');
+      const passLink = section.querySelector('[data-product-pass-link]');
+      const passUrl = option.dataset.passUrl || '';
+      if (passDownload && passLink) {
+        passLink.href = passUrl;
+        passDownload.hidden = !passUrl;
+      }
+
+      section.querySelectorAll('[data-product-submit]').forEach((button) => {
+        button.disabled = !available;
+        button.setAttribute('aria-disabled', String(!available));
+        button.textContent = available ? this.dataset.addLabel : this.dataset.soldOutLabel;
+      });
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', option.value);
+        window.history.replaceState({}, '', url);
+      }
+
+      this.dispatchEvent(new CustomEvent('product:variant-change', {
+        bubbles: true,
+        detail: { variantId: option.value, available }
+      }));
+    }
+  }
+
+  if (!customElements.get('product-purchase')) customElements.define('product-purchase', ProductPurchase);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.main_product.name",
+  "settings": [
+    { "type": "checkbox", "id": "show_description", "label": "t:sections.main_product.show_description", "default": false }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,131 @@
+{
+  "settings_schema": {
+    "colors": {
+      "name": "Colors",
+      "background": "Background",
+      "surface": "Surfaces",
+      "text": "Text",
+      "accent": "Accent",
+      "muted": "Muted text"
+    }
+  },
+  "sections": {
+    "announcement": { "name": "Announcement bar", "text": "Text", "link": "Link" },
+    "header": { "name": "Header", "logo": "Logo", "logo_width": "Logo width", "menu": "Menu" },
+    "footer": { "name": "Footer", "menu": "Menu", "text": "Text" },
+    "hero": {
+      "name": "Hero",
+      "image": "Background image",
+      "overlay": "Text background",
+      "heading": "Heading",
+      "text": "Text",
+      "primary_label": "Primary button label",
+      "primary_link": "Primary button link",
+      "secondary_label": "Secondary button label",
+      "secondary_link": "Secondary button link",
+      "benefit": "Benefit",
+      "icon": "Icon",
+      "benefit_heading": "Benefit heading",
+      "benefit_text": "Benefit text"
+    },
+    "featured_collection": {
+      "name": "Product list",
+      "heading": "Heading",
+      "heading_preset": "Default heading",
+      "link_label": "Link label",
+      "collection": "Collection",
+      "collection_info": "Leave blank to load products automatically from the entire store.",
+      "products_to_show": "Products to show",
+      "columns": "Columns",
+      "compact": "Compact cards"
+    },
+    "category_grid": {
+      "name": "Category tiles",
+      "heading": "Heading",
+      "automatic": "Load collections automatically",
+      "automatic_info": "Uses existing Shopify collections and their images.",
+      "automatic_limit": "Number of collections",
+      "category": "Category",
+      "icon": "Category type",
+      "title": "Title",
+      "image": "Image",
+      "collection": "Collection"
+    },
+    "trust_bar": {
+      "name": "Trust bar",
+      "benefit": "Benefit",
+      "icon": "Icon",
+      "heading": "Heading",
+      "text": "Text"
+    },
+    "starter_showcase": {
+      "name": "Starter kits",
+      "heading": "Heading",
+      "text": "Text",
+      "link_label": "Button label",
+      "link": "Button link",
+      "category": "Project category",
+      "type": "Project type",
+      "title": "Title",
+      "image": "Image",
+      "card_link": "Card link"
+    },
+    "community": {
+      "name": "Community gallery",
+      "heading": "Heading",
+      "handle": "Social handle",
+      "image": "Image",
+      "link": "Link"
+    },
+    "newsletter": {
+      "name": "Newsletter & service",
+      "heading": "Heading",
+      "service": "Service benefit",
+      "icon": "Icon",
+      "service_heading": "Heading",
+      "service_text": "Text"
+    },
+    "faq": {
+      "name": "FAQ",
+      "heading": "Heading",
+      "text": "Introduction",
+      "question": "Question",
+      "topic": "Topic",
+      "custom_question": "Custom question",
+      "answer": "Answer"
+    },
+    "main_product": { "name": "Product", "show_description": "Show description" },
+    "product_variant_description": { "name": "Variant guide" },
+    "main_collection": { "name": "Collection" },
+    "main_cart": { "name": "Cart" },
+    "main_page": { "name": "Page" },
+    "main_404": { "name": "404 page" }
+  },
+  "options": {
+    "left": "Left",
+    "center": "Center",
+    "shipping": "Shipping",
+    "quality": "Quality",
+    "natural": "Natural",
+    "payment": "Payment",
+    "support": "Support",
+    "bestsellers": "Bestsellers",
+    "highlights": "Highlights",
+    "substrates": "Substrates",
+    "planters": "Planters",
+    "seeds": "Seeds",
+    "kits": "Starter kits",
+    "accessories": "Accessories",
+    "young_plants": "Young plants",
+    "handmade": "Handmade",
+    "small_batches": "Small batches",
+    "versatile": "Versatile",
+    "herbs": "Herbs",
+    "houseplants": "Houseplants",
+    "vegetables": "Vegetables",
+    "exotics": "Exotics"
+    ,"substrate": "Substrate choice"
+    ,"application": "Application"
+    ,"plants": "Plant shipping"
+  }
+}

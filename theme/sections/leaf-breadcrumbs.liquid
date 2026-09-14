@@ -1,0 +1,91 @@
+{% liquid
+  assign current_title = page_title
+  assign parent_url = blank
+  assign parent_label = blank
+
+  case request.page_type
+    when 'product'
+      assign current_title = product.title
+      if collection
+        assign parent_url = collection.url
+        assign parent_label = collection.title
+      elsif product.collections.size > 0
+        assign primary_collection = product.collections.first
+        assign parent_url = primary_collection.url
+        assign parent_label = primary_collection.title
+      endif
+    when 'collection'
+      assign current_title = collection.title
+    when 'article'
+      assign current_title = article.title
+      assign parent_url = blog.url
+      assign parent_label = blog.title
+    when 'blog'
+      assign current_title = blog.title
+    when 'page'
+      assign current_title = page.title
+  endcase
+%}
+
+{% unless request.page_type == 'index' %}
+  <nav class="leaf-breadcrumbs page-width" aria-label="{{ 'general.breadcrumbs.label' | t }}">
+    <ol>
+      <li><a href="{{ routes.root_url }}">{{ 'general.breadcrumbs.home' | t }}</a></li>
+      {% if parent_url != blank and parent_label != blank %}
+        <li><a href="{{ parent_url }}">{{ parent_label | escape }}</a></li>
+      {% endif %}
+      <li aria-current="page"><span>{{ current_title | escape }}</span></li>
+    </ol>
+  </nav>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": {{ 'general.breadcrumbs.home' | t | json }},
+          "item": {{ shop.url | append: routes.root_url | json }}
+        }{% if parent_url != blank and parent_label != blank %},
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ parent_label | json }},
+          "item": {{ shop.url | append: parent_url | json }}
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ current_title | json }},
+          "item": {{ canonical_url | json }}
+        }{% else %},
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": {{ current_title | json }},
+          "item": {{ canonical_url | json }}
+        }{% endif %}
+      ]
+    }
+  </script>
+{% endunless %}
+
+{% stylesheet %}
+  .leaf-breadcrumbs { padding-block: .75rem; }
+  .leaf-breadcrumbs ol { margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .35rem .55rem; align-items: center; list-style: none; color: var(--muted); font-size: .78rem; }
+  .leaf-breadcrumbs li { display: inline-flex; align-items: center; gap: .55rem; }
+  .leaf-breadcrumbs li + li::before { content: '/'; opacity: .45; }
+  .leaf-breadcrumbs a { color: inherit; text-decoration: none; }
+  .leaf-breadcrumbs a:hover { color: var(--accent); text-decoration: underline; }
+  .leaf-breadcrumbs [aria-current='page'] { color: var(--text); font-weight: 700; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "settings": [],
+  "presets": [{ "name": "Breadcrumbs" }]
+}
+{% endschema %}

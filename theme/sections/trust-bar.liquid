@@ -1,0 +1,62 @@
+<section class="trust-bar page-width">
+  <div class="trust-bar__inner">
+    {% for block in section.blocks %}
+      {% assign trust_key = 'trust.' | append: block.settings.icon %}
+      <div class="trust-bar__item" {{ block.shopify_attributes }}>
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          {% case block.settings.icon %}
+            {% when 'handmade' %}<path d="M20 34c-6-4-11-9-11-16 0-4 2-7 6-7 3 0 5 2 5 5 0-3 2-5 5-5 4 0 6 3 6 7 0 7-5 12-11 16Z"/>
+            {% when 'natural' %}<path d="M20 36V17M20 28C11 27 7 21 7 11c9 0 13 6 13 14M20 22c8-1 13-6 14-16-9 0-14 6-14 13"/>
+            {% when 'small_batches' %}<path d="M8 15h24v19H8zM12 15l3-8h10l3 8M15 22h10M20 18v9"/>
+            {% else %}<path d="M8 17c0-6 5-10 12-10s12 4 12 10v15H8V17ZM20 7v25M8 19h24M13 12l7 7 7-7"/>
+          {% endcase %}
+        </svg>
+        <div>
+          {% if block.settings.heading != blank %}<strong>{{ block.settings.heading }}</strong>{% else %}<strong>{{ trust_key | append: '_title' | t }}</strong>{% endif %}
+          {% if block.settings.text != blank %}<span>{{ block.settings.text }}</span>{% else %}<span>{{ trust_key | append: '_text' | t }}</span>{% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .trust-bar { padding-bottom: clamp(2.5rem, 5vw, 4.5rem); }
+  .trust-bar__inner { padding: 1.5rem 2rem; border-radius: var(--radius); display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; background: var(--surface); }
+  .trust-bar__item { display: flex; align-items: center; justify-content: center; gap: .9rem; }
+  .trust-bar__item svg { width: 38px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; }
+  .trust-bar__item strong, .trust-bar__item span { display: block; }
+  .trust-bar__item strong { font-size: .85rem; }
+  .trust-bar__item span { color: var(--muted); font-size: .75rem; }
+  @media (max-width: 900px) { .trust-bar__inner { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) {
+    .template-index .trust-bar { padding-top: 1rem; }
+    .trust-bar__inner { grid-template-columns: 1fr; align-items: start; }
+    .trust-bar__item { justify-content: flex-start; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.trust_bar.name",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "t:sections.trust_bar.benefit",
+      "settings": [
+        { "type": "select", "id": "icon", "label": "t:sections.trust_bar.icon", "options": [
+          { "value": "handmade", "label": "t:options.handmade" },
+          { "value": "natural", "label": "t:options.natural" },
+          { "value": "small_batches", "label": "t:options.small_batches" },
+          { "value": "versatile", "label": "t:options.versatile" }
+        ], "default": "natural" },
+        { "type": "text", "id": "heading", "label": "t:sections.trust_bar.heading" },
+        { "type": "text", "id": "text", "label": "t:sections.trust_bar.text" }
+      ]
+    }
+  ],
+  "max_blocks": 4,
+  "presets": [{ "name": "t:sections.trust_bar.name", "blocks": [{ "type": "benefit" }, { "type": "benefit" }, { "type": "benefit" }, { "type": "benefit" }] }]
+}
+{% endschema %}

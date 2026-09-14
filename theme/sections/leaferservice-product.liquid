@@ -1,0 +1,120 @@
+{% liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'LeaferserviceProductForm-' | append: section.id
+  assign custom_use_case = product.metafields.custom.use_case.value
+  assign custom_light_style = product.metafields.custom.light_style.value
+  assign custom_lighting_position = product.metafields.custom.lighting_position.value
+  assign custom_recommended_rooms = product.metafields.custom.recommended_room.value
+  assign leafer_subtitle = product.metafields.leafer.subtitle.value
+  assign leafer_usp_1 = product.metafields.leafer.usp_1.value
+  assign leafer_usp_2 = product.metafields.leafer.usp_2.value
+  assign leafer_usp_3 = product.metafields.leafer.usp_3.value
+  assign has_dynamic_product_description = false
+  if custom_use_case != blank or custom_light_style != blank or custom_lighting_position != blank or custom_recommended_rooms != blank
+    assign has_dynamic_product_description = true
+  endif
+%}
+<section class="ls-product" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
+  <div class="ls-product__grid page-width">
+    <div class="ls-product__media" aria-label="{{ 'product.media.label' | t }}">
+      {% if product.media.size > 0 %}
+        {% for media in product.media %}
+          <div class="ls-product__media-item{% if forloop.first %} is-active{% endif %}" data-media-id="{{ media.id }}">
+            {% if forloop.first %}
+              {{ media | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '360, 540, 720, 960, 1200, 1400', sizes: '(min-width: 990px) 55vw, 100vw', alt: media.alt | default: product.title }}
+            {% else %}
+              {{ media | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '360, 540, 720, 960, 1200, 1400', sizes: '(min-width: 990px) 55vw, 100vw', alt: media.alt | default: product.title }}
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="ls-product__media-empty">{{ 'product-1' | placeholder_svg_tag }}</div>
+      {% endif %}
+    </div>
+
+    <div class="ls-product__info">
+      {% if section.settings.show_vendor and product.vendor != blank %}<p class="ls-product__eyebrow">{{ product.vendor }}</p>{% endif %}
+      <h1 class="ls-product__title">{{ product.title }}</h1>
+      {% if leafer_subtitle != blank %}<p class="ls-product__subtitle">{{ leafer_subtitle | escape }}</p>{% endif %}
+      {% if leafer_usp_1 != blank or leafer_usp_2 != blank or leafer_usp_3 != blank %}<ul class="ls-product__usp-list" aria-label="{{ 'product.usps.label' | t }}">{% if leafer_usp_1 != blank %}<li>{{ leafer_usp_1 | escape }}</li>{% endif %}{% if leafer_usp_2 != blank %}<li>{{ leafer_usp_2 | escape }}</li>{% endif %}{% if leafer_usp_3 != blank %}<li>{{ leafer_usp_3 | escape }}</li>{% endif %}</ul>{% endif %}
+      <div class="ls-product__price" data-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
+
+      {% form 'product', product, id: form_id, class: 'ls-product__form' %}
+        <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+        {% unless product.has_only_default_variant %}
+          <div class="ls-product__options">
+            {% for option in product.options_with_values %}
+              <fieldset class="ls-product__option" data-option-position="{{ option.position }}">
+                <legend>{{ option.name }}</legend>
+                <div class="ls-product__choices">
+                  {% for value in option.values %}
+                    <label class="ls-product__choice">
+                      <input type="radio" name="options[{{ option.name | escape }}]" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %}>
+                      <span>{{ value }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </fieldset>
+            {% endfor %}
+          </div>
+        {% endunless %}
+
+        <div class="ls-product__buy-row">
+          <label class="ls-product__quantity">{{ 'product.quantity' | t }}<input type="number" name="quantity" value="1" min="1" inputmode="numeric"></label>
+          <button class="ls-product__cta" type="submit" name="add" data-add-to-cart{% unless current_variant.available %} disabled{% endunless %}><span data-add-label>{% if current_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.availability.unavailable_short' | t }}{% endif %}</span></button>
+        </div>
+        <p class="ls-product__availability" data-availability aria-live="polite">{% if current_variant.available %}{{ 'product.availability.available' | t }}{% else %}{{ 'product.availability.unavailable' | t }}{% endif %}</p>
+        <div class="ls-product__buy-trust" aria-label="{{ 'product.trust.label' | t }}">
+          <span>{{ 'product.trust.shipping' | t }}</span>
+          <span>{{ 'product.trust.payment' | t }}</span>
+          <span>{{ 'product.trust.support' | t }}</span>
+        </div>
+      {% endform %}
+
+      {% if has_dynamic_product_description %}
+        <div class="ls-product__description rte">
+          {% if custom_use_case != blank %}<p>{{ custom_use_case | escape | newline_to_br }}</p>{% endif %}
+          {% if custom_light_style != blank or custom_lighting_position != blank %}
+            <p class="ls-product__description-meta">
+              {% if custom_light_style != blank %}<strong>{{ custom_light_style | escape }}</strong>{% endif %}
+              {% if custom_light_style != blank and custom_lighting_position != blank %}<span aria-hidden="true"> · </span>{% endif %}
+              {% if custom_lighting_position != blank %}{{ custom_lighting_position | escape }}{% endif %}
+            </p>
+          {% endif %}
+        </div>
+      {% elsif product.description != blank %}
+        <div class="ls-product__description rte">{{ product.description }}</div>
+      {% endif %}
+
+      <div class="ls-product__details">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when 'detail' %}
+              {% if block.settings.heading != blank and block.settings.text != blank %}
+                <details {{ block.shopify_attributes }}><summary>{{ block.settings.heading }}</summary><div class="rte">{{ block.settings.text }}</div></details>
+              {% endif %}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-variants>{{ product.variants | json }}</script>
+  <div class="ls-product__mobile-buy" data-mobile-buy hidden>
+    <div><span data-mobile-title>{{ product.title | escape }}</span><strong data-mobile-price>{{ current_variant.price | money }}</strong></div>
+    <button type="button" data-mobile-add{% unless current_variant.available %} disabled{% endunless %}>{{ 'product.add_to_cart' | t }}</button>
+  </div>
+</section>
+
+{% style %}
+#LeaferserviceProduct-{{ section.id }}{--ls-cream:#f4f0e6;--ls-ink:#173d2b;--ls-muted:#647267;--ls-line:rgba(23,61,43,.16);--ls-accent:#173d2b;background:var(--ls-cream);color:var(--ls-ink);padding:clamp(24px,5vw,72px) 0}.ls-product__grid{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(320px,.88fr);gap:clamp(32px,6vw,88px);align-items:start}.ls-product__media{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.ls-product__media-item{background:#ebe6da;border-radius:20px;overflow:hidden;aspect-ratio:4/5}.ls-product__media-item:first-child{grid-column:1/-1;aspect-ratio:1/1}.ls-product__media-item img{width:100%;height:100%;object-fit:cover}.ls-product__info{position:sticky;top:24px}.ls-product__eyebrow{margin:0 0 10px;text-transform:uppercase;letter-spacing:.12em;font-size:.78rem;color:var(--ls-muted)}.ls-product__title{font-size:clamp(2rem,4vw,4rem);line-height:1.02;margin:0 0 16px;font-weight:500;letter-spacing:-.035em}.ls-product__subtitle{margin:-6px 0 14px;color:var(--ls-muted);font-size:1rem;line-height:1.55}.ls-product__usp-list{margin:0 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:7px;list-style:none}.ls-product__usp-list li{padding:7px 10px;border:1px solid var(--ls-line);border-radius:999px;background:rgba(255,255,255,.3);font-size:.76rem;font-weight:700}.ls-product__price{font-size:1.25rem;margin-bottom:26px}.ls-product__price s{font-size:.9em;color:var(--ls-muted);margin-left:8px}.ls-product__option{border:0;padding:0;margin:0 0 22px}.ls-product__option legend{font-weight:600;margin-bottom:10px}.ls-product__choices{display:flex;flex-wrap:wrap;gap:8px}.ls-product__choice input{position:absolute;opacity:0;pointer-events:none}.ls-product__choice span{display:block;border:1px solid var(--ls-line);border-radius:999px;padding:10px 14px;cursor:pointer;background:rgba(255,255,255,.28)}.ls-product__choice input:checked+span{background:var(--ls-ink);color:var(--ls-cream);border-color:var(--ls-ink)}.ls-product__choice input:focus-visible+span{outline:3px solid #9fbca6;outline-offset:3px}.ls-product__buy-row{display:grid;grid-template-columns:92px 1fr;gap:10px;margin-top:8px}.ls-product__quantity{font-size:.75rem;color:var(--ls-muted)}.ls-product__quantity input{display:block;width:100%;height:52px;margin-top:5px;border:1px solid var(--ls-line);border-radius:12px;background:#fffaf0;padding:0 12px;color:var(--ls-ink)}.ls-product__cta{align-self:end;height:52px;border:0;border-radius:12px;background:var(--ls-accent);color:#fffaf0;font-weight:700;padding:0 22px;cursor:pointer}.ls-product__cta:disabled{opacity:.45;cursor:not-allowed}.ls-product__availability{font-size:.88rem;color:var(--ls-muted);margin:12px 0 10px}.ls-product__buy-trust{margin:0 0 28px;display:flex;flex-wrap:wrap;gap:6px 12px;color:var(--ls-muted);font-size:.74rem}.ls-product__buy-trust span::before{content:'✓';margin-right:.35rem;color:var(--ls-accent);font-weight:900}.ls-product__mobile-buy{display:none}.ls-product__description{border-top:1px solid var(--ls-line);padding-top:24px;line-height:1.7}.ls-product__details details{border-bottom:1px solid var(--ls-line);padding:16px 0}.ls-product__details summary{cursor:pointer;font-weight:600}.ls-product__details details>div{padding-top:12px;color:var(--ls-muted)}@media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:12px}.ls-product__grid{grid-template-columns:1fr;gap:26px;padding-left:16px;padding-right:16px}.ls-product__media{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;margin:0 -16px;padding:0 16px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 86%;aspect-ratio:4/5;scroll-snap-align:center;border-radius:16px}.ls-product__info{position:static}.ls-product__title{font-size:2.25rem}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:8px;bottom:8px;left:8px;padding:9px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--ls-line);border-radius:14px;background:rgba(244,240,230,.96);box-shadow:0 14px 40px rgba(23,61,43,.2);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-height:46px;padding:0 14px;border-radius:10px}}@media(prefers-reduced-motion:reduce){.ls-product__media{scroll-behavior:auto}}
+{% endstyle %}
+
+<script>
+(()=>{const root=document.getElementById('LeaferserviceProduct-{{ section.id }}');if(!root||root.dataset.ready)return;root.dataset.ready='true';const form=root.querySelector('.ls-product__form'),data=root.querySelector('[data-variants]');if(!form||!data)return;const variants=JSON.parse(data.textContent),idInput=form.querySelector('[data-variant-id]'),price=root.querySelector('[data-price]'),button=root.querySelector('[data-add-to-cart]'),label=root.querySelector('[data-add-label]'),availability=root.querySelector('[data-availability]');const labels={invalid:{{ 'product.availability.invalid_combination' | t | json }},choose:{{ 'product.availability.choose_available' | t | json }},add:{{ 'product.add_to_cart' | t | json }},unavailable:{{ 'product.availability.unavailable_short' | t | json }},available:{{ 'product.availability.available' | t | json }},unavailableLong:{{ 'product.availability.unavailable' | t | json }}};const money=c=>new Intl.NumberFormat('{{ localization.language.iso_code | default: "de-DE" }}',{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}).format(c/100);const mobileBar=root.querySelector('[data-mobile-buy]'),mobilePrice=root.querySelector('[data-mobile-price]'),mobileAdd=root.querySelector('[data-mobile-add]');if(mobileAdd){mobileAdd.addEventListener('click',()=>button?.click())}if(mobileBar){const observer=new IntersectionObserver(entries=>{mobileBar.hidden=entries[0]?.isIntersecting??true},{threshold:.1});observer.observe(button)}function update(){const values=[...form.querySelectorAll('.ls-product__option')].map(group=>group.querySelector('input:checked')?.value);const variant=variants.find(v=>v.options.every((o,i)=>o===values[i]));if(!variant){button.disabled=true;label.textContent=labels.invalid;availability.textContent=labels.choose;return}idInput.value=variant.id;price.textContent=money(variant.price);if(mobilePrice)mobilePrice.textContent=money(variant.price);button.disabled=!variant.available;if(mobileAdd)mobileAdd.disabled=!variant.available;label.textContent=variant.available?labels.add:labels.unavailable;availability.textContent=variant.available?labels.available:labels.unavailableLong;const url=new URL(window.location.href);url.searchParams.set('variant',variant.id);history.replaceState({},'',url)}form.addEventListener('change',e=>{if(e.target.matches('input[type="radio"]'))update()});document.addEventListener('shopify:section:load',e=>{if(e.target.contains(root))root.dataset.ready=''})})();
+</script>
+
+{% schema %}
+{"name":"LEAFerservice Produkt","tag":"section","class":"section","settings":[{"type":"checkbox","id":"show_vendor","label":"Hersteller anzeigen","default":true}],"blocks":[{"type":"detail","name":"Detail-Akkordeon","settings":[{"type":"text","id":"heading","label":"Überschrift"},{"type":"richtext","id":"text","label":"Text"}]}],"presets":[{"name":"LEAFerservice Produkt","blocks":[{"type":"detail","settings":{"heading":"Versand & Pflege","text":"<p>Ergänze hier die produktspezifischen Hinweise im Theme-Editor.</p>"}}]}]}
+{% endschema %}

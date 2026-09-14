@@ -1,0 +1,1327 @@
+{% liquid
+  assign selector_product = section.settings.product
+  assign heading_tag = 'h1'
+  if section.index > 1
+    assign heading_tag = 'h2'
+  endif
+
+  assign profile_option_name = section.settings.profile_option_name | default: 'Pflanzentyp'
+  assign volume_option_name = section.settings.volume_option_name | default: 'Menge'
+  assign product_form_id = 'LeaferSubstrateForm-' | append: section.id
+  assign profile_blocks = section.blocks | where: 'type', 'profile'
+  assign step_blocks = section.blocks | where: 'type', 'step'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+%}
+
+<leafer-substrate-selector
+  class="leafer-substrate"
+  data-profile-option="{{ profile_option_name | escape }}"
+  data-volume-option="{{ volume_option_name | escape }}"
+  data-add-label="{{ section.settings.add_label | escape }}"
+  data-sold-out-label="{{ section.settings.sold_out_label | escape }}"
+  data-available-label="{{ section.settings.available_label | escape }}"
+  data-unavailable-label="{{ section.settings.unavailable_label | escape }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-locale="{{ request.locale.iso_code | replace: '_', '-' | escape }}"
+  style="--leafer-selector-top: {{ section.settings.padding_top }}px; --leafer-selector-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  {% if selector_product == blank %}
+    <div class="leafer-substrate__empty page-width">
+      <p class="leafer-substrate__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <{{ heading_tag }} id="LeaferSubstrateHeading-{{ section.id }}">{{ section.settings.heading }}</{{ heading_tag }}>
+      <p>Wähle im Theme-Editor das Shopify-Produkt für den Substrat-Konfigurator aus.</p>
+    </div>
+  {% else %}
+    {% liquid
+      assign selected_variant = selector_product.selected_or_first_available_variant
+      assign recipe_matrix = selector_product.metafields.leafer.recipe_matrix.value
+      assign recipe_version = selector_product.metafields.leafer.recipe_version.value | default: recipe_matrix.version
+      assign component_products = selector_product.metafields.bundle.component_products.value
+      assign hero_image = section.settings.image | default: selector_product.featured_image
+      assign hero_alt = section.settings.image_alt | default: hero_image.alt | default: selector_product.title
+      assign product_subtitle = selector_product.metafields.leafer.subtitle.value
+      assign product_intro = selector_product.metafields.leafer.intro.value
+      assign usp_1 = selector_product.metafields.leafer.usp_1.value
+      assign usp_2 = selector_product.metafields.leafer.usp_2.value
+      assign usp_3 = selector_product.metafields.leafer.usp_3.value
+      assign selected_profile = blank
+      assign selected_volume = blank
+      assign profile_option = blank
+      assign volume_option = blank
+      assign min_price = selector_product.price_min | money
+      assign max_price = selector_product.price_max | money
+
+      for selected_option in selected_variant.selected_options
+        if selected_option.name == profile_option_name
+          assign selected_profile = selected_option.value
+        elsif selected_option.name == volume_option_name
+          assign selected_volume = selected_option.value
+        endif
+      endfor
+
+      for option in selector_product.options_with_values
+        if option.name == profile_option_name
+          assign profile_option = option
+        elsif option.name == volume_option_name
+          assign volume_option = option
+        endif
+      endfor
+
+      assign has_components = false
+      if component_products != blank
+        for component_product in component_products
+          if component_product.available and component_product.id != selector_product.id
+            assign has_components = true
+            break
+          endif
+        endfor
+      endif
+    %}
+
+    <div class="leafer-substrate__page" aria-labelledby="LeaferSubstrateHeading-{{ section.id }}">
+      <div class="leafer-substrate__hero page-width">
+        <div class="leafer-substrate__hero-copy">
+          {% if section.settings.eyebrow != blank %}<p class="leafer-substrate__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+          <{{ heading_tag }} id="LeaferSubstrateHeading-{{ section.id }}">{{ section.settings.heading }}</{{ heading_tag }}>
+          {% if section.settings.intro != blank %}<div class="leafer-substrate__intro rte">{{ section.settings.intro }}</div>{% endif %}
+          {% if product_subtitle != blank %}<p class="leafer-substrate__product-subtitle">{{ product_subtitle | escape }}</p>{% endif %}
+
+          <ul class="leafer-substrate__signals" aria-label="Entscheidungshilfen">
+            <li>{{ usp_1 | default: 'Sechs feste Pflanzenprofile' | escape }}</li>
+            <li>{{ usp_2 | default: '2 L, 5 L oder 10 L' | escape }}</li>
+            <li>{{ usp_3 | default: 'Rezeptur vor dem Kauf sichtbar' | escape }}</li>
+          </ul>
+
+          <p class="leafer-substrate__price-range">
+            <span>Preisrahmen</span>
+            <strong>{% if selector_product.price_varies %}{{ min_price }} – {{ max_price }}{% else %}{{ min_price }}{% endif %}</strong>
+          </p>
+        </div>
+
+        <div class="leafer-substrate__hero-media">
+          {% if hero_image != blank %}
+            {{ hero_image | image_url: width: 1600 | image_tag: widths: '520, 760, 1000, 1300, 1600', sizes: '(min-width: 990px) 46vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: hero_alt }}
+          {% else %}
+            {{ 'product-1' | placeholder_svg_tag }}
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="leafer-substrate__commerce page-width">
+        <div class="leafer-substrate__purchase-panel">
+          <header class="leafer-substrate__panel-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.selection_eyebrow | escape }}</p>
+            <h2>{{ section.settings.selection_heading | escape }}</h2>
+            {% if section.settings.selection_text != blank %}<div class="rte">{{ section.settings.selection_text }}</div>{% endif %}
+            <div class="leafer-substrate__progress" aria-label="Auswahlfortschritt">
+              <span class="is-active"><b>1</b><em>Pflanzenprofil</em></span>
+              <i aria-hidden="true">→</i>
+              <span><b>2</b><em>Menge</em></span>
+              <i aria-hidden="true">→</i>
+              <span><b>3</b><em>Rezeptur</em></span>
+            </div>
+          </header>
+
+          {% if profile_option != blank and volume_option != blank %}
+            <div class="leafer-substrate__enhanced" data-enhanced-controls>
+              <fieldset class="leafer-substrate__fieldset">
+                <legend>{{ section.settings.profile_legend | escape }}</legend>
+                <div class="leafer-substrate__options leafer-substrate__options--profiles">
+                  {% for option_value in profile_option.values %}
+                    {% liquid
+                      assign matched_profile_block = blank
+                      for profile_block in profile_blocks
+                        if profile_block.settings.option_value == option_value
+                          assign matched_profile_block = profile_block
+                          break
+                        endif
+                      endfor
+                      assign profile_title = matched_profile_block.settings.title | default: option_value
+                      assign profile_description = matched_profile_block.settings.description
+                      assign profile_badge = matched_profile_block.settings.badge
+                      assign profile_id = 'Profile-' | append: section.id | append: '-' | append: option_value | handleize
+                    %}
+                    <div class="leafer-substrate__choice" {% if matched_profile_block != blank %}{{ matched_profile_block.shopify_attributes }}{% endif %}>
+                      <input
+                        id="{{ profile_id }}"
+                        type="radio"
+                        name="LeaferProfile-{{ section.id }}"
+                        value="{{ option_value | escape }}"
+                        data-profile-choice
+                        {% if option_value == selected_profile %}checked{% endif %}
+                      >
+                      <label for="{{ profile_id }}">
+                        {% if profile_badge != blank %}<small>{{ profile_badge | escape }}</small>{% endif %}
+                        <strong>{{ profile_title | escape }}</strong>
+                        {% if profile_description != blank %}<span>{{ profile_description | escape }}</span>{% endif %}
+                      </label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+
+              <fieldset class="leafer-substrate__fieldset">
+                <legend>{{ section.settings.volume_legend | escape }}</legend>
+                <div class="leafer-substrate__options leafer-substrate__options--volumes">
+                  {% for option_value in volume_option.values %}
+                    {% assign volume_id = 'Volume-' | append: section.id | append: '-' | append: option_value | handleize %}
+                    <div class="leafer-substrate__choice leafer-substrate__choice--volume">
+                      <input
+                        id="{{ volume_id }}"
+                        type="radio"
+                        name="LeaferVolume-{{ section.id }}"
+                        value="{{ option_value | escape }}"
+                        data-volume-choice
+                        {% if option_value == selected_volume %}checked{% endif %}
+                      >
+                      <label for="{{ volume_id }}"><strong>{{ option_value | escape }}</strong></label>
+                    </div>
+                  {% endfor %}
+                </div>
+              </fieldset>
+            </div>
+          {% endif %}
+
+
+          {% if selector_product != blank %}
+            <section id="Profi-Konfigurator" class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
+              <header class="leafer-substrate__customizer-head">
+                <div>
+                  <p class="leafer-substrate__eyebrow">Individuell mischen</p>
+                  <h2 id="LeaferCustomizerHeading-{{ section.id }}">Deine Mischung im Pflanztopf</h2>
+                </div>
+                <p>Wähle bis zu fünf Komponenten. Ein Regler verteilt die Anteile auf die markierten Segmente.</p>
+              </header>
+              <div class="leafer-substrate__customizer-grid">
+                <div>
+                  <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="Vertikale Mischungsverteilung">
+                    {% for pot_index in (1..5) %}
+                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" hidden aria-label="Freies Mischungssegment {{ forloop.index }}"></button>
+                    {% endfor %}
+                    <span class="leafer-substrate__pot-rim" aria-hidden="true"></span>
+                  </div>
+                  <p class="leafer-substrate__customizer-total" data-customizer-total>0 % · 0 L</p>
+                  <label class="leafer-substrate__share-control">
+                    <span data-custom-share-label>Segment auswählen</span>
+                    <input type="range" min="1" max="99" step="1" value="50" data-custom-share-slider disabled>
+                    <output data-custom-share-output>–</output>
+                  </label>
+                </div>
+                <div class="leafer-substrate__component-picker">
+                  <div class="leafer-substrate__component-picker-head">
+                    <strong>Komponenten auswählen</strong>
+                    <span><b data-customizer-count>0</b>/5</span>
+                  </div>
+                  <div class="leafer-substrate__custom-options">
+                    {% assign custom_rendered_components = 0 %}
+                    {% for component_product in component_products %}
+                      {% if component_product.available and component_product.id != selector_product.id %}
+                        {% liquid
+                          assign component_profile = component_product.metafields.leaf_configurator.component_profile.value
+                          assign pro_min = component_profile.pro_min_percent.value | default: 0
+                          assign pro_max = component_profile.pro_max_percent.value | default: 100
+                          assign warning_percent = component_profile.warning_percent.value | default: pro_max
+                          assign pro_note = component_profile.technical_note.value
+                          assign show_pro_component = true
+                          if component_profile != blank and component_profile.pro_enabled.value == false
+                            assign show_pro_component = false
+                          endif
+                        %}
+                        {% if show_pro_component %}
+                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_product.title | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_profile.aeration.value }}" data-drainage="{{ component_profile.drainage.value }}" data-water-retention="{{ component_profile.water_retention.value }}" data-structure="{{ component_profile.structure_stability.value }}" data-nutrient="{{ component_profile.nutrient_effect.value }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
+                          <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
+                          <span>
+                            <strong>{{ component_product.title | escape }}</strong>
+                            <small>{{ component_product.vendor | default: 'LEAFerservice' | escape }}</small>
+                          </span>
+                        </button>
+                        {% assign custom_rendered_components = custom_rendered_components | plus: 1 %}
+                        {% if custom_rendered_components == 12 %}{% break %}{% endif %}
+                        {% endif %}
+                      {% endif %}
+                    {% endfor %}
+                    {% if custom_rendered_components == 0 and component_products == blank %}
+                      {% assign fallback_components = 'Kokosfasern|Pinienrinde|Perlite|Bims|Lavagranulat|Sphagnum-Moos|Wurmhumus|Pflanzenkohle|Blähton|Algenkalk|Mykorrhiza|Aktivierter Biokohle-Kompost' | split: '|' %}
+                      {% for fallback_component in fallback_components %}
+                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ fallback_component | escape }}" aria-pressed="false">
+                          <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
+                          <span><strong>{{ fallback_component | escape }}</strong><small>Rezepturbestandteil</small></span>
+                        </button>
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                  <p class="leafer-substrate__customizer-hint" data-customizer-hint>Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.</p>
+                  <div class="leafer-substrate__pro-feedback" data-pro-feedback hidden aria-live="polite"></div>
+                </div>
+              </div>
+            </section>
+          {% endif %}
+
+          {% form 'product', selector_product, id: product_form_id, class: 'leafer-substrate__form' %}
+            {% if form.errors %}<div class="leafer-substrate__form-error" role="alert">{{ form.errors | default_errors }}</div>{% endif %}
+
+            <div class="leafer-substrate__native" data-native-field>
+              <label for="Variant-{{ section.id }}">{{ section.settings.native_label | escape }}</label>
+              <select id="Variant-{{ section.id }}" name="id" data-variant-select>
+                {% for variant in selector_product.variants %}
+                  <option
+                    value="{{ variant.id }}"
+                    data-price="{{ variant.price }}"
+                    data-available="{{ variant.available }}"
+                    {% if variant.id == selected_variant.id %}selected{% endif %}
+                    {% unless variant.available %}disabled{% endunless %}
+                  >
+                    {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ section.settings.sold_out_label | escape }}{% endunless %}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <input type="hidden" name="properties[Pflanzenprofil]" value="" data-property-profile disabled>
+            <input type="hidden" name="properties[Menge]" value="" data-property-volume disabled>
+            <input type="hidden" name="properties[Rezeptur]" value="" data-property-recipe disabled>
+            <input type="hidden" name="properties[Rezepturstand]" value="" data-property-version disabled>
+
+            <div class="leafer-substrate__selection-summary">
+              <div>
+                <span>Deine Auswahl</span>
+                <strong data-selection-summary>{{ selected_profile | escape }} · {{ selected_volume | escape }}</strong>
+              </div>
+              <strong class="leafer-substrate__selected-price" data-selected-price aria-live="polite">{{ selected_variant.price | money }}</strong>
+            </div>
+
+            <p class="leafer-substrate__availability" data-availability data-state="{% if selected_variant.available %}available{% else %}unavailable{% endif %}" aria-live="polite">
+              {% if selected_variant.available %}{{ section.settings.available_label | escape }}{% else %}{{ section.settings.unavailable_label | escape }}{% endif %}
+            </p>
+
+            <div class="leafer-substrate__buy-row">
+              <label for="Quantity-{{ section.id }}">
+                <span>{{ section.settings.quantity_label | escape }}</span>
+                <input id="Quantity-{{ section.id }}" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+              </label>
+              <button type="submit" name="add" data-submit {% unless selected_variant.available %}disabled{% endunless %}>
+                {% if selected_variant.available %}{{ section.settings.add_label | escape }}{% else %}{{ section.settings.sold_out_label | escape }}{% endif %}
+              </button>
+            </div>
+          {% endform %}
+
+          <div class="leafer-substrate__reassurance" aria-label="Hinweise zur Bestellung">
+            <span>✓ Preis und Bestand direkt aus Shopify</span>
+            <span>✓ Rezeptur an der Warenkorbposition</span>
+            <span>✓ Keine frei erfundenen Mischversprechen</span>
+          </div>
+        </div>
+
+        <aside class="leafer-substrate__recipe-panel" aria-labelledby="LeaferRecipeHeading-{{ section.id }}">
+          <header class="leafer-substrate__panel-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.recipe_eyebrow | escape }}</p>
+            <h2 id="LeaferRecipeHeading-{{ section.id }}">{{ section.settings.recipe_heading | escape }}</h2>
+            {% if section.settings.recipe_intro != blank %}<div class="rte">{{ section.settings.recipe_intro }}</div>{% endif %}
+          </header>
+
+          <p class="leafer-substrate__recipe-selection" data-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
+          <p class="leafer-substrate__recipe-empty" data-recipe-empty>Die Rezeptur wird nach deiner Auswahl geladen.</p>
+          <div class="leafer-substrate__recipe-list" data-recipe-list aria-label="Bestandteile der ausgewählten Rezeptur"></div>
+
+          <dl class="leafer-substrate__recipe-meta">
+            <div><dt>Gesamt</dt><dd data-recipe-total>100 %</dd></div>
+            <div><dt>Berechnungsbasis</dt><dd data-recipe-basis>{{ recipe_matrix.basis | default: 'Volumenanteile' | escape }}</dd></div>
+            <div><dt>Rezepturstand</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
+          </dl>
+
+          <ul class="leafer-substrate__recipe-notes" data-recipe-notes hidden></ul>
+
+
+
+          <section class="leafer-substrate__base-recipe" data-base-recipe aria-labelledby="LeaferBaseRecipeHeading-{{ section.id }}">
+            <p class="leafer-substrate__eyebrow">Deine bewährte Substratwelt</p>
+            <h3 id="LeaferBaseRecipeHeading-{{ section.id }}">Passende LEAFer-Grundrezeptur</h3>
+            <p class="leafer-substrate__base-recipe-selection" data-base-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
+            <p class="leafer-substrate__base-recipe-copy">Diese feste Rezeptur bleibt als bewährte Orientierung erhalten. Deine individuelle Mischung wird zusätzlich darüber berechnet.</p>
+            <div class="leafer-substrate__recipe-list" data-base-recipe-list aria-label="Bestandteile der bewährten Grundrezeptur"></div>
+          </section>
+
+          <section class="leafer-substrate__dynamic-insights" data-dynamic-insights aria-labelledby="LeaferDynamicInsightsHeading-{{ section.id }}">
+            <p class="leafer-substrate__eyebrow">Dynamische Einordnung</p>
+            <h3 id="LeaferDynamicInsightsHeading-{{ section.id }}">Passt besonders zu</h3>
+            <p class="leafer-substrate__insight-copy" data-insight-copy></p>
+            <div class="leafer-substrate__insight-block">
+              <strong>Geeignete Pflanzen</strong>
+              <div class="leafer-substrate__insight-chips" data-insight-plants></div>
+            </div>
+            <div class="leafer-substrate__insight-block">
+              <strong>Eigenschaften deiner Mischung</strong>
+              <ul data-insight-properties></ul>
+            </div>
+          </section>
+
+          <noscript>
+            <div class="leafer-substrate__noscript">
+              <strong>Rezepturvorschau ohne JavaScript</strong>
+              <p>Wähle die gewünschte Kombination im Variantenfeld. Die Variante enthält Pflanzentyp und Menge; die detaillierte Literverteilung ist mit aktiviertem JavaScript sichtbar.</p>
+            </div>
+          </noscript>
+        </aside>
+      </div>
+
+      {% if step_blocks.size > 0 %}
+        <section class="leafer-substrate__steps page-width" aria-labelledby="LeaferStepsHeading-{{ section.id }}">
+          <header class="leafer-substrate__section-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
+            <h2 id="LeaferStepsHeading-{{ section.id }}">{{ section.settings.steps_heading | escape }}</h2>
+          </header>
+          <ol>
+            {% for block in step_blocks %}
+              <li {{ block.shopify_attributes }}>
+                <span aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+                <div>
+                  <h3>{{ block.settings.heading | escape }}</h3>
+                  {% if block.settings.text != blank %}<div class="rte">{{ block.settings.text }}</div>{% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ol>
+        </section>
+      {% endif %}
+
+      {% if section.settings.show_description and selector_product.description != blank %}
+        <section class="leafer-substrate__details page-width" aria-labelledby="LeaferDetailsHeading-{{ section.id }}">
+          <header class="leafer-substrate__section-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.details_eyebrow | escape }}</p>
+            <h2 id="LeaferDetailsHeading-{{ section.id }}">{{ section.settings.details_heading | escape }}</h2>
+            {% if product_intro != blank %}<p>{{ product_intro | escape }}</p>{% endif %}
+          </header>
+          <div class="leafer-substrate__description rte">{{ selector_product.description }}</div>
+        </section>
+      {% endif %}
+
+      {% if faq_blocks.size > 0 %}
+        <section class="leafer-substrate__faq page-width" aria-labelledby="LeaferFaqHeading-{{ section.id }}">
+          <header class="leafer-substrate__section-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.faq_eyebrow | escape }}</p>
+            <h2 id="LeaferFaqHeading-{{ section.id }}">{{ section.settings.faq_heading | escape }}</h2>
+          </header>
+          <div class="leafer-substrate__faq-list">
+            {% for block in faq_blocks %}
+              <details {{ block.shopify_attributes }}>
+                <summary>{{ block.settings.question | escape }} <span aria-hidden="true">+</span></summary>
+                <div class="rte">{{ block.settings.answer }}</div>
+              </details>
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+
+      {% if section.settings.show_components and has_components %}
+        <section class="leafer-substrate__components page-width" aria-labelledby="LeaferComponentsHeading-{{ section.id }}">
+          <header class="leafer-substrate__section-head">
+            <p class="leafer-substrate__eyebrow">{{ section.settings.components_eyebrow | escape }}</p>
+            <h2 id="LeaferComponentsHeading-{{ section.id }}">{{ section.settings.components_heading | escape }}</h2>
+            {% if section.settings.components_text != blank %}<div class="rte">{{ section.settings.components_text }}</div>{% endif %}
+          </header>
+          <div class="leafer-substrate__component-grid">
+            {% assign rendered_components = 0 %}
+            {% for component_product in component_products %}
+              {% if component_product.available and component_product.id != selector_product.id %}
+                <a class="leafer-substrate__component-card" href="{{ component_product.url }}">
+                  <div class="leafer-substrate__component-image">
+                    {% if component_product.featured_image != blank %}
+                      {{ component_product.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '240, 360, 480, 640', sizes: '(min-width: 990px) 30vw, (min-width: 620px) 45vw, 90vw', alt: component_product.featured_image.alt | default: component_product.title }}
+                    {% else %}
+                      {{ 'product-1' | placeholder_svg_tag }}
+                    {% endif %}
+                  </div>
+                  <div class="leafer-substrate__component-copy">
+                    <span>{{ component_product.vendor | default: 'LEAFerservice' | escape }}</span>
+                    <h3>{{ component_product.title | escape }}</h3>
+                    <strong>{{ component_product.price | money }}</strong>
+                  </div>
+                </a>
+                {% assign rendered_components = rendered_components | plus: 1 %}
+                {% if rendered_components == 6 %}{% break %}{% endif %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        </section>
+      {% endif %}
+    </div>
+
+    <script type="application/json" data-variants>
+      [
+        {% for variant in selector_product.variants %}
+          {% assign variant_is_last = forloop.last %}
+          {
+            "id": {{ variant.id | json }},
+            "title": {{ variant.title | json }},
+            "available": {{ variant.available | json }},
+            "price": {{ variant.price | json }},
+            "options": {
+              {% for option_value in variant.options %}
+                {% assign option_name = selector_product.options[forloop.index0] %}
+                {{ option_name | json }}: {{ option_value | json }}{% unless forloop.last %},{% endunless %}
+              {% endfor %}
+            }
+          }{% unless variant_is_last %},{% endunless %}
+        {% endfor %}
+      ]
+    </script>
+    <script type="application/json" data-recipe-matrix>{{ recipe_matrix | json }}</script>
+  {% endif %}
+</leafer-substrate-selector>
+
+{% stylesheet %}
+  .leafer-substrate { display: block; background: var(--background); color: var(--text); }
+  .leafer-substrate__page { padding-block: var(--leafer-selector-top) var(--leafer-selector-bottom); }
+  .leafer-substrate__empty { padding-block: clamp(4rem, 10vw, 8rem); }
+  .leafer-substrate__empty h1, .leafer-substrate__empty h2 { max-width: 13ch; margin: 0; font-size: clamp(2.8rem, 7vw, 6rem); line-height: .95; letter-spacing: -.055em; }
+  .leafer-substrate__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leafer-substrate__hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+  .leafer-substrate__hero-copy { max-width: 720px; }
+  .leafer-substrate__hero h1, .leafer-substrate__hero h2 { max-width: 12ch; margin: 0; font-size: clamp(3rem, 7vw, 6.7rem); line-height: .91; letter-spacing: -.065em; }
+  .leafer-substrate__intro { max-width: 62ch; margin-top: 1.35rem; font-size: clamp(1.05rem, 1.8vw, 1.25rem); }
+  .leafer-substrate__product-subtitle { max-width: 58ch; margin: 1rem 0 0; color: var(--muted); font-weight: 700; }
+  .leafer-substrate__signals { margin: 1.5rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .55rem; list-style: none; }
+  .leafer-substrate__signals li { padding: .55rem .75rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--surface), transparent 12%); font-size: .78rem; font-weight: 750; }
+  .leafer-substrate__price-range { margin: 1.5rem 0 0; display: flex; align-items: baseline; gap: .75rem; }
+  .leafer-substrate__price-range span { color: var(--muted); font-size: .78rem; }
+  .leafer-substrate__price-range strong { font-size: 1.25rem; }
+  .leafer-substrate__hero-media { aspect-ratio: 5 / 4; display: grid; place-items: center; overflow: hidden; padding: clamp(1rem, 4vw, 3rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: #f3efe5; }
+  .leafer-substrate__hero-media img, .leafer-substrate__hero-media svg { width: 100%; height: 100%; object-fit: contain; object-position: center; }
+
+  .leafer-substrate__commerce { margin-top: clamp(3rem, 8vw, 7rem); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr); gap: clamp(1rem, 3vw, 2rem); align-items: start; }
+  .leafer-substrate__purchase-panel, .leafer-substrate__recipe-panel { min-width: 0; padding: clamp(1.25rem, 3vw, 2.25rem); border: 1px solid var(--border); border-radius: var(--radius-large); }
+  .leafer-substrate__purchase-panel { background: var(--surface); }
+  .leafer-substrate__recipe-panel { position: sticky; top: 1rem; background: linear-gradient(145deg, var(--text), color-mix(in srgb, var(--text), var(--accent) 18%)); color: var(--background); box-shadow: 0 18px 48px color-mix(in srgb, var(--text), transparent 82%); }
+  .leafer-substrate__recipe-panel .leafer-substrate__eyebrow { color: var(--accent-soft); }
+  .leafer-substrate__panel-head h2, .leafer-substrate__section-head h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .leafer-substrate__progress { margin-top: 1.25rem; padding: .65rem .8rem; display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--background), transparent 15%); color: var(--muted); font-size: .7rem; font-weight: 800; }
+  .leafer-substrate__progress span { display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
+  .leafer-substrate__progress b { width: 1.45rem; height: 1.45rem; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 84%); color: var(--text); font-size: .68rem; }
+  .leafer-substrate__progress span.is-active b { background: var(--accent); color: var(--background); }
+  .leafer-substrate__progress em { font-style: normal; }
+  .leafer-substrate__progress i { color: var(--accent); font-style: normal; }
+  .leafer-substrate__recipe-selection { margin: 1rem 0 0; color: var(--accent-soft); font-size: .78rem; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; }
+  .leafer-substrate__panel-head .rte, .leafer-substrate__section-head > p, .leafer-substrate__section-head .rte { max-width: 66ch; margin-top: .9rem; color: var(--muted); }
+  .leafer-substrate__recipe-panel .leafer-substrate__panel-head .rte { color: color-mix(in srgb, var(--background), transparent 25%); }
+  .leafer-substrate__enhanced { display: none; margin-top: 2rem; gap: 1.6rem; }
+  .leafer-substrate[data-enhanced="true"] .leafer-substrate__enhanced { display: grid; }
+  .leafer-substrate__fieldset { min-width: 0; margin: 0; padding: 0; border: 0; }
+  .leafer-substrate__fieldset legend { margin-bottom: .75rem; padding: 0; font-weight: 850; }
+  .leafer-substrate__options { display: grid; gap: .65rem; }
+  .leafer-substrate__options--profiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .leafer-substrate__options--volumes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .leafer-substrate__choice { position: relative; min-width: 0; }
+  .leafer-substrate__choice input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+  .leafer-substrate__choice label { min-height: 116px; display: flex; flex-direction: column; justify-content: center; gap: .28rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+  .leafer-substrate__choice label small { color: var(--accent); font-size: .64rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+  .leafer-substrate__choice label strong { font-size: .92rem; line-height: 1.2; }
+  .leafer-substrate__choice label span { color: var(--muted); font-size: .75rem; line-height: 1.4; }
+  .leafer-substrate__choice input:checked + label { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 93%); box-shadow: inset 0 0 0 1px var(--accent); }
+  .leafer-substrate__choice input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: 3px; }
+  .leafer-substrate__choice--volume label { min-height: 58px; align-items: center; padding: .75rem; text-align: center; }
+  .leafer-substrate__choice--volume label strong { font-size: 1rem; }
+  .leafer-substrate__form { margin-top: 1.5rem; display: grid; gap: 1rem; }
+  .leafer-substrate__native { display: grid; gap: .45rem; }
+  .leafer-substrate__native[hidden] { display: none; }
+  .leafer-substrate__native label, .leafer-substrate__buy-row label > span { font-size: .78rem; font-weight: 800; }
+  .leafer-substrate__native select, .leafer-substrate__buy-row input { width: 100%; min-height: 48px; border: 1px solid var(--border); border-radius: 10px; background: var(--background); padding: .7rem .85rem; }
+  .leafer-substrate__form-error { padding: .9rem; border: 1px solid #a44; border-radius: var(--radius); background: #fff4f2; color: #6d2119; }
+  .leafer-substrate__selection-summary { padding: 1rem 0; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-block: 1px solid var(--border); }
+  .leafer-substrate__selection-summary > div { min-width: 0; }
+  .leafer-substrate__selection-summary > div strong { overflow-wrap: anywhere; }
+  .leafer-substrate__selection-summary span, .leafer-substrate__selection-summary strong { display: block; }
+  .leafer-substrate__selection-summary span { color: var(--muted); font-size: .72rem; }
+  .leafer-substrate__selection-summary > div strong { margin-top: .2rem; }
+  .leafer-substrate__selected-price { flex: 0 0 auto; font-size: 1.35rem; }
+  .leafer-substrate__availability { margin: 0; display: flex; align-items: center; gap: .5rem; font-size: .82rem; font-weight: 750; }
+  .leafer-substrate__availability::before { width: .62rem; height: .62rem; border-radius: 50%; background: #8b4b3d; content: ''; }
+  .leafer-substrate__availability[data-state="available"]::before { background: var(--accent); }
+  .leafer-substrate__buy-row { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: .7rem; align-items: end; }
+  .leafer-substrate__buy-row label { display: grid; gap: .4rem; }
+  .leafer-substrate__buy-row button { width: 100%; min-height: 52px; padding-inline: 1rem; }
+  .leafer-substrate__buy-row button[disabled] { cursor: not-allowed; opacity: .5; transform: none; box-shadow: none; }
+  .leafer-substrate__reassurance { margin-top: 1.2rem; display: grid; gap: .45rem; color: var(--muted); font-size: .74rem; }
+
+
+
+  .leafer-substrate__base-recipe { margin-top: 1.5rem; padding: 1rem; border: 1px solid color-mix(in srgb, var(--background), transparent 75%); border-radius: var(--radius); background: color-mix(in srgb, var(--background), transparent 92%); }
+  .leafer-substrate__base-recipe h3 { margin: 0; font-size: 1.15rem; line-height: 1.15; letter-spacing: -.025em; }
+  .leafer-substrate__base-recipe-selection { margin: .55rem 0 0; color: var(--accent-soft); font-size: .72rem; font-weight: 850; text-transform: uppercase; }
+  .leafer-substrate__base-recipe-copy { margin: .55rem 0 0; color: color-mix(in srgb, var(--background), transparent 28%); font-size: .75rem; line-height: 1.45; }
+  .leafer-substrate__base-recipe .leafer-substrate__recipe-list { margin-top: 1rem; }
+
+  .leafer-substrate__dynamic-insights { margin-top: 1.35rem; padding-top: 1.2rem; border-top: 1px solid color-mix(in srgb, var(--background), transparent 78%); }
+  .leafer-substrate__dynamic-insights h3 { margin: 0; font-size: 1.35rem; line-height: 1.1; letter-spacing: -.03em; }
+  .leafer-substrate__insight-copy { margin: .65rem 0 0; color: color-mix(in srgb, var(--background), transparent 25%); font-size: .8rem; line-height: 1.5; }
+  .leafer-substrate__insight-block { margin-top: 1rem; }
+  .leafer-substrate__insight-block > strong { display: block; margin-bottom: .5rem; font-size: .75rem; }
+  .leafer-substrate__insight-chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .leafer-substrate__insight-chips span { padding: .38rem .6rem; border: 1px solid color-mix(in srgb, var(--background), transparent 68%); border-radius: 999px; color: var(--background); font-size: .72rem; font-weight: 750; }
+  .leafer-substrate__insight-block ul { margin: 0; padding-left: 1.1rem; color: color-mix(in srgb, var(--background), transparent 20%); font-size: .78rem; line-height: 1.55; }
+
+  .leafer-substrate__recipe-empty { margin: 1.5rem 0 0; color: color-mix(in srgb, var(--background), transparent 30%); }
+  .leafer-substrate__recipe-list { margin-top: 1.5rem; display: grid; gap: .85rem; }
+  .leafer-substrate__recipe-row { display: grid; gap: .4rem; }
+  .leafer-substrate__recipe-row-head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; }
+  .leafer-substrate__recipe-row-head strong { font-size: .9rem; }
+  .leafer-substrate__recipe-values { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .65rem; color: color-mix(in srgb, var(--background), transparent 25%); font-size: .75rem; font-variant-numeric: tabular-nums; }
+  .leafer-substrate__recipe-bar { height: 7px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--background), transparent 88%); }
+  .leafer-substrate__recipe-bar span { width: var(--share, 0%); height: 100%; display: block; border-radius: inherit; background: var(--accent-soft); transition: width .3s var(--ease-out); }
+  .leafer-substrate__recipe-meta { margin: 1.5rem 0 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 78%); }
+  .leafer-substrate__recipe-meta div { padding-block: .75rem; display: flex; justify-content: space-between; gap: 1rem; border-bottom: 1px solid color-mix(in srgb, var(--background), transparent 86%); }
+  .leafer-substrate__recipe-meta dt { color: color-mix(in srgb, var(--background), transparent 35%); font-size: .74rem; }
+  .leafer-substrate__recipe-meta dd { margin: 0; font-size: .8rem; font-weight: 800; text-align: right; }
+  .leafer-substrate__recipe-notes { margin: 1rem 0 0; padding: .9rem 1rem .9rem 2rem; border-radius: var(--radius); background: color-mix(in srgb, var(--background), transparent 92%); font-size: .75rem; }
+  .leafer-substrate__recipe-notes li + li { margin-top: .45rem; }
+  .leafer-substrate__noscript { margin-top: 1rem; padding: .9rem; border: 1px solid color-mix(in srgb, var(--background), transparent 72%); border-radius: var(--radius); }
+  .leafer-substrate__noscript p { margin-bottom: 0; }
+
+
+  .leafer-substrate__customizer { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb, var(--background), var(--accent) 4%); }
+  .leafer-substrate__customizer-head { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
+  .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 2.2rem); line-height: 1; letter-spacing: -.04em; }
+  .leafer-substrate__customizer-head > p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
+  .leafer-substrate__customizer-grid { margin-top: 1.25rem; display: grid; grid-template-columns: minmax(150px, .7fr) minmax(0, 1.3fr); gap: 1.25rem; align-items: center; }
+  .leafer-substrate__pot-slider { position: relative; width: min(100%, 190px); height: 260px; margin-inline: auto; padding: .45rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 2px solid color-mix(in srgb, var(--text), transparent 10%); border-radius: 12px 12px 34px 34px; background: color-mix(in srgb, var(--background), var(--text) 8%); box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--background), transparent 20%), 0 12px 25px color-mix(in srgb, var(--text), transparent 88%); }
+  .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
+  .leafer-substrate__pot-rim { position: absolute; top: .35rem; right: 8%; left: 8%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); pointer-events: none; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .5rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 45%); background: #8a6a46; color: var(--background); cursor: pointer; font-size: .68rem; font-weight: 850; text-align: left; transition: height .25s ease, filter .2s ease, box-shadow .2s ease; }
+  .leafer-substrate__pot-segment:nth-child(2n) { background: #68754b; }
+  .leafer-substrate__pot-segment:nth-child(3n) { background: #a08c66; }
+  .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
+  .leafer-substrate__pot-segment[hidden] { display: none; }
+  .leafer-substrate__customizer-total { margin: .7rem 0 0; color: var(--muted); font-size: .78rem; font-weight: 800; text-align: center; }
+  .leafer-substrate__share-control { margin-top: 1rem; display: grid; grid-template-columns: 1fr auto; gap: .4rem .7rem; align-items: center; color: var(--muted); font-size: .76rem; font-weight: 800; }
+  .leafer-substrate__share-control input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+  .leafer-substrate__share-control output { color: var(--text); font-variant-numeric: tabular-nums; }
+  .leafer-substrate__component-picker { min-width: 0; }
+  .leafer-substrate__component-picker-head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .65rem; font-size: .78rem; }
+  .leafer-substrate__component-picker-head > span { color: var(--muted); }
+  .leafer-substrate__custom-options { display: grid; gap: .5rem; max-height: 265px; overflow: auto; padding-right: .2rem; }
+  .leafer-substrate__custom-option { width: 100%; min-height: 48px; padding: .65rem .7rem; display: flex; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--text); cursor: pointer; text-align: left; transition: border-color .2s ease, background-color .2s ease, transform .2s ease; }
+  .leafer-substrate__custom-option:hover { transform: translateY(-1px); border-color: var(--accent); }
+  .leafer-substrate__custom-option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 90%); }
+  .leafer-substrate__custom-option-check { width: 1.5rem; height: 1.5rem; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--border); border-radius: 50%; color: var(--accent); font-size: 1.1rem; line-height: 1; }
+  .leafer-substrate__custom-option[aria-pressed="true"] .leafer-substrate__custom-option-check { background: var(--accent); color: var(--background); }
+  .leafer-substrate__custom-option strong, .leafer-substrate__custom-option small { display: block; }
+  .leafer-substrate__custom-option strong { font-size: .78rem; line-height: 1.2; }
+  .leafer-substrate__custom-option small { margin-top: .15rem; color: var(--muted); font-size: .65rem; }
+  .leafer-substrate__customizer-hint { margin: .7rem 0 0; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .leafer-substrate__pro-feedback { margin-top: .8rem; padding: .8rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: .72rem; line-height: 1.45; }
+  .leafer-substrate__pro-feedback[hidden] { display: none; }
+  .leafer-substrate__pro-summary { margin: 0; font-weight: 850; }
+  .leafer-substrate__pro-feedback ul { margin: .55rem 0 0; padding-left: 1.1rem; }
+  .leafer-substrate__pro-metrics { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .35rem; }
+  .leafer-substrate__pro-metrics span { padding: .3rem .45rem; border-radius: 999px; background: color-mix(in srgb, var(--accent), transparent 91%); font-weight: 800; }
+  .leafer-substrate__pro-feedback small { margin-top: .55rem; display: block; color: var(--muted); }
+  @media (max-width: 620px) {
+    .leafer-substrate__customizer-head { display: block; }
+    .leafer-substrate__customizer-head > p { margin-top: .65rem; }
+    .leafer-substrate__customizer-grid { grid-template-columns: 1fr; }
+    .leafer-substrate__pot-slider { height: 220px; }
+    .leafer-substrate__custom-options { max-height: none; }
+  }
+
+  .leafer-substrate__steps, .leafer-substrate__details, .leafer-substrate__faq, .leafer-substrate__components { margin-top: var(--space-section); }
+  .leafer-substrate__section-head { max-width: 800px; margin-bottom: 2rem; }
+  .leafer-substrate__steps ol { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; list-style: none; }
+  .leafer-substrate__steps li { min-width: 0; padding: 1.25rem; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .leafer-substrate__steps li > span { width: 2.6rem; height: 2.6rem; display: grid; place-items: center; border-radius: 50%; background: var(--text); color: var(--background); font-size: .72rem; font-weight: 850; }
+  .leafer-substrate__steps h3 { margin: .35rem 0 .45rem; font-size: 1.2rem; }
+  .leafer-substrate__steps .rte { color: var(--muted); font-size: .88rem; }
+  .leafer-substrate__details { display: grid; grid-template-columns: minmax(240px, .65fr) minmax(0, 1.35fr); gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4rem); border-block: 1px solid var(--border); }
+  .leafer-substrate__details .leafer-substrate__section-head { margin: 0; }
+  .leafer-substrate__description { max-width: 760px; }
+  .leafer-substrate__description h2, .leafer-substrate__description h3 { margin-top: 2em; font-size: clamp(1.45rem, 3vw, 2.2rem); }
+  .leafer-substrate__description ul, .leafer-substrate__description ol { padding-left: 1.25rem; }
+  .leafer-substrate__faq-list { max-width: 900px; border-top: 1px solid var(--border); }
+  .leafer-substrate__faq details { border-bottom: 1px solid var(--border); }
+  .leafer-substrate__faq summary { min-height: 64px; padding-block: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; font-weight: 800; list-style: none; }
+  .leafer-substrate__faq summary::-webkit-details-marker { display: none; }
+  .leafer-substrate__faq summary span { color: var(--accent); font-size: 1.4rem; transition: transform .2s ease; }
+  .leafer-substrate__faq details[open] summary span { transform: rotate(45deg); }
+  .leafer-substrate__faq .rte { max-width: 72ch; padding-bottom: 1.1rem; color: var(--muted); }
+  .leafer-substrate__component-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .leafer-substrate__component-card { display: block; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); color: var(--text); text-decoration: none; transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), border-color .2s ease; }
+  .leafer-substrate__component-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); box-shadow: var(--shadow-soft); }
+  .leafer-substrate__component-image { aspect-ratio: 1 / 1; overflow: hidden; background: var(--background); }
+  .leafer-substrate__component-image img, .leafer-substrate__component-image svg { width: 100%; height: 100%; object-fit: contain; }
+  .leafer-substrate__component-copy { padding: 1rem; }
+  .leafer-substrate__component-copy > span { color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+  .leafer-substrate__component-copy h3 { margin: .35rem 0 .7rem; font-size: 1rem; line-height: 1.15; }
+  .leafer-substrate__component-copy strong { font-size: .92rem; }
+
+  @media (max-width: 989px) {
+    .leafer-substrate__hero, .leafer-substrate__commerce, .leafer-substrate__details { grid-template-columns: 1fr; }
+    .leafer-substrate__hero-media { order: -1; aspect-ratio: 16 / 10; }
+    .leafer-substrate__recipe-panel { position: static; }
+    .leafer-substrate__steps ol { grid-template-columns: 1fr; }
+    .leafer-substrate__component-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 620px) {
+    .leafer-substrate__page { padding-top: max(24px, calc(var(--leafer-selector-top) * .6)); }
+    .leafer-substrate__hero h1, .leafer-substrate__hero h2 { font-size: clamp(2.55rem, 14vw, 4.2rem); }
+    .leafer-substrate__hero-media { padding: .75rem; }
+    .leafer-substrate__options--profiles { grid-template-columns: 1fr; }
+    .leafer-substrate__choice label { min-height: 96px; }
+    .leafer-substrate__choice--volume label { min-height: 52px; }
+    .leafer-substrate__purchase-panel, .leafer-substrate__recipe-panel { padding: 1rem; }
+    .leafer-substrate__selection-summary { align-items: start; flex-direction: column; }
+    .leafer-substrate__progress { border-radius: 16px; gap: .35rem; }
+    .leafer-substrate__progress em { font-size: .68rem; }
+    .leafer-substrate__buy-row { grid-template-columns: 88px minmax(0, 1fr); }
+    .leafer-substrate__recipe-row-head { align-items: start; flex-direction: column; gap: .2rem; }
+    .leafer-substrate__recipe-values { justify-content: flex-start; }
+    .leafer-substrate__component-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .leafer-substrate__choice label, .leafer-substrate__recipe-bar span, .leafer-substrate__faq summary span { transition: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class LeaferSubstrateSelector extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.initialized === 'true') return;
+      this.dataset.initialized = 'true';
+
+      this.nativeSelect = this.querySelector('[data-variant-select]');
+      this.nativeField = this.querySelector('[data-native-field]');
+      this.profileChoices = [...this.querySelectorAll('[data-profile-choice]')];
+      this.volumeChoices = [...this.querySelectorAll('[data-volume-choice]')];
+      this.variants = this.parseData('[data-variants]', []);
+      this.matrix = this.parseData('[data-recipe-matrix]', {});
+      this.customizer = this.querySelector('[data-customizer]');
+      this.customSegments = [...this.querySelectorAll('[data-pot-segment]')];
+      this.customOptions = [...this.querySelectorAll('[data-custom-option]')];
+      this.customShareSlider = this.querySelector('[data-custom-share-slider]');
+      this.customSelectedIndex = 0;
+      this.insightPlants = this.querySelector('[data-insight-plants]');
+      this.insightProperties = this.querySelector('[data-insight-properties]');
+      this.insightCopy = this.querySelector('[data-insight-copy]');
+      this.initCustomizer();
+
+      if (!this.nativeSelect || !this.variants.length) return;
+
+      const queryVariantId = new URL(window.location.href).searchParams.get('variant');
+      if (queryVariantId && this.variants.some((variant) => String(variant.id) === queryVariantId)) {
+        this.nativeSelect.value = queryVariantId;
+      }
+
+      this.nativeSelect.addEventListener('change', () => {
+        const variant = this.variantById(this.nativeSelect.value);
+        this.updateVariant(variant, true);
+      });
+
+      if (this.profileChoices.length && this.volumeChoices.length) {
+        this.profileChoices.forEach((choice) => choice.addEventListener('change', () => this.updateFromChoices()));
+        this.volumeChoices.forEach((choice) => choice.addEventListener('change', () => this.updateFromChoices()));
+        this.dataset.enhanced = 'true';
+        if (this.nativeField) this.nativeField.hidden = true;
+      }
+
+      const initialVariant = this.variantById(this.nativeSelect.value) || this.variants.find((variant) => variant.available) || this.variants[0];
+      this.updateVariant(initialVariant, false);
+    }
+
+    parseData(selector, fallback) {
+      const node = this.querySelector(selector);
+      if (!node?.textContent.trim()) return fallback;
+      try {
+        let parsed = JSON.parse(node.textContent);
+        if (typeof parsed === 'string') parsed = JSON.parse(parsed);
+        return parsed || fallback;
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    variantById(id) {
+      return this.variants.find((variant) => String(variant.id) === String(id));
+    }
+
+    updateFromChoices() {
+      const profile = this.profileChoices.find((choice) => choice.checked)?.value;
+      const volume = this.volumeChoices.find((choice) => choice.checked)?.value;
+      const variant = this.variants.find((item) => {
+        return item.options?.[this.dataset.profileOption] === profile && item.options?.[this.dataset.volumeOption] === volume;
+      });
+      if (variant) this.updateVariant(variant, true);
+    }
+
+    updateVariant(variant, updateUrl) {
+      if (!variant) return;
+
+      this.nativeSelect.value = String(variant.id);
+      const profile = variant.options?.[this.dataset.profileOption] || '';
+      const volume = variant.options?.[this.dataset.volumeOption] || '';
+      this.syncChoice(this.profileChoices, profile);
+      this.syncChoice(this.volumeChoices, volume);
+
+      const price = this.formatMoney(variant.price);
+      this.querySelectorAll('[data-selected-price]').forEach((node) => { node.textContent = price; });
+
+      const summary = this.querySelector('[data-selection-summary]');
+      if (summary) summary.textContent = [profile, volume].filter(Boolean).join(' · ');
+
+      const recipeSelection = this.querySelector('[data-recipe-selection]');
+      if (recipeSelection) recipeSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
+
+      const availability = this.querySelector('[data-availability]');
+      if (availability) {
+        availability.dataset.state = variant.available ? 'available' : 'unavailable';
+        availability.textContent = variant.available ? this.dataset.availableLabel : this.dataset.unavailableLabel;
+      }
+
+      const submit = this.querySelector('[data-submit]');
+      if (submit) {
+        submit.disabled = !variant.available;
+        submit.textContent = variant.available ? this.dataset.addLabel : this.dataset.soldOutLabel;
+      }
+
+      this.setProperty('[data-property-profile]', profile);
+      this.setProperty('[data-property-volume]', volume);
+      const customSegments = this.activeCustomSegments();
+      if (customSegments.length) this.renderRecipe(profile, volume);
+      const recipeText = customSegments.length ? this.renderCustomRecipe(volume) : this.renderRecipe(profile, volume);
+      this.updateInsights(profile, customSegments);
+      this.setProperty('[data-property-recipe]', recipeText);
+      this.setProperty('[data-property-version]', this.matrix?.version || this.querySelector('[data-recipe-version]')?.textContent.trim() || '');
+
+      if (updateUrl && window.history?.replaceState) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('variant', variant.id);
+        window.history.replaceState({}, '', url);
+      }
+    }
+
+
+    initCustomizer() {
+      if (!this.customizer) return;
+      this.customOptions.forEach((option) => {
+        option.addEventListener('click', () => {
+          const active = option.getAttribute('aria-pressed') === 'true';
+          if (!active && this.activeCustomSegments().length >= 5) return;
+          option.setAttribute('aria-pressed', active ? 'false' : 'true');
+          if (!active) {
+            const freeSegment = this.customSegments.find((segment) => segment.hidden);
+            if (freeSegment) {
+              freeSegment.hidden = false;
+              freeSegment.dataset.name = option.dataset.name;
+              freeSegment.dataset.share = '0';
+              freeSegment.dataset.proMin = option.dataset.proMin || '0';
+              freeSegment.dataset.proMax = option.dataset.proMax || '100';
+              freeSegment.dataset.warning = option.dataset.warning || option.dataset.proMax || '100';
+              freeSegment.dataset.aeration = option.dataset.aeration || '';
+              freeSegment.dataset.drainage = option.dataset.drainage || '';
+              freeSegment.dataset.waterRetention = option.dataset.waterRetention || '';
+              freeSegment.dataset.structure = option.dataset.structure || '';
+              freeSegment.dataset.nutrient = option.dataset.nutrient || '';
+              freeSegment.dataset.technicalNote = option.dataset.technicalNote || '';
+            }
+          } else {
+            const segment = this.customSegments.find((item) => item.dataset.name === option.dataset.name);
+            if (segment) {
+              segment.hidden = true;
+              delete segment.dataset.name;
+              delete segment.dataset.share;
+              delete segment.dataset.proMin;
+              delete segment.dataset.proMax;
+              delete segment.dataset.warning;
+              delete segment.dataset.aeration;
+              delete segment.dataset.drainage;
+              delete segment.dataset.waterRetention;
+              delete segment.dataset.structure;
+              delete segment.dataset.nutrient;
+              delete segment.dataset.technicalNote;
+              segment.classList.remove('is-selected');
+            }
+          }
+          this.equalizeCustomSegments();
+          this.refreshCustomRecipe();
+        });
+      });
+      this.customSegments.forEach((segment) => {
+        segment.addEventListener('click', () => {
+          if (segment.hidden) return;
+          this.customSelectedIndex = Number(segment.dataset.index);
+          this.customSegments.forEach((item) => item.classList.toggle('is-selected', item === segment));
+          this.syncCustomSlider();
+        });
+      });
+      if (this.customShareSlider) this.customShareSlider.addEventListener('input', () => {
+        this.balanceCustomShare();
+        this.refreshCustomRecipe();
+      });
+      this.syncCustomUI();
+    }
+
+    activeCustomSegments() {
+      return (this.customSegments || []).filter((segment) => !segment.hidden && segment.dataset.name);
+    }
+
+    equalizeCustomSegments() {
+      const segments = this.activeCustomSegments();
+      if (!segments.length) {
+        this.customSelectedIndex = 0;
+        this.syncCustomUI();
+        return;
+      }
+      const baseShare = Math.floor(100 / segments.length);
+      let remainder = 100 - (baseShare * segments.length);
+      segments.forEach((segment, index) => {
+        const share = baseShare + (remainder > 0 ? 1 : 0);
+        segment.dataset.share = String(share);
+        remainder -= 1;
+        if (index === 0) this.customSelectedIndex = Number(segment.dataset.index);
+      });
+      this.syncCustomUI();
+    }
+
+    balanceCustomShare() {
+      const segments = this.activeCustomSegments();
+      const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
+      if (!selected || !this.customShareSlider) return;
+      const minShare = Math.max(0, Number(selected.dataset.proMin) || 0);
+      const maxShare = Math.min(100, Number(selected.dataset.proMax) || 100);
+      const requested = Math.max(minShare, Math.min(maxShare, Number(this.customShareSlider.value) || minShare));
+      const others = segments.filter((segment) => segment !== selected);
+      selected.dataset.share = String(others.length ? requested : 100);
+      if (others.length) {
+        const baseShare = Math.floor((100 - Number(selected.dataset.share)) / others.length);
+        let remainder = 100 - Number(selected.dataset.share) - (baseShare * others.length);
+        others.forEach((segment) => {
+          const share = baseShare + (remainder > 0 ? 1 : 0);
+          segment.dataset.share = String(share);
+          remainder -= 1;
+        });
+      }
+      this.syncCustomUI();
+    }
+
+    syncCustomSlider() {
+      const segments = this.activeCustomSegments();
+      const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
+      if (!this.customShareSlider || !selected) return;
+      this.customSelectedIndex = Number(selected.dataset.index);
+      this.customShareSlider.disabled = false;
+      const minShare = Math.max(0, Number(selected.dataset.proMin) || 0);
+      const maxShare = Math.min(100, Number(selected.dataset.proMax) || 100);
+      this.customShareSlider.min = String(minShare);
+      this.customShareSlider.max = String(maxShare);
+      this.customShareSlider.value = String(Math.max(minShare, Math.min(maxShare, Number(selected.dataset.share) || Math.max(1, minShare))));
+      const label = this.querySelector('[data-custom-share-label]');
+      const output = this.querySelector('[data-custom-share-output]');
+      if (label) label.textContent = `${selected.dataset.name} anpassen`;
+      if (output) output.textContent = `${selected.dataset.share} %`;
+    }
+
+    syncCustomUI() {
+      const segments = this.activeCustomSegments();
+      const count = this.querySelector('[data-customizer-count]');
+      const hint = this.querySelector('[data-customizer-hint]');
+      if (count) count.textContent = String(segments.length);
+      if (hint) hint.textContent = segments.length ? 'Tippe auf ein Segment und passe seinen Anteil mit dem Regler an.' : 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.';
+      this.customOptions.forEach((option) => {
+        const active = segments.some((segment) => segment.dataset.name === option.dataset.name);
+        option.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      this.customSegments.forEach((segment) => {
+        const share = Number(segment.dataset.share) || 0;
+        segment.style.height = share ? `${share}%` : '';
+        segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
+        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
+      });
+      this.syncCustomSlider();
+      this.updateProFeedback();
+    }
+
+    updateProFeedback() {
+      const feedback = this.querySelector('[data-pro-feedback]');
+      if (!feedback) return;
+      const segments = this.activeCustomSegments();
+      if (!segments.length) { feedback.hidden = true; feedback.replaceChildren(); return; }
+      const warnings = [];
+      const metrics = { aeration: 0, drainage: 0, water: 0, structure: 0, nutrient: 0 };
+      let metricWeight = 0;
+      segments.forEach((segment) => {
+        const share = Number(segment.dataset.share) || 0;
+        const warning = Number(segment.dataset.warning) || 100;
+        const max = Number(segment.dataset.proMax) || 100;
+        if (share > max) warnings.push(`${segment.dataset.name}: ${share}% liegt über dem fachlichen Maximalwert von ${max}%.`);
+        else if (share > warning) warnings.push(`${segment.dataset.name}: ${share}% liegt über der Warnschwelle von ${warning}%.`);
+        ['aeration','drainage','structure','nutrient'].forEach((key) => {
+          const value = Number(segment.dataset[key]);
+          if (Number.isFinite(value) && value > 0) metrics[key] += value * share;
+        });
+        const water = Number(segment.dataset.waterRetention);
+        if (Number.isFinite(water) && water > 0) metrics.water += water * share;
+        metricWeight += share;
+      });
+      feedback.replaceChildren();
+      const summary = document.createElement('p');
+      summary.className = 'leafer-substrate__pro-summary';
+      summary.textContent = warnings.length ? 'Fachliche Prüfung: Bitte Warnhinweise beachten.' : 'Fachliche Prüfung: Mischung innerhalb der hinterlegten Grenzwerte.';
+      feedback.append(summary);
+      if (warnings.length) {
+        const list = document.createElement('ul');
+        warnings.forEach((warning) => { const li = document.createElement('li'); li.textContent = warning; list.append(li); });
+        feedback.append(list);
+      }
+      if (metricWeight > 0) {
+        const grid = document.createElement('div');
+        grid.className = 'leafer-substrate__pro-metrics';
+        [['Luftigkeit','aeration'],['Drainage','drainage'],['Wasserspeicher','water'],['Struktur','structure'],['Nährstoffwirkung','nutrient']].forEach(([label,key]) => {
+          if (!metrics[key]) return;
+          const item = document.createElement('span');
+          item.textContent = `${label} ${Math.round(metrics[key] / metricWeight)}/10`;
+          grid.append(item);
+        });
+        feedback.append(grid);
+      }
+      const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
+      if (selected?.dataset.technicalNote) { const note = document.createElement('small'); note.textContent = selected.dataset.technicalNote; feedback.append(note); }
+      feedback.hidden = false;
+    }
+
+    renderCustomRecipe(volume) {
+      const segments = this.activeCustomSegments();
+      const lists = [...this.querySelectorAll('[data-recipe-list], [data-base-recipe-list]')];
+      const list = lists[0];
+      const empty = this.querySelector('[data-recipe-empty]');
+      const sizeKey = String(volume).match(/[\d.,]+/)?.[0]?.replace(',', '.');
+      const litresTotal = Number(sizeKey) || 0;
+      if (!list || !segments.length) return '';
+      list.replaceChildren();
+      if (empty) empty.hidden = true;
+      const fragment = document.createDocumentFragment();
+      const recipeParts = [];
+      let total = 0;
+      segments.forEach((segment) => {
+        const share = Number(segment.dataset.share) || 0;
+        const litres = litresTotal * share / 100;
+        total += share;
+        const row = document.createElement('div');
+        row.className = 'leafer-substrate__recipe-row';
+        const head = document.createElement('div');
+        head.className = 'leafer-substrate__recipe-row-head';
+        const name = document.createElement('strong');
+        name.textContent = segment.dataset.name;
+        const values = document.createElement('span');
+        values.className = 'leafer-substrate__recipe-values';
+        values.append(document.createTextNode(`${this.formatNumber(share)} %`), document.createTextNode(`${this.formatNumber(litres)} L`));
+        head.append(name, values);
+        const bar = document.createElement('div');
+        bar.className = 'leafer-substrate__recipe-bar';
+        const fill = document.createElement('span');
+        fill.style.setProperty('--share', `${share}%`);
+        bar.append(fill);
+        row.append(head, bar);
+        fragment.append(row);
+        recipeParts.push(`${segment.dataset.name} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
+      });
+      lists.forEach((targetList) => targetList.append(fragment.cloneNode(true)));
+      const baseSelection = this.querySelector('[data-base-recipe-selection]');
+      if (baseSelection) baseSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
+      const totalNode = this.querySelector('[data-recipe-total]');
+      if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
+      const basisNode = this.querySelector('[data-recipe-basis]');
+      if (basisNode) basisNode.textContent = 'Individuelle Volumenanteile';
+      const versionNode = this.querySelector('[data-recipe-version]');
+      if (versionNode) versionNode.textContent = 'Individuell';
+      const totalLabel = this.querySelector('[data-customizer-total]');
+      if (totalLabel) totalLabel.textContent = `${this.formatNumber(total)} % · ${this.formatNumber(litresTotal)} L`;
+      const notesList = this.querySelector('[data-recipe-notes]');
+      if (notesList) {
+        notesList.replaceChildren();
+        notesList.hidden = true;
+      }
+      return recipeParts.join(' · ');
+    }
+
+    refreshCustomRecipe() {
+      const variant = this.variantById(this.nativeSelect?.value);
+      if (!variant) return;
+      const volume = variant.options?.[this.dataset.volumeOption] || '';
+      if (this.activeCustomSegments().length) {
+        const profile = variant.options?.[this.dataset.profileOption] || '';
+        const recipeText = this.renderCustomRecipe(volume);
+        this.updateInsights(profile, this.activeCustomSegments());
+        this.setProperty('[data-property-recipe]', recipeText);
+        this.setProperty('[data-property-version]', 'Individuell');
+      } else {
+        const profile = variant.options?.[this.dataset.profileOption] || '';
+        this.renderRecipe(profile, volume);
+        this.updateInsights(profile, []);
+        this.setProperty('[data-property-recipe]', '');
+        this.setProperty('[data-property-version]', this.matrix?.version || '');
+      }
+    }
+
+
+    updateInsights(profile, customSegments) {
+      if (!this.insightPlants || !this.insightProperties) return;
+      const normalized = String(profile || '').toLowerCase();
+      let rule = {
+        plants: ['Zimmerpflanzen'],
+        properties: ['Alltagstaugliche Grundmischung'],
+        copy: 'Die Anzeige orientiert sich an deinem gewählten Pflanzenprofil und den Bestandteilen der Rezeptur.'
+      };
+      if (normalized.includes('aroid') || normalized.includes('tropical') || normalized.includes('luftig')) {
+        rule = { plants: ['Monstera', 'Philodendron', 'Alocasia', 'Syngonium'], properties: ['Luftige Struktur', 'Schneller Wasserabzug', 'Gute Wurzelbelüftung'], copy: 'Für tropische Zimmerpflanzen mit kräftiger, luftliebender Wurzelzone.' };
+      } else if (normalized.includes('kräuter') || normalized.includes('balkon') || normalized.includes('ausgewogen')) {
+        rule = { plants: ['Basilikum', 'Minze', 'Petersilie', 'Balkonpflanzen'], properties: ['Ausgewogene Feuchteführung', 'Gute Drainage', 'Nährstoffgeeignete Basis'], copy: 'Für Kräuter und Balkonpflanzen, bei denen Feuchteführung und Drainage zusammenpassen sollen.' };
+      } else if (normalized.includes('kakt') || normalized.includes('sukkulent') || normalized.includes('mineral')) {
+        rule = { plants: ['Kakteen', 'Echeverien', 'Haworthien', 'Crassula'], properties: ['Hoher Mineralanteil', 'Sehr gute Drainage', 'Zügiger Wasserabzug'], copy: 'Für trockenheitsverträgliche Pflanzen mit besonders durchlässiger Wurzelzone.' };
+      } else if (normalized.includes('orchid') || normalized.includes('orchidee') || normalized.includes('rinden')) {
+        rule = { plants: ['Phalaenopsis', 'Dendrobium', 'Cattleya', 'Oncidium'], properties: ['Sehr luftige Struktur', 'Rindenbetonte Basis', 'Geringere Verdichtung'], copy: 'Für epiphytische Orchideen, deren Wurzeln viel Luft und eine grobe Struktur benötigen.' };
+      } else if (normalized.includes('palm') || normalized.includes('palmen') || normalized.includes('struktur')) {
+        rule = { plants: ['Areca-Palme', 'Kentia-Palme', 'Strelitzie', 'Ficus'], properties: ['Strukturstabil', 'Ausgeglichene Wasserführung', 'Gute Standfestigkeit'], copy: 'Für größere Grünpflanzen mit Bedarf an einer stabilen und gut drainierenden Mischung.' };
+      } else if (normalized.includes('anzucht') || normalized.includes('jung') || normalized.includes('fein')) {
+        rule = { plants: ['Keimlinge', 'Stecklinge', 'Jungpflanzen', 'Kräuter-Anzucht'], properties: ['Feinere Struktur', 'Leicht zu durchwurzeln', 'Gleichmäßige Feuchte'], copy: 'Für Aussaat, Stecklinge und junge Pflanzen mit empfindlicher Wurzelentwicklung.' };
+      }
+
+      const names = customSegments.length ? customSegments.map((segment) => segment.dataset.name) : Object.keys(this.matrix?.recipes?.[profile]?.percent || {});
+      const additions = [];
+      names.forEach((name) => {
+        const item = String(name).toLowerCase();
+        if (item.includes('perlit') || item.includes('bims') || item.includes('lava') || item.includes('blähton')) additions.push('Drainage und Porenraum');
+        if (item.includes('kokos') || item.includes('sphagnum') || item.includes('moos')) additions.push('Feuchtepuffer');
+        if (item.includes('rinde')) additions.push('Luftige Grobstruktur');
+        if (item.includes('wurmhumus') || item.includes('kompost')) additions.push('Organische Nährstoffbasis');
+        if (item.includes('algenkalk')) additions.push('pH-stabilisierende Ergänzung');
+        if (item.includes('mykorrhiza')) additions.push('Unterstützung der Wurzelumgebung');
+      });
+      const properties = [...new Set([...rule.properties, ...additions])];
+      this.insightPlants.replaceChildren();
+      rule.plants.forEach((plant) => {
+        const chip = document.createElement('span');
+        chip.textContent = plant;
+        this.insightPlants.append(chip);
+      });
+      this.insightProperties.replaceChildren();
+      properties.forEach((property) => {
+        const item = document.createElement('li');
+        item.textContent = property;
+        this.insightProperties.append(item);
+      });
+      if (this.insightCopy) this.insightCopy.textContent = rule.copy;
+    }
+
+    syncChoice(choices, value) {
+      choices.forEach((choice) => { choice.checked = choice.value === value; });
+    }
+
+    setProperty(selector, value) {
+      const input = this.querySelector(selector);
+      if (!input) return;
+      input.value = value || '';
+      input.disabled = !value;
+    }
+
+    renderRecipe(profile, volume) {
+      const recipe = this.matrix?.recipes?.[profile];
+      const sizeKey = String(volume).match(/[\d.,]+/)?.[0]?.replace(',', '.');
+      const percentages = recipe?.percent || {};
+      const sizes = recipe?.sizes_l?.[sizeKey] || recipe?.sizes_l?.[String(Number(sizeKey))] || {};
+      const entries = Object.entries(percentages);
+      const list = this.querySelector('[data-recipe-list]');
+      const empty = this.querySelector('[data-recipe-empty]');
+      const notesList = this.querySelector('[data-recipe-notes]');
+
+      if (!lists.length) return '';
+      lists.forEach((targetList) => targetList.replaceChildren());
+
+      if (!entries.length) {
+        if (empty) empty.hidden = false;
+        if (notesList) notesList.hidden = true;
+        return '';
+      }
+
+      if (empty) empty.hidden = true;
+      const fragment = document.createDocumentFragment();
+      let total = 0;
+      const recipeParts = [];
+
+      entries.forEach(([ingredient, rawShare]) => {
+        const share = Number(rawShare) || 0;
+        const litres = sizes?.[ingredient];
+        total += share;
+
+        const row = document.createElement('div');
+        row.className = 'leafer-substrate__recipe-row';
+
+        const head = document.createElement('div');
+        head.className = 'leafer-substrate__recipe-row-head';
+
+        const name = document.createElement('strong');
+        name.textContent = ingredient;
+
+        const values = document.createElement('span');
+        values.className = 'leafer-substrate__recipe-values';
+
+        const percentage = document.createElement('span');
+        percentage.textContent = `${this.formatNumber(share)} %`;
+        values.append(percentage);
+
+        if (litres !== undefined && litres !== null) {
+          const amount = document.createElement('span');
+          amount.textContent = `${this.formatNumber(litres)} L`;
+          values.append(amount);
+          recipeParts.push(`${ingredient} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
+        } else {
+          recipeParts.push(`${ingredient} ${this.formatNumber(share)} %`);
+        }
+
+        head.append(name, values);
+
+        const bar = document.createElement('div');
+        bar.className = 'leafer-substrate__recipe-bar';
+        const fill = document.createElement('span');
+        fill.style.setProperty('--share', `${Math.max(0, Math.min(100, share))}%`);
+        bar.append(fill);
+
+        row.append(head, bar);
+        fragment.append(row);
+      });
+
+      list.append(fragment);
+      const totalNode = this.querySelector('[data-recipe-total]');
+      if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
+      const basisNode = this.querySelector('[data-recipe-basis]');
+      if (basisNode && this.matrix?.basis) basisNode.textContent = this.matrix.basis;
+      const versionNode = this.querySelector('[data-recipe-version]');
+      if (versionNode && this.matrix?.version) versionNode.textContent = this.matrix.version;
+
+      this.renderNotes(percentages, notesList);
+      return recipeParts.join(' · ');
+    }
+
+    renderNotes(percentages, notesList) {
+      if (!notesList) return;
+      notesList.replaceChildren();
+      const notes = Object.entries(this.matrix?.notes || {}).filter(([ingredient]) => Object.prototype.hasOwnProperty.call(percentages, ingredient));
+      if (!notes.length) {
+        notesList.hidden = true;
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      notes.forEach(([ingredient, note]) => {
+        const item = document.createElement('li');
+        const label = document.createElement('strong');
+        label.textContent = `${ingredient}: `;
+        item.append(label, document.createTextNode(note));
+        fragment.append(item);
+      });
+      notesList.append(fragment);
+      notesList.hidden = false;
+    }
+
+    formatMoney(cents) {
+      const amount = Number(cents) / 100;
+      try {
+        return new Intl.NumberFormat(this.dataset.locale || 'de-DE', {
+          style: 'currency',
+          currency: this.dataset.currency || 'EUR'
+        }).format(amount);
+      } catch (error) {
+        return `${amount.toFixed(2)} ${this.dataset.currency || 'EUR'}`;
+      }
+    }
+
+    formatNumber(value) {
+      try {
+        return new Intl.NumberFormat(this.dataset.locale || 'de-DE', {
+          maximumFractionDigits: 2
+        }).format(Number(value));
+      } catch (error) {
+        return String(value);
+      }
+    }
+  }
+
+  if (!customElements.get('leafer-substrate-selector')) {
+    customElements.define('leafer-substrate-selector', LeaferSubstrateSelector);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Substrat-Auswahl",
+  "tag": "section",
+  "class": "section-leafer-substrate-selector",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "product", "id": "product", "label": "Shopify-Produkt" },
+    { "type": "image_picker", "id": "image", "label": "Hero-Bild (optional)" },
+    { "type": "text", "id": "image_alt", "label": "Alternativtext Hero-Bild" },
+    { "type": "text", "id": "eyebrow", "label": "Überzeile", "default": "LEAFerservice · Substrat-Konfigurator" },
+    { "type": "inline_richtext", "id": "heading", "label": "Hauptüberschrift", "default": "Passendes Substrat nach Pflanzentyp und Menge" },
+    { "type": "richtext", "id": "intro", "label": "Einleitung", "default": "<p>Wähle zuerst deine Pflanzengruppe und danach 2, 5 oder 10 Liter. Für jede Kombination ist eine feste, nachvollziehbare Volumenrezeptur hinterlegt.</p>" },
+    { "type": "header", "content": "Auswahl und Warenkorb" },
+    { "type": "text", "id": "selection_eyebrow", "label": "Auswahl Überzeile", "default": "Deine Mischung" },
+    { "type": "text", "id": "selection_heading", "label": "Auswahl Überschrift", "default": "Pflanzenprofil und Menge auswählen" },
+    { "type": "richtext", "id": "selection_text", "label": "Auswahl Einleitung", "default": "<p>Varianten, Preise und Verfügbarkeit kommen direkt aus Shopify. Nach deiner Auswahl siehst du die hinterlegte Rezeptur und die genaue Literverteilung.</p>" },
+    { "type": "text", "id": "profile_option_name", "label": "Name der Produktoption Pflanzentyp", "default": "Pflanzentyp" },
+    { "type": "text", "id": "volume_option_name", "label": "Name der Produktoption Menge", "default": "Menge" },
+    { "type": "text", "id": "profile_legend", "label": "Beschriftung Pflanzentyp", "default": "1. Pflanzentyp wählen" },
+    { "type": "text", "id": "volume_legend", "label": "Beschriftung Menge", "default": "2. Menge wählen" },
+    { "type": "text", "id": "native_label", "label": "Beschriftung Standard-Variantenfeld", "default": "Pflanzentyp und Menge" },
+    { "type": "text", "id": "quantity_label", "label": "Mengenfeld", "default": "Anzahl" },
+    { "type": "text", "id": "add_label", "label": "Warenkorb-Button", "default": "Ausgewählte Mischung in den Warenkorb" },
+    { "type": "text", "id": "sold_out_label", "label": "Ausverkauft-Text", "default": "Ausgewählte Variante nicht verfügbar" },
+    { "type": "text", "id": "available_label", "label": "Verfügbar-Text", "default": "Verfügbar" },
+    { "type": "text", "id": "unavailable_label", "label": "Nicht-verfügbar-Text", "default": "Derzeit nicht verfügbar" },
+    { "type": "header", "content": "Rezeptur" },
+    { "type": "text", "id": "recipe_eyebrow", "label": "Rezeptur Überzeile", "default": "Transparent hinterlegt" },
+    { "type": "text", "id": "recipe_heading", "label": "Rezeptur Überschrift", "default": "Deine hinterlegte Rezeptur" },
+    { "type": "richtext", "id": "recipe_intro", "label": "Rezeptur Einleitung", "default": "<p>Volumenanteile und Literangaben für die gewählte Menge. Die Summe bleibt bei 100 Prozent.</p>" },
+    { "type": "header", "content": "Weitere Inhalte" },
+    { "type": "text", "id": "steps_eyebrow", "label": "Schritte Überzeile", "default": "In drei Schritten" },
+    { "type": "text", "id": "steps_heading", "label": "Schritte Überschrift", "default": "So kommst du zur passenden Grundrezeptur" },
+    { "type": "checkbox", "id": "show_description", "label": "Produktbeschreibung anzeigen", "default": true },
+    { "type": "text", "id": "details_eyebrow", "label": "Details Überzeile", "default": "Entscheidungshilfe" },
+    { "type": "text", "id": "details_heading", "label": "Details Überschrift", "default": "Was die Mischung leistet" },
+    { "type": "text", "id": "faq_eyebrow", "label": "FAQ Überzeile", "default": "Gut zu wissen" },
+    { "type": "text", "id": "faq_heading", "label": "FAQ Überschrift", "default": "Fragen vor der Auswahl" },
+    { "type": "checkbox", "id": "show_components", "label": "Rezeptur-Bestandteile anzeigen", "default": true },
+    { "type": "text", "id": "components_eyebrow", "label": "Bestandteile Überzeile", "default": "Einzeln entdecken" },
+    { "type": "text", "id": "components_heading", "label": "Bestandteile Überschrift", "default": "Bestandteile der Rezepturen" },
+    { "type": "richtext", "id": "components_text", "label": "Bestandteile Einleitung", "default": "<p>Die Komponenten stammen aus der am Produkt gepflegten Bundle-Liste und führen zu den jeweiligen Shopify-Produktseiten.</p>" },
+    { "type": "range", "id": "padding_top", "label": "Abstand oben", "min": 24, "max": 120, "step": 8, "default": 64, "unit": "px" },
+    { "type": "range", "id": "padding_bottom", "label": "Abstand unten", "min": 24, "max": 120, "step": 8, "default": 96, "unit": "px" }
+  ],
+  "blocks": [
+    {
+      "type": "profile",
+      "name": "Pflanzenprofil",
+      "settings": [
+        { "type": "text", "id": "option_value", "label": "Exakter Shopify-Optionswert" },
+        { "type": "text", "id": "badge", "label": "Kurze Kennzeichnung" },
+        { "type": "text", "id": "title", "label": "Anzeigetitel (optional)" },
+        { "type": "textarea", "id": "description", "label": "Entscheidungshilfe" }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Schritt",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift" },
+        { "type": "richtext", "id": "text", "label": "Text" }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Frage" },
+        { "type": "richtext", "id": "answer", "label": "Antwort" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Substrat-Auswahl" }]
+}
+{% endschema %}

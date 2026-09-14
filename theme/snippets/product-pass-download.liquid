@@ -1,0 +1,32 @@
+{% doc %}
+  Renders an optional product-specific PDF download.
+
+  @param {metafield} product_pass_pdf - A product file_reference metafield.
+  @param {metafield} variant_pass_pdf - An optional variant file_reference metafield.
+{% enddoc %}
+
+{% liquid
+  assign active_pass = variant_pass_pdf | default: product_pass_pdf
+%}
+
+  <aside class="product-pass-download"{% if active_pass == blank or active_pass.value == blank %} hidden{% endif %} aria-labelledby="ProductPass-{{ section.id }}" data-product-pass-download>
+    <div>
+      <p class="product-pass-download__eyebrow">Pflegewissen zum Produkt</p>
+      <h2 id="ProductPass-{{ section.id }}">Produktpass herunterladen</h2>
+      <p>Pflege-, Anwendungs- und Mischhinweise passend zu diesem Produkt – kompakt als PDF.</p>
+    </div>
+    <a class="button button--secondary" href="{% if active_pass != blank %}{{ active_pass.value.url }}{% endif %}" target="_blank" rel="noopener" data-product-pass-link>
+      PDF öffnen
+      <span aria-hidden="true">↗</span>
+    </a>
+  </aside>
+
+{% stylesheet %}
+  .product-pass-download { display: grid; gap: 1rem; margin-top: 1.4rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in srgb, var(--accent-soft), transparent 45%); }
+  .product-pass-download__eyebrow { margin: 0 0 .2rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+  .product-pass-download h2 { margin: 0; font-size: 1.2rem; line-height: 1.05; }
+  .product-pass-download p:not(.product-pass-download__eyebrow) { margin: .45rem 0 0; color: var(--muted); font-size: .82rem; }
+  .product-pass-download .button { justify-self: start; min-height: 42px; padding-inline: 1rem; font-size: .82rem; }
+  .product-pass-download .button span { margin-left: .4rem; }
+  @media (min-width: 801px) { .product-pass-download { grid-template-columns: 1fr auto; align-items: center; } .product-pass-download .button { justify-self: end; } }
+{% endstylesheet %}

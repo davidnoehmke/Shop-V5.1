@@ -1,0 +1,73 @@
+{% liquid
+  assign section_heading = section.settings.heading
+  if section_heading == blank
+    assign section_heading_key = 'featured_collection.' | append: section.settings.heading_preset
+    assign section_heading = section_heading_key | t
+  endif
+  assign display_collection = section.settings.collection
+  if display_collection == blank
+    assign display_collection = collections['all']
+  endif
+  assign display_products = display_collection.products
+  if section.settings.heading_preset == 'highlights'
+    assign display_products = display_products | reverse
+  endif
+%}
+<section class="featured page-width" style="--featured-columns: {{ section.settings.columns }}">
+  <div class="featured__header">
+    <h2>{{ section_heading }}</h2>
+    {% if display_collection != blank %}<a href="{{ display_collection.url | default: routes.all_products_collection_url }}">{% if section.settings.link_label != blank %}{{ section.settings.link_label }}{% else %}{{ 'general.view_all' | t }}{% endif %}</a>{% endif %}
+  </div>
+  {% if display_products.size > 0 %}
+    <div class="featured__grid">
+      {% for product in display_products limit: section.settings.products_to_show %}
+        {% render 'product-card', product: product, compact: section.settings.compact %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="featured__grid">
+      {% for item in (1..8) limit: section.settings.products_to_show %}
+        {% liquid
+          assign placeholder_index = forloop.index | modulo: 6 | plus: 1
+          assign placeholder_name = 'product-' | append: placeholder_index
+        %}
+        <article class="featured__placeholder"><div>{{ placeholder_name | placeholder_svg_tag }}</div><strong>{{ 'featured_collection.placeholder_title' | t }}</strong><span>{{ 999 | money }}</span></article>
+      {% endfor %}
+    </div>
+    <p class="featured__empty">{{ 'featured_collection.empty' | t }}</p>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .featured { padding-block: var(--space-section); }
+  .featured__header { display: flex; justify-content: space-between; align-items: end; gap: 1rem; margin-bottom: 1.4rem; }
+  .featured__header h2 { margin: 0; font-size: clamp(1.7rem, 3vw, 2.5rem); }
+  .featured__header a { color: var(--accent); font-size: .82rem; text-decoration: none; }
+  .featured__grid { display: grid; grid-template-columns: repeat(var(--featured-columns), minmax(0, 1fr)); gap: 1.3rem; }
+  .featured__placeholder { min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); display: grid; gap: .4rem; }
+  .featured__placeholder div { height: 220px; display: grid; place-items: center; }
+  .featured__placeholder svg { width: 100%; height: 100%; }
+  .featured__placeholder strong, .featured__placeholder span { display: block; }
+  .featured__empty { margin-bottom: 0; color: var(--muted); text-align: center; }
+  @media (max-width: 1100px) { .featured__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 760px) { .featured__header { align-items: center; } .featured__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.featured_collection.name",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "t:sections.featured_collection.heading" },
+    { "type": "select", "id": "heading_preset", "label": "t:sections.featured_collection.heading_preset", "options": [
+      { "value": "heading", "label": "t:options.bestsellers" },
+      { "value": "highlights", "label": "t:options.highlights" }
+    ], "default": "heading" },
+    { "type": "text", "id": "link_label", "label": "t:sections.featured_collection.link_label" },
+    { "type": "collection", "id": "collection", "label": "t:sections.featured_collection.collection", "info": "t:sections.featured_collection.collection_info" },
+    { "type": "range", "id": "products_to_show", "label": "t:sections.featured_collection.products_to_show", "min": 4, "max": 8, "step": 1, "default": 4 },
+    { "type": "range", "id": "columns", "label": "t:sections.featured_collection.columns", "min": 4, "max": 6, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "compact", "label": "t:sections.featured_collection.compact", "default": false }
+  ],
+  "presets": [{ "name": "t:sections.featured_collection.name" }]
+}
+{% endschema %}

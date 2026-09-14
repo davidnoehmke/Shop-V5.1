@@ -1,0 +1,79 @@
+{% liquid
+  assign subtitle = product.metafields.leafer.subtitle.value
+  assign intro = product.metafields.leafer.intro.value
+  assign primary_function = product.metafields.leafer.primary_function.value
+  assign suitable_for = product.metafields.leafer.suitable_for.value
+  assign water_behavior = product.metafields.leafer.water_behavior.value
+  assign mixing_ratio = product.metafields.leafer.mixing_ratio.value
+  assign application = product.metafields.leafer.additive_application.value
+  assign warning = product.metafields.leafer.warning.value
+  assign configurator_enabled = product.metafields.leaf_configurator.enabled.value
+  assign configurator_role = product.metafields.leaf_configurator.role.value
+  assign plant_groups = product.metafields.leaf_configurator.plant_groups.value
+  assign volume_liters = product.metafields.leaf_configurator.volume_liters.value
+  assign has_content = false
+  if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or configurator_enabled != blank or configurator_role != blank or plant_groups != blank or volume_liters != blank
+    assign has_content = true
+  endif
+%}
+
+{% if has_content %}
+  <section class="leaf-decision page-width" aria-labelledby="LeafDecisionHeading-{{ section.id }}">
+    <header class="leaf-decision__head">
+      <p class="leaf-decision__eyebrow">{{ 'product.decision.eyebrow' | t }}</p>
+      <h2 id="LeafDecisionHeading-{{ section.id }}">{{ 'product.decision.heading' | t }}</h2>
+      {% if subtitle != blank %}<p class="leaf-decision__lead">{{ subtitle | escape }}</p>{% endif %}
+      {% if intro != blank %}<div class="leaf-decision__intro rte">{{ intro | escape | newline_to_br }}</div>{% endif %}
+    </header>
+
+    <dl class="leaf-decision__facts">
+      {% if primary_function != blank %}<div><dt>{{ 'product.decision.function' | t }}</dt><dd>{{ primary_function | escape | newline_to_br }}</dd></div>{% endif %}
+      {% if suitable_for != blank %}<div><dt>{{ 'product.decision.suitable_for' | t }}</dt><dd>{{ suitable_for | escape | newline_to_br }}</dd></div>{% endif %}
+      {% if water_behavior != blank %}<div><dt>{{ 'product.decision.water' | t }}</dt><dd>{{ water_behavior | escape | newline_to_br }}</dd></div>{% endif %}
+      {% if mixing_ratio != blank %}<div><dt>{{ 'product.decision.ratio' | t }}</dt><dd>{{ mixing_ratio | escape | newline_to_br }}</dd></div>{% endif %}
+      {% if application != blank %}<div><dt>{{ 'product.decision.application' | t }}</dt><dd>{{ application | escape | newline_to_br }}</dd></div>{% endif %}
+      {% if volume_liters != blank %}<div><dt>{{ 'product.decision.volume' | t }}</dt><dd>{{ volume_liters }} L</dd></div>{% endif %}
+      {% if configurator_role != blank %}<div><dt>{{ 'product.decision.configurator_role' | t }}</dt><dd>{{ configurator_role | escape }}</dd></div>{% endif %}
+      {% if plant_groups != blank %}<div><dt>{{ 'product.decision.plant_groups' | t }}</dt><dd>{{ plant_groups | join: ', ' | escape }}</dd></div>{% endif %}
+    </dl>
+
+    {% if warning != blank %}<p class="leaf-decision__notice"><strong>{{ 'product.decision.notice' | t }}</strong> {{ warning | escape | newline_to_br }}</p>{% endif %}
+
+    {% if configurator_enabled %}
+      <div class="leaf-decision__cta">
+        <div>
+          <strong>{{ 'product.decision.configurator_title' | t }}</strong>
+          <span>{{ 'product.decision.configurator_text' | t }}</span>
+        </div>
+        <a class="button" href="/pages/individuelles-substrat">{{ 'product.decision.configurator_cta' | t }}</a>
+      </div>
+    {% endif %}
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .leaf-decision { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(240px,.7fr) minmax(0,1.3fr); gap: clamp(2rem,6vw,6rem); padding-block: clamp(2rem,5vw,4rem); border-block: 1px solid var(--border); }
+  .leaf-decision__head { align-self: start; }
+  .leaf-decision__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leaf-decision h2 { margin: 0; font-size: clamp(2rem,5vw,4rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-decision__lead { margin: 1rem 0 0; color: var(--text); font-size: 1.05rem; font-weight: 750; }
+  .leaf-decision__intro { margin-top: .75rem; color: var(--muted); }
+  .leaf-decision__facts { margin: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--border); }
+  .leaf-decision__facts > div { padding: 1rem; border-bottom: 1px solid var(--border); }
+  .leaf-decision__facts > div:nth-child(odd) { border-right: 1px solid var(--border); }
+  .leaf-decision dt { color: var(--muted); font-size: .72rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+  .leaf-decision dd { margin: .35rem 0 0; line-height: 1.55; }
+  .leaf-decision__notice { grid-column: 2; margin: 0; padding: 1rem 1.1rem; border-left: 4px solid var(--accent); border-radius: 12px; background: var(--surface); }
+  .leaf-decision__cta { grid-column: 2; padding: 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb,var(--accent) 5%,var(--surface)); }
+  .leaf-decision__cta strong, .leaf-decision__cta span { display: block; }
+  .leaf-decision__cta span { margin-top: .25rem; color: var(--muted); font-size: .84rem; }
+  @media (max-width: 780px) { .leaf-decision { grid-template-columns: 1fr; gap: 1.5rem; } .leaf-decision__facts { grid-template-columns: 1fr; } .leaf-decision__facts > div:nth-child(odd) { border-right: 0; } .leaf-decision__notice, .leaf-decision__cta { grid-column: 1; } .leaf-decision__cta { align-items: stretch; flex-direction: column; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Entscheidungshilfe",
+  "settings": [],
+  "presets": [{ "name": "Produkt-Entscheidungshilfe" }]
+}
+{% endschema %}

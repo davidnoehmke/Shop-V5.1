@@ -1,0 +1,95 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "settings": {
+        "show_description": false
+      }
+    },
+    "variant_guide": {
+      "type": "product-variant-description",
+      "settings": {}
+    },
+    "seo_details": {
+      "type": "product-seo-details",
+      "settings": {}
+    },
+    "recipe": {
+      "type": "product-recipe",
+      "settings": {}
+    },
+    "description": {
+      "type": "product-description",
+      "settings": {
+        "show_heading": true,
+        "heading": ""
+      }
+    },
+    "cross_sell": {
+      "type": "product-cross-sell",
+      "settings": {
+        "heading": "",
+        "collection": ""
+      }
+    },
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "decision": {
+      "type": "leaf-product-decision",
+      "settings": {}
+    },
+    "trust_master": {
+      "type": "trust-bar",
+      "blocks": {
+        "shipping": {
+          "type": "benefit",
+          "settings": {
+            "icon": "small_batches",
+            "heading": "Kostenloser Versand",
+            "text": "Deutschlandweit ohne Versandkosten."
+          }
+        },
+        "knowledge": {
+          "type": "benefit",
+          "settings": {
+            "icon": "natural",
+            "heading": "Nachvollziehbare Produktdaten",
+            "text": "Eigenschaften, Anwendung und Rezepturen transparent erklärt."
+          }
+        },
+        "support": {
+          "type": "benefit",
+          "settings": {
+            "icon": "versatile",
+            "heading": "Persönliche Hilfe",
+            "text": "Bei Fragen zu Mischung oder Anwendung kannst du Unterstützung anfragen."
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "knowledge",
+        "support"
+      ],
+      "settings": {}
+    },
+    "component_signature": {
+      "type": "leaf-component-signature",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "decision",
+    "component_signature",
+    "recipe",
+    "seo_details",
+    "cross_sell",
+    "trust_master",
+    "variant_guide",
+    "description"
+  ]
+}

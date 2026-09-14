@@ -1,0 +1,102 @@
+{% liquid
+  assign selected_blog = section.settings.blog
+  if selected_blog == blank
+    assign selected_blog = blogs['leafers-nice2know-blog']
+  endif
+
+  if request.locale.iso_code == 'de'
+    assign default_link_label = 'Alle Ratgeber lesen'
+    assign default_article_label = 'Ratgeber lesen'
+    assign default_heading = 'Pflanzenwissen zum Weiterlesen'
+    assign default_intro = 'Praxiswissen zu Substrat, Wurzeln, Pflanzgefäßen und Pflanzenpflege.'
+  else
+    assign default_link_label = 'View all guides'
+    assign default_article_label = 'Read guide'
+    assign default_heading = 'Plant knowledge to explore'
+    assign default_intro = 'Practical guidance on substrates, roots, planters and plant care.'
+  endif
+%}
+
+{% if selected_blog != blank and selected_blog.articles.size > 0 %}
+  <section class="home-guides" aria-labelledby="HomeGuidesHeading-{{ section.id }}">
+    <div class="page-width">
+      <header class="home-guides__header" data-leaf-reveal>
+        <div>
+          {% if section.settings.eyebrow != blank %}<p class="home-guides__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+          <h2 id="HomeGuidesHeading-{{ section.id }}">{{ section.settings.heading | default: default_heading | escape }}</h2>
+          {% if section.settings.text != blank %}<div class="home-guides__intro rte">{{ section.settings.text }}</div>{% else %}<p class="home-guides__intro">{{ default_intro }}</p>{% endif %}
+        </div>
+        <a class="button button--secondary" href="{{ selected_blog.url }}">{{ section.settings.link_label | default: default_link_label | escape }} <span aria-hidden="true">→</span></a>
+      </header>
+
+      <div class="home-guides__grid">
+        {% for article in selected_blog.articles limit: section.settings.articles_to_show %}
+          {% liquid
+            assign article_alt = article.image.alt | default: article.title
+            assign article_excerpt = article.excerpt_or_content | strip_html | strip | truncate: 150
+          %}
+          <article class="home-guides__card" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 90 }}ms">
+            <a class="home-guides__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
+              {% if article.image != blank %}
+                {{ article.image | image_url: width: 1100 | image_tag: widths: '360, 540, 760, 1100', sizes: '(min-width: 900px) 33vw, 100vw', loading: 'lazy', alt: article_alt }}
+              {% else %}
+                <span aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
+              {% endif %}
+            </a>
+            <div class="home-guides__body">
+              <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}</time>
+              <h3><a href="{{ article.url }}">{{ article.title | escape }}</a></h3>
+              {% if article_excerpt != blank %}<p>{{ article_excerpt | escape }}</p>{% endif %}
+              <a class="home-guides__link" href="{{ article.url }}">{{ default_article_label }} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .home-guides { padding-block: var(--space-section); background: #182316; color: #f7f4ec; }
+  .home-guides__header { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2rem, 4vw, 3.4rem); }
+  .home-guides__header > div { max-width: 760px; }
+  .home-guides__eyebrow { margin: 0 0 .75rem; color: #b9cea9; font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .home-guides h2 { margin: 0; font-size: clamp(2.1rem, 4.6vw, 4.5rem); line-height: 1; }
+  .home-guides__intro { max-width: 58ch; margin-top: 1rem; color: #d4d9cf; }
+  .home-guides .button--secondary { flex: 0 0 auto; gap: .55rem; border-color: color-mix(in srgb, #f7f4ec, transparent 48%); color: #f7f4ec; }
+  .home-guides .button--secondary:hover { background: #f7f4ec; color: #182316; }
+  .home-guides__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .home-guides__card { min-width: 0; overflow: hidden; border: 1px solid rgba(255,255,255,.14); border-radius: var(--radius-large); background: rgba(255,255,255,.055); transition: transform .35s var(--ease-out), background-color .3s ease, border-color .3s ease; }
+  .home-guides__media { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #2f3b2c; }
+  .home-guides__media img, .home-guides__media span, .home-guides__media svg { width: 100%; height: 100%; object-fit: cover; }
+  .home-guides__media img { transition: transform .65s var(--ease-out); }
+  .home-guides__body { padding: 1.25rem; }
+  .home-guides time { color: #b9c2b4; font-size: .72rem; letter-spacing: .08em; }
+  .home-guides h3 { margin: .55rem 0 .7rem; font-size: clamp(1.35rem, 2.2vw, 2rem); line-height: 1.05; }
+  .home-guides h3 a, .home-guides__link { color: inherit; text-decoration: none; }
+  .home-guides__body > p { margin: 0 0 1rem; color: #cdd3c8; font-size: .9rem; }
+  .home-guides__link { display: inline-flex; align-items: center; gap: .45rem; color: #dcebd0; font-size: .82rem; font-weight: 800; }
+  .home-guides__link span { transition: transform .25s var(--ease-out); }
+  .home-guides__link:hover span { transform: translateX(.22rem); }
+  @media (hover: hover) and (pointer: fine) {
+    .home-guides__card:hover { transform: translateY(-7px); border-color: rgba(255,255,255,.3); background: rgba(255,255,255,.08); }
+    .home-guides__card:hover .home-guides__media img { transform: scale(1.05); }
+  }
+  @media (max-width: 900px) { .home-guides__header { align-items: start; flex-direction: column; } .home-guides__grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 620px) { .home-guides__grid { grid-template-columns: 1fr; } .home-guides__header .button { width: 100%; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Home Ratgeber",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kicker", "default": "Ratgeber aus dem Shop" },
+    { "type": "text", "id": "heading", "label": "Überschrift" },
+    { "type": "richtext", "id": "text", "label": "Einleitung" },
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "range", "id": "articles_to_show", "label": "Anzahl Beiträge", "min": 2, "max": 4, "step": 1, "default": 3 },
+    { "type": "text", "id": "link_label", "label": "CTA" }
+  ],
+  "presets": [{ "name": "Home Ratgeber" }]
+}
+{% endschema %}

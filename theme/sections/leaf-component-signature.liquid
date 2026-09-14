@@ -1,0 +1,99 @@
+{% liquid
+  assign profile = product.metafields.leaf_configurator.component_profile.value
+  assign has_profile = false
+  if profile != blank
+    assign has_profile = true
+  endif
+%}
+
+{% if has_profile %}
+  <section class="leaf-signature page-width" aria-labelledby="LeafSignatureHeading-{{ section.id }}">
+    <div class="leaf-signature__intro">
+      <p class="leaf-signature__eyebrow">{{ 'product.signature.eyebrow' | t }}</p>
+      <h2 id="LeafSignatureHeading-{{ section.id }}">{{ 'product.signature.heading' | t }}</h2>
+      <p>{{ 'product.signature.intro' | t }}</p>
+      {% if profile.description.value != blank %}
+        <p class="leaf-signature__description">{{ profile.description.value | escape | newline_to_br }}</p>
+      {% endif %}
+    </div>
+
+    <div class="leaf-signature__panel">
+      <div class="leaf-signature__metrics" aria-label="{{ 'product.signature.metrics_label' | t }}">
+        {% assign metric_keys = 'aeration,drainage,water_retention,structure_stability,nutrient_effect' | split: ',' %}
+        {% assign metric_labels = 'product.signature.aeration,product.signature.drainage,product.signature.water,product.signature.structure,product.signature.nutrient' | split: ',' %}
+        {% for metric_key in metric_keys %}
+          {% assign metric_value = profile[metric_key].value | default: 0 | plus: 0 %}
+          {% assign metric_percent = metric_value | times: 10 %}
+          <div class="leaf-signature__metric">
+            <div class="leaf-signature__metric-head">
+              <span>{{ metric_labels[forloop.index0] | t }}</span>
+              <strong>{{ metric_value }}/10</strong>
+            </div>
+            <div class="leaf-signature__track" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="{{ metric_value }}" aria-label="{{ metric_labels[forloop.index0] | t }}">
+              <span style="--leaf-score: {{ metric_percent }}%"></span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="leaf-signature__facts">
+        {% if profile.category.value != blank %}
+          <div><span>{{ 'product.signature.category' | t }}</span><strong>{{ profile.category.value | escape }}</strong></div>
+        {% endif %}
+        {% if profile.pro_max_percent.value != blank %}
+          <div>
+            <span>{{ 'product.signature.range' | t }}</span>
+            <strong>{{ profile.pro_min_percent.value | default: 0 }}–{{ profile.pro_max_percent.value }} %</strong>
+          </div>
+        {% endif %}
+        {% if profile.warning_percent.value != blank %}
+          <div><span>{{ 'product.signature.warning' | t }}</span><strong>{{ 'product.signature.from_percent' | t: percent: profile.warning_percent.value }}</strong></div>
+        {% endif %}
+      </div>
+
+      {% if profile.technical_note.value != blank %}
+        <div class="leaf-signature__note">
+          <strong>{{ 'product.signature.note' | t }}</strong>
+          <p>{{ profile.technical_note.value | escape | newline_to_br }}</p>
+        </div>
+      {% endif %}
+
+      {% if profile.pro_enabled.value != false %}
+        <a class="button leaf-signature__cta" href="/pages/individuelles-substrat#Profi-Konfigurator">{{ 'product.signature.cta' | t }}</a>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .leaf-signature { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(230px,.72fr) minmax(0,1.28fr); gap: clamp(2rem,6vw,6rem); padding-block: clamp(2rem,5vw,4rem); border-block: 1px solid var(--border); }
+  .leaf-signature__intro { align-self: start; }
+  .leaf-signature__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leaf-signature h2 { margin: 0; font-size: clamp(2rem,5vw,4rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-signature__intro > p:not(.leaf-signature__eyebrow) { color: var(--muted); line-height: 1.65; }
+  .leaf-signature__description { margin-top: 1.25rem; padding-left: 1rem; border-left: 3px solid var(--accent); }
+  .leaf-signature__panel { display: grid; gap: 1.35rem; }
+  .leaf-signature__metrics { display: grid; gap: .95rem; }
+  .leaf-signature__metric-head { display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; font-size: .88rem; }
+  .leaf-signature__metric-head span { color: var(--muted); }
+  .leaf-signature__track { height: .55rem; overflow: hidden; border-radius: 999px; background: color-mix(in srgb,var(--border) 75%,transparent); }
+  .leaf-signature__track span { display: block; width: var(--leaf-score); height: 100%; border-radius: inherit; background: var(--accent); }
+  .leaf-signature__facts { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--border); border-radius: var(--radius-large); overflow: hidden; }
+  .leaf-signature__facts > div { padding: 1rem; background: var(--surface); }
+  .leaf-signature__facts > div + div { border-left: 1px solid var(--border); }
+  .leaf-signature__facts span, .leaf-signature__facts strong { display: block; }
+  .leaf-signature__facts span { color: var(--muted); font-size: .72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+  .leaf-signature__facts strong { margin-top: .35rem; }
+  .leaf-signature__note { padding: 1rem 1.1rem; border-radius: 14px; background: color-mix(in srgb,var(--accent) 6%,var(--surface)); border: 1px solid color-mix(in srgb,var(--accent) 22%,var(--border)); }
+  .leaf-signature__note p { margin: .4rem 0 0; color: var(--muted); line-height: 1.6; }
+  .leaf-signature__cta { justify-self: start; }
+  @media (max-width: 780px) { .leaf-signature { grid-template-columns: 1fr; gap: 1.5rem; } .leaf-signature__facts { grid-template-columns: 1fr; } .leaf-signature__facts > div + div { border-left: 0; border-top: 1px solid var(--border); } .leaf-signature__cta { width: 100%; text-align: center; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAF Komponentenprofil",
+  "settings": [],
+  "presets": [{ "name": "LEAF Komponentenprofil" }]
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+{% liquid
+  assign mixing_ratio = product.metafields.leafer.mixing_ratio.value
+  assign ingredients = product.metafields.leafer.ingredients.value
+  assign mix_type = product.metafields.leafer.mix_type.value
+  assign component_type = product.metafields.leafer.component_type.value
+  assign product_type_downcase = product.type | downcase
+  assign has_recipe = false
+  if mixing_ratio != blank
+    assign has_recipe = true
+  elsif ingredients != blank
+    if mix_type == 'Fertigmischung' or component_type == 'Mischung' or product_type_downcase contains 'substrat-mischung'
+      assign has_recipe = true
+    endif
+  endif
+%}
+{% if has_recipe %}
+<section class="product-recipe page-width" aria-labelledby="Recipe-{{ section.id }}">
+  <div class="product-recipe__intro">
+    <p class="product-recipe__eyebrow">{{ 'recipe.eyebrow' | t }}</p>
+    <h2 id="Recipe-{{ section.id }}">{{ 'recipe.heading' | t }}</h2>
+    <p>{{ 'recipe.intro' | t }}</p>
+  </div>
+  <div class="product-recipe__data">
+    {% if ingredients != blank %}
+      <article class="product-recipe__composition">
+        <h3>{{ 'recipe.ingredients' | t }}</h3>
+        <div class="product-recipe__chart" role="img" aria-label="Zusammensetzung von {{ product.title | escape }}"></div>
+        <ul class="product-recipe__legend">
+          {% for ingredient in ingredients %}
+            {% assign parts = ingredient | split: '–' %}
+            {% assign label = parts[0] | strip %}
+            {% assign percent_text = parts[1] | default: '' | strip %}
+            {% assign percent = percent_text | remove: '%' | strip | plus: 0 %}
+            <li data-percent="{{ percent }}"><span class="product-recipe__swatch"></span><span>{{ label | escape }}</span><strong>{{ percent_text | escape }}</strong></li>
+          {% endfor %}
+        </ul>
+      </article>
+    {% endif %}
+    {% if mixing_ratio != blank %}<article class="product-recipe__ratio"><h3>{{ 'recipe.ratio' | t }}</h3><p>{{ mixing_ratio | newline_to_br }}</p></article>{% endif %}
+  </div>
+  <p class="product-recipe__note">{{ 'recipe.note' | t }}</p>
+</section>
+<script>
+(function(){var root=document.currentScript.previousElementSibling;if(!root||!root.classList.contains('product-recipe'))return;var items=root.querySelectorAll('.product-recipe__legend li');var chart=root.querySelector('.product-recipe__chart');if(!chart||!items.length)return;var stops=[],start=0;items.forEach(function(item,i){var p=parseFloat(item.dataset.percent)||0;var end=start+p;var hue=(i*67+112)%360;var color='hsl('+hue+' 38% 48%)';item.querySelector('.product-recipe__swatch').style.background=color;stops.push(color+' '+start+'% '+end+'%');start=end;});if(start>0)chart.style.background='conic-gradient('+stops.join(',')+')';})();
+</script>
+{% endif %}
+{% stylesheet %}
+.product-recipe{margin-block:var(--space-section);display:grid;grid-template-columns:minmax(240px,.7fr) minmax(0,1.3fr);gap:clamp(2rem,6vw,7rem);padding-block:clamp(2rem,5vw,4.5rem);border-block:1px solid var(--border)}.product-recipe__eyebrow{margin:0 0 .6rem;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.product-recipe h2{margin:0;font-size:clamp(2.4rem,5vw,5rem);line-height:.95;letter-spacing:-.055em}.product-recipe__intro>p:last-child{max-width:52ch;color:var(--muted)}.product-recipe__data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.product-recipe__data article{padding:clamp(1.3rem,3vw,2.2rem);border-radius:var(--radius-large);background:var(--surface)}.product-recipe__data h3{margin-top:0;font-size:1.35rem}.product-recipe__ratio p{color:var(--accent);font-size:clamp(1.05rem,2vw,1.3rem);font-weight:700;line-height:1.7}.product-recipe__chart{width:min(230px,72vw);aspect-ratio:1;border-radius:50%;margin:1.2rem auto 1.8rem;box-shadow:inset 0 0 0 1px var(--border)}.product-recipe__legend{margin:0;padding:0;display:grid;gap:.65rem;list-style:none}.product-recipe__legend li{display:grid;grid-template-columns:12px 1fr auto;align-items:center;gap:.7rem;padding-bottom:.6rem;border-bottom:1px solid var(--border)}.product-recipe__swatch{width:12px;height:12px;border-radius:50%}.product-recipe__legend strong{font-variant-numeric:tabular-nums}.product-recipe__note{grid-column:2;margin:0;color:var(--muted);font-size:.78rem}@media(max-width:760px){.product-recipe{grid-template-columns:1fr}.product-recipe__data{grid-template-columns:1fr}.product-recipe__note{grid-column:1}}
+{% endstylesheet %}
+{% schema %}{"name":"Rezeptur & Bestandteile","settings":[],"presets":[{"name":"Rezeptur & Bestandteile"}]}{% endschema %}

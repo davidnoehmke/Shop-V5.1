@@ -1,0 +1,131 @@
+{
+  "settings_schema": {
+    "colors": {
+      "name": "Farben",
+      "background": "Hintergrund",
+      "surface": "Flächen",
+      "text": "Text",
+      "accent": "Akzent",
+      "muted": "Dezenter Text"
+    }
+  },
+  "sections": {
+    "announcement": { "name": "Ankündigungsleiste", "text": "Text", "link": "Link" },
+    "header": { "name": "Header", "logo": "Logo", "logo_width": "Logo-Breite", "menu": "Menü" },
+    "footer": { "name": "Footer", "menu": "Menü", "text": "Text" },
+    "hero": {
+      "name": "Hero",
+      "image": "Hintergrundbild",
+      "overlay": "Text-Hintergrund",
+      "heading": "Überschrift",
+      "text": "Text",
+      "primary_label": "Primärer Button-Text",
+      "primary_link": "Primärer Button-Link",
+      "secondary_label": "Sekundärer Button-Text",
+      "secondary_link": "Sekundärer Button-Link",
+      "benefit": "Vorteil",
+      "icon": "Symbol",
+      "benefit_heading": "Vorteils-Überschrift",
+      "benefit_text": "Vorteils-Text"
+    },
+    "featured_collection": {
+      "name": "Produktliste",
+      "heading": "Überschrift",
+      "heading_preset": "Standardüberschrift",
+      "link_label": "Link-Text",
+      "collection": "Kollektion",
+      "collection_info": "Leer lassen, um Produkte automatisch aus dem gesamten Shop zu laden.",
+      "products_to_show": "Anzahl Produkte",
+      "columns": "Spalten",
+      "compact": "Kompakte Karten"
+    },
+    "category_grid": {
+      "name": "Kategorie-Kacheln",
+      "heading": "Überschrift",
+      "automatic": "Kollektionen automatisch laden",
+      "automatic_info": "Verwendet die vorhandenen Shopify-Kollektionen und deren Bilder.",
+      "automatic_limit": "Anzahl Kollektionen",
+      "category": "Kategorie",
+      "icon": "Kategorie-Typ",
+      "title": "Titel",
+      "image": "Bild",
+      "collection": "Kollektion"
+    },
+    "trust_bar": {
+      "name": "Vorteilsleiste",
+      "benefit": "Vorteil",
+      "icon": "Symbol",
+      "heading": "Überschrift",
+      "text": "Text"
+    },
+    "starter_showcase": {
+      "name": "Starter-Kits",
+      "heading": "Überschrift",
+      "text": "Text",
+      "link_label": "Button-Text",
+      "link": "Button-Link",
+      "category": "Projekt-Kategorie",
+      "type": "Projekt-Typ",
+      "title": "Titel",
+      "image": "Bild",
+      "card_link": "Karten-Link"
+    },
+    "community": {
+      "name": "Community-Galerie",
+      "heading": "Überschrift",
+      "handle": "Social-Media-Handle",
+      "image": "Bild",
+      "link": "Link"
+    },
+    "newsletter": {
+      "name": "Newsletter & Service",
+      "heading": "Überschrift",
+      "service": "Service-Vorteil",
+      "icon": "Symbol",
+      "service_heading": "Überschrift",
+      "service_text": "Text"
+    },
+    "faq": {
+      "name": "FAQ",
+      "heading": "Überschrift",
+      "text": "Einleitung",
+      "question": "Frage",
+      "topic": "Thema",
+      "custom_question": "Eigene Frage",
+      "answer": "Antwort"
+    },
+    "main_product": { "name": "Produkt", "show_description": "Beschreibung anzeigen" },
+    "product_variant_description": { "name": "Varianten-Ratgeber" },
+    "main_collection": { "name": "Kollektion" },
+    "main_cart": { "name": "Warenkorb" },
+    "main_page": { "name": "Seite" },
+    "main_404": { "name": "404-Seite" }
+  },
+  "options": {
+    "left": "Links",
+    "center": "Zentriert",
+    "shipping": "Versand",
+    "quality": "Qualität",
+    "natural": "Natürlich",
+    "payment": "Zahlung",
+    "support": "Support",
+    "bestsellers": "Bestseller",
+    "highlights": "Highlights",
+    "substrates": "Substrate",
+    "planters": "Pflanzgefäße",
+    "seeds": "Saatgut",
+    "kits": "Starter-Kits",
+    "accessories": "Zubehör",
+    "young_plants": "Jungpflanzen",
+    "handmade": "Handgemacht",
+    "small_batches": "Kleine Mengen",
+    "versatile": "Vielseitig",
+    "herbs": "Kräuter",
+    "houseplants": "Zimmerpflanzen",
+    "vegetables": "Gemüse",
+    "exotics": "Exoten"
+    ,"substrate": "Substratwahl"
+    ,"application": "Anwendung"
+    ,"plants": "Pflanzenversand"
+  }
+}

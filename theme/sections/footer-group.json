@@ -1,0 +1,57 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "newsletter": {
+      "type": "newsletter-services",
+      "blocks": {
+        "shipping": {
+          "type": "service",
+          "settings": {
+            "icon": "shipping",
+            "heading": "Versandoptionen",
+            "text": "Im Bestellprozess prüfen"
+          }
+        },
+        "payment": {
+          "type": "service",
+          "settings": {
+            "icon": "payment",
+            "heading": "Zahlungsarten",
+            "text": "Im Checkout verfügbar"
+          }
+        },
+        "support": {
+          "type": "service",
+          "settings": {
+            "icon": "support",
+            "heading": "Kundenservice",
+            "text": "Kontakt und Hilfe im Service"
+          }
+        }
+      },
+      "block_order": ["shipping", "payment", "support"],
+      "custom_css": ["section {padding: 0}"],
+      "settings": {
+        "heading": "Newsletter abonnieren"
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "menu": "footer",
+        "text": ""
+      }
+    }
+  },
+  "order": ["newsletter", "footer"]
+}

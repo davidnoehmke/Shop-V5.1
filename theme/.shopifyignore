@@ -1,0 +1,8 @@
+# Repository documentation and automation are not theme assets.
+README.md
+LICENSE
+docs/
+automation/
+.gitignore
+.theme-check.yml
+.shopifyignore

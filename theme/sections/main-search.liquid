@@ -1,0 +1,77 @@
+<section class="main-search page-width">
+  <header><h1>{{ 'search.title' | t }}</h1></header>
+
+  <form action="{{ routes.search_url }}" method="get" role="search">
+    <label for="Search-{{ section.id }}">{{ 'search.label' | t }}</label>
+    <div>
+      <input id="Search-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" autocomplete="off">
+      <button type="submit">{{ 'search.submit' | t }}</button>
+    </div>
+  </form>
+
+  {% if search.performed %}
+    <h2>{{ 'search.results' | t: terms: search.terms }}</h2>
+    {% paginate search.results by 24 %}
+      {% assign rendered_results = 0 %}
+      <div class="main-search__grid">
+        {% for result in search.results %}
+          {% if result.object_type == 'product' %}
+            {% render 'product-card', product: result %}
+            {% assign rendered_results = rendered_results | plus: 1 %}
+          {% elsif result.object_type == 'article' or result.object_type == 'page' %}
+            {% liquid
+              assign result_excerpt = result.content | default: result.excerpt | default: result.body | strip_html | strip | truncate: 170
+              assign result_label = result.object_type
+              if request.locale.iso_code == 'de'
+                if result.object_type == 'article'
+                  assign result_label = 'Ratgeber'
+                else
+                  assign result_label = 'Seite'
+                endif
+              endif
+            %}
+            <article class="main-search__content-card">
+              <p>{{ result_label | capitalize }}</p>
+              <h3><a href="{{ result.url }}">{{ result.title | escape }}</a></h3>
+              {% if result_excerpt != blank %}<div>{{ result_excerpt | escape }}</div>{% endif %}
+              <a class="main-search__content-link" href="{{ result.url }}">
+                {% if request.locale.iso_code == 'de' %}Inhalt ansehen{% else %}View content{% endif %}
+                <span aria-hidden="true">→</span>
+              </a>
+            </article>
+            {% assign rendered_results = rendered_results | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if rendered_results == 0 %}<p class="main-search__empty">{{ 'search.empty' | t }}</p>{% endif %}
+      {% if paginate.pages > 1 %}<nav class="main-search__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
+    {% endpaginate %}
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  .main-search { padding-block: var(--space-section); }
+  .main-search h1 { margin: 0 0 2rem; font-size: clamp(3rem, 8vw, 7rem); line-height: .95; letter-spacing: -.07em; }
+  .main-search form { max-width: 760px; }
+  .main-search form label { display: block; margin-bottom: .5rem; font-weight: 750; }
+  .main-search form > div { display: grid; grid-template-columns: 1fr auto; gap: .5rem; }
+  .main-search input { min-width: 0; min-height: 50px; border: 1px solid var(--border); border-radius: 8px; background: var(--background); padding: .75rem 1rem; }
+  .main-search h2 { margin-top: 3rem; }
+  .main-search__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+  .main-search__content-card { min-width: 0; padding: clamp(1.1rem, 3vw, 1.6rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-search__content-card > p { margin: 0 0 .5rem; color: var(--accent); font-size: .7rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .main-search__content-card h3 { margin: 0; font-size: 1.45rem; line-height: 1.08; }
+  .main-search__content-card h3 a { text-decoration: none; }
+  .main-search__content-card > div { margin-top: .8rem; color: var(--muted); }
+  .main-search__content-link { display: inline-flex; gap: .4rem; margin-top: 1rem; color: var(--accent); font-weight: 800; text-decoration: none; }
+  .main-search__empty { padding: 1.2rem; border: 1px dashed var(--border); border-radius: var(--radius); }
+  .main-search__pagination { display: flex; justify-content: center; padding-top: 3rem; }
+  @media (max-width: 1050px) { .main-search__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 900px) { .main-search__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 560px) { .main-search form > div { grid-template-columns: 1fr; } .main-search__grid { grid-template-columns: 1fr; } }
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "Suche", "settings": [] }
+{% endschema %}

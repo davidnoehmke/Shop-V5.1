@@ -1,0 +1,30 @@
+<section class="brand-story page-width">
+  <div class="brand-story__mark" aria-hidden="true">L</div>
+  <div class="brand-story__copy">
+    <p>{{ 'brand_story.eyebrow' | t }}</p>
+    <h2>{{ 'brand_story.heading' | t }}</h2>
+    <div class="brand-story__columns">
+      <p>{{ 'brand_story.text_one' | t }}</p>
+      <p>{{ 'brand_story.text_two' | t }}</p>
+    </div>
+    <a class="brand-story__link" href="{{ section.settings.link | default: routes.all_products_collection_url }}">{{ 'brand_story.link' | t }}</a>
+  </div>
+</section>
+
+{% stylesheet %}
+  .brand-story { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(150px, .35fr) minmax(0, 1.65fr); gap: clamp(2rem, 7vw, 8rem); align-items: start; }
+  .brand-story__mark { aspect-ratio: 1; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: var(--background); font-family: var(--heading-font); font-size: clamp(5rem, 12vw, 11rem); line-height: 1; }
+  .brand-story__copy > p:first-child { margin: 0; color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .brand-story h2 { max-width: 920px; margin: .5rem 0 2rem; font-size: clamp(2.8rem, 6vw, 6rem); line-height: .94; letter-spacing: -.065em; }
+  .brand-story__columns { max-width: 920px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; color: var(--muted); }
+  .brand-story__link { margin-top: 1.5rem; min-height: 48px; padding-inline: 1.5rem; display: inline-flex; align-items: center; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-weight: 750; text-decoration: none; }
+  @media (max-width: 760px) { .brand-story { grid-template-columns: 1fr; } .brand-story__mark { width: 130px; } .brand-story__columns { grid-template-columns: 1fr; gap: .5rem; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAFerservice Markenstory",
+  "settings": [{ "type": "url", "id": "link", "label": "Ziel des Links" }],
+  "presets": [{ "name": "LEAFerservice Markenstory" }]
+}
+{% endschema %}

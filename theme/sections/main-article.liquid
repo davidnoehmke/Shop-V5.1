@@ -1,0 +1,263 @@
+{% liquid
+  if request.locale.iso_code == 'de'
+    assign article_eyebrow = 'LEAFerservice Ratgeber'
+    assign back_label = 'Alle Ratgeber'
+    assign related_heading = 'Passend weiterlesen'
+    assign read_label = 'Ratgeber lesen'
+    assign cta_eyebrow_default = 'Nächster sinnvoller Schritt'
+    assign cta_heading_default = 'Finde das passende Substrat für deine Pflanze.'
+    assign cta_text_default = 'Wähle ein Pflanzenprofil und vergleiche Menge, Preis und Rezeptur vor dem Kauf.'
+    assign cta_label_default = 'Substrat konfigurieren'
+  else
+    assign article_eyebrow = 'LEAFerservice guides'
+    assign back_label = 'All guides'
+    assign related_heading = 'Continue reading'
+    assign read_label = 'Read guide'
+    assign cta_eyebrow_default = 'A practical next step'
+    assign cta_heading_default = 'Find the right substrate for your plant.'
+    assign cta_text_default = 'Choose a plant profile and compare volume, price and recipe before buying.'
+    assign cta_label_default = 'Configure substrate'
+  endif
+
+  assign cta_eyebrow = section.settings.cta_eyebrow | default: cta_eyebrow_default
+  assign cta_heading = section.settings.cta_heading | default: cta_heading_default
+  assign cta_label = section.settings.cta_label | default: cta_label_default
+  assign article_alt = article.image.alt | default: article.title
+%}
+
+<article class="main-article">
+  <header class="main-article__header page-width">
+    <nav class="main-article__breadcrumbs" aria-label="{{ 'product.breadcrumbs' | t }}">
+      <a href="{{ routes.root_url }}">{{ 'header.home' | t }}</a><span aria-hidden="true">/</span>
+      <a href="{{ blog.url }}">{{ blog.title | escape }}</a><span aria-hidden="true">/</span>
+      <span aria-current="page">{{ article.title | escape }}</span>
+    </nav>
+    <p class="main-article__eyebrow">{{ article_eyebrow }}</p>
+    <h1>{{ article.title | escape }}</h1>
+    <div class="main-article__meta">
+      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+        {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
+      </time>
+      {% if article.author != blank %}<span>{{ article.author | escape }}</span>{% endif %}
+      {% if article.tags.size > 0 %}<span>{{ article.tags | join: ' · ' | escape }}</span>{% endif %}
+    </div>
+  </header>
+
+  {% if article.image != blank %}
+    <figure class="main-article__hero page-width">
+      {{ article.image | image_url: width: 2200 | image_tag: widths: '750, 1100, 1500, 1800, 2200', sizes: '(min-width: 1400px) 1320px, calc(100vw - 2rem)', loading: 'eager', fetchpriority: 'high', alt: article_alt }}
+    </figure>
+  {% endif %}
+
+  <section class="main-article__tools page-width" data-article-tools aria-label="Interaktive Lesehilfe">
+    <div class="main-article__tools-head">
+      <div>
+        <p class="main-article__tools-eyebrow">Leseweg</p>
+        <p class="main-article__progress-text" data-article-progress aria-live="polite">0 % gelesen</p>
+      </div>
+      <button class="main-article__focus-button" type="button" data-article-focus aria-pressed="false">Fokusmodus öffnen</button>
+    </div>
+    <nav class="main-article__toc" data-article-toc aria-label="Inhalt des Beitrags">
+      <p>In diesem Beitrag</p>
+      <ol data-article-toc-list></ol>
+    </nav>
+  </section>
+
+  <div class="main-article__layout page-width">
+    <div class="main-article__body rte" data-article-body>{{ article.content }}</div>
+
+    <aside class="main-article__rail">
+      <a class="main-article__back" href="{{ blog.url }}"><span aria-hidden="true">←</span> {{ back_label }}</a>
+      {% if article.tags.size > 0 %}
+        <div class="main-article__tags" aria-label="Tags">
+          {% for tag in article.tags %}<span>{{ tag | escape }}</span>{% endfor %}
+        </div>
+      {% endif %}
+    </aside>
+  </div>
+
+  {% if section.settings.show_cta %}
+    <section class="main-article__cta page-width" aria-labelledby="ArticleCta-{{ section.id }}">
+      <div>
+        <p>{{ cta_eyebrow | escape }}</p>
+        <h2 id="ArticleCta-{{ section.id }}">{{ cta_heading | escape }}</h2>
+        {% if section.settings.cta_text != blank %}<div class="rte">{{ section.settings.cta_text }}</div>{% else %}<p class="main-article__cta-text">{{ cta_text_default }}</p>{% endif %}
+      </div>
+      <a class="button" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">{{ cta_label | escape }} <span aria-hidden="true">→</span></a>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_related and blog.articles.size > 1 %}
+    <section class="main-article__related page-width" aria-labelledby="RelatedArticles-{{ section.id }}">
+      <h2 id="RelatedArticles-{{ section.id }}">{{ related_heading }}</h2>
+      <div class="main-article__related-grid">
+        {% assign related_count = 0 %}
+        {% for related_article in blog.articles %}
+          {% unless related_article.id == article.id %}
+            {% liquid
+              assign related_alt = related_article.image.alt | default: related_article.title
+              assign related_excerpt = related_article.excerpt_or_content | strip_html | strip | truncate: 120
+              assign related_count = related_count | plus: 1
+            %}
+            <article class="main-article__related-card">
+              <a class="main-article__related-media" href="{{ related_article.url }}" aria-label="{{ related_article.title | escape }}">
+                {% if related_article.image != blank %}
+                  {{ related_article.image | image_url: width: 900 | image_tag: widths: '360, 540, 720, 900', sizes: '(min-width: 900px) 33vw, 100vw', loading: 'lazy', alt: related_alt }}
+                {% else %}
+                  <span aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
+                {% endif %}
+              </a>
+              <div>
+                <h3><a href="{{ related_article.url }}">{{ related_article.title | escape }}</a></h3>
+                {% if related_excerpt != blank %}<p>{{ related_excerpt | escape }}</p>{% endif %}
+                <a href="{{ related_article.url }}">{{ read_label }} <span aria-hidden="true">→</span></a>
+              </div>
+            </article>
+            {% if related_count >= section.settings.related_limit %}{% break %}{% endif %}
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+</article>
+
+{% stylesheet %}
+  .main-article { padding-block: clamp(2rem, 6vw, 6rem); }
+  .main-article__header { max-width: 1120px; }
+  .main-article__breadcrumbs { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: clamp(2rem, 5vw, 4rem); color: var(--muted); font-size: .75rem; }
+  .main-article__breadcrumbs a { color: inherit; }
+  .main-article__eyebrow, .main-article__cta > div > p { margin: 0 0 .7rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-article h1 { max-width: 17ch; margin: 0; font-size: clamp(3rem, 7.5vw, 7rem); line-height: .92; letter-spacing: -.065em; }
+  .main-article__meta { display: flex; flex-wrap: wrap; gap: .65rem 1.25rem; margin-top: 1.4rem; color: var(--muted); font-size: .8rem; }
+  .main-article__hero { margin-top: clamp(2rem, 6vw, 5rem); }
+  .main-article__hero img { width: 100%; max-height: 760px; border-radius: var(--radius-large); object-fit: cover; }
+  .main-article__layout { display: grid; grid-template-columns: minmax(0, 820px) minmax(220px, 1fr); gap: clamp(2rem, 8vw, 8rem); align-items: start; margin-top: clamp(2.5rem, 6vw, 5rem); }
+  .main-article__body { min-width: 0; font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.75; }
+  .main-article__body h2 { margin: 2.2em 0 .65em; font-size: clamp(2rem, 4.5vw, 3.8rem); line-height: 1; letter-spacing: -.04em; }
+  .main-article__body h3 { margin: 1.8em 0 .55em; font-size: clamp(1.4rem, 3vw, 2.25rem); line-height: 1.08; }
+  .main-article__body img { height: auto; border-radius: var(--radius-large); }
+  .main-article__body blockquote { margin: 2rem 0; padding: 1.2rem 1.4rem; border-left: 4px solid var(--accent); background: color-mix(in srgb, var(--accent-soft), transparent 35%); }
+  .main-article__body table { width: 100%; border-collapse: collapse; }
+  .main-article__body th, .main-article__body td { padding: .8rem; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+  .main-article__rail { position: sticky; top: 110px; display: grid; gap: 1rem; }
+  .main-article__back { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent); font-weight: 800; text-decoration: none; }
+  .main-article__tags { display: flex; flex-wrap: wrap; gap: .45rem; }
+  .main-article__tags span { padding: .4rem .65rem; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: .72rem; }
+  .main-article__cta { display: flex; align-items: center; justify-content: space-between; gap: clamp(1.5rem, 5vw, 4rem); margin-top: var(--space-section); padding: clamp(1.5rem, 5vw, 4rem); border-radius: var(--radius-large); background: var(--text); color: var(--background); }
+  .main-article__cta > div { max-width: 760px; }
+  .main-article__cta > div > p:first-child { color: var(--accent-soft); }
+  .main-article__cta h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.2rem); line-height: .98; }
+  .main-article__cta .rte, .main-article__cta-text { max-width: 62ch; color: color-mix(in srgb, var(--background), transparent 22%); }
+  .main-article__cta .button { flex: 0 0 auto; gap: .5rem; background: var(--accent-soft); color: var(--text); }
+  .main-article__related { margin-top: var(--space-section); }
+  .main-article__related > h2 { margin: 0 0 1.5rem; font-size: clamp(2rem, 4vw, 3.6rem); }
+  .main-article__related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .main-article__related-card { min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-article__related-media { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--accent-soft); }
+  .main-article__related-media img, .main-article__related-media span, .main-article__related-media svg { width: 100%; height: 100%; object-fit: cover; }
+  .main-article__related-card > div { padding: 1.15rem; }
+  .main-article__related-card h3 { margin: 0; font-size: 1.45rem; line-height: 1.08; }
+  .main-article__related-card h3 a, .main-article__related-card > div > a { color: inherit; text-decoration: none; }
+  .main-article__related-card p { color: var(--muted); font-size: .88rem; }
+  .main-article__related-card > div > a { color: var(--accent); font-size: .82rem; font-weight: 800; }
+  .main-article__tools { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px); gap: 1rem; margin-top: clamp(2rem, 5vw, 4rem); }
+  .main-article__tools-head, .main-article__toc { border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-article__tools-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; }
+  .main-article__tools-eyebrow, .main-article__toc > p { margin: 0; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-article__progress-text { margin: .25rem 0 0; color: var(--muted); font-size: .86rem; }
+  .main-article__focus-button { border: 1px solid var(--accent); border-radius: 999px; padding: .75rem 1rem; background: transparent; color: var(--accent); font: inherit; font-size: .82rem; font-weight: 800; cursor: pointer; }
+  .main-article__focus-button:hover, .main-article__focus-button:focus-visible { background: var(--accent); color: var(--background); }
+  .main-article__toc { padding: 1rem 1.2rem; }
+  .main-article__toc ol { display: flex; flex-wrap: wrap; gap: .5rem; margin: .7rem 0 0; padding: 0; list-style: none; }
+  .main-article__toc li { margin: 0; }
+  .main-article__toc a { display: block; padding: .42rem .7rem; border-radius: 999px; background: var(--accent-soft); color: var(--text); font-size: .78rem; line-height: 1.25; text-decoration: none; }
+  .main-article__toc a:hover, .main-article__toc a:focus-visible, .main-article__toc a[aria-current="true"] { background: var(--accent); color: var(--background); }
+  .main-article--focus .main-article__layout { grid-template-columns: minmax(0, 900px); justify-content: center; }
+  .main-article--focus .main-article__rail { display: none; }
+  .main-article--focus .main-article__tools { max-width: 900px; grid-template-columns: 1fr; }
+  .main-article__body h2 { scroll-margin-top: 120px; }
+  .main-article__body .article-faq { margin: 1rem 0; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); }
+  .main-article__body .article-faq summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.15rem; color: var(--text); font-weight: 800; cursor: pointer; list-style: none; }
+  .main-article__body .article-faq summary::-webkit-details-marker { display: none; }
+  .main-article__body .article-faq summary::after { content: '+'; color: var(--accent); font-size: 1.35rem; line-height: 1; }
+  .main-article__body .article-faq[open] summary::after { content: '−'; }
+  .main-article__body .article-faq summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: -3px; }
+  .main-article__body .article-faq p { margin: 0; padding: 0 1.15rem 1.1rem; color: var(--muted); }
+  @media (max-width: 900px) {
+    .main-article__layout { grid-template-columns: 1fr; }
+    .main-article__rail { position: static; grid-row: 1; }
+    .main-article__cta { align-items: flex-start; flex-direction: column; }
+    .main-article__related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 620px) {
+    .main-article__related-grid { grid-template-columns: 1fr; }
+    .main-article__cta .button { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const tools = document.querySelector('[data-article-tools]');
+    if (!tools) return;
+    const article = tools.closest('.main-article');
+    const body = article?.querySelector('[data-article-body]');
+    const tocList = tools.querySelector('[data-article-toc-list]');
+    const progress = tools.querySelector('[data-article-progress]');
+    const focusButton = tools.querySelector('[data-article-focus]');
+    if (!article || !body || !tocList || !progress || !focusButton) return;
+
+    const headings = [...body.querySelectorAll('h2')];
+    headings.forEach((heading, index) => {
+      if (!heading.id) heading.id = `ArticleSection-${index + 1}-${heading.textContent.trim().toLowerCase().replace(/[^a-z0-9äöüß]+/gi, '-').replace(/^-|-$/g, '')}`;
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent.trim();
+      link.addEventListener('click', () => {
+        heading.focus({preventScroll: true});
+      });
+      item.append(link);
+      tocList.append(item);
+    });
+    if (!headings.length) tools.querySelector('[data-article-toc]').hidden = true;
+
+    const updateProgress = () => {
+      const start = body.getBoundingClientRect().top + window.scrollY - window.innerHeight * .35;
+      const end = body.getBoundingClientRect().bottom + window.scrollY - window.innerHeight * .65;
+      const value = end <= start ? 100 : Math.min(100, Math.max(0, ((window.scrollY - start) / (end - start)) * 100));
+      progress.textContent = `${Math.round(value)} % gelesen`;
+      const visible = headings.reduce((current, heading) => {
+        if (heading.getBoundingClientRect().top <= window.innerHeight * .3) return heading;
+        return current;
+      }, headings[0]);
+      headings.forEach((heading) => {
+        const link = tocList.querySelector(`a[href="#${heading.id}"]`);
+        if (link) link.setAttribute('aria-current', heading === visible ? 'true' : 'false');
+      });
+    };
+
+    focusButton.addEventListener('click', () => {
+      const active = article.classList.toggle('main-article--focus');
+      focusButton.setAttribute('aria-pressed', active ? 'true' : 'false');
+      focusButton.textContent = active ? 'Fokusmodus schließen' : 'Fokusmodus öffnen';
+    });
+    window.addEventListener('scroll', updateProgress, {passive: true});
+    window.addEventListener('resize', updateProgress);
+    updateProgress();
+  })();
+{% endjavascript %}
+{% schema %}
+{
+  "name": "Ratgeber-Beitrag",
+  "settings": [
+    { "type": "checkbox", "id": "show_cta", "label": "Abschluss-CTA anzeigen", "default": true },
+    { "type": "text", "id": "cta_eyebrow", "label": "CTA-Kicker" },
+    { "type": "text", "id": "cta_heading", "label": "CTA-Überschrift" },
+    { "type": "richtext", "id": "cta_text", "label": "CTA-Text" },
+    { "type": "text", "id": "cta_label", "label": "CTA-Beschriftung" },
+    { "type": "url", "id": "cta_link", "label": "CTA-Link" },
+    { "type": "checkbox", "id": "show_related", "label": "Weitere Beiträge anzeigen", "default": true },
+    { "type": "range", "id": "related_limit", "label": "Anzahl weiterer Beiträge", "min": 2, "max": 4, "step": 1, "default": 3 }
+  ]
+}
+{% endschema %}

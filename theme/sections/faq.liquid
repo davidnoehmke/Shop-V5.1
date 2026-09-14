@@ -1,0 +1,92 @@
+<section class="faq page-width" aria-labelledby="FaqHeading-{{ section.id }}">
+  <header class="faq__header">
+    <p>{{ 'faq.eyebrow' | t }}</p>
+    <h2 id="FaqHeading-{{ section.id }}">{% if section.settings.heading != blank %}{{ section.settings.heading }}{% else %}{{ 'faq.heading' | t }}{% endif %}</h2>
+    {% if section.settings.text != blank %}<div class="faq__intro">{{ section.settings.text }}</div>{% else %}<p>{{ 'faq.intro' | t }}</p>{% endif %}
+  </header>
+  <div class="faq__items">
+    {% for block in section.blocks %}
+      <details name="faq-{{ section.id }}" {{ block.shopify_attributes }}>
+        <summary>
+          <span>
+            {% if block.settings.question != blank %}
+              {{ block.settings.question }}
+            {% else %}
+              {% case block.settings.topic %}
+                {% when 'substrate' %}{{ 'faq.substrate_question' | t }}
+                {% when 'application' %}{{ 'faq.application_question' | t }}
+                {% when 'plants' %}{{ 'faq.plants_question' | t }}
+                {% else %}{{ 'faq.shipping_question' | t }}
+              {% endcase %}
+            {% endif %}
+          </span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </summary>
+        <div class="faq__answer">
+          {% if block.settings.answer != blank %}
+            {{ block.settings.answer }}
+          {% else %}
+            <p>
+              {% case block.settings.topic %}
+                {% when 'substrate' %}{{ 'faq.substrate_answer' | t }}
+                {% when 'application' %}{{ 'faq.application_answer' | t }}
+                {% when 'plants' %}{{ 'faq.plants_answer' | t }}
+                {% else %}{{ 'faq.shipping_answer' | t }}
+              {% endcase %}
+            </p>
+          {% endif %}
+        </div>
+      </details>
+    {% endfor %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .faq { padding-block: var(--space-section); display: grid; grid-template-columns: minmax(240px, .75fr) minmax(0, 1.25fr); gap: clamp(2rem, 7vw, 7rem); }
+  .faq__header { position: sticky; top: 130px; align-self: start; }
+  .faq__header > p:first-child { margin: 0 0 .5rem; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .faq__header h2 { margin: 0; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -.04em; }
+  .faq__header > p:last-child, .faq__intro { max-width: 430px; color: var(--muted); }
+  .faq__intro > *:first-child { margin-top: 0; }
+  .faq__intro > *:last-child { margin-bottom: 0; }
+  .faq__items { border-top: 1px solid var(--border); }
+  .faq details { border-bottom: 1px solid var(--border); }
+  .faq summary { min-height: 76px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 1rem; cursor: pointer; list-style: none; font-size: clamp(1rem, 2vw, 1.18rem); font-weight: 750; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary svg { width: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; transition: transform .35s var(--ease-out); }
+  .faq details[open] summary svg { transform: rotate(45deg); }
+  .faq details::details-content { block-size: 0; overflow: clip; opacity: 0; transition: block-size .4s var(--ease-out), opacity .3s ease, content-visibility .4s allow-discrete; }
+  .faq details[open]::details-content { block-size: auto; opacity: 1; }
+  .faq__answer { padding: 0 2.5rem 1.5rem 0; color: var(--muted); }
+  .faq__answer > *:first-child { margin-top: 0; }
+  .faq__answer > *:last-child { margin-bottom: 0; }
+  @media (max-width: 760px) { .faq { grid-template-columns: 1fr; gap: 1.5rem; } .faq__header { position: static; } .faq summary { min-height: 68px; } .faq__answer { padding-right: 1rem; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.faq.name",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "t:sections.faq.heading" },
+    { "type": "richtext", "id": "text", "label": "t:sections.faq.text" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "t:sections.faq.question",
+      "settings": [
+        { "type": "select", "id": "topic", "label": "t:sections.faq.topic", "options": [
+          { "value": "substrate", "label": "t:options.substrate" },
+          { "value": "application", "label": "t:options.application" },
+          { "value": "plants", "label": "t:options.plants" },
+          { "value": "shipping", "label": "t:options.shipping" }
+        ], "default": "substrate" },
+        { "type": "text", "id": "question", "label": "t:sections.faq.custom_question" },
+        { "type": "richtext", "id": "answer", "label": "t:sections.faq.answer" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "t:sections.faq.name", "blocks": [{ "type": "question" }, { "type": "question" }, { "type": "question" }, { "type": "question" }] }]
+}
+{% endschema %}

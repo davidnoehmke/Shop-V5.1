@@ -1,0 +1,173 @@
+{% liquid
+  if request.locale.iso_code == 'de'
+    assign blog_eyebrow = 'LEAFerservice Ratgeber'
+    assign article_count_label = 'veröffentlichte Beiträge'
+    assign featured_label = 'Neu im Ratgeber'
+    assign read_label = 'Ratgeber lesen'
+    assign empty_title = 'Noch keine Beiträge veröffentlicht'
+    assign empty_text = 'Sobald neue Ratgeber verfügbar sind, findest du sie an dieser Stelle.'
+  else
+    assign blog_eyebrow = 'LEAFerservice guides'
+    assign article_count_label = 'published articles'
+    assign featured_label = 'New in the guides'
+    assign read_label = 'Read guide'
+    assign empty_title = 'No articles published yet'
+    assign empty_text = 'New guides will appear here as soon as they are available.'
+  endif
+%}
+
+<section class="main-blog page-width" aria-labelledby="MainBlogHeading-{{ section.id }}">
+  <header class="main-blog__header">
+    <div>
+      <p class="main-blog__eyebrow">{{ blog_eyebrow }}</p>
+      <h1 id="MainBlogHeading-{{ section.id }}">{{ blog.title | escape }}</h1>
+      {% if section.settings.intro != blank %}
+        <div class="main-blog__intro rte">{{ section.settings.intro }}</div>
+      {% endif %}
+    </div>
+    <p class="main-blog__count">{{ blog.articles_count }} {{ article_count_label }}</p>
+  </header>
+
+  {% paginate blog.articles by section.settings.articles_per_page %}
+    {% if blog.articles.size > 0 %}
+      {% liquid
+        assign featured_article = blank
+        if paginate.current_page == 1 and section.settings.show_featured
+          assign featured_article = blog.articles.first
+        endif
+      %}
+
+      {% if featured_article != blank %}
+        {% liquid
+          assign featured_alt = featured_article.image.alt | default: featured_article.title
+          assign featured_excerpt = featured_article.excerpt_or_content | strip_html | strip | truncate: 240
+        %}
+        <article class="main-blog__featured">
+          <a class="main-blog__featured-media" href="{{ featured_article.url }}" aria-label="{{ featured_article.title | escape }}">
+            {% if featured_article.image != blank %}
+              {{ featured_article.image | image_url: width: 1800 | image_tag: widths: '600, 900, 1200, 1500, 1800', sizes: '(min-width: 900px) 58vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: featured_alt }}
+            {% else %}
+              <span aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
+            {% endif %}
+          </a>
+          <div class="main-blog__featured-copy">
+            <p class="main-blog__card-label">{{ featured_label }}</p>
+            {% if section.settings.show_date %}
+              <time datetime="{{ featured_article.published_at | date: '%Y-%m-%d' }}">
+                {% if request.locale.iso_code == 'de' %}{{ featured_article.published_at | date: '%d.%m.%Y' }}{% else %}{{ featured_article.published_at | date: '%B %d, %Y' }}{% endif %}
+              </time>
+            {% endif %}
+            <h2><a href="{{ featured_article.url }}">{{ featured_article.title | escape }}</a></h2>
+            {% if section.settings.show_excerpt and featured_excerpt != blank %}<p>{{ featured_excerpt | escape }}</p>{% endif %}
+            <a class="main-blog__link" href="{{ featured_article.url }}">{{ read_label }} <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      {% endif %}
+
+      <div class="main-blog__grid">
+        {% for article in blog.articles %}
+          {% if featured_article == blank or article.id != featured_article.id %}
+            {% liquid
+              assign article_alt = article.image.alt | default: article.title
+              assign article_excerpt = article.excerpt_or_content | strip_html | strip | truncate: 175
+            %}
+            <article class="main-blog__card">
+              <a class="main-blog__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
+                {% if article.image != blank %}
+                  {{ article.image | image_url: width: 1000 | image_tag: widths: '360, 540, 760, 1000', sizes: '(min-width: 1000px) 33vw, (min-width: 650px) 50vw, 100vw', loading: 'lazy', alt: article_alt }}
+                {% else %}
+                  <span aria-hidden="true">{{ 'lifestyle-2' | placeholder_svg_tag }}</span>
+                {% endif %}
+              </a>
+              <div class="main-blog__card-body">
+                <div class="main-blog__meta">
+                  {% if article.tags.first != blank %}<span>{{ article.tags.first | escape }}</span>{% endif %}
+                  {% if section.settings.show_date %}
+                    <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                      {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
+                    </time>
+                  {% endif %}
+                </div>
+                <h2><a href="{{ article.url }}">{{ article.title | escape }}</a></h2>
+                {% if section.settings.show_excerpt and article_excerpt != blank %}<p>{{ article_excerpt | escape }}</p>{% endif %}
+                <a class="main-blog__link" href="{{ article.url }}">{{ read_label }} <span aria-hidden="true">→</span></a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if paginate.pages > 1 %}
+        <nav class="main-blog__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>
+      {% endif %}
+    {% else %}
+      <div class="main-blog__empty">
+        <h2>{{ empty_title }}</h2>
+        <p>{{ empty_text }}</p>
+      </div>
+    {% endif %}
+  {% endpaginate %}
+</section>
+
+{% stylesheet %}
+  .main-blog { padding-block: clamp(3rem, 7vw, 7rem); }
+  .main-blog__header { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-bottom: clamp(2rem, 5vw, 4rem); }
+  .main-blog__header > div { max-width: 900px; }
+  .main-blog__eyebrow, .main-blog__card-label { margin: 0 0 .7rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-blog h1 { margin: 0; max-width: 14ch; font-size: clamp(3rem, 8vw, 7rem); line-height: .92; letter-spacing: -.065em; }
+  .main-blog__intro { max-width: 68ch; margin-top: 1.2rem; color: var(--muted); font-size: clamp(1rem, 1.7vw, 1.2rem); }
+  .main-blog__count { flex: 0 0 auto; margin: 0; color: var(--muted); font-size: .82rem; }
+  .main-blog__featured { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); overflow: hidden; margin-bottom: clamp(2.5rem, 6vw, 5rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-blog__featured-media, .main-blog__media { display: block; overflow: hidden; background: color-mix(in srgb, var(--accent-soft), transparent 30%); }
+  .main-blog__featured-media { min-height: 440px; }
+  .main-blog__featured-media img, .main-blog__featured-media span, .main-blog__featured-media svg, .main-blog__media img, .main-blog__media span, .main-blog__media svg { width: 100%; height: 100%; object-fit: cover; }
+  .main-blog__featured-copy { align-self: center; padding: clamp(1.5rem, 5vw, 4rem); }
+  .main-blog__featured time, .main-blog__meta { color: var(--muted); font-size: .75rem; }
+  .main-blog__featured h2 { margin: .75rem 0 1rem; font-size: clamp(2rem, 4vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .main-blog h2 a { color: inherit; text-decoration: none; }
+  .main-blog__featured-copy > p:not(.main-blog__card-label), .main-blog__card-body > p { color: var(--muted); }
+  .main-blog__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .main-blog__card { min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb, var(--surface), transparent 6%); transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out); }
+  .main-blog__media { aspect-ratio: 16 / 10; }
+  .main-blog__media img { transition: transform .55s var(--ease-out); }
+  .main-blog__card-body { padding: 1.25rem; }
+  .main-blog__meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+  .main-blog__meta span { color: var(--accent); font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+  .main-blog__card h2 { margin: .7rem 0; font-size: clamp(1.45rem, 2.6vw, 2.15rem); line-height: 1.04; letter-spacing: -.025em; }
+  .main-blog__card-body > p { margin: 0 0 1rem; font-size: .92rem; }
+  .main-blog__link { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent); font-size: .84rem; font-weight: 850; text-decoration: none; }
+  .main-blog__link span { transition: transform .2s ease; }
+  .main-blog__link:hover span { transform: translateX(.2rem); }
+  .main-blog__pagination { display: flex; justify-content: center; padding-top: 3rem; }
+  .main-blog__pagination .page, .main-blog__pagination .next, .main-blog__pagination .prev { padding: .55rem; }
+  .main-blog__empty { padding: clamp(2rem, 6vw, 5rem); border: 1px dashed var(--border); border-radius: var(--radius-large); text-align: center; }
+  .main-blog__empty h2 { margin-top: 0; }
+  @media (hover: hover) and (pointer: fine) {
+    .main-blog__card:hover { transform: translateY(-5px); box-shadow: var(--shadow-soft); }
+    .main-blog__card:hover .main-blog__media img { transform: scale(1.035); }
+  }
+  @media (max-width: 980px) {
+    .main-blog__featured { grid-template-columns: 1fr; }
+    .main-blog__featured-media { min-height: 0; aspect-ratio: 16 / 10; }
+    .main-blog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 650px) {
+    .main-blog { padding-block: 2.5rem; }
+    .main-blog__header { align-items: start; flex-direction: column; }
+    .main-blog__grid { grid-template-columns: 1fr; }
+    .main-blog__featured-copy { padding: 1.25rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog-Übersicht",
+  "settings": [
+    { "type": "richtext", "id": "intro", "label": "Einleitung" },
+    { "type": "checkbox", "id": "show_featured", "label": "Ersten Beitrag hervorheben", "default": true },
+    { "type": "checkbox", "id": "show_excerpt", "label": "Kurztexte anzeigen", "default": true },
+    { "type": "checkbox", "id": "show_date", "label": "Datum anzeigen", "default": true },
+    { "type": "range", "id": "articles_per_page", "label": "Beiträge pro Seite", "min": 6, "max": 18, "step": 2, "default": 10 }
+  ]
+}
+{% endschema %}

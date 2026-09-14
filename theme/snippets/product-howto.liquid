@@ -1,0 +1,73 @@
+{% doc %}
+  Renders the product-specific application steps as a visible HowTo section and
+  matching HowTo JSON-LD. Steps are stored in leafer.application_steps.
+
+  @param {product} product - Product with application steps
+{% enddoc %}
+
+{% assign application_steps = product.metafields.leafer.application_steps.value %}
+
+{% if application_steps != blank %}
+  {% capture howto_name %}So verwendest du {{ product.title }}{% endcapture %}
+
+  <section class="product-howto page-width" aria-labelledby="ProductHowTo-{{ section.id }}">
+    <div class="product-howto__intro">
+      <p class="product-howto__eyebrow">Anwendung</p>
+      <h2 id="ProductHowTo-{{ section.id }}">So verwendest du {{ product.title | escape }}</h2>
+      <p>In drei klaren Schritten zur passenden Anwendung deiner Mischung.</p>
+    </div>
+    <ol class="product-howto__steps">
+      {% for step in application_steps %}
+        {% if step != blank %}
+          <li class="product-howto__step">
+            <span class="product-howto__number" aria-hidden="true">{{ forloop.index }}</span>
+            <div><p>{{ step | escape }}</p></div>
+          </li>
+        {% endif %}
+      {% endfor %}
+    </ol>
+  </section>
+
+  {% assign step_count = 0 %}
+  {% capture howto_steps %}
+    {% for step in application_steps %}
+      {% if step != blank %}
+        {% if step_count > 0 %},{% endif %}
+        {
+          "@type": "HowToStep",
+          "position": {{ step_count | plus: 1 }},
+          "name": {{ step | json }},
+          "text": {{ step | json }}
+        }
+        {% assign step_count = step_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+
+  {% if step_count > 0 %}
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": {{ howto_name | strip | json }},
+        "step": [{{ howto_steps | strip }}]
+      }
+    </script>
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  .product-howto { display: grid; grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); gap: clamp(1.5rem, 5vw, 5rem); margin-block: clamp(2.5rem, 7vw, 7rem); padding-block: clamp(1.5rem, 4vw, 3.5rem); border-block: 1px solid var(--border); }
+  .product-howto__intro { align-self: start; }
+  .product-howto__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .product-howto h2 { max-width: 14ch; margin: 0; font-size: clamp(2rem, 4vw, 4rem); line-height: .98; letter-spacing: -.05em; }
+  .product-howto__intro > p:last-child { max-width: 34ch; margin-bottom: 0; color: var(--muted); }
+  .product-howto__steps { display: grid; gap: .8rem; margin: 0; padding: 0; list-style: none; counter-reset: howto; }
+  .product-howto__step { display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 1rem; align-items: start; padding: 1.1rem 1.2rem; border: 1px solid var(--border); border-radius: var(--radius); background: color-mix(in srgb, var(--background), var(--accent) 4%); }
+  .product-howto__number { display: grid; width: 2.4rem; height: 2.4rem; place-items: center; border-radius: 50%; background: var(--accent); color: var(--background); font-size: .85rem; font-weight: 850; }
+  .product-howto__step p { margin: .18rem 0 0; line-height: 1.55; }
+  @media (max-width: 800px) {
+    .product-howto { grid-template-columns: 1fr; gap: 1.4rem; margin-block: 2.5rem; }
+    .product-howto h2 { max-width: 18ch; font-size: clamp(2rem, 10vw, 3rem); }
+  }
+{% endstylesheet %}

@@ -1,0 +1,135 @@
+{% liquid
+  if request.locale.iso_code == 'de'
+    assign eyebrow = 'Kontakt & Beratung'
+    assign heading = page.title | default: 'Kontakt'
+    assign intro = 'Beschreibe kurz dein Anliegen. Je genauer Pflanzenart, Standort oder Produkt genannt sind, desto gezielter können wir antworten.'
+    assign response_label = 'Antwortzeit'
+    assign response_text = section.settings.response_time | default: 'In der Regel innerhalb von 1–2 Werktagen.'
+    assign success_heading = 'Nachricht gesendet'
+    assign success_text = 'Danke für deine Nachricht. Wir melden uns so bald wie möglich.'
+    assign error_heading = 'Bitte prüfe deine Angaben'
+    assign name_label = 'Name'
+    assign email_label = 'E-Mail-Adresse'
+    assign phone_label = 'Telefonnummer (optional)'
+    assign message_label = 'Worum geht es?'
+    assign message_placeholder = 'Produkt, Pflanze oder Bestellnummer sowie deine Frage …'
+    assign submit_label = 'Nachricht senden'
+    assign privacy_text = 'Deine Angaben werden ausschließlich zur Bearbeitung deiner Anfrage verwendet.'
+  else
+    assign eyebrow = 'Contact and advice'
+    assign heading = page.title | default: 'Contact'
+    assign intro = 'Briefly describe what you need help with. Mentioning the plant, location or product helps us answer more precisely.'
+    assign response_label = 'Response time'
+    assign response_text = section.settings.response_time | default: 'Usually within 1–2 business days.'
+    assign success_heading = 'Message sent'
+    assign success_text = 'Thank you for your message. We will get back to you as soon as possible.'
+    assign error_heading = 'Please check your details'
+    assign name_label = 'Name'
+    assign email_label = 'Email address'
+    assign phone_label = 'Phone number (optional)'
+    assign message_label = 'How can we help?'
+    assign message_placeholder = 'Product, plant or order number and your question …'
+    assign submit_label = 'Send message'
+    assign privacy_text = 'Your details are used only to process your request.'
+  endif
+  assign contact_form_id = 'ContactForm-' | append: section.id
+%}
+
+<section class="main-contact page-width" aria-labelledby="ContactHeading-{{ section.id }}">
+  <div class="main-contact__intro">
+    <p class="main-contact__eyebrow">{{ eyebrow }}</p>
+    <h1 id="ContactHeading-{{ section.id }}">{{ heading | escape }}</h1>
+    <p class="main-contact__lead">{{ intro }}</p>
+    {% if section.settings.show_page_content and page.content != blank %}<div class="main-contact__page-content rte">{{ page.content }}</div>{% endif %}
+    <div class="main-contact__response">
+      <strong>{{ response_label }}</strong>
+      <span>{{ response_text | escape }}</span>
+    </div>
+  </div>
+
+  <div class="main-contact__form-wrap">
+    {% form 'contact', id: contact_form_id, class: 'main-contact__form' %}
+      {% if form.posted_successfully? %}
+        <div class="main-contact__success" role="status" tabindex="-1">
+          <h2>{{ success_heading }}</h2>
+          <p>{{ success_text }}</p>
+        </div>
+      {% endif %}
+
+      {% if form.errors %}
+        <div class="main-contact__errors" role="alert" tabindex="-1">
+          <h2>{{ error_heading }}</h2>
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+
+      <div class="main-contact__fields">
+        <label>
+          <span>{{ name_label }}</span>
+          <input type="text" name="contact[name]" value="{{ form.name | default: customer.name | escape }}" autocomplete="name">
+        </label>
+        <label>
+          <span>{{ email_label }} <b aria-hidden="true">*</b></span>
+          <input type="email" name="contact[email]" value="{{ form.email | default: customer.email | escape }}" autocomplete="email" autocorrect="off" autocapitalize="off" required aria-required="true">
+        </label>
+        <label class="main-contact__wide">
+          <span>{{ phone_label }}</span>
+          <input type="tel" name="contact[phone]" value="{{ form.phone | escape }}" autocomplete="tel">
+        </label>
+        <label class="main-contact__wide">
+          <span>{{ message_label }} <b aria-hidden="true">*</b></span>
+          <textarea name="contact[body]" rows="8" placeholder="{{ message_placeholder | escape }}" required aria-required="true">{{ form.body | escape }}</textarea>
+        </label>
+      </div>
+
+      <button type="submit">{{ submit_label }}</button>
+      <p class="main-contact__privacy">{{ privacy_text }}</p>
+    {% endform %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .main-contact { display: grid; grid-template-columns: minmax(0, .8fr) minmax(420px, 1.2fr); gap: clamp(2rem, 8vw, 8rem); align-items: start; padding-block: clamp(3rem, 7vw, 7rem); }
+  .main-contact__intro { position: sticky; top: 110px; }
+  .main-contact__eyebrow { margin: 0 0 .7rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-contact h1 { margin: 0; font-size: clamp(3rem, 7vw, 6.5rem); line-height: .92; letter-spacing: -.065em; }
+  .main-contact__lead, .main-contact__page-content { max-width: 60ch; color: var(--muted); font-size: clamp(1rem, 1.6vw, 1.16rem); }
+  .main-contact__page-content { margin-top: 1.25rem; }
+  .main-contact__response { display: grid; gap: .2rem; margin-top: 2rem; padding: 1rem 1.1rem; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent-soft), transparent 30%); }
+  .main-contact__response span { color: var(--muted); }
+  .main-contact__form-wrap { padding: clamp(1.25rem, 4vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); box-shadow: var(--shadow-soft); }
+  .main-contact__form { display: grid; gap: 1.2rem; }
+  .main-contact__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .main-contact__fields label { display: grid; gap: .45rem; min-width: 0; font-size: .84rem; font-weight: 750; }
+  .main-contact__fields label span b { color: var(--accent); }
+  .main-contact__wide { grid-column: 1 / -1; }
+  .main-contact input, .main-contact textarea { width: 100%; min-height: 50px; border: 1px solid color-mix(in srgb, var(--text), transparent 70%); border-radius: 10px; background: var(--background); padding: .75rem .9rem; color: var(--text); font: inherit; }
+  .main-contact textarea { min-height: 180px; resize: vertical; }
+  .main-contact button { justify-self: start; }
+  .main-contact__privacy { margin: 0; color: var(--muted); font-size: .76rem; }
+  .main-contact__success, .main-contact__errors { padding: 1rem 1.1rem; border-radius: var(--radius); }
+  .main-contact__success { border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); background: color-mix(in srgb, var(--accent-soft), transparent 22%); }
+  .main-contact__errors { border: 1px solid #9e493c; background: #fff2ef; color: #6c2d24; }
+  .main-contact__success h2, .main-contact__errors h2 { margin: 0 0 .4rem; font-size: 1.35rem; }
+  .main-contact__success p { margin: 0; }
+  .main-contact__errors ul { margin-bottom: 0; }
+  @media (max-width: 900px) {
+    .main-contact { grid-template-columns: 1fr; }
+    .main-contact__intro { position: static; }
+  }
+  @media (max-width: 580px) {
+    .main-contact__fields { grid-template-columns: 1fr; }
+    .main-contact__wide { grid-column: auto; }
+    .main-contact button { width: 100%; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kontaktformular",
+  "settings": [
+    { "type": "checkbox", "id": "show_page_content", "label": "Seiteninhalt anzeigen", "default": true },
+    { "type": "text", "id": "response_time", "label": "Eigene Antwortzeit (optional)" }
+  ]
+}
+{% endschema %}

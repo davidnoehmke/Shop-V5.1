@@ -1,0 +1,390 @@
+{
+  "accessibility": {
+    "skip_to_content": "Zum Inhalt springen",
+    "menu": "Menü öffnen",
+    "close": "Schließen",
+    "footer_menu": "Footer-Menü"
+  },
+  "general": {
+    "shop_now": "Jetzt einkaufen",
+    "view_all": "Alle ansehen",
+    "discover": "Jetzt entdecken",
+    "continue_shopping": "Weiter einkaufen",
+    "pagination": "Seitennavigation",
+    "meta": {
+      "tags": "Schlagwörter: {{ tags }}",
+      "page": "Seite {{ page }}"
+    },
+    "breadcrumbs": {
+      "label": "Brotkrümelnavigation",
+      "home": "Startseite"
+    }
+  },
+  "header": {
+    "home": "Startseite",
+    "search": "Suche",
+    "account": "Kundenkonto",
+    "cart": "Warenkorb ({{ count }})"
+  },
+  "announcement": {
+    "label": "Shop-Vorteile",
+    "text": "LEAFerservice Spezialsubstrate · Transparente Rezepturen · Passende Kleinmengen für dein Pflanzenprojekt"
+  },
+  "hero": {
+    "heading": "Das richtige Substrat beginnt bei den Wurzeln – nicht beim Sack Erde",
+    "text": "LEAFerservice verbindet strukturstabile Spezialmischungen, einzeln wählbare Substratbestandteile und einen nachvollziehbaren Konfigurator. Für Monstera, Philodendron, Alocasia, Orchideen, Palmen, Kakteen, Aussaat und Stecklinge.",
+    "configure": "Substrat-Konfigurator",
+    "benefits": {
+      "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
+      "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+      "quality_title": "Rezepturen mit System",
+      "quality_text": "Anteile statt Bauchgefühl",
+      "natural_title": "Struktur gezielt wählen",
+      "natural_text": "Luft, Wasser und Halt abstimmen"
+    }
+  },
+  "featured_collection": {
+    "heading": "Unsere Bestseller",
+    "highlights": "Aktuelle Highlights",
+    "empty": "Wähle im Theme-Editor eine Kollektion aus.",
+    "placeholder_title": "Beispielprodukt"
+  },
+  "categories": {
+    "empty": "Lege in Shopify mindestens eine Kollektion an.",
+    "substrates": "Substrate & Zusätze",
+    "planters": "Pflanzgefäße",
+    "seeds": "Saatgut",
+    "kits": "Starter-Kits",
+    "accessories": "Zubehör",
+    "young_plants": "Jungpflanzen"
+  },
+  "trust": {
+    "handmade_title": "Nachvollziehbare Rezepturen",
+    "handmade_text": "Mischverhältnisse offen erklärt",
+    "natural_title": "Funktion vor Füllstoff",
+    "natural_text": "jeder Bestandteil mit Aufgabe",
+    "small_batches_title": "Passende Gebinde",
+    "small_batches_text": "weniger Rest, leichter kombinieren",
+    "versatile_title": "Vom Steckling bis zur Palme",
+    "versatile_text": "für unterschiedliche Wurzelräume"
+  },
+  "starter": {
+    "heading": "Pflanzenprojekte ohne Rätselraten starten",
+    "text": "Ausgewählte Kombinationen aus Gefäß, Anzuchttechnik, Substrat und Zubehör – passend zum konkreten Einsatz statt beliebig gebündelt.",
+    "herbs": "Kräuter",
+    "houseplants": "Zimmerpflanzen",
+    "vegetables": "Gemüse",
+    "exotics": "Exoten"
+  },
+  "community": {
+    "heading": "Wurzelräume, Setups und Pflanzenideen aus der LEAFers-Community",
+    "handle": "#LEAFerservice"
+  },
+  "newsletter": {
+    "heading": "Newsletter abonnieren und 10 % sichern!",
+    "email": "Deine E-Mail-Adresse",
+    "submit": "Anmelden",
+    "success": "Danke für deine Anmeldung."
+  },
+  "services": {
+    "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
+    "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+    "payment_title": "Sichere Zahlung",
+    "payment_text": "mit SSL-Verschlüsselung",
+    "support_title": "Kundenservice",
+    "support_text": "Wir sind für dich da"
+  },
+  "product": {
+    "quantity": "Menge",
+    "variant": "Variante",
+    "add_to_cart": "In den Warenkorb",
+    "quick_add": "In den Warenkorb legen",
+    "sold_out": "Ausverkauft",
+    "unavailable": "Nicht verfügbar",
+    "purchase_benefits": "Vorteile beim Einkauf",
+    "breadcrumbs": "Brotkrümelnavigation",
+    "bestseller": "Bestseller",
+    "special_mix": "Spezialmischung",
+    "from_price": "Ab {{ price }}",
+    "choose_options": "Optionen wählen",
+    "usps": {
+      "label": "Produktvorteile"
+    },
+    "availability": {
+      "available": "Auf Lager · versandbereit",
+      "unavailable": "Diese Variante ist derzeit nicht verfügbar.",
+      "unavailable_short": "Nicht verfügbar",
+      "invalid_combination": "Kombination nicht verfügbar",
+      "choose_available": "Bitte wähle eine verfügbare Kombination."
+    },
+    "trust": {
+      "label": "Vorteile beim Kauf",
+      "shipping": "Deutschlandweit kostenloser Versand",
+      "payment": "Sichere Zahlung über Shopify",
+      "support": "Persönliche Hilfe bei Fragen"
+    },
+    "decision": {
+      "eyebrow": "Entscheidungshilfe",
+      "heading": "Was dieses Produkt im System leistet",
+      "function": "Hauptfunktion",
+      "suitable_for": "Geeignet für",
+      "water": "Wasserverhalten",
+      "ratio": "Mischverhältnis",
+      "application": "Anwendung",
+      "volume": "Volumen",
+      "configurator_role": "Rolle im Konfigurator",
+      "plant_groups": "Pflanzengruppen",
+      "notice": "Hinweis:",
+      "configurator_title": "In deiner eigenen Mischung verwenden",
+      "configurator_text": "Öffne den LEAFerservice Konfigurator und kombiniere passende Bestandteile.",
+      "configurator_cta": "Zum Konfigurator"
+    },
+    "media": {
+      "label": "Produktbilder"
+    },
+    "signature": {
+      "eyebrow": "Komponentenprofil",
+      "heading": "Was dieser Bestandteil im Wurzelraum verändert",
+      "intro": "Die Wirkung wird nicht nur beschrieben, sondern als technisches Profil sichtbar gemacht. So lässt sich der Bestandteil gezielter dosieren und mit anderen Komponenten kombinieren.",
+      "metrics_label": "Technisches Komponentenprofil",
+      "aeration": "Luftigkeit",
+      "drainage": "Drainage",
+      "water": "Wasserspeicher",
+      "structure": "Strukturstabilität",
+      "nutrient": "Nährstoffwirkung",
+      "category": "Rolle",
+      "range": "Profi-Bereich",
+      "warning": "Hinweis ab",
+      "from_percent": "ab %{percent} %",
+      "note": "Fachlicher Hinweis",
+      "cta": "Im Profi-Konfigurator verwenden"
+    }
+  },
+  "product_variant_guide": {
+    "steps_heading": "So gelingt die Aussaat",
+    "facts_heading": "Produktdetails",
+    "faq_heading": "Gut zu wissen",
+    "notice_label": "Hinweis:"
+  },
+  "collection": {
+    "products_count": "{{ count }} Produkte",
+    "sort_by": "Sortieren nach",
+    "apply": "Anwenden",
+    "filter": "Nach Produkttyp filtern",
+    "all": "Alle",
+    "guide": {
+      "eyebrow": "Kaufberatung & Wissen",
+      "heading": "{{ collection }} richtig auswählen",
+      "topics": "Themen dieser Kollektion"
+    }
+  },
+  "recipe": {
+    "eyebrow": "Transparent gemischt",
+    "heading": "Rezeptur & Bestandteile",
+    "intro": "Die Zusammensetzung wird direkt aus den gepflegten Produktdaten geladen und bleibt dadurch auf allen Produktseiten einheitlich.",
+    "ratio": "Mischverhältnis",
+    "ingredients": "Bestandteile",
+    "note": "Volumenanteile sind Richtwerte. Pflanze, Topf, Standort und Gießverhalten können eine Anpassung erfordern."
+  },
+  "cross_sell": {
+    "eyebrow": "Sinnvoll ergänzen",
+    "heading": "Passt perfekt dazu"
+  },
+  "configurator": {
+    "eyebrow": "Dein Mix",
+    "heading": "Substrat individuell konfigurieren",
+    "intro": "Stelle die Anteile passend zu Pflanze, Gefäß und Gießverhalten ein. Die Summe sollte 100 % ergeben.",
+    "total": "Gesamt",
+    "valid": "Rezeptur ist vollständig",
+    "invalid": "Bitte Anteile auf 100 % abstimmen",
+    "copy": "Rezeptur kopieren",
+    "recipe": "Erstellte Rezeptur",
+    "project": {
+      "eyebrow": "Pflanzprojekt planen",
+      "heading": "Von der Pflanze zum passenden Setup",
+      "intro": "Wähle Pflanze, Licht, Gießverhalten, Pflanzsystem und Volumen. Die Empfehlung nutzt die hinterlegten Pflanzenprofile, Rezepturen und Projektregeln.",
+      "pro_link": "Ich kenne meine Mischung → Profi-Modus",
+      "plant": "Pflanze oder Pflanzengruppe",
+      "choose": "Bitte auswählen",
+      "light": "Lichtsituation",
+      "light_low": "Wenig Licht",
+      "light_medium": "Mittel / hell indirekt",
+      "light_high": "Sehr hell",
+      "watering": "Gießverhalten",
+      "water_frequent": "Eher häufig",
+      "water_normal": "Ausgewogen",
+      "water_rare": "Eher selten",
+      "system": "Pflanzsystem",
+      "system_classic": "Klassischer Topf",
+      "system_self": "Selbstbewässerung",
+      "system_semi": "Semi-Hydro",
+      "system_fabric": "Stofftopf",
+      "volume": "Benötigtes Volumen",
+      "calculate": "Projekt berechnen",
+      "result_eyebrow": "Deine Empfehlung",
+      "result_empty": "Projektparameter auswählen",
+      "result_empty_text": "Nach der Auswahl werden passende Rezeptur, technische Eigenschaften und sinnvolle Ergänzungen angezeigt.",
+      "adjust": "Mischung im Profi-Konfigurator anpassen"
+    }
+  },
+  "search": {
+    "title": "Suche",
+    "label": "Produkte und Inhalte suchen",
+    "submit": "Suchen",
+    "results": "Suchergebnisse für „{{ terms }}“",
+    "empty": "Keine passenden Ergebnisse gefunden."
+  },
+  "faq": {
+    "eyebrow": "Gut zu wissen",
+    "heading": "Häufige Fragen",
+    "intro": "Kurze Antworten für die richtige Auswahl und einen gelungenen Start.",
+    "substrate_question": "Welches Substrat passt zu meiner Pflanze?",
+    "substrate_answer": "Tropische Aroiden benötigen meist eine besonders luftige, drainagestarke Mischung. Kräuter und Anzuchten profitieren von feineren Mischungen mit gleichmäßiger Feuchtigkeit. Nutze bei Unsicherheit den Substrat-Konfigurator.",
+    "application_question": "Wie verwende ich Substrat-Zusätze richtig?",
+    "application_answer": "Zusätze werden passend zur Pflanze und zur gewünschten Struktur dosiert. Beginne zurückhaltend, mische gründlich und achte darauf, dass Wasser weiterhin gleichmäßig ablaufen kann.",
+    "plants_question": "Wie werden Pflanzen für den Versand vorbereitet?",
+    "plants_answer": "Pflanzen werden sorgfältig kontrolliert, transportsicher verpackt und möglichst kompakt geschützt. Leichte Veränderungen an Blättern oder Wuchs sind bei lebenden Naturprodukten normal.",
+    "shipping_question": "Wie schnell wird meine Bestellung versendet?",
+    "shipping_answer": "Verfügbare Artikel werden in der Regel zügig vorbereitet. Die konkrete Lieferzeit hängt von Produkt, Wetter, Versanddienstleister und Zieladresse ab und wird im Bestellprozess angezeigt."
+  },
+  "cart": {
+    "title": "Warenkorb",
+    "empty": "Dein Warenkorb ist leer.",
+    "quantity": "Anzahl",
+    "remove": "Entfernen",
+    "subtotal": "Zwischensumme",
+    "update": "Warenkorb aktualisieren",
+    "checkout": "Zur Kasse"
+  },
+  "footer": {
+    "text": "Spezialsubstrate, funktionale Bestandteile, Pflanzgefäße und Grow-Zubehör für Menschen, die verstehen möchten, was unter der Oberfläche passiert.",
+    "copyright": "© {{ year }} {{ shop }}"
+  },
+  "brand_story": {
+    "eyebrow": "LEAFerservice Prinzip",
+    "heading": "Pflanzenpflege wird leichter, wenn jedes Material eine klare Aufgabe erfüllt",
+    "text_one": "Ein gutes Pflanzsubstrat ist kein universeller Stoff, sondern ein abgestimmter Wurzelraum. Grobe Bestandteile schaffen Luft, mineralische Komponenten stabilisieren die Struktur, organische Anteile puffern Feuchtigkeit und ausgewählte Zusätze beeinflussen Wasser- und Nährstoffführung. Deshalb zeigt LEAFerservice nicht nur Produkte, sondern auch ihre Funktion und – bei Spezialmischungen – das konkrete Mischverhältnis.",
+    "text_two": "Unser Sortiment verbindet fertige Mischungen mit einzeln verfügbaren Komponenten. So kannst du bewährte Rezepturen nutzen, sie an Standort und Gießverhalten anpassen oder mit dem Substrat-Konfigurator einen eigenen Mix planen. Ergänzt wird das System durch Pflanzgefäße, Anzuchttechnik und Zubehör, das zum jeweiligen Einsatz passt.",
+    "link": "Alle LEAFerservice Produkte entdecken"
+  },
+  "collection_seo": {
+    "eyebrow": "LEAFerservice Sortimentwissen",
+    "faq_heading": "Fragen vor der Auswahl",
+    "substrates": {
+      "heading": "Spezialsubstrate und Substratbestandteile für kontrollierte Wurzelräume",
+      "lead": "Monstera, Philodendron, Alocasia, Orchidee, Palme oder Sukkulente stellen unterschiedliche Anforderungen an Luftführung, Wasserspeicherung und Strukturstabilität. Genau dort setzt das LEAFerservice Substratsystem an.",
+      "body": "Fertige Spezialmischungen bieten einen abgestimmten Startpunkt; einzelne Bestandteile wie Pinienrinde, Perlite, Bims, Lava, Blähton, Kokoschips, Sphagnum, Vermiculite, Zeolith, Aktivkohle und Wurmhumus ermöglichen gezielte Anpassungen. Entscheidend ist nicht die möglichst lange Zutatenliste, sondern die Aufgabe jeder Komponente. Wer häufig gießt, braucht meist mehr Drainage und Grobporen. Kleine Töpfe und Jungpflanzen profitieren eher von feineren, gleichmäßig feuchten Strukturen. Die Produktseiten zeigen Anwendung, Eignung und – wo vorhanden – das genaue Mischverhältnis.",
+      "question_one": "Welches Substrat eignet sich für Monstera und Philodendron?",
+      "answer_one": "Für viele Aroiden ist eine luftige, grobe Mischung sinnvoll, die Wasser zügig ableitet und trotzdem eine gleichmäßige Restfeuchte ermöglicht. LEAFer Tropical Mix und Alocasia Mix setzen unterschiedliche Schwerpunkte; Topfgröße, Standort und Gießroutine bleiben entscheidend.",
+      "question_two": "Kann ich Substratbestandteile selbst mischen?",
+      "answer_two": "Ja. Beginne mit einer klaren Funktion pro Bestandteil und stelle die Volumenanteile auf insgesamt 100 Prozent ein. Der LEAFer Substrat-Konfigurator hilft beim Planen; Änderungen sollten schrittweise und passend zur Pflanze erfolgen."
+    },
+    "planters": {
+      "heading": "Pflanzgefäße, Stofftöpfe und Bewässerungssysteme passend zum Wurzelraum",
+      "lead": "Ein Pflanzgefäß bestimmt mehr als die Optik: Volumen, Material, Ablauf und Wasserreservoir verändern, wie schnell ein Substrat trocknet und wie viel Sauerstoff die Wurzeln erreicht.",
+      "body": "LEAFerservice bündelt atmungsaktive Stofftöpfe, Pflanzsäcke, dekorative Übertöpfe und bewährte LECHUZA Bewässerungssysteme. Stofftöpfe unterstützen Luftaustausch und Wasserablauf, benötigen im Innenraum jedoch einen passenden Untersetzer. Gefäße mit Reservoir können die Versorgung gleichmäßiger gestalten, verlangen aber eine geeignete mineralische oder strukturstabile Bepflanzung und eine angepasste Gießweise. Wähle die Größe nicht nur nach Blattmasse: Der vorhandene Wurzelballen sollte Platz zur Entwicklung erhalten, ohne in einem übergroßen, lange nassen Volumen zu stehen.",
+      "question_one": "Welche Topfgröße passt beim Umtopfen?",
+      "answer_one": "Meist reicht die nächste sinnvolle Größe über dem aktuellen Wurzelballen. Ein deutlich zu großer Topf trocknet langsamer und kann das Risiko dauerhaft nasser Bereiche erhöhen.",
+      "question_two": "Braucht ein Stofftopf einen Untersetzer?",
+      "answer_two": "Im Innenraum ja. Das atmungsaktive Gewebe lässt überschüssiges Wasser austreten. Ein wasserdichter Untersetzer oder Übertopf schützt Boden, Regal und Fensterbank."
+    },
+    "smart_grow": {
+      "heading": "Smart-Grow-Technik für Anzucht, Stecklinge und kontrolliertes Pflanzenlicht",
+      "lead": "Keimung und Jungpflanzenentwicklung werden zuverlässiger, wenn Feuchtigkeit, Wärme und Licht nicht dem Zufall überlassen bleiben.",
+      "body": "Die Smart-Grow-Auswahl von LEAFerservice verbindet Kokos-Anzuchttabs, formstabile Steinwollwürfel, Heizmatten und dimmbare Vollspektrum-LEDs. Anzuchtmedien halten den jungen Wurzelraum überschaubar, Heizmatten unterstützen eine gleichmäßige Bodentemperatur und Pflanzenlampen gleichen lichtarme Standorte aus. Wähle Technik immer nach Fläche und Kulturphase: Stecklinge benötigen keine unnötig hohe Lichtintensität, während größere Pflanzen eine stärkere und gleichmäßig verteilte Beleuchtung verlangen. Kontrolliere Temperatur und Feuchtigkeit regelmäßig, statt Geräte dauerhaft auf Maximalleistung zu betreiben.",
+      "question_one": "Wann ist eine Heizmatte bei der Anzucht sinnvoll?",
+      "answer_one": "Sie ist besonders bei kühlen Fensterbänken oder wärmeliebenden Samen hilfreich. Die tatsächliche Temperatur im Anzuchtmedium sollte kontrolliert werden, damit es nicht zu warm oder zu trocken wird.",
+      "question_two": "Welche LED-Leistung brauche ich?",
+      "answer_two": "Das hängt von beleuchteter Fläche, Abstand, Pflanzenart und Wachstumsphase ab. Orientiere dich an der realen Ausleuchtung der Fläche und dimme bei Jungpflanzen zunächst zurückhaltend."
+    },
+    "care": {
+      "heading": "Pflanzenpflege und Zubehör für präzises Gießen, Führen und Umtopfen",
+      "lead": "Gutes Zubehör löst ein konkretes Problem: Wasser landet im Substrat statt auf den Blättern, Kletterpflanzen erhalten Halt und Umtopfarbeiten bleiben kontrollierbar.",
+      "body": "Im LEAFerservice Pflegesortiment findest du schlanke Gießkannen für gezieltes Gießen, modulare Moosstäbe für Monstera und Philodendron sowie funktionales Zubehör für den Pflanzenalltag. Ein langer Ausgießer erleichtert die Wassergabe in dicht bepflanzten Regalen. Rankhilfen führen Triebe, ohne sie unnötig zu fixieren, und können den Kontakt von Luftwurzeln fördern. Wähle Zubehör nach Topfgröße, Pflanzenhöhe und Standort – nicht nur nach Farbe oder Form.",
+      "question_one": "Warum ist ein langer Ausgießer beim Gießen hilfreich?",
+      "answer_one": "Er erreicht das Substrat auch zwischen großen Blättern und in engen Pflanzengruppen. So lässt sich Wasser langsamer und näher am Wurzelballen verteilen.",
+      "question_two": "Für welche Pflanzen eignet sich ein Moosstab?",
+      "answer_two": "Vor allem kletternde Aroiden wie Monstera, Philodendron, Epipremnum und Scindapsus profitieren von einer stabilen, passend befestigten Rankhilfe."
+    },
+    "sets": {
+      "heading": "Anzuchtsets und Pflanzen-Bundles mit nachvollziehbarer Produktauswahl",
+      "lead": "Ein gutes Set spart Entscheidungen, ohne wichtige Zusammenhänge zu verstecken. Deshalb kombiniert LEAFerservice Produkte nach Anwendung und nicht nach zufälliger Verfügbarkeit.",
+      "body": "Kräuter- und Microgreen-Sets erleichtern den Einstieg auf Fensterbank oder Küchenregal. Weitere Bundles verbinden passende Gefäße, Substrate oder Anzuchtkomponenten zu einem klaren Pflanzenprojekt. Prüfe vor der Auswahl, wie viel Licht verfügbar ist, wie groß der vorgesehene Standort ist und ob du regelmäßig kontrollieren und gießen kannst. So entsteht aus einem Set kein kurzfristiges Geschenk, sondern ein funktionierender Startpunkt.",
+      "question_one": "Was sollte ein gutes Anzuchtset enthalten?",
+      "answer_one": "Ein passendes Gefäß oder Tray, ein geeignetes Anzuchtmedium und klare Hinweise zu Licht, Feuchtigkeit und Temperatur. Zusätzliche Technik ist nur sinnvoll, wenn sie zum Standort passt.",
+      "question_two": "Eignen sich die Sets für Anfänger?",
+      "answer_two": "Ja, wenn die Pflegehinweise beachtet und Standortbedingungen realistisch eingeschätzt werden. Die Sets reduzieren die Produktauswahl, ersetzen aber nicht die regelmäßige Kontrolle."
+    },
+    "default": {
+      "heading": "Ausgewählte Produkte für durchdachte Pflanzenprojekte",
+      "lead": "LEAFerservice verbindet Substrate, Gefäße, Anzuchttechnik und Zubehör zu einem Sortiment, bei dem der konkrete Einsatz im Mittelpunkt steht.",
+      "body": "Jede Produktseite erklärt Nutzen, Anwendung und passende Ergänzungen. Filtere nach Produkttyp, vergleiche Varianten und orientiere dich bei Substraten an Wasserbedarf, Wurzelstruktur und Gießverhalten. So findest du nicht einfach irgendeinen Artikel, sondern eine Lösung, die zu deinem Pflanzenprojekt passt.",
+      "question_one": "Wie finde ich das passende Produkt?",
+      "answer_one": "Starte mit Pflanzenart, Standort und dem Problem, das du lösen möchtest. Produkttyp-Filter, Anwendungsinformationen und Cross-Selling-Hinweise grenzen die Auswahl ein.",
+      "question_two": "Werden passende Ergänzungen angezeigt?",
+      "answer_two": "Ja. Produktseiten zeigen ergänzende Artikel aus demselben Anwendungssystem, etwa Substratbestandteile, Gefäße oder Anzuchtzubehör."
+    }
+  },
+  "page_404": {
+    "title": "Seite nicht gefunden",
+    "text": "Diese Seite ist verschwunden oder wurde verschoben."
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
+    }
+  },
+  "home": {
+    "method": {
+      "principles_label": "Prinzipien der LEAF Methode",
+      "transparent_title": "Keine Blackbox",
+      "transparent_text": "Zusammensetzung, Funktion und Grenzen werden sichtbar gemacht.",
+      "context_title": "Kontext statt Pauschalregel",
+      "context_text": "Pflanze, Licht, Gefäß und Gießroutine werden gemeinsam betrachtet.",
+      "system_title": "System statt Einzelprodukt",
+      "system_text": "Substrat, Topf, Rankhilfe und Licht werden nur kombiniert, wenn es fachlich passt.",
+      "choice_title": "Du behältst die Kontrolle",
+      "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
+    }
+  }
+}

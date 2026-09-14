@@ -1,0 +1,1977 @@
+{% liquid
+  assign featured_product = product
+  if section.settings.product != blank
+    assign featured_product = section.settings.product
+  endif
+
+  assign selected_variant = blank
+  if featured_product != blank
+    assign selected_variant = featured_product.selected_or_first_available_variant
+  endif
+
+  assign hero_image = section.settings.image
+  if hero_image == blank
+    assign hero_image = featured_product.featured_image
+  endif
+
+  assign variety_blocks = section.blocks | where: 'type', 'variety'
+  assign included_blocks = section.blocks | where: 'type', 'included'
+  assign step_blocks = section.blocks | where: 'type', 'step'
+  assign benefit_blocks = section.blocks | where: 'type', 'benefit'
+  assign faq_blocks = section.blocks | where: 'type', 'faq'
+  assign form_id = 'LeaferFruitForm-' | append: section.id
+%}
+
+<section
+  class="leafer-fruit"
+  data-leafer-fruit
+  style="
+    --lf-bg: {{ section.settings.background }};
+    --lf-surface: {{ section.settings.surface }};
+    --lf-text: {{ section.settings.text_color }};
+    --lf-muted: {{ section.settings.muted_color }};
+    --lf-accent: {{ section.settings.accent }};
+    --lf-accent-contrast: {{ section.settings.accent_contrast }};
+    --lf-border: {{ section.settings.border_color }};
+    --lf-radius: {{ section.settings.radius }}px;
+    --lf-max: {{ section.settings.max_width }}px;
+    --lf-pad-y: {{ section.settings.padding_y }}px;
+  "
+>
+  <div class="leafer-fruit__shell">
+    <div class="leafer-fruit__hero">
+      <div class="leafer-fruit__hero-copy">
+        {% if section.settings.eyebrow != blank %}
+          <p class="leafer-fruit__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {% endif %}
+
+        {% if section.settings.heading != blank %}
+          <h1 class="leafer-fruit__title">{{ section.settings.heading }}</h1>
+        {% endif %}
+
+        {% if section.settings.intro != blank %}
+          <div class="leafer-fruit__intro rte">{{ section.settings.intro }}</div>
+        {% endif %}
+
+        <div class="leafer-fruit__trust" aria-label="{{ section.settings.trust_aria_label | escape }}">
+          {% if section.settings.trust_1 != blank %}
+            <span>{{ section.settings.trust_1 | escape }}</span>
+          {% endif %}
+          {% if section.settings.trust_2 != blank %}
+            <span>{{ section.settings.trust_2 | escape }}</span>
+          {% endif %}
+          {% if section.settings.trust_3 != blank %}
+            <span>{{ section.settings.trust_3 | escape }}</span>
+          {% endif %}
+        </div>
+
+        {% if featured_product != blank %}
+          <div class="leafer-fruit__buybox" id="LeaferFruitBuybox-{{ section.id }}">
+            <div class="leafer-fruit__buybox-head">
+              <div>
+                <p class="leafer-fruit__buybox-label">{{ section.settings.product_label | escape }}</p>
+                <h2 class="leafer-fruit__product-title">{{ featured_product.title | escape }}</h2>
+              </div>
+              <p
+                class="leafer-fruit__price"
+                data-product-price
+                aria-live="polite"
+                aria-label="{{ section.settings.price_label | escape }}"
+              >
+                {{ selected_variant.price | money }}
+              </p>
+            </div>
+
+            {% form 'product', featured_product, id: form_id, class: 'leafer-fruit__form' %}
+              <input type="hidden" name="id" value="{{ selected_variant.id }}" data-variant-input>
+
+              {% if featured_product.variants.size > 1 %}
+                <fieldset class="leafer-fruit__variant-fieldset">
+                  <legend>{{ section.settings.variant_legend | escape }}</legend>
+                  <div class="leafer-fruit__variant-grid">
+                    {% for variant in featured_product.variants %}
+                      <div class="leafer-fruit__variant-choice">
+                        <input
+                          class="leafer-fruit__variant-radio"
+                          type="radio"
+                          id="LeaferFruitVariant-{{ section.id }}-{{ variant.id }}"
+                          name="LeaferFruitVariant-{{ section.id }}"
+                          value="{{ variant.id }}"
+                          data-variant-radio
+                          data-variant-title="{{ variant.title | escape }}"
+                          data-price="{{ variant.price | money | escape }}"
+                          data-available="{{ variant.available }}"
+                          data-available-label="{{ section.settings.available_label | escape }}"
+                          data-sold-out-label="{{ section.settings.sold_out_label | escape }}"
+                          data-add-button-label="{{ section.settings.add_to_cart_label | escape }}"
+                          {% if variant.id == selected_variant.id %}
+                            checked
+                          {% endif %}
+                          {% unless variant.available %}
+                            disabled
+                          {% endunless %}
+                        >
+                        <label for="LeaferFruitVariant-{{ section.id }}-{{ variant.id }}">
+                          <span>{{ variant.title | escape }}</span>
+                          <small>
+                            {{ variant.price | money }}
+                            {% unless variant.available %}
+                              · {{ section.settings.sold_out_label | escape }}
+                            {% endunless %}
+                          </small>
+                        </label>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              {% endif %}
+
+              <div class="leafer-fruit__purchase-row">
+                <div class="leafer-fruit__quantity">
+                  <label for="LeaferFruitQuantity-{{ section.id }}">
+                    {{ section.settings.quantity_label | escape }}
+                  </label>
+                  <div class="leafer-fruit__quantity-control">
+                    <button
+                      type="button"
+                      data-quantity-minus
+                      aria-label="{{ section.settings.quantity_minus_label | escape }}"
+                    >
+                      −
+                    </button>
+                    <input
+                      id="LeaferFruitQuantity-{{ section.id }}"
+                      type="number"
+                      name="quantity"
+                      value="1"
+                      min="1"
+                      inputmode="numeric"
+                      data-quantity-input
+                    >
+                    <button
+                      type="button"
+                      data-quantity-plus
+                      aria-label="{{ section.settings.quantity_plus_label | escape }}"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  class="leafer-fruit__add"
+                  type="submit"
+                  name="add"
+                  data-add-button
+                  {% unless selected_variant.available %}
+                    disabled
+                  {% endunless %}
+                >
+                  <span data-add-label>
+                    {% if selected_variant.available %}
+                      {{ section.settings.add_to_cart_label | escape }}
+                    {% else %}
+                      {{ section.settings.sold_out_label | escape }}
+                    {% endif %}
+                  </span>
+                </button>
+              </div>
+
+              <p class="leafer-fruit__availability" data-availability aria-live="polite">
+                {% if selected_variant.available %}
+                  {{ section.settings.available_label | escape }}
+                {% else %}
+                  {{ section.settings.sold_out_label | escape }}
+                {% endif %}
+              </p>
+            {% endform %}
+          </div>
+        {% else %}
+          <div class="leafer-fruit__empty">
+            <strong>{{ section.settings.empty_title | escape }}</strong>
+            <p>{{ section.settings.empty_text | escape }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="leafer-fruit__visual">
+        <div class="leafer-fruit__image-wrap">
+          {% if hero_image != blank %}
+            {{
+              hero_image
+              | image_url: width: 1800
+              | image_tag:
+                class: 'leafer-fruit__image',
+                widths: '480, 720, 960, 1200, 1600, 1800',
+                sizes: '(min-width: 990px) 46vw, 100vw',
+                loading: 'eager',
+                fetchpriority: 'high',
+                alt: section.settings.image_alt
+            }}
+          {% else %}
+            {{ 'product-1' | placeholder_svg_tag: 'leafer-fruit__placeholder' }}
+          {% endif %}
+        </div>
+
+        {% if section.settings.image_note != blank %}
+          <p class="leafer-fruit__image-note">{{ section.settings.image_note | escape }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if variety_blocks.size > 0 %}
+      <div class="leafer-fruit__section leafer-fruit__section--varieties">
+        <div class="leafer-fruit__section-head">
+          <p class="leafer-fruit__eyebrow">{{ section.settings.varieties_eyebrow | escape }}</p>
+          <h2>{{ section.settings.varieties_heading | escape }}</h2>
+          <div class="rte">{{ section.settings.varieties_intro }}</div>
+        </div>
+
+        <div class="leafer-fruit__varieties">
+          {% for block in variety_blocks %}
+            <article class="leafer-fruit__variety" {{ block.shopify_attributes }}>
+              <button
+                class="leafer-fruit__variety-button"
+                type="button"
+                data-variety-select
+                data-variant-title="{{ block.settings.variant_title | escape }}"
+                aria-pressed="false"
+              >
+                <span class="leafer-fruit__variety-top">
+                  <span class="leafer-fruit__badge">{{ block.settings.badge | escape }}</span>
+                  <span class="leafer-fruit__select-cue">{{ section.settings.select_cue | escape }}</span>
+                </span>
+                <strong>{{ block.settings.heading | escape }}</strong>
+                {% if block.settings.botanical_name != blank %}
+                  <em>{{ block.settings.botanical_name | escape }}</em>
+                {% endif %}
+                <span class="leafer-fruit__variety-copy">{{ block.settings.description }}</span>
+                <span class="leafer-fruit__facts">
+                  {% if block.settings.prep != blank %}
+                    <span>
+                      <small>{{ section.settings.prep_label | escape }}</small>
+                      {{ block.settings.prep | escape }}
+                    </span>
+                  {% endif %}
+                  {% if block.settings.location != blank %}
+                    <span>
+                      <small>{{ section.settings.location_label | escape }}</small>
+                      {{ block.settings.location | escape }}
+                    </span>
+                  {% endif %}
+                  {% if block.settings.level != blank %}
+                    <span>
+                      <small>{{ section.settings.level_label | escape }}</small>
+                      {{ block.settings.level | escape }}
+                    </span>
+                  {% endif %}
+                </span>
+              </button>
+            </article>
+          {% endfor %}
+        </div>
+
+        <aside class="leafer-fruit__notice" aria-label="{{ section.settings.notice_aria_label | escape }}">
+          <div class="leafer-fruit__notice-icon" aria-hidden="true">i</div>
+          <div>
+            <h3>{{ section.settings.notice_heading | escape }}</h3>
+            <div class="rte">{{ section.settings.notice_text }}</div>
+          </div>
+        </aside>
+      </div>
+    {% endif %}
+
+    {% if included_blocks.size > 0 %}
+      <div class="leafer-fruit__section">
+        <div class="leafer-fruit__section-head leafer-fruit__section-head--center">
+          <p class="leafer-fruit__eyebrow">{{ section.settings.included_eyebrow | escape }}</p>
+          <h2>{{ section.settings.included_heading | escape }}</h2>
+          <div class="rte">{{ section.settings.included_intro }}</div>
+        </div>
+
+        <div class="leafer-fruit__included-grid">
+          {% for block in included_blocks %}
+            <article class="leafer-fruit__info-card" {{ block.shopify_attributes }}>
+              <span class="leafer-fruit__info-index">{{ forloop.index | prepend: '0' }}</span>
+              <h3>{{ block.settings.heading | escape }}</h3>
+              <div class="rte">{{ block.settings.text }}</div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if step_blocks.size > 0 %}
+      <div class="leafer-fruit__section leafer-fruit__section--steps">
+        <div class="leafer-fruit__section-head">
+          <p class="leafer-fruit__eyebrow">{{ section.settings.steps_eyebrow | escape }}</p>
+          <h2>{{ section.settings.steps_heading | escape }}</h2>
+          <div class="rte">{{ section.settings.steps_intro }}</div>
+        </div>
+
+        <ol class="leafer-fruit__steps">
+          {% for block in step_blocks %}
+            <li {{ block.shopify_attributes }}>
+              <span>{{ forloop.index }}</span>
+              <div>
+                <h3>{{ block.settings.heading | escape }}</h3>
+                <div class="rte">{{ block.settings.text }}</div>
+              </div>
+            </li>
+          {% endfor %}
+        </ol>
+      </div>
+    {% endif %}
+
+    {% if benefit_blocks.size > 0 %}
+      <div class="leafer-fruit__section">
+        <div class="leafer-fruit__section-head leafer-fruit__section-head--center">
+          <p class="leafer-fruit__eyebrow">{{ section.settings.benefits_eyebrow | escape }}</p>
+          <h2>{{ section.settings.benefits_heading | escape }}</h2>
+        </div>
+
+        <div class="leafer-fruit__benefits">
+          {% for block in benefit_blocks %}
+            <article {{ block.shopify_attributes }}>
+              <span aria-hidden="true">✓</span>
+              <div>
+                <h3>{{ block.settings.heading | escape }}</h3>
+                <div class="rte">{{ block.settings.text }}</div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if faq_blocks.size > 0 %}
+      <div class="leafer-fruit__section leafer-fruit__faq-wrap">
+        <div class="leafer-fruit__section-head">
+          <p class="leafer-fruit__eyebrow">{{ section.settings.faq_eyebrow | escape }}</p>
+          <h2>{{ section.settings.faq_heading | escape }}</h2>
+          <div class="rte">{{ section.settings.faq_intro }}</div>
+        </div>
+
+        <div class="leafer-fruit__faq">
+          {% for block in faq_blocks %}
+            <details {{ block.shopify_attributes }}>
+              <summary>
+                <span>{{ block.settings.question | escape }}</span>
+                <span aria-hidden="true">+</span>
+              </summary>
+              <div class="rte">{{ block.settings.answer }}</div>
+            </details>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="leafer-fruit__closing">
+      <div>
+        <p class="leafer-fruit__eyebrow">{{ section.settings.closing_eyebrow | escape }}</p>
+        <h2>{{ section.settings.closing_heading | escape }}</h2>
+        <div class="rte">{{ section.settings.closing_text }}</div>
+      </div>
+      {% if featured_product != blank %}
+        <button
+          class="leafer-fruit__closing-button"
+          type="button"
+          data-scroll-to-form
+          data-form-target="LeaferFruitBuybox-{{ section.id }}"
+        >
+          {{ section.settings.closing_button | escape }}
+        </button>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .leafer-fruit {
+    background: var(--lf-bg);
+    color: var(--lf-text);
+    font-family: var(--font-body-family, Arial, sans-serif);
+    padding-block: var(--lf-pad-y);
+  }
+
+  .leafer-fruit *,
+  .leafer-fruit *::before,
+  .leafer-fruit *::after {
+    box-sizing: border-box;
+  }
+
+  .leafer-fruit__shell {
+    margin-inline: auto;
+    max-width: var(--lf-max);
+    padding-inline: clamp(18px, 4vw, 54px);
+  }
+
+  .leafer-fruit__hero {
+    align-items: stretch;
+    display: grid;
+    gap: clamp(28px, 5vw, 72px);
+    grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+  }
+
+  .leafer-fruit__hero-copy {
+    align-self: center;
+    padding-block: clamp(12px, 4vw, 56px);
+  }
+
+  .leafer-fruit__eyebrow {
+    color: var(--lf-accent);
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    margin: 0 0 14px;
+    text-transform: uppercase;
+  }
+
+  .leafer-fruit__title {
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: clamp(2.45rem, 6vw, 5.7rem);
+    font-weight: 500;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
+    margin: 0;
+    max-width: 12ch;
+    text-wrap: balance;
+  }
+
+  .leafer-fruit__intro {
+    color: var(--lf-muted);
+    font-size: clamp(1rem, 1.6vw, 1.18rem);
+    line-height: 1.72;
+    margin-top: 24px;
+    max-width: 62ch;
+  }
+
+  .leafer-fruit .rte > *:first-child {
+    margin-top: 0;
+  }
+
+  .leafer-fruit .rte > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .leafer-fruit__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .leafer-fruit__trust span {
+    background: color-mix(in srgb, var(--lf-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--lf-accent) 26%, transparent);
+    border-radius: 999px;
+    color: var(--lf-text);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 9px 13px;
+  }
+
+  .leafer-fruit__buybox,
+  .leafer-fruit__empty {
+    background: var(--lf-surface);
+    border: 1px solid var(--lf-border);
+    border-radius: var(--lf-radius);
+    box-shadow: 0 22px 60px color-mix(in srgb, var(--lf-text) 8%, transparent);
+    margin-top: 30px;
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .leafer-fruit__buybox-head {
+    align-items: start;
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+
+  .leafer-fruit__buybox-label {
+    color: var(--lf-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin: 0 0 5px;
+    text-transform: uppercase;
+  }
+
+  .leafer-fruit__product-title {
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: clamp(1.35rem, 2.5vw, 1.85rem);
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0;
+  }
+
+  .leafer-fruit__price {
+    color: var(--lf-accent);
+    flex: 0 0 auto;
+    font-size: 1.2rem;
+    font-weight: 900;
+    margin: 0;
+  }
+
+  .leafer-fruit__variant-fieldset {
+    border: 0;
+    margin: 24px 0 0;
+    padding: 0;
+  }
+
+  .leafer-fruit__variant-fieldset legend,
+  .leafer-fruit__quantity label {
+    color: var(--lf-text);
+    font-size: 0.82rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .leafer-fruit__variant-grid {
+    display: grid;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .leafer-fruit__variant-choice {
+    min-width: 0;
+    position: relative;
+  }
+
+  .leafer-fruit__variant-radio {
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+  }
+
+  .leafer-fruit__variant-choice label {
+    background: var(--lf-bg);
+    border: 1px solid var(--lf-border);
+    border-radius: calc(var(--lf-radius) * 0.55);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    height: 100%;
+    justify-content: center;
+    min-height: 65px;
+    padding: 10px 12px;
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .leafer-fruit__variant-choice label > span {
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .leafer-fruit__variant-choice label small {
+    color: var(--lf-muted);
+    font-size: 0.72rem;
+  }
+
+  .leafer-fruit__variant-radio:checked + label {
+    border-color: var(--lf-accent);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--lf-accent) 18%, transparent);
+  }
+
+  .leafer-fruit__variant-radio:focus-visible + label {
+    outline: 3px solid color-mix(in srgb, var(--lf-accent) 40%, transparent);
+    outline-offset: 2px;
+  }
+
+  .leafer-fruit__variant-radio:disabled + label {
+    cursor: not-allowed;
+    opacity: 0.48;
+  }
+
+  .leafer-fruit__purchase-row {
+    align-items: end;
+    display: grid;
+    gap: 12px;
+    grid-template-columns: auto minmax(0, 1fr);
+    margin-top: 20px;
+  }
+
+  .leafer-fruit__quantity {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .leafer-fruit__quantity-control {
+    align-items: center;
+    border: 1px solid var(--lf-border);
+    border-radius: calc(var(--lf-radius) * 0.55);
+    display: grid;
+    grid-template-columns: 38px 46px 38px;
+    min-height: 52px;
+    overflow: hidden;
+  }
+
+  .leafer-fruit__quantity-control button,
+  .leafer-fruit__quantity-control input {
+    background: transparent;
+    border: 0;
+    color: var(--lf-text);
+    font: inherit;
+    height: 100%;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .leafer-fruit__quantity-control button {
+    cursor: pointer;
+    font-size: 1.25rem;
+  }
+
+  .leafer-fruit__quantity-control input {
+    appearance: textfield;
+    font-size: 0.9rem;
+    font-weight: 800;
+    width: 100%;
+  }
+
+  .leafer-fruit__quantity-control input::-webkit-inner-spin-button,
+  .leafer-fruit__quantity-control input::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .leafer-fruit__add,
+  .leafer-fruit__closing-button {
+    align-items: center;
+    background: var(--lf-accent);
+    border: 1px solid var(--lf-accent);
+    border-radius: calc(var(--lf-radius) * 0.55);
+    color: var(--lf-accent-contrast);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: var(--font-body-family, Arial, sans-serif);
+    font-size: 0.88rem;
+    font-weight: 900;
+    justify-content: center;
+    letter-spacing: 0.035em;
+    min-height: 52px;
+    padding: 14px 22px;
+    text-transform: uppercase;
+    transition: filter 180ms ease, transform 180ms ease;
+  }
+
+  .leafer-fruit__add:hover,
+  .leafer-fruit__closing-button:hover {
+    filter: brightness(0.92);
+    transform: translateY(-1px);
+  }
+
+  .leafer-fruit__add:focus-visible,
+  .leafer-fruit__closing-button:focus-visible,
+  .leafer-fruit__variety-button:focus-visible,
+  .leafer-fruit__quantity-control button:focus-visible,
+  .leafer-fruit__faq summary:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--lf-accent) 38%, transparent);
+    outline-offset: 3px;
+  }
+
+  .leafer-fruit__add:disabled {
+    cursor: not-allowed;
+    filter: grayscale(0.7);
+    opacity: 0.5;
+    transform: none;
+  }
+
+  .leafer-fruit__availability {
+    color: var(--lf-muted);
+    font-size: 0.76rem;
+    margin: 9px 0 0;
+    text-align: right;
+  }
+
+  .leafer-fruit__visual {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .leafer-fruit__image-wrap {
+    background: color-mix(in srgb, var(--lf-accent) 12%, var(--lf-surface));
+    border-radius: var(--lf-radius);
+    flex: 1;
+    min-height: 650px;
+    overflow: hidden;
+    position: relative;
+    view-transition-name: leafer-fruit-image;
+  }
+
+  .leafer-fruit__image,
+  .leafer-fruit__placeholder {
+    display: block;
+    height: 100%;
+    inset: 0;
+    object-fit: cover;
+    position: absolute;
+    width: 100%;
+  }
+
+  .leafer-fruit__image-note {
+    color: var(--lf-muted);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    margin: 10px 4px 0;
+  }
+
+  .leafer-fruit__section {
+    border-top: 1px solid var(--lf-border);
+    margin-top: clamp(74px, 10vw, 140px);
+    padding-top: clamp(60px, 8vw, 104px);
+  }
+
+  .leafer-fruit__section-head {
+    max-width: 760px;
+  }
+
+  .leafer-fruit__section-head--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .leafer-fruit__section-head h2,
+  .leafer-fruit__closing h2 {
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: clamp(2rem, 4.3vw, 4.2rem);
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .leafer-fruit__section-head .rte,
+  .leafer-fruit__closing .rte {
+    color: var(--lf-muted);
+    font-size: 1rem;
+    line-height: 1.72;
+    margin-top: 18px;
+  }
+
+  .leafer-fruit__varieties {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: 36px;
+  }
+
+  .leafer-fruit__variety {
+    min-width: 0;
+  }
+
+  .leafer-fruit__variety-button {
+    background: var(--lf-surface);
+    border: 1px solid var(--lf-border);
+    border-radius: var(--lf-radius);
+    color: var(--lf-text);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-body-family, Arial, sans-serif);
+    height: 100%;
+    padding: clamp(18px, 2.4vw, 28px);
+    text-align: left;
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+    width: 100%;
+  }
+
+  .leafer-fruit__variety-button:hover {
+    border-color: color-mix(in srgb, var(--lf-accent) 55%, var(--lf-border));
+    transform: translateY(-3px);
+  }
+
+  .leafer-fruit__variety-button[aria-pressed='true'] {
+    border-color: var(--lf-accent);
+    box-shadow: 0 14px 34px color-mix(in srgb, var(--lf-accent) 14%, transparent);
+  }
+
+  .leafer-fruit__variety-top {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 22px;
+  }
+
+  .leafer-fruit__badge {
+    background: color-mix(in srgb, var(--lf-accent) 11%, transparent);
+    border-radius: 999px;
+    color: var(--lf-accent);
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    padding: 7px 9px;
+    text-transform: uppercase;
+  }
+
+  .leafer-fruit__select-cue {
+    color: var(--lf-muted);
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .leafer-fruit__variety-button > strong {
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: 1.45rem;
+    line-height: 1.1;
+  }
+
+  .leafer-fruit__variety-button > em {
+    color: var(--lf-accent);
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: 0.9rem;
+    margin-top: 6px;
+  }
+
+  .leafer-fruit__variety-copy {
+    color: var(--lf-muted);
+    font-size: 0.9rem;
+    line-height: 1.62;
+    margin-top: 16px;
+  }
+
+  .leafer-fruit__variety-copy p {
+    margin: 0;
+  }
+
+  .leafer-fruit__facts {
+    border-top: 1px solid var(--lf-border);
+    display: grid;
+    gap: 11px;
+    margin-top: auto;
+    padding-top: 18px;
+    width: 100%;
+  }
+
+  .leafer-fruit__facts > span {
+    display: flex;
+    font-size: 0.82rem;
+    gap: 12px;
+    justify-content: space-between;
+  }
+
+  .leafer-fruit__facts small {
+    color: var(--lf-muted);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .leafer-fruit__notice {
+    align-items: flex-start;
+    background: color-mix(in srgb, var(--lf-accent) 8%, var(--lf-surface));
+    border: 1px solid color-mix(in srgb, var(--lf-accent) 24%, var(--lf-border));
+    border-radius: var(--lf-radius);
+    display: flex;
+    gap: 18px;
+    margin-top: 20px;
+    padding: clamp(20px, 3vw, 30px);
+  }
+
+  .leafer-fruit__notice-icon {
+    align-items: center;
+    background: var(--lf-accent);
+    border-radius: 50%;
+    color: var(--lf-accent-contrast);
+    display: flex;
+    flex: 0 0 28px;
+    font-family: Georgia, serif;
+    font-style: italic;
+    font-weight: 800;
+    height: 28px;
+    justify-content: center;
+  }
+
+  .leafer-fruit__notice h3 {
+    font-size: 1rem;
+    margin: 2px 0 7px;
+  }
+
+  .leafer-fruit__notice .rte {
+    color: var(--lf-muted);
+    font-size: 0.88rem;
+    line-height: 1.65;
+  }
+
+  .leafer-fruit__included-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: 38px;
+  }
+
+  .leafer-fruit__info-card {
+    background: var(--lf-surface);
+    border: 1px solid var(--lf-border);
+    border-radius: var(--lf-radius);
+    padding: clamp(20px, 3vw, 30px);
+  }
+
+  .leafer-fruit__info-index {
+    color: var(--lf-accent);
+    display: block;
+    font-family: var(--font-heading-family, Georgia, serif);
+    font-size: 1.4rem;
+    margin-bottom: 34px;
+  }
+
+  .leafer-fruit__info-card h3,
+  .leafer-fruit__benefits h3,
+  .leafer-fruit__steps h3 {
+    font-size: 1rem;
+    margin: 0 0 9px;
+  }
+
+  .leafer-fruit__info-card .rte,
+  .leafer-fruit__benefits .rte,
+  .leafer-fruit__steps .rte {
+    color: var(--lf-muted);
+    font-size: 0.88rem;
+    line-height: 1.62;
+  }
+
+  .leafer-fruit__section--steps {
+    display: grid;
+    gap: clamp(36px, 7vw, 110px);
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  }
+
+  .leafer-fruit__steps {
+    display: grid;
+    gap: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .leafer-fruit__steps li {
+    align-items: flex-start;
+    border-top: 1px solid var(--lf-border);
+    display: grid;
+    gap: 18px;
+    grid-template-columns: 40px 1fr;
+    padding: 22px 0;
+  }
+
+  .leafer-fruit__steps li:last-child {
+    border-bottom: 1px solid var(--lf-border);
+  }
+
+  .leafer-fruit__steps li > span {
+    align-items: center;
+    background: var(--lf-accent);
+    border-radius: 50%;
+    color: var(--lf-accent-contrast);
+    display: flex;
+    font-size: 0.8rem;
+    font-weight: 900;
+    height: 32px;
+    justify-content: center;
+    width: 32px;
+  }
+
+  .leafer-fruit__benefits {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 38px;
+  }
+
+  .leafer-fruit__benefits article {
+    align-items: flex-start;
+    background: var(--lf-surface);
+    border: 1px solid var(--lf-border);
+    border-radius: var(--lf-radius);
+    display: flex;
+    gap: 14px;
+    padding: 24px;
+  }
+
+  .leafer-fruit__benefits article > span {
+    align-items: center;
+    background: color-mix(in srgb, var(--lf-accent) 12%, transparent);
+    border-radius: 50%;
+    color: var(--lf-accent);
+    display: flex;
+    flex: 0 0 28px;
+    font-size: 0.78rem;
+    font-weight: 900;
+    height: 28px;
+    justify-content: center;
+  }
+
+  .leafer-fruit__faq-wrap {
+    display: grid;
+    gap: clamp(36px, 7vw, 110px);
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+  }
+
+  .leafer-fruit__faq {
+    border-top: 1px solid var(--lf-border);
+  }
+
+  .leafer-fruit__faq details {
+    border-bottom: 1px solid var(--lf-border);
+  }
+
+  .leafer-fruit__faq summary {
+    align-items: center;
+    cursor: pointer;
+    display: flex;
+    font-size: 0.96rem;
+    font-weight: 800;
+    gap: 20px;
+    justify-content: space-between;
+    list-style: none;
+    padding: 22px 0;
+  }
+
+  .leafer-fruit__faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .leafer-fruit__faq summary > span:last-child {
+    color: var(--lf-accent);
+    font-size: 1.5rem;
+    font-weight: 400;
+    transition: transform 180ms ease;
+  }
+
+  .leafer-fruit__faq details[open] summary > span:last-child {
+    transform: rotate(45deg);
+  }
+
+  .leafer-fruit__faq details > .rte {
+    color: var(--lf-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    max-width: 68ch;
+    padding: 0 42px 22px 0;
+  }
+
+  .leafer-fruit__closing {
+    align-items: center;
+    background: var(--lf-text);
+    border-radius: var(--lf-radius);
+    color: var(--lf-bg);
+    display: flex;
+    gap: 30px;
+    justify-content: space-between;
+    margin-top: clamp(74px, 10vw, 140px);
+    padding: clamp(28px, 6vw, 72px);
+  }
+
+  .leafer-fruit__closing > div {
+    max-width: 720px;
+  }
+
+  .leafer-fruit__closing .leafer-fruit__eyebrow {
+    color: color-mix(in srgb, var(--lf-accent) 70%, white);
+  }
+
+  .leafer-fruit__closing .rte {
+    color: color-mix(in srgb, var(--lf-bg) 72%, transparent);
+  }
+
+  .leafer-fruit__closing-button {
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 989px) {
+    .leafer-fruit__hero,
+    .leafer-fruit__section--steps,
+    .leafer-fruit__faq-wrap {
+      grid-template-columns: 1fr;
+    }
+
+    .leafer-fruit__visual {
+      grid-row: 1;
+    }
+
+    .leafer-fruit__image-wrap {
+      aspect-ratio: 4 / 3;
+      min-height: 0;
+    }
+
+    .leafer-fruit__hero-copy {
+      padding-block: 0;
+    }
+
+    .leafer-fruit__varieties {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .leafer-fruit__included-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 649px) {
+    .leafer-fruit__shell {
+      padding-inline: 16px;
+    }
+
+    .leafer-fruit__title {
+      font-size: clamp(2.35rem, 12vw, 3.65rem);
+    }
+
+    .leafer-fruit__buybox-head,
+    .leafer-fruit__closing {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .leafer-fruit__variant-grid,
+    .leafer-fruit__varieties,
+    .leafer-fruit__included-grid,
+    .leafer-fruit__benefits {
+      grid-template-columns: 1fr;
+    }
+
+    .leafer-fruit__purchase-row {
+      grid-template-columns: 1fr;
+    }
+
+    .leafer-fruit__quantity-control {
+      grid-template-columns: 46px 1fr 46px;
+      width: 100%;
+    }
+
+    .leafer-fruit__availability {
+      text-align: left;
+    }
+
+    .leafer-fruit__closing-button {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .leafer-fruit *,
+    .leafer-fruit *::before,
+    .leafer-fruit *::after {
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const normalize = (value) => String(value || '').trim().toLocaleLowerCase();
+
+    const init = (root) => {
+      if (!root || root.dataset.leaferFruitReady === 'true') return;
+      root.dataset.leaferFruitReady = 'true';
+
+      const variantInput = root.querySelector('[data-variant-input]');
+      const price = root.querySelector('[data-product-price]');
+      const availability = root.querySelector('[data-availability]');
+      const addButton = root.querySelector('[data-add-button]');
+      const addLabel = root.querySelector('[data-add-label]');
+      const radios = [...root.querySelectorAll('[data-variant-radio]')];
+      const varietyButtons = [...root.querySelectorAll('[data-variety-select]')];
+
+      const updateVariant = (radio) => {
+        if (!radio || !variantInput) return;
+        const available = radio.dataset.available === 'true';
+        const render = () => {
+          variantInput.value = radio.value;
+          if (price) price.textContent = radio.dataset.price;
+          if (availability) {
+            availability.textContent = available
+              ? radio.dataset.availableLabel
+              : radio.dataset.soldOutLabel;
+          }
+          if (addButton) addButton.disabled = !available;
+          if (addLabel) {
+            addLabel.textContent = available
+              ? radio.dataset.addButtonLabel
+              : radio.dataset.soldOutLabel;
+          }
+          varietyButtons.forEach((button) => {
+            const active = normalize(button.dataset.variantTitle) === normalize(radio.dataset.variantTitle);
+            button.setAttribute('aria-pressed', String(active));
+          });
+        };
+
+        if (document.startViewTransition) {
+          document.startViewTransition(render);
+        } else {
+          render();
+        }
+      };
+
+      radios.forEach((radio) => {
+        radio.addEventListener('change', () => updateVariant(radio));
+      });
+
+      varietyButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const match = radios.find(
+            (radio) => normalize(radio.dataset.variantTitle) === normalize(button.dataset.variantTitle)
+          );
+          if (!match || match.disabled) return;
+          match.checked = true;
+          match.dispatchEvent(new Event('change', { bubbles: true }));
+          root.querySelector('.leafer-fruit__buybox')?.scrollIntoView({
+            behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+            block: 'center'
+          });
+        });
+      });
+
+      const quantityInput = root.querySelector('[data-quantity-input]');
+      root.querySelector('[data-quantity-minus]')?.addEventListener('click', () => {
+        if (!quantityInput) return;
+        quantityInput.value = Math.max(1, Number(quantityInput.value || 1) - 1);
+      });
+      root.querySelector('[data-quantity-plus]')?.addEventListener('click', () => {
+        if (!quantityInput) return;
+        quantityInput.value = Math.max(1, Number(quantityInput.value || 1) + 1);
+      });
+
+      root.querySelector('[data-scroll-to-form]')?.addEventListener('click', (event) => {
+        const target = document.getElementById(event.currentTarget.dataset.formTarget);
+        if (!target) return;
+        target.scrollIntoView({
+          behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+          block: 'center'
+        });
+        window.setTimeout(() => target.querySelector('input:not([type="hidden"]), button')?.focus(), 450);
+      });
+
+      updateVariant(radios.find((radio) => radio.checked) || radios.find((radio) => !radio.disabled));
+    };
+
+    const initAll = (scope = document) => {
+      scope.querySelectorAll('[data-leafer-fruit]').forEach(init);
+    };
+
+    initAll();
+    document.addEventListener('shopify:section:load', (event) => initAll(event.target));
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "LEAFer Obstsaatgut",
+  "tag": "section",
+  "class": "section-leafer-fruit",
+  "max_blocks": 30,
+  "settings": [
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produkt",
+      "info": "Auf Produktseiten wird ohne Auswahl automatisch das aktuelle Produkt verwendet."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero-Bild"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Alternativtext des Hero-Bildes",
+      "default": "Obstsaatgut und junge Obstpflanzen für die Anzucht"
+    },
+    {
+      "type": "text",
+      "id": "image_note",
+      "label": "Bildhinweis",
+      "default": "Abbildung beispielhaft. Wuchs und Erscheinungsbild entwickeln sich bei jeder Pflanze individuell."
+    },
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Überzeile",
+      "default": "LEAFerservice · Obstsaatgut"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Obst aus Samen. <em>Von Anfang an deins.</em>"
+    },
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Einleitung",
+      "default": "<p>Wähle zwischen Maracuja, Zitrone, Apfel und zwei Traubenformen und begleite deine eigene Obstpflanze vom ersten Keim bis zum kräftigen Jungtrieb. Ein langfristiges Pflanzenprojekt für alle, die Wachstum wirklich erleben möchten.</p>"
+    },
+    {
+      "type": "text",
+      "id": "trust_aria_label",
+      "label": "Barrierefreie Bezeichnung der Merkmale",
+      "default": "Produktmerkmale"
+    },
+    {
+      "type": "text",
+      "id": "trust_1",
+      "label": "Merkmal 1",
+      "default": "5 Obstideen"
+    },
+    {
+      "type": "text",
+      "id": "trust_2",
+      "label": "Merkmal 2",
+      "default": "Anzuchtwissen inklusive"
+    },
+    {
+      "type": "text",
+      "id": "trust_3",
+      "label": "Merkmal 3",
+      "default": "Für langfristige Pflanzenprojekte"
+    },
+    {
+      "type": "header",
+      "content": "Produktformular"
+    },
+    {
+      "type": "text",
+      "id": "product_label",
+      "label": "Produkt-Kennung",
+      "default": "Deine Auswahl"
+    },
+    {
+      "type": "text",
+      "id": "price_label",
+      "label": "Barrierefreie Preisbezeichnung",
+      "default": "Preis"
+    },
+    {
+      "type": "text",
+      "id": "variant_legend",
+      "label": "Variantenüberschrift",
+      "default": "Obstsorte wählen"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Mengenbezeichnung",
+      "default": "Menge"
+    },
+    {
+      "type": "text",
+      "id": "quantity_minus_label",
+      "label": "Bezeichnung: Menge reduzieren",
+      "default": "Menge um eins reduzieren"
+    },
+    {
+      "type": "text",
+      "id": "quantity_plus_label",
+      "label": "Bezeichnung: Menge erhöhen",
+      "default": "Menge um eins erhöhen"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_label",
+      "label": "Warenkorbtext",
+      "default": "In den Warenkorb"
+    },
+    {
+      "type": "text",
+      "id": "available_label",
+      "label": "Verfügbarkeitstext",
+      "default": "Verfügbar · Versand nach aktueller Shopangabe"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_label",
+      "label": "Ausverkauft-Text",
+      "default": "Derzeit nicht verfügbar"
+    },
+    {
+      "type": "text",
+      "id": "empty_title",
+      "label": "Titel ohne Produkt",
+      "default": "Produkt im Theme-Editor auswählen"
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Hinweis ohne Produkt",
+      "default": "Wähle das Variantenprodukt „Obstsaatgut“, damit Preis, Bestand und Warenkorb funktionieren."
+    },
+    {
+      "type": "header",
+      "content": "Sortenauswahl"
+    },
+    {
+      "type": "text",
+      "id": "varieties_eyebrow",
+      "label": "Überzeile",
+      "default": "Fünf Wege zum eigenen Obstprojekt"
+    },
+    {
+      "type": "text",
+      "id": "varieties_heading",
+      "label": "Überschrift",
+      "default": "Welche Pflanze möchtest du wachsen sehen?"
+    },
+    {
+      "type": "richtext",
+      "id": "varieties_intro",
+      "label": "Einleitung",
+      "default": "<p>Jede Art bringt ihren eigenen Rhythmus mit. Tropische Samen mögen Wärme, Apfel und Weinrebe profitieren von einer kühlen Vorbehandlung. Wähle nach Standort, Geduld und Pflanzenziel.</p>"
+    },
+    {
+      "type": "text",
+      "id": "select_cue",
+      "label": "Auswahlhinweis",
+      "default": "Auswählen"
+    },
+    {
+      "type": "text",
+      "id": "prep_label",
+      "label": "Faktenlabel 1",
+      "default": "Start"
+    },
+    {
+      "type": "text",
+      "id": "location_label",
+      "label": "Faktenlabel 2",
+      "default": "Später"
+    },
+    {
+      "type": "text",
+      "id": "level_label",
+      "label": "Faktenlabel 3",
+      "default": "Projekt"
+    },
+    {
+      "type": "text",
+      "id": "notice_aria_label",
+      "label": "Barrierefreie Hinweisbezeichnung",
+      "default": "Wichtiger Hinweis zur Sortenechtheit"
+    },
+    {
+      "type": "text",
+      "id": "notice_heading",
+      "label": "Hinweisüberschrift",
+      "default": "Aus Samen entsteht ein Unikat – keine Sortenkopie"
+    },
+    {
+      "type": "richtext",
+      "id": "notice_text",
+      "label": "Hinweistext",
+      "default": "<p>Obstpflanzen aus Samen sind genetisch eigenständig. Namen wie „Pinot Noir“ oder „Pink Lady“ beschreiben die Herkunft beziehungsweise den Fruchttyp des Saatguts; Wuchs, Blüte und spätere Früchte können von der Mutterpflanze abweichen. Eine bestimmte Fruchtqualität oder Ernte wird nicht zugesichert.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Enthalten"
+    },
+    {
+      "type": "text",
+      "id": "included_eyebrow",
+      "label": "Überzeile",
+      "default": "Klar statt überladen"
+    },
+    {
+      "type": "text",
+      "id": "included_heading",
+      "label": "Überschrift",
+      "default": "Was du für deinen Start bekommst"
+    },
+    {
+      "type": "richtext",
+      "id": "included_intro",
+      "label": "Einleitung",
+      "default": "<p>Du wählst genau die Obstidee, die zu deinem Platz und deiner Geduld passt. Die Section verbindet Auswahl, Erwartungsmanagement und Anzuchtwissen an einem Ort.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Anzuchtschritte"
+    },
+    {
+      "type": "text",
+      "id": "steps_eyebrow",
+      "label": "Überzeile",
+      "default": "Vom Saatkorn zum Jungtrieb"
+    },
+    {
+      "type": "text",
+      "id": "steps_heading",
+      "label": "Überschrift",
+      "default": "So beginnt dein Obstprojekt"
+    },
+    {
+      "type": "richtext",
+      "id": "steps_intro",
+      "label": "Einleitung",
+      "default": "<p>Die genaue Keimdauer ist naturbedingt verschieden. Entscheidend sind die passende Vorbehandlung, ein luftiges Anzuchtmedium und gleichmäßige Bedingungen ohne Staunässe.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Vorteile"
+    },
+    {
+      "type": "text",
+      "id": "benefits_eyebrow",
+      "label": "Überzeile",
+      "default": "Für neugierige Pflanzenmenschen"
+    },
+    {
+      "type": "text",
+      "id": "benefits_heading",
+      "label": "Überschrift",
+      "default": "Mehr als nur ein Saatbeutel"
+    },
+    {
+      "type": "header",
+      "content": "FAQ"
+    },
+    {
+      "type": "text",
+      "id": "faq_eyebrow",
+      "label": "Überzeile",
+      "default": "Gut zu wissen"
+    },
+    {
+      "type": "text",
+      "id": "faq_heading",
+      "label": "Überschrift",
+      "default": "Fragen vor der Aussaat"
+    },
+    {
+      "type": "richtext",
+      "id": "faq_intro",
+      "label": "Einleitung",
+      "default": "<p>Obstsaatgut ist ein Naturprodukt und kein fertiger Obstbaum. Diese Antworten setzen realistische Erwartungen und helfen beim richtigen Start.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Abschluss"
+    },
+    {
+      "type": "text",
+      "id": "closing_eyebrow",
+      "label": "Überzeile",
+      "default": "Bereit für den ersten Keim?"
+    },
+    {
+      "type": "text",
+      "id": "closing_heading",
+      "label": "Überschrift",
+      "default": "Wähle dein Obstprojekt."
+    },
+    {
+      "type": "richtext",
+      "id": "closing_text",
+      "label": "Text",
+      "default": "<p>Maracuja, Zitrone, Apfel oder Weinrebe: Entscheide dich für die Pflanze, deren Entwicklung du von Anfang an begleiten möchtest.</p>"
+    },
+    {
+      "type": "text",
+      "id": "closing_button",
+      "label": "Button",
+      "default": "Zur Sortenauswahl"
+    },
+    {
+      "type": "header",
+      "content": "Farben und Abstände"
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Hintergrund",
+      "default": "#f4f1e9"
+    },
+    {
+      "type": "color",
+      "id": "surface",
+      "label": "Karten",
+      "default": "#fffdf8"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#203126"
+    },
+    {
+      "type": "color",
+      "id": "muted_color",
+      "label": "Sekundärtext",
+      "default": "#637066"
+    },
+    {
+      "type": "color",
+      "id": "accent",
+      "label": "Akzent",
+      "default": "#56704e"
+    },
+    {
+      "type": "color",
+      "id": "accent_contrast",
+      "label": "Akzent-Kontrast",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Linien",
+      "default": "#dcd9cf"
+    },
+    {
+      "type": "range",
+      "id": "radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 36,
+      "step": 2,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "label": "Maximale Breite",
+      "min": 1000,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 1400
+    },
+    {
+      "type": "range",
+      "id": "padding_y",
+      "label": "Vertikaler Abstand",
+      "min": 24,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "default": 72
+    }
+  ],
+  "blocks": [
+    {
+      "type": "variety",
+      "name": "Obstsorte",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "variant_title",
+          "label": "Exakter Variantentitel",
+          "info": "Muss exakt dem Titel der Shopify-Variante entsprechen."
+        },
+        {
+          "type": "text",
+          "id": "badge",
+          "label": "Kategorie"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Anzeigename"
+        },
+        {
+          "type": "text",
+          "id": "botanical_name",
+          "label": "Botanischer Name"
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Beschreibung"
+        },
+        {
+          "type": "text",
+          "id": "prep",
+          "label": "Start"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Späterer Standort"
+        },
+        {
+          "type": "text",
+          "id": "level",
+          "label": "Projektcharakter"
+        }
+      ]
+    },
+    {
+      "type": "included",
+      "name": "Enthalten-Karte",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Überschrift"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "step",
+      "name": "Anzuchtschritt",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Überschrift"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "benefit",
+      "name": "Vorteil",
+      "limit": 6,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Überschrift"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text"
+        }
+      ]
+    },
+    {
+      "type": "faq",
+      "name": "FAQ",
+      "limit": 8,
+      "settings": [
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Frage"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Antwort"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "LEAFer Obstsaatgut",
+      "blocks": [
+        {
+          "type": "variety",
+          "settings": {
+            "variant_title": "Trauben - Pinot Noir",
+            "badge": "Keltertraube",
+            "heading": "Pinot-Noir-Fruchttyp",
+            "botanical_name": "Vitis vinifera",
+            "description": "<p>Ein langfristiges Weinreben-Projekt mit kräftigem Kletterwuchs. Aus dem Saatgut wächst eine genetisch eigenständige Rebe – nicht automatisch eine sortenechte Pinot-Noir-Pflanze.</p>",
+            "prep": "Kühle Vorbehandlung",
+            "location": "Sonnig mit Rankhilfe",
+            "level": "Geduldiges Projekt"
+          }
+        },
+        {
+          "type": "variety",
+          "settings": {
+            "variant_title": "Trauben - weiße Riesentraube",
+            "badge": "Helle Traube",
+            "heading": "Weiße Riesentraube",
+            "botanical_name": "Vitis vinifera",
+            "description": "<p>Eine wüchsige Weinreben-Idee für sonnige Plätze und stabile Rankhilfen. Fruchtfarbe, Größe und Geschmack können bei einer Anzucht aus Samen variieren.</p>",
+            "prep": "Kühle Vorbehandlung",
+            "location": "Sonnig und rankend",
+            "level": "Langfristig"
+          }
+        },
+        {
+          "type": "variety",
+          "settings": {
+            "variant_title": "Maracuja - Passi Flora",
+            "badge": "Tropischer Kletterer",
+            "heading": "Maracuja",
+            "botanical_name": "Passiflora edulis",
+            "description": "<p>Schnellwachsende Kletterpflanze mit markantem Laub und exotischem Charakter. Ideal für einen hellen, warmen Start und später mit ausreichend Platz zum Ranken.</p>",
+            "prep": "Warm und gleichmäßig feucht",
+            "location": "Sehr hell mit Rankhilfe",
+            "level": "Tropisches Projekt"
+          }
+        },
+        {
+          "type": "variety",
+          "settings": {
+            "variant_title": "Zitronenbaum",
+            "badge": "Zitruspflanze",
+            "heading": "Zitronenbaum",
+            "botanical_name": "Citrus limon",
+            "description": "<p>Ein immergrünes Zitrusprojekt für helle Standorte. Die Keimlinge entwickeln sich individuell; bis zu einer möglichen Blüte oder Frucht ist viel Geduld nötig.</p>",
+            "prep": "Warm und hell",
+            "location": "Hell, später frostfrei",
+            "level": "Ruhiges Langzeitprojekt"
+          }
+        },
+        {
+          "type": "variety",
+          "settings": {
+            "variant_title": "Apfelbaum - Pink Lady",
+            "badge": "Apfelprojekt",
+            "heading": "Apfel aus Pink-Lady-Frucht",
+            "botanical_name": "Malus domestica",
+            "description": "<p>Ein robustes Langzeitprojekt vom Kern bis zum eigenen Sämlingsbaum. Der daraus wachsende Apfelbaum ist genetisch neu und trägt nicht automatisch Pink-Lady-Äpfel.</p>",
+            "prep": "Kühle Vorbehandlung",
+            "location": "Später sonnig im Freien",
+            "level": "Für Geduldige"
+          }
+        },
+        {
+          "type": "included",
+          "settings": {
+            "heading": "Deine gewählte Saatgutvariante",
+            "text": "<p>Ein Saatgutbeutel der im Produktformular ausgewählten Obstart. Die jeweilige Füllmenge steht an der Variante beziehungsweise auf der Verpackung.</p>"
+          }
+        },
+        {
+          "type": "included",
+          "settings": {
+            "heading": "Artgerechter Start",
+            "text": "<p>Die Übersicht zeigt dir, ob deine Auswahl Wärme oder zunächst eine kühle Vorbehandlung benötigt.</p>"
+          }
+        },
+        {
+          "type": "included",
+          "settings": {
+            "heading": "Ehrliche Erwartungen",
+            "text": "<p>Klare Hinweise zu genetischer Vielfalt, Keimdauer und möglicher Fruchtbildung statt unrealistischer Ernteversprechen.</p>"
+          }
+        },
+        {
+          "type": "included",
+          "settings": {
+            "heading": "Passend erweiterbar",
+            "text": "<p>Mit Anzuchttopf, luftigem Seed Mix, feinem Sprüher und Rankhilfe lässt sich dein Setup gezielt ergänzen.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Saatgut vorbereiten",
+            "text": "<p>Orientiere dich an der gewählten Art. Entferne mögliche Fruchtreste und nutze nur sauberes Saatgut für die weitere Vorbehandlung.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Warmstart oder Kühlphase",
+            "text": "<p>Maracuja und Zitrone starten warm. Apfel und Weinrebe benötigen für einen natürlichen Keimimpuls meist zunächst eine kontrollierte kühle, feuchte Phase.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Luftig aussäen",
+            "text": "<p>Setze das Saatgut in ein feines, strukturstabiles Anzuchtmedium. Halte es gleichmäßig leicht feucht, aber niemals dauerhaft nass.</p>"
+          }
+        },
+        {
+          "type": "step",
+          "settings": {
+            "heading": "Beobachten und umtopfen",
+            "text": "<p>Sorge nach der Keimung für viel Licht. Topfe erst um, wenn der Jungtrieb stabil ist und sich ein belastbares Wurzelsystem gebildet hat.</p>"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Wachstum von Anfang an",
+            "text": "<p>Du lernst deine Pflanze nicht erst als fertige Jungpflanze kennen, sondern begleitest jeden Entwicklungsschritt selbst.</p>"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Tropisch oder winterhart",
+            "text": "<p>Die Auswahl verbindet exotische Kletter- und Zitruspflanzen mit Apfel- und Weinrebenprojekten für draußen.</p>"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Ein Produkt, klare Varianten",
+            "text": "<p>Alle Obstsorten bleiben übersichtlich in einem Variantenprodukt gebündelt, statt den Shop mit Einzelartikeln zu überladen.</p>"
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "heading": "Ohne falsches Ernteversprechen",
+            "text": "<p>Die Section erklärt offen, dass Sämlinge genetisch variieren und Fruchtbildung Zeit, passende Bedingungen und Geduld braucht.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Wächst aus dem Saatgut genau dieselbe Obstsorte?",
+            "answer": "<p>Nein. Durch Bestäubung und Samenbildung entsteht eine neue genetische Kombination. Ein Sämling aus einer Pink-Lady-Frucht ist daher kein sortenechter Pink-Lady-Baum; Gleiches gilt für benannte Weintrauben. Wuchs und spätere Früchte können deutlich abweichen.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Wie lange dauert die Keimung?",
+            "answer": "<p>Das hängt von Art, Saatgut, Vorbehandlung, Temperatur und Feuchtigkeit ab. Manche Samen reagieren zügig, andere erst nach einer längeren Ruhe- oder Kühlphase. Eine feste Keimzeit oder Keimquote kann bei Naturprodukten nicht zugesichert werden.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Brauchen alle Sorten eine Kühlphase?",
+            "answer": "<p>Nein. Maracuja und Zitrone werden warm angezogen. Apfel- und Traubensaat benötigen für einen zuverlässigen Keimimpuls in der Regel eine feuchte kühle Vorbehandlung. Beachte immer die sortenspezifischen Hinweise.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Kann ich die Pflanzen dauerhaft in der Wohnung halten?",
+            "answer": "<p>Die Anzucht kann geschützt und hell im Haus beginnen. Maracuja und Zitrone brauchen dauerhaft Wärme beziehungsweise einen frostfreien Winterplatz. Apfel und Weinrebe entwickeln sich langfristig im Freien am besten.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Ist das Saatgut zum Verzehr geeignet?",
+            "answer": "<p>Nein. Das angebotene Saatgut ist ausschließlich zur Aussaat bestimmt und nicht als Lebensmittel vorgesehen. Bewahre es außerhalb der Reichweite kleiner Kinder und Haustiere auf.</p>"
+          }
+        },
+        {
+          "type": "faq",
+          "settings": {
+            "question": "Ist eine spätere Ernte garantiert?",
+            "answer": "<p>Nein. Ob und wann eine Pflanze blüht oder Früchte trägt, hängt unter anderem von Genetik, Alter, Standort, Bestäubung, Pflege und Klima ab. Im Mittelpunkt steht das Anzucht- und Pflanzenprojekt.</p>"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

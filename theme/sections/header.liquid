@@ -1,0 +1,240 @@
+<header class="site-header" style="--logo-width: {{ section.settings.logo_width }}px" data-site-header>
+  <div class="page-width site-header__inner">
+    {% if section.settings.menu != blank %}
+      <details class="site-header__mobile" data-mobile-menu>
+        <summary
+          aria-controls="MobileMenu-{{ section.id }}"
+          aria-expanded="false"
+          aria-label="{{ 'accessibility.menu' | t | escape }}"
+          data-open-label="{{ 'accessibility.menu' | t | escape }}"
+          data-close-label="{{ 'accessibility.close' | t | escape }}"
+        >
+          <svg class="site-header__menu-icon site-header__menu-icon--open" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          <svg class="site-header__menu-icon site-header__menu-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg>
+        </summary>
+        <nav id="MobileMenu-{{ section.id }}" class="site-header__mobile-panel" data-mobile-menu-panel>
+          <ul class="site-header__mobile-list">
+            {% for link in section.settings.menu.links %}
+              <li>
+                {% if link.links != blank %}
+                  <details class="site-header__mobile-disclosure">
+                    <summary>
+                      <span>{{ link.title }}</span>
+                      <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+                    </summary>
+                    <div class="site-header__mobile-submenu">
+                      <a class="site-header__mobile-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
+                        <span>{{ link.title }}</span>
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
+                      </a>
+                      <ul>
+                        {% for child_link in link.links %}
+                          <li>
+                            {% if child_link.links != blank %}
+                              <details class="site-header__mobile-disclosure site-header__mobile-disclosure--nested">
+                                <summary>
+                                  <span>{{ child_link.title }}</span>
+                                  <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
+                                </summary>
+                                <div class="site-header__mobile-submenu site-header__mobile-submenu--nested">
+                                  <a class="site-header__mobile-overview" href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>
+                                    <span>{{ child_link.title }}</span>
+                                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
+                                  </a>
+                                  <ul>
+                                    {% for grandchild_link in child_link.links %}
+                                      <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title }}</a></li>
+                                    {% endfor %}
+                                  </ul>
+                                </div>
+                              </details>
+                            {% else %}
+                              <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title }}</a>
+                            {% endif %}
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </details>
+                {% else %}
+                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      </details>
+    {% endif %}
+    <a class="site-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+      {% if section.settings.logo != blank %}
+        {{ section.settings.logo | image_url: width: 480 | image_tag: widths: '160, 240, 320, 480', loading: 'eager', alt: shop.name }}
+      {% else %}
+        <svg viewBox="0 0 38 42" aria-hidden="true"><path d="M19 39V18M19 29C10 28 5 22 5 12c9 0 14 5 14 14M19 22c7-1 12-6 13-15-8 0-13 5-13 12M13 15C13 9 16 5 21 2c3 6 2 11-2 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>{{ shop.name }}</span>
+      {% endif %}
+    </a>
+    {% if section.settings.menu != blank %}
+      <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
+        {% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+      </nav>
+    {% endif %}
+    <div class="site-header__actions">
+      <a href="{{ routes.search_url }}" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></a>
+      <a class="site-header__account" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
+      <a class="site-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span>{{ cart.item_count }}</span>{% endif %}</a>
+    </div>
+  </div>
+</header>
+
+{% stylesheet %}
+  .site-header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 3%); backdrop-filter: blur(14px); }
+  .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr); align-items: center; gap: 2.5rem; }
+  .site-header__brand { width: min(100%, var(--logo-width)); display: inline-flex; align-items: center; gap: .55rem; font-family: var(--heading-font); font-size: 1.45rem; font-weight: 600; text-decoration: none; }
+  .site-header__brand > svg { width: 34px; flex: 0 0 auto; }
+  .site-header__brand img { width: 100%; height: auto; }
+  .site-header__desktop { display: flex; justify-content: center; gap: clamp(1rem, 2.4vw, 2.6rem); white-space: nowrap; }
+  .site-header__desktop a { position: relative; font-size: .87rem; font-weight: 650; text-decoration: none; }
+  .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
+  .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .site-header__desktop a:hover { color: var(--accent); }
+  .site-header__actions { justify-self: end; display: flex; align-items: center; gap: 1.15rem; }
+  .site-header__actions > a, .site-header__mobile > summary { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; border-radius: 50%; }
+  .site-header__actions > a:hover, .site-header__mobile > summary:hover { background: var(--surface); }
+  .site-header__actions svg, .site-header__mobile svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .site-header__actions svg, .site-header__menu-icon { width: 24px; }
+  .site-header__cart span { position: absolute; top: -6px; right: -9px; min-width: 17px; height: 17px; padding-inline: 3px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: .65rem; font-weight: 800; }
+  .site-header__mobile { display: none; }
+  .site-header__mobile > summary, .site-header__mobile-disclosure > summary { list-style: none; }
+  .site-header__mobile > summary::-webkit-details-marker, .site-header__mobile-disclosure > summary::-webkit-details-marker { display: none; }
+  .site-header__menu-icon--close { display: none; }
+  .site-header__mobile[open] .site-header__menu-icon--open { display: none; }
+  .site-header__mobile[open] .site-header__menu-icon--close { display: block; }
+  .site-header__mobile-panel { display: none; visibility: hidden; pointer-events: none; }
+  .site-header__mobile[open] > .site-header__mobile-panel { position: absolute; z-index: 30; inset-inline: 0; top: 100%; display: block; visibility: visible; pointer-events: auto; height: var(--site-header-menu-height, calc(100dvh - 78px)); overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding: 1rem max(1rem, calc((100vw - var(--page-width)) / 2)); border-top: 1px solid var(--border); background: var(--background); box-shadow: var(--shadow-soft); }
+  .site-header__mobile-list, .site-header__mobile-submenu ul { margin: 0; padding: 0; list-style: none; }
+  .site-header__mobile-list > li { border-bottom: 1px solid var(--border); }
+  .site-header__mobile-link, .site-header__mobile-disclosure > summary, .site-header__mobile-submenu a { min-height: 54px; display: flex; align-items: center; text-decoration: none; }
+  .site-header__mobile-link, .site-header__mobile-disclosure > summary { justify-content: space-between; gap: 1rem; font-family: var(--heading-font); font-size: 1.25rem; font-weight: 600; }
+  .site-header__mobile-disclosure > summary { cursor: pointer; }
+  .site-header__chevron { width: 20px; flex: 0 0 auto; transition: transform .2s var(--ease-out); }
+  .site-header__mobile-disclosure[open] > summary .site-header__chevron { transform: rotate(180deg); }
+  .site-header__mobile-submenu { padding: 0 0 .65rem .85rem; }
+  .site-header__mobile-submenu a { gap: .65rem; border-top: 1px solid var(--border); font-size: 1rem; font-weight: 650; }
+  .site-header__mobile-overview { justify-content: space-between; color: var(--accent); }
+  .site-header__mobile-overview svg { width: 20px; flex: 0 0 auto; }
+  .site-header__mobile-disclosure--nested > summary { min-height: 50px; font-family: inherit; font-size: 1rem; font-weight: 650; }
+  .site-header__mobile-submenu--nested { padding-inline-start: .85rem; }
+  .site-header__mobile-panel [aria-current="page"] { color: var(--accent); }
+  html.site-header-menu-open, html.site-header-menu-open body { overflow: hidden; overscroll-behavior: none; }
+  html.site-header-menu-open body { padding-inline-end: var(--site-header-scrollbar-width, 0px); }
+  @media (max-width: 1050px) { .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } }
+  @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
+{% endstylesheet %}
+
+{% javascript %}
+  (() => {
+    const desktopBreakpoint = 1050;
+
+    const initMobileMenu = (header) => {
+      if (header.dataset.mobileMenuReady === 'true') return;
+
+      const menu = header.querySelector('[data-mobile-menu]');
+      const summary = menu?.querySelector(':scope > summary');
+      const panel = menu?.querySelector('[data-mobile-menu-panel]');
+      if (!menu || !summary || !panel) return;
+
+      header.dataset.mobileMenuReady = 'true';
+      const controller = new AbortController();
+      const { signal } = controller;
+      header.mobileMenuController = controller;
+
+      const setPanelHeight = () => {
+        const viewport = window.visualViewport;
+        const viewportBottom = viewport ? viewport.offsetTop + viewport.height : window.innerHeight;
+        const headerBottom = header.getBoundingClientRect().bottom;
+        header.style.setProperty('--site-header-menu-height', `${Math.max(0, viewportBottom - headerBottom)}px`);
+      };
+
+      const closeSubmenus = () => {
+        panel.querySelectorAll('.site-header__mobile-disclosure[open]').forEach((disclosure) => {
+          disclosure.removeAttribute('open');
+        });
+      };
+
+      const unlockPage = () => {
+        document.documentElement.classList.remove('site-header-menu-open');
+        document.documentElement.style.removeProperty('--site-header-scrollbar-width');
+      };
+
+      const closeMenu = (restoreFocus = false) => {
+        menu.removeAttribute('open');
+        summary.setAttribute('aria-expanded', 'false');
+        summary.setAttribute('aria-label', summary.dataset.openLabel);
+        closeSubmenus();
+        unlockPage();
+        if (restoreFocus) summary.focus();
+      };
+
+      const syncMenu = () => {
+        const isOpen = menu.open && window.innerWidth <= desktopBreakpoint;
+        if (!isOpen) {
+          closeMenu();
+          return;
+        }
+
+        document.querySelectorAll('[data-mobile-menu][open]').forEach((otherMenu) => {
+          if (otherMenu !== menu) otherMenu.removeAttribute('open');
+        });
+        const scrollbarWidth = Math.max(0, window.innerWidth - document.documentElement.clientWidth);
+        document.documentElement.style.setProperty('--site-header-scrollbar-width', `${scrollbarWidth}px`);
+        document.documentElement.classList.add('site-header-menu-open');
+        summary.setAttribute('aria-expanded', 'true');
+        summary.setAttribute('aria-label', summary.dataset.closeLabel);
+        setPanelHeight();
+      };
+
+      closeMenu();
+      menu.addEventListener('toggle', syncMenu, { signal });
+      panel.addEventListener('click', (event) => {
+        if (event.target.closest('a')) closeMenu();
+      }, { signal });
+      document.addEventListener('pointerdown', (event) => {
+        if (menu.open && !menu.contains(event.target)) closeMenu();
+      }, { signal });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && menu.open) closeMenu(true);
+      }, { signal });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > desktopBreakpoint) closeMenu();
+        else if (menu.open) setPanelHeight();
+      }, { signal });
+      window.addEventListener('pageshow', () => closeMenu(), { signal });
+      window.visualViewport?.addEventListener('resize', setPanelHeight, { signal });
+    };
+
+    const initAllMobileMenus = (root = document) => {
+      root.querySelectorAll('[data-site-header]').forEach(initMobileMenu);
+    };
+
+    initAllMobileMenus();
+    document.addEventListener('shopify:section:load', (event) => initAllMobileMenus(event.target));
+    document.addEventListener('shopify:section:unload', (event) => {
+      const header = event.target.querySelector('[data-site-header]');
+      if (!header) return;
+      header.mobileMenuController?.abort();
+      document.documentElement.classList.remove('site-header-menu-open');
+      document.documentElement.style.removeProperty('--site-header-scrollbar-width');
+    });
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.header.name",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "t:sections.header.logo" },
+    { "type": "range", "id": "logo_width", "label": "t:sections.header.logo_width", "min": 120, "max": 260, "step": 10, "default": 190, "unit": "px" },
+    { "type": "link_list", "id": "menu", "label": "t:sections.header.menu", "default": "main-menu" }
+  ]
+}
+{% endschema %}

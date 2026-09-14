@@ -1,0 +1,170 @@
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign has_variant_content = false
+  assign selected_has_content = false
+
+  for variant in product.variants limit: 50
+    if variant.metafields.leafer.variant_content.value != blank
+      assign has_variant_content = true
+      if variant.id == selected_variant.id
+        assign selected_has_content = true
+      endif
+    endif
+  endfor
+%}
+
+{% if has_variant_content %}
+  <product-variant-description
+    class="product-variant-guide page-width"
+    data-initial-variant="{{ selected_variant.id }}"
+    aria-live="polite"
+    {% unless selected_has_content %}hidden{% endunless %}
+  >
+    {% for variant in product.variants limit: 50 %}
+      {% assign variant_content = variant.metafields.leafer.variant_content.value %}
+      {% if variant_content != blank %}
+        <article
+          class="product-description product-description--saatgut"
+          data-variant-description
+          data-variant-id="{{ variant.id }}"
+          aria-labelledby="VariantDescription-{{ section.id }}-{{ variant.id }}"
+          {% unless variant.id == selected_variant.id %}hidden{% endunless %}
+        >
+          <header class="product-description__header">
+            {% if variant_content.eyebrow != blank %}
+              <p class="product-description__eyebrow">{{ variant_content.eyebrow | escape }}</p>
+            {% endif %}
+            <h2 id="VariantDescription-{{ section.id }}-{{ variant.id }}">
+              {{ variant_content.heading | default: variant.title | escape }}
+            </h2>
+            {% if variant_content.intro != blank %}
+              <p class="product-description__lead">{{ variant_content.intro | escape }}</p>
+            {% endif %}
+          </header>
+
+          {% if variant_content.benefits != blank %}
+            <ul class="product-description__benefits">
+              {% for benefit in variant_content.benefits %}
+                <li>
+                  {% if benefit.title != blank %}<strong>{{ benefit.title | escape }}</strong>{% endif %}
+                  {% if benefit.text != blank %}<span>{{ benefit.text | escape }}</span>{% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if variant_content.story != blank %}
+            <section class="product-description__section" aria-labelledby="VariantStory-{{ section.id }}-{{ variant.id }}">
+              {% if variant_content.story.heading != blank %}
+                <h3 id="VariantStory-{{ section.id }}-{{ variant.id }}">{{ variant_content.story.heading | escape }}</h3>
+              {% endif %}
+              {% for paragraph in variant_content.story.paragraphs %}
+                <p>{{ paragraph | escape }}</p>
+              {% endfor %}
+            </section>
+          {% endif %}
+
+          {% if variant_content.steps != blank %}
+            <section class="product-description__section" aria-labelledby="VariantSteps-{{ section.id }}-{{ variant.id }}">
+              <h3 id="VariantSteps-{{ section.id }}-{{ variant.id }}">
+                {{ variant_content.steps_heading | default: 'product_variant_guide.steps_heading' | t }}
+              </h3>
+              <ol class="product-description__steps">
+                {% for step in variant_content.steps %}
+                  <li>
+                    {% if step.title != blank %}<strong>{{ step.title | escape }}</strong>{% endif %}
+                    {% if step.text != blank %}<p>{{ step.text | escape }}</p>{% endif %}
+                  </li>
+                {% endfor %}
+              </ol>
+            </section>
+          {% endif %}
+
+          {% if variant_content.facts != blank %}
+            <section class="product-description__section" aria-labelledby="VariantFacts-{{ section.id }}-{{ variant.id }}">
+              <h3 id="VariantFacts-{{ section.id }}-{{ variant.id }}">
+                {{ variant_content.facts_heading | default: 'product_variant_guide.facts_heading' | t }}
+              </h3>
+              <dl class="product-description__facts">
+                {% for fact in variant_content.facts %}
+                  <div>
+                    <dt>{{ fact.term | escape }}</dt>
+                    <dd>{{ fact.value | escape }}</dd>
+                  </div>
+                {% endfor %}
+              </dl>
+            </section>
+          {% endif %}
+
+          {% if variant_content.faqs != blank %}
+            <section class="product-description__section" aria-labelledby="VariantFaq-{{ section.id }}-{{ variant.id }}">
+              <h3 id="VariantFaq-{{ section.id }}-{{ variant.id }}">
+                {{ variant_content.faq_heading | default: 'product_variant_guide.faq_heading' | t }}
+              </h3>
+              <div class="product-description__accordions">
+                {% for faq in variant_content.faqs %}
+                  <details>
+                    <summary>{{ faq.question | escape }}</summary>
+                    <div class="product-description__accordion-content">
+                      <p>{{ faq.answer | escape }}</p>
+                    </div>
+                  </details>
+                {% endfor %}
+              </div>
+            </section>
+          {% endif %}
+
+          {% if variant_content.notice != blank %}
+            <p class="product-description__notice">
+              <strong>{{ 'product_variant_guide.notice_label' | t }}</strong>
+              {{ variant_content.notice | escape }}
+            </p>
+          {% endif %}
+        </article>
+      {% endif %}
+    {% endfor %}
+  </product-variant-description>
+{% endif %}
+
+{% javascript %}
+  class ProductVariantDescription extends HTMLElement {
+    connectedCallback() {
+      this.variantSelect = document.querySelector('product-purchase select[name="id"]');
+      this.handleVariantChange = () => this.update(this.variantSelect.value);
+      this.variantSelect?.addEventListener('change', this.handleVariantChange);
+      this.update(this.variantSelect?.value || this.dataset.initialVariant);
+    }
+
+    disconnectedCallback() {
+      this.variantSelect?.removeEventListener('change', this.handleVariantChange);
+    }
+
+    update(variantId) {
+      let hasMatch = false;
+
+      this.querySelectorAll('[data-variant-description]').forEach((article) => {
+        const isMatch = article.dataset.variantId === String(variantId);
+        article.hidden = !isMatch;
+        hasMatch = hasMatch || isMatch;
+      });
+
+      this.hidden = !hasMatch;
+    }
+  }
+
+  if (!customElements.get('product-variant-description')) {
+    customElements.define('product-variant-description', ProductVariantDescription);
+  }
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:sections.product_variant_description.name",
+  "settings": [],
+  "presets": [
+    {
+      "name": "t:sections.product_variant_description.name"
+    }
+  ]
+}
+{% endschema %}

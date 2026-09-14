@@ -1,0 +1,112 @@
+<section class="community page-width" aria-labelledby="CommunityHeading-{{ section.id }}">
+  <div class="community__intro" data-leaf-reveal>
+    <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V15M16 23C9 22 5 18 5 10c7 0 11 4 11 11M16 18c6-1 10-5 11-12-7 0-11 4-11 10"/></svg>
+    <div>
+      <h2 id="CommunityHeading-{{ section.id }}">{% if section.settings.heading != blank %}{{ section.settings.heading | escape }}{% else %}{{ 'community.heading' | t }}{% endif %}</h2>
+      {% if section.settings.text != blank %}<p>{{ section.settings.text | escape }}</p>{% elsif section.settings.handle != blank %}<p>{{ section.settings.handle | escape }}</p>{% endif %}
+    </div>
+    {% if section.settings.cta_link != blank %}<a class="button button--secondary" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | default: 'Mehr entdecken' | escape }} <span aria-hidden="true">→</span></a>{% endif %}
+  </div>
+
+  <div class="community__grid">
+    {% for block in section.blocks %}
+      {% liquid
+        assign gallery_alt = block.settings.alt_text
+        if gallery_alt == blank
+          assign gallery_alt = block.settings.image.alt
+          if gallery_alt == blank
+            assign gallery_alt = 'Pflanzenprojekt aus der LEAFerservice Community'
+          endif
+        endif
+      %}
+      {% capture gallery_media %}
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 800 | image_tag: widths: '260, 420, 600, 800', sizes: '(min-width: 1100px) 16vw, (min-width: 560px) 33vw, 50vw', loading: 'lazy', alt: gallery_alt }}
+        {% else %}
+          <span class="community__fallback" aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
+        {% endif %}
+      {% endcapture %}
+
+      {% if block.settings.link != blank %}
+        <a href="{{ block.settings.link }}" class="community__item" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 55 }}ms"{% if gallery_alt != blank %} aria-label="{{ gallery_alt | escape }}"{% endif %} {{ block.shopify_attributes }}>
+          {{ gallery_media }}
+        </a>
+      {% else %}
+        <div class="community__item" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 55 }}ms" {{ block.shopify_attributes }}>
+          {{ gallery_media }}
+        </div>
+      {% endif %}
+    {% endfor %}
+
+    {% liquid
+      assign show_archive_image = true
+      if section.settings.show_archive_image == false
+        assign show_archive_image = false
+      endif
+      assign archive_asset = section.settings.archive_asset_filename | default: 'drive-aglaonema-pink-lady.jpg'
+      assign archive_alt = section.settings.archive_alt | default: 'Aglaonema mit rosa-grüner Panaschierung im Pflanztopf'
+      assign archive_link = section.settings.archive_link | default: section.settings.cta_link
+    %}
+    {% if show_archive_image and archive_asset != blank %}
+      {% if archive_link != blank %}
+        <a class="community__item community__item--archive" href="{{ archive_link }}" data-leaf-reveal style="--leaf-delay: {{ section.blocks.size | times: 55 }}ms"{% if archive_alt != blank %} aria-label="{{ archive_alt | escape }}"{% endif %}>
+          <img src="{{ archive_asset | asset_url }}" alt="{{ archive_alt | escape }}" width="600" height="800" loading="lazy" decoding="async">
+        </a>
+      {% else %}
+        <div class="community__item community__item--archive" data-leaf-reveal style="--leaf-delay: {{ section.blocks.size | times: 55 }}ms">
+          <img src="{{ archive_asset | asset_url }}" alt="{{ archive_alt | escape }}" width="600" height="800" loading="lazy" decoding="async">
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .community { padding-bottom: clamp(3rem, 7vw, 6.5rem); }
+  .community__intro { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1.3rem; }
+  .community__intro svg { width: 38px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
+  .community__intro h2, .community__intro p { margin: 0; }
+  .community__intro h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); line-height: 1.05; }
+  .community__intro p { margin-top: .35rem; color: var(--muted); font-size: .88rem; }
+  .community__intro .button { gap: .5rem; }
+  .community__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .7rem; }
+  .community__item { aspect-ratio: 1; overflow: hidden; border-radius: var(--radius-large); background: var(--surface); }
+  .community__item img, .community__item svg, .community__fallback { width: 100%; height: 100%; object-fit: cover; }
+  .community__item img { transition: transform .55s var(--ease-out), filter .35s ease; }
+  .community__item--archive img { object-position: center 42%; }
+  @media (hover: hover) and (pointer: fine) { .community__item:hover img { transform: scale(1.06); filter: saturate(1.05); } }
+  @media (max-width: 1100px) { .community__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 900px) { .community__intro { grid-template-columns: auto 1fr; } .community__intro .button { grid-column: 1 / -1; width: 100%; } }
+  @media (max-width: 520px) { .community__grid { grid-template-columns: repeat(2, 1fr); } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:sections.community.name",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "t:sections.community.heading" },
+    { "type": "text", "id": "handle", "label": "t:sections.community.handle" },
+    { "type": "text", "id": "text", "label": "Kurztext" },
+    { "type": "text", "id": "cta_label", "label": "CTA", "default": "Mehr entdecken" },
+    { "type": "url", "id": "cta_link", "label": "CTA-Link" },
+    { "type": "header", "content": "Google-Drive-Archivbild" },
+    { "type": "checkbox", "id": "show_archive_image", "label": "Archivbild anzeigen", "default": true },
+    { "type": "text", "id": "archive_asset_filename", "label": "Theme-Asset-Dateiname", "default": "drive-aglaonema-pink-lady.jpg" },
+    { "type": "text", "id": "archive_alt", "label": "Alternativtext", "default": "Aglaonema mit rosa-grüner Panaschierung im Pflanztopf" },
+    { "type": "url", "id": "archive_link", "label": "Archivbild-Link" }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "t:sections.community.image",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "t:sections.community.image" },
+        { "type": "text", "id": "alt_text", "label": "Alternativtext", "info": "Leer lassen, wenn das Bild rein dekorativ ist." },
+        { "type": "url", "id": "link", "label": "t:sections.community.link" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "t:sections.community.name", "blocks": [{ "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }, { "type": "image" }] }]
+}
+{% endschema %}

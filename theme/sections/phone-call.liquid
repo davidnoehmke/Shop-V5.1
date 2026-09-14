@@ -1,0 +1,77 @@
+{% liquid
+  assign callback_form_id = 'CallbackForm-' | append: section.id
+%}
+
+<section class="phone-call page-width" aria-labelledby="PhoneCall-{{ section.id }}">
+  <div class="phone-call__icon" aria-hidden="true">↩</div>
+  <div class="phone-call__content">
+    <p class="phone-call__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 id="PhoneCall-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+    <p>{{ section.settings.text }}</p>
+  </div>
+  <div class="phone-call__form-wrap">
+    {% form 'contact', id: callback_form_id, class: 'phone-call__form' %}
+      {% if form.posted_successfully? %}
+        <p class="phone-call__success" role="status">Danke für deine Nachricht. Ich melde mich schnellstmöglich bei dir zurück.</p>
+      {% endif %}
+      {% if form.errors %}
+        <div class="phone-call__errors" role="alert">{{ form.errors | default_errors }}</div>
+      {% endif %}
+      <div class="phone-call__fields">
+        <label>
+          <span>Name</span>
+          <input type="text" name="contact[name]" value="{{ form.name | escape }}" autocomplete="name">
+        </label>
+        <label>
+          <span>E-Mail-Adresse *</span>
+          <input type="email" name="contact[email]" value="{{ form.email | escape }}" autocomplete="email" required aria-required="true">
+        </label>
+        <label class="phone-call__wide">
+          <span>Nachricht und Rückrufwunsch *</span>
+          <textarea name="contact[body]" rows="4" placeholder="Wobei kann ich helfen und wann passt ein Rückruf für dich?" required aria-required="true">{{ form.body | escape }}</textarea>
+        </label>
+      </div>
+      <button type="submit">{{ section.settings.button_label | escape }}</button>
+      <p class="phone-call__privacy">Deine Angaben werden ausschließlich zur Bearbeitung deiner Anfrage verwendet.</p>
+    {% endform %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .phone-call { display: grid; grid-template-columns: auto minmax(0, .7fr) minmax(320px, 1.3fr); gap: 1.2rem; align-items: start; margin-block: clamp(1.5rem, 4vw, 3rem); padding: clamp(1.2rem, 3vw, 2rem); border: 1px solid color-mix(in srgb, var(--accent), transparent 70%); border-radius: var(--radius); background: color-mix(in srgb, var(--accent), var(--background) 88%); }
+  .phone-call__icon { display: grid; width: 3.2rem; height: 3.2rem; place-items: center; border-radius: 50%; background: var(--accent); color: var(--background); font-size: 1.55rem; }
+  .phone-call__eyebrow { margin: 0 0 .35rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .phone-call h2 { margin: 0; font-size: clamp(1.35rem, 2.7vw, 2.2rem); line-height: 1.05; letter-spacing: -.035em; }
+  .phone-call__content > p:last-child { max-width: 42ch; margin: .55rem 0 0; color: var(--muted); line-height: 1.5; }
+  .phone-call__form-wrap { min-width: 0; }
+  .phone-call__form { display: grid; gap: .85rem; }
+  .phone-call__fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+  .phone-call__fields label { display: grid; gap: .35rem; min-width: 0; font-size: .84rem; font-weight: 750; }
+  .phone-call__wide { grid-column: 1 / -1; }
+  .phone-call input, .phone-call textarea { width: 100%; min-height: 44px; border: 1px solid color-mix(in srgb, var(--text), transparent 70%); border-radius: 10px; background: var(--background); padding: .65rem .75rem; color: var(--text); font: inherit; }
+  .phone-call textarea { min-height: 110px; resize: vertical; }
+  .phone-call button { justify-self: start; }
+  .phone-call__privacy { margin: 0; color: var(--muted); font-size: .74rem; }
+  .phone-call__success, .phone-call__errors { margin: 0 0 .5rem; padding: .75rem; border-radius: 10px; }
+  .phone-call__success { border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); background: color-mix(in srgb, var(--accent-soft), transparent 22%); }
+  .phone-call__errors { border: 1px solid #9e493c; background: #fff2ef; color: #6c2d24; }
+  @media (max-width: 900px) { .phone-call { grid-template-columns: auto minmax(0, 1fr); } .phone-call__form-wrap { grid-column: 1 / -1; } }
+  @media (max-width: 580px) { .phone-call { grid-template-columns: 1fr; } .phone-call__icon { width: 2.7rem; height: 2.7rem; } .phone-call__fields { grid-template-columns: 1fr; } .phone-call__wide { grid-column: auto; } .phone-call button { width: 100%; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Rückruf anfragen",
+  "tag": "section",
+  "class": "section-phone-call",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Kleine Überschrift", "default": "Persönliche Hilfe" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Du möchtest lieber telefonieren?" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button-Text", "default": "Rückruf anfragen" }
+  ],
+  "presets": [
+    { "name": "Rückruf anfragen" }
+  ]
+}
+{% endschema %}

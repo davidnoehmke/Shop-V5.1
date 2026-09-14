@@ -1,0 +1,84 @@
+<section class="home-positioning" aria-labelledby="HomePositioning-{{ section.id }}">
+  <div class="home-positioning__inner">
+    <div class="home-positioning__intro">
+      {% if section.settings.eyebrow != blank %}<p class="home-positioning__eyebrow">{{ section.settings.eyebrow }}</p>{% endif %}
+      <h2 id="HomePositioning-{{ section.id }}">{{ section.settings.heading }}</h2>
+      {% if section.settings.text != blank %}<div class="home-positioning__text rte">{{ section.settings.text }}</div>{% endif %}
+    </div>
+    <div class="home-positioning__grid">
+      {% for block in section.blocks %}
+        <article class="home-positioning__card" {{ block.shopify_attributes }}>
+          <span class="home-positioning__number" aria-hidden="true">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <h3>{{ block.settings.heading }}</h3>
+          <p>{{ block.settings.text }}</p>
+          {% if block.settings.link != blank and block.settings.link_label != blank %}<a href="{{ block.settings.link }}">{{ block.settings.link_label }} <span aria-hidden="true">→</span></a>{% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .home-positioning { padding: clamp(4rem, 9vw, 8rem) 0; background: var(--surface); }
+  .home-positioning__inner { width: min(100% - 2rem, 1240px); margin-inline: auto; }
+  .home-positioning__intro { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); column-gap: clamp(2rem, 8vw, 8rem); align-items: end; }
+  .home-positioning__eyebrow { margin: 0 0 1rem; color: var(--accent); font-size: .74rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+  .home-positioning h2 { grid-column: 1 / -1; max-width: 12ch; margin: 0; font-size: clamp(2.8rem, 7vw, 6.8rem); line-height: .9; letter-spacing: -.065em; }
+  .home-positioning__text { grid-column: 2; max-width: 48ch; margin-top: 1.5rem; color: var(--muted); font-size: clamp(1rem, 1.7vw, 1.2rem); }
+  .home-positioning__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; margin-top: clamp(3rem, 7vw, 6rem); border-top: 1px solid var(--border); }
+  .home-positioning__card { min-height: 250px; padding: clamp(1.2rem, 3vw, 2rem); border-bottom: 1px solid var(--border); }
+  .home-positioning__card + .home-positioning__card { border-left: 1px solid var(--border); }
+  .home-positioning__number { display: grid; width: 2.3rem; height: 2.3rem; margin-bottom: 2.4rem; place-items: center; border-radius: 50%; background: var(--accent); color: #fff; font-size: .72rem; font-weight: 800; }
+  .home-positioning h3 { margin: 0 0 .65rem; font-family: inherit; font-size: 1.1rem; font-weight: 800; letter-spacing: -.015em; }
+  .home-positioning__card p { max-width: 30ch; margin: 0; color: var(--muted); }
+  .home-positioning__card a { display: inline-flex; gap: .45rem; margin-top: 1.4rem; color: var(--accent); font-size: .85rem; font-weight: 800; text-decoration: none; }
+  .home-positioning__card a span { transition: transform .25s var(--ease-out); }
+  .home-positioning__card a:hover span { transform: translateX(4px); }
+  @media (max-width: 700px) {
+    .home-positioning { padding: 4rem 0; }
+    .home-positioning__inner { width: min(100% - 1.1rem, 1240px); }
+    .home-positioning__intro { display: block; }
+    .home-positioning h2 { max-width: 11ch; font-size: clamp(2.7rem, 15vw, 5rem); }
+    .home-positioning__text { margin-top: 1.25rem; }
+    .home-positioning__grid { grid-template-columns: 1fr; }
+    .home-positioning__card { min-height: 0; padding: 1.35rem 0 1.6rem; }
+    .home-positioning__card + .home-positioning__card { border-left: 0; }
+    .home-positioning__number { margin-bottom: 1.4rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAF Positionierung",
+  "tag": "section",
+  "class": "section-home-positioning",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Mehr als ein Pflanzenshop" },
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Pflanzenpflege beginnt im Wurzelraum." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Positionierungsbaustein",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Überschrift", "default": "Substrat mit Funktion" },
+        { "type": "textarea", "id": "text", "label": "Text", "default": "Mischungen und Einzelbestandteile mit klarer Aufgabe: Luft, Drainage und Feuchtepuffer." },
+        { "type": "text", "id": "link_label", "label": "Linktext", "default": "Substrate entdecken" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 3,
+  "presets": [
+    {
+      "name": "LEAF Positionierung",
+      "blocks": [
+        { "type": "pillar", "settings": { "heading": "Substrat mit Funktion", "text": "Mischungen und Einzelbestandteile mit klarer Aufgabe: Luft, Drainage und Feuchtepuffer.", "link_label": "Substrate entdecken", "link": "/collections/substrate-verbesserer" } },
+        { "type": "pillar", "settings": { "heading": "System statt Einzelprodukt", "text": "Gefäß, Licht und Pflege werden passend zum Wurzelraum gedacht – nicht zufällig zusammengestellt.", "link_label": "Lösungen ansehen", "link": "/collections/interieur-solutions" } },
+        { "type": "pillar", "settings": { "heading": "Verstehen und selbst entscheiden", "text": "Ratgeber, Rezepturen und Konfigurator geben dir die Grundlage für eine eigene, sichere Entscheidung.", "link_label": "Ratgeber lesen", "link": "/blogs/leafers-nice2know-blog" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

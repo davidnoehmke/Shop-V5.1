@@ -1,0 +1,368 @@
+:root {
+  --leaf-level-shadow: 0 24px 70px rgba(30, 45, 37, .12);
+  --leaf-level-shadow-hover: 0 28px 80px rgba(30, 45, 37, .18);
+  --leaf-level-line: color-mix(in srgb, var(--text), transparent 88%);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 0%, color-mix(in srgb, var(--accent-soft), transparent 42%), transparent 30rem),
+    var(--background);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  border-bottom: 1px solid var(--leaf-level-line);
+  background: color-mix(in srgb, var(--background), transparent 8%);
+  box-shadow: 0 8px 30px rgba(30, 45, 37, .04);
+  backdrop-filter: blur(18px) saturate(125%);
+}
+
+.site-header__inner {
+  min-height: 72px;
+}
+
+.site-header a,
+.site-footer a {
+  text-decoration-thickness: 1px;
+}
+
+.site-header nav a {
+  position: relative;
+  padding-block: .5rem;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  text-decoration: none;
+}
+
+.site-header nav a::after {
+  position: absolute;
+  right: 0;
+  bottom: .18rem;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .28s var(--ease-out);
+}
+
+.site-header nav a:hover::after,
+.site-header nav a:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.hero,
+.leaf-home,
+.home-choice-band,
+.home-collection-journey,
+.home-guides,
+.featured,
+.faq,
+.community-gallery {
+  position: relative;
+}
+
+.hero {
+  isolation: isolate;
+  overflow: clip;
+  border-radius: 0 0 var(--radius-large) var(--radius-large);
+}
+
+.hero__inner,
+.leaf-home__inner,
+.home-choice-band__inner,
+.home-collection-journey__inner,
+.home-guides__inner,
+.featured__inner,
+.faq__inner,
+.community-gallery__inner {
+  width: min(100% - 2rem, 1240px);
+  margin-inline: auto;
+}
+
+.hero h1,
+.leaf-home h1 {
+  letter-spacing: -.055em;
+}
+
+.hero__buttons {
+  gap: .7rem;
+}
+
+.hero__buttons .button,
+.leaf-home__button,
+.featured__header > a {
+  border-radius: 999px;
+}
+
+.hero__buttons .button--secondary {
+  background: color-mix(in srgb, var(--background), transparent 18%);
+  border-color: color-mix(in srgb, var(--text), transparent 55%);
+  backdrop-filter: blur(10px);
+}
+
+.trust-bar {
+  position: relative;
+  z-index: 2;
+  margin-top: -1.25rem;
+}
+
+.trust-bar__inner {
+  width: min(100% - 2rem, 1240px);
+  padding: 1rem;
+  border: 1px solid var(--leaf-level-line);
+  border-radius: var(--radius-large);
+  background: color-mix(in srgb, var(--surface), transparent 4%);
+  box-shadow: var(--leaf-level-shadow);
+  backdrop-filter: blur(16px);
+}
+
+.trust-bar__item {
+  min-height: 92px;
+  padding: 1rem;
+  border-radius: var(--radius);
+  transition: background-color .25s ease, transform .3s var(--ease-out), box-shadow .3s ease;
+}
+
+.trust-bar__item:hover {
+  background: color-mix(in srgb, var(--accent-soft), transparent 48%);
+  box-shadow: 0 10px 25px rgba(30, 45, 37, .06);
+}
+
+.featured__grid,
+.product-grid,
+.collection-grid {
+  gap: 1rem;
+}
+
+.product-card,
+.featured__product,
+.collection-product-card {
+  overflow: clip;
+  border: 1px solid var(--leaf-level-line);
+  border-radius: var(--radius-large);
+  background: color-mix(in srgb, var(--surface), transparent 3%);
+  box-shadow: 0 10px 35px rgba(30, 45, 37, .045);
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .25s ease;
+}
+
+.product-card:hover,
+.featured__product:hover,
+.collection-product-card:hover {
+  border-color: color-mix(in srgb, var(--accent), transparent 45%);
+  box-shadow: var(--leaf-level-shadow-hover);
+  transform: translateY(-5px);
+}
+
+.product-card img,
+.featured__product img,
+.collection-product-card img {
+  transition: transform .55s var(--ease-out);
+}
+
+.product-card:hover img,
+.featured__product:hover img,
+.collection-product-card:hover img {
+  transform: scale(1.035);
+}
+
+.product-card a,
+.featured__product a,
+.collection-product-card a {
+  text-decoration: none;
+}
+
+.home-collection-journey__card,
+.home-guides__card,
+.community-gallery__item {
+  overflow: clip;
+  border-radius: var(--radius-large);
+  box-shadow: 0 12px 38px rgba(30, 45, 37, .07);
+}
+
+.home-collection-journey__card {
+  border: 1px solid var(--leaf-level-line);
+  background: var(--surface);
+  transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out);
+}
+
+.home-collection-journey__card:hover {
+  box-shadow: var(--leaf-level-shadow);
+  transform: translateY(-4px);
+}
+
+.home-choice-band__inner {
+  overflow: clip;
+  border-radius: var(--radius-large);
+  box-shadow: var(--leaf-level-shadow);
+}
+
+.product-seo-details,
+.product-description,
+.product-cross-sell {
+  width: min(100% - 2rem, 1120px);
+  margin-inline: auto;
+}
+
+.product-seo-details {
+  margin-block: var(--space-section);
+}
+
+.product-seo-details__usps li,
+.product-description__benefits li {
+  border-radius: var(--radius);
+  transition: transform .3s var(--ease-out), box-shadow .3s ease;
+}
+
+.product-seo-details__usps li:hover,
+.product-description__benefits li:hover {
+  box-shadow: 0 12px 28px rgba(30, 45, 37, .07);
+  transform: translateY(-3px);
+}
+
+.product-seo-details__faq-item summary {
+  min-height: 64px;
+}
+
+.product-form,
+.product__info-container,
+.product-main__info {
+  position: relative;
+}
+
+.product-form button[type="submit"],
+.product__info-container button[type="submit"],
+.product-main__info button[type="submit"] {
+  min-height: 54px;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent), transparent 78%);
+}
+
+input,
+select,
+textarea {
+  border: 1px solid var(--leaf-level-line);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--surface), transparent 2%);
+}
+
+.site-footer {
+  margin-top: var(--space-section);
+  background: color-mix(in srgb, var(--surface), transparent 12%);
+}
+
+@media (max-width: 700px) {
+  .site-header {
+    background: var(--background);
+  }
+
+  .site-header__inner {
+    min-height: 62px;
+  }
+
+  .hero,
+  .leaf-home,
+  .home-choice-band,
+  .home-collection-journey,
+  .home-guides,
+  .featured,
+  .faq,
+  .community-gallery {
+    border-radius: 0;
+  }
+
+  .trust-bar {
+    margin-top: -.75rem;
+  }
+
+  .trust-bar__inner {
+    padding: .55rem;
+    border-radius: var(--radius);
+  }
+
+  .trust-bar__item {
+    min-height: 72px;
+  }
+
+  .hero__inner,
+  .leaf-home__inner,
+  .home-choice-band__inner,
+  .home-collection-journey__inner,
+  .home-guides__inner,
+  .featured__inner,
+  .faq__inner,
+  .community-gallery__inner,
+  .product-seo-details,
+  .product-description,
+  .product-cross-sell {
+    width: min(100% - 1.1rem, 1240px);
+  }
+
+  .product-card,
+  .featured__product,
+  .collection-product-card {
+    border-radius: var(--radius);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header nav a::after,
+  .product-card,
+  .featured__product,
+  .collection-product-card,
+  .product-card img,
+  .featured__product img,
+  .collection-product-card img,
+  .home-collection-journey__card,
+  .product-seo-details__usps li,
+  .product-description__benefits li {
+    transition: none;
+  }
+}
+
+.product-card,
+.featured__product,
+.collection-product-card {
+  min-width: 0;
+}
+
+.product-card *,
+.featured__product *,
+.collection-product-card * {
+  min-width: 0;
+}
+
+.product-card h3,
+.featured__product h3,
+.collection-product-card h3,
+.product-card .product-card__title,
+.featured__product .product-card__title,
+.collection-product-card .product-card__title {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+@media (hover: none) {
+  .product-card:hover,
+  .featured__product:hover,
+  .collection-product-card:hover,
+  .home-collection-journey__card:hover,
+  .product-seo-details__usps li:hover,
+  .product-description__benefits li:hover {
+    transform: none;
+    box-shadow: 0 10px 35px rgba(30, 45, 37, .045);
+  }
+
+  .product-card:hover img,
+  .featured__product:hover img,
+  .collection-product-card:hover img {
+    transform: none;
+  }
+}

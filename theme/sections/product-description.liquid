@@ -1,0 +1,49 @@
+{% if product.description != blank %}
+  {% liquid
+    if request.locale.iso_code == 'de'
+      assign default_eyebrow = 'Details zum Produkt'
+      assign default_heading = 'Anwendung und weitere Informationen'
+    else
+      assign default_eyebrow = 'Product details'
+      assign default_heading = 'Use and further information'
+    endif
+    assign section_heading = section.settings.heading | default: default_heading
+  %}
+  <section class="product-description-section page-width" aria-labelledby="ProductDescription-{{ section.id }}">
+    {% if section.settings.show_heading %}
+      <header>
+        <p>{{ default_eyebrow }}</p>
+        <h2 id="ProductDescription-{{ section.id }}">{{ section_heading | escape }}</h2>
+      </header>
+    {% endif %}
+    <div class="product-description-section__content rte">{{ product.description }}</div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .product-description-section { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(240px, .65fr) minmax(0, 1.35fr); gap: clamp(2rem, 7vw, 7rem); align-items: start; }
+  .product-description-section header { position: sticky; top: 110px; }
+  .product-description-section header p { margin: 0 0 .65rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .product-description-section h2 { margin: 0; font-size: clamp(2.1rem, 4.5vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .product-description-section__content { min-width: 0; color: var(--text); font-size: clamp(1rem, 1.35vw, 1.08rem); line-height: 1.72; }
+  .product-description-section__content h2 { margin-top: 2em; font-size: clamp(1.8rem, 3.5vw, 2.8rem); }
+  .product-description-section__content h3 { margin-top: 1.7em; font-size: clamp(1.35rem, 2.5vw, 2rem); }
+  .product-description-section__content img { height: auto; border-radius: var(--radius-large); }
+  .product-description-section__content table { width: 100%; border-collapse: collapse; }
+  .product-description-section__content th, .product-description-section__content td { padding: .75rem; border: 1px solid var(--border); text-align: left; }
+  @media (max-width: 800px) {
+    .product-description-section { grid-template-columns: 1fr; }
+    .product-description-section header { position: static; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktbeschreibung",
+  "settings": [
+    { "type": "checkbox", "id": "show_heading", "label": "Überschrift anzeigen", "default": true },
+    { "type": "text", "id": "heading", "label": "Eigene Überschrift (optional)" }
+  ],
+  "presets": [{ "name": "Produktbeschreibung" }]
+}
+{% endschema %}

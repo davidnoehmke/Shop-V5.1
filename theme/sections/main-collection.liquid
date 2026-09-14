@@ -1,0 +1,75 @@
+{% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+<section class="main-collection page-width">
+  <header>
+    <div class="main-collection__heading">
+      <div>
+        <h1>{{ collection.title }}</h1>
+        {% if collection.description != blank %}<div class="main-collection__description">{{ collection.description }}</div>{% endif %}
+      </div>
+      <p>{{ 'collection.products_count' | t: count: collection.products_count }}</p>
+    </div>
+    <form class="main-collection__sort" action="{{ collection.url }}" method="get">
+      <label for="SortBy-{{ section.id }}">{{ 'collection.sort_by' | t }}</label>
+      <select id="SortBy-{{ section.id }}" name="sort_by" data-sort-select>
+        {% for option in collection.sort_options %}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit">{{ 'collection.apply' | t }}</button></noscript>
+    </form>
+  </header>
+  {% if section.settings.show_type_filters %}
+    <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
+      <button type="button" class="main-collection__filter" data-product-filter="all" aria-pressed="true">{{ 'collection.all' | t }}</button>
+      {% assign product_types = collection.products | map: 'type' | compact | uniq | sort_natural %}
+      {% for product_type in product_types %}<button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" aria-pressed="false">{{ product_type }}</button>{% endfor %}
+    </div>
+  {% endif %}
+  {% paginate collection.products by 12 %}
+    <div class="main-collection__grid">
+      {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product %}</div>{% endfor %}
+    </div>
+    {% if paginate.pages > 1 %}<nav class="main-collection__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
+  {% endpaginate %}
+</section>
+
+{% stylesheet %}
+  .main-collection { padding-block: clamp(3rem, 7vw, 7rem); }
+  .main-collection > header { margin-bottom: 2.2rem; }
+  .main-collection__heading { display: flex; justify-content: space-between; align-items: end; gap: 2rem; }
+  .main-collection__heading > div { max-width: 760px; }
+  .main-collection__heading > p { flex: 0 0 auto; color: var(--muted); }
+  .main-collection h1 { margin: 0; font-size: clamp(3rem, 8vw, 7rem); line-height: .95; letter-spacing: -.07em; }
+  .main-collection__description > *:first-child { margin-top: 0; }
+  .main-collection__description > *:last-child { margin-bottom: 0; }
+  .main-collection__sort { margin-top: 1.5rem; display: flex; justify-content: flex-end; align-items: center; gap: .8rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .main-collection__sort label { font-size: .78rem; font-weight: 750; }
+  .main-collection__sort select { min-height: 44px; min-width: 220px; border: 1px solid var(--border); border-radius: 6px; background: var(--background); padding: .6rem 2.2rem .6rem .8rem; }
+  .main-collection__filters { margin-bottom: 1.5rem; display: flex; gap: .55rem; overflow-x: auto; padding-bottom: .35rem; }
+  .main-collection__filter { min-height: 40px; flex: 0 0 auto; border-color: var(--border); background: transparent; color: var(--text); padding-inline: 1rem; font-size: .78rem; }
+  .main-collection__filters button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+  .main-collection__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; }
+  .main-collection__pagination { display: flex; justify-content: center; padding-top: 3rem; }
+  .main-collection__pagination .page, .main-collection__pagination .next, .main-collection__pagination .prev { padding: .5rem; }
+  @media (max-width: 900px) { .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 620px) { .main-collection { padding-block: 2.3rem; } .main-collection__heading { display: block; } .main-collection h1 { font-size: clamp(2.7rem, 15vw, 4.5rem); line-height: .92; } .main-collection__description { font-size: .96rem; } .main-collection__sort { justify-content: stretch; } .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); } .main-collection__sort select { width: 100%; } .main-collection__grid { gap: .55rem; } }
+{% endstylesheet %}
+
+{% javascript %}
+  document.querySelectorAll('[data-sort-select]').forEach((select) => {
+    select.addEventListener('change', () => select.form.requestSubmit());
+  });
+  document.querySelectorAll('.main-collection__filters').forEach((filters) => {
+    filters.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-product-filter]');
+      if (!button) return;
+      filters.querySelectorAll('button').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      const selected = button.dataset.productFilter;
+      filters.closest('.main-collection').querySelectorAll('[data-product-type]').forEach((card) => {
+        card.hidden = selected !== 'all' && card.dataset.productType !== selected;
+      });
+    });
+  });
+{% endjavascript %}
+
+{% schema %}
+{ "name": "t:sections.main_collection.name", "settings": [{ "type": "checkbox", "id": "show_type_filters", "label": "Produkttyp-Filter anzeigen", "default": true }] }
+{% endschema %}

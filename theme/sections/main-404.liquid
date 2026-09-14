@@ -1,0 +1,17 @@
+<section class="main-404 page-width">
+  <p>404</p>
+  <h1>{{ 'page_404.title' | t }}</h1>
+  <p>{{ 'page_404.text' | t }}</p>
+  <a class="main-404__button" href="{{ routes.root_url }}">{{ 'header.home' | t }}</a>
+</section>
+
+{% stylesheet %}
+  .main-404 { min-height: 65vh; display: grid; place-content: center; justify-items: center; text-align: center; }
+  .main-404 > p:first-child { margin: 0; font-size: 1rem; font-weight: 850; letter-spacing: .2em; }
+  .main-404 h1 { margin: .5rem 0; font-size: clamp(3rem, 9vw, 7rem); line-height: .95; letter-spacing: -.07em; }
+  .main-404__button { border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.4rem; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; }
+{% endstylesheet %}
+
+{% schema %}
+{ "name": "t:sections.main_404.name", "settings": [] }
+{% endschema %}

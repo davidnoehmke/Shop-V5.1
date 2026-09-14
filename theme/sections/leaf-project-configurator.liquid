@@ -1,0 +1,267 @@
+{% liquid
+  assign plant_profiles = metaobjects.leaf_plant_profile.values
+  assign recipes = metaobjects.leaf_substrate_recipe.values
+  assign project_rules = metaobjects.leaf_project_rule.values
+%}
+
+<leaf-project-configurator><section class="leaf-project page-width" id="Projekt-Konfigurator" aria-labelledby="LeafProjectHeading-{{ section.id }}">
+  <header class="leaf-project__head">
+    <div>
+      <p class="leaf-project__eyebrow">{{ 'configurator.project.eyebrow' | t }}</p>
+      <h2 id="LeafProjectHeading-{{ section.id }}">{{ 'configurator.project.heading' | t }}</h2>
+      <p>{{ 'configurator.project.intro' | t }}</p>
+    </div>
+    <a href="#Profi-Konfigurator" class="leaf-project__pro-link">{{ 'configurator.project.pro_link' | t }}</a>
+  </header>
+
+  <div class="leaf-project__grid">
+    <form class="leaf-project__form" data-project-form>
+      <label>
+        <span>{{ 'configurator.project.plant' | t }}</span>
+        <select data-project-plant required>
+          <option value="">{{ 'configurator.project.choose' | t }}</option>
+          {% if plant_profiles != blank %}
+            {% for profile in plant_profiles %}
+              {% if profile.active.value != false %}
+                <option value="{{ profile.system.handle | escape }}">{{ profile.name.value | escape }}</option>
+              {% endif %}
+            {% endfor %}
+          {% else %}
+            <option value="aroids">Aroids / Tropical</option>
+            <option value="herbs">Kräuter & Balkon</option>
+            <option value="cactus">Kakteen & Sukkulenten</option>
+            <option value="orchids">Orchideen</option>
+            <option value="palms">Palmen & Grünpflanzen</option>
+            <option value="seedlings">Anzucht & Jungpflanzen</option>
+          {% endif %}
+        </select>
+      </label>
+      <label>
+        <span>{{ 'configurator.project.light' | t }}</span>
+        <select data-project-light>
+          <option value="low">{{ 'configurator.project.light_low' | t }}</option>
+          <option value="medium" selected>{{ 'configurator.project.light_medium' | t }}</option>
+          <option value="high">{{ 'configurator.project.light_high' | t }}</option>
+        </select>
+      </label>
+      <label>
+        <span>{{ 'configurator.project.watering' | t }}</span>
+        <select data-project-watering>
+          <option value="frequent">{{ 'configurator.project.water_frequent' | t }}</option>
+          <option value="normal" selected>{{ 'configurator.project.water_normal' | t }}</option>
+          <option value="rare">{{ 'configurator.project.water_rare' | t }}</option>
+        </select>
+      </label>
+      <label>
+        <span>{{ 'configurator.project.system' | t }}</span>
+        <select data-project-system>
+          <option value="classic">{{ 'configurator.project.system_classic' | t }}</option>
+          <option value="self_watering">{{ 'configurator.project.system_self' | t }}</option>
+          <option value="semi_hydro">{{ 'configurator.project.system_semi' | t }}</option>
+          <option value="fabric">{{ 'configurator.project.system_fabric' | t }}</option>
+        </select>
+      </label>
+      <label>
+        <span>{{ 'configurator.project.volume' | t }}</span>
+        <select data-project-volume>
+          <option value="2">2 L</option><option value="5" selected>5 L</option><option value="10">10 L</option>
+        </select>
+      </label>
+      <button type="submit">{{ 'configurator.project.calculate' | t }}</button>
+    </form>
+
+    <aside class="leaf-project__result" data-project-result aria-live="polite">
+      <p class="leaf-project__eyebrow">{{ 'configurator.project.result_eyebrow' | t }}</p>
+      <h3 data-project-title>{{ 'configurator.project.result_empty' | t }}</h3>
+      <p data-project-copy>{{ 'configurator.project.result_empty_text' | t }}</p>
+      <div class="leaf-project__metrics" data-project-metrics hidden></div>
+      <div class="leaf-project__why" data-project-why hidden></div>
+      <div data-project-recipe hidden></div>
+      <div class="leaf-project__addons" data-project-addons hidden></div>
+      <a href="#Profi-Konfigurator" class="button" data-project-pro hidden>{{ 'configurator.project.adjust' | t }}</a>
+    </aside>
+  </div>
+
+  <script type="application/json" data-project-profiles>[
+    {% if plant_profiles != blank %}{% assign first_profile_json = true %}{% for profile in plant_profiles %}{% if profile.active.value != false %}{% unless first_profile_json %},{% endunless %}{
+      "handle":{{ profile.system.handle | json }},"name":{{ profile.name.value | json }},"group":{{ profile.group.value | json }},"aeration":{{ profile.target_aeration.value | default: 5 | json }},"drainage":{{ profile.target_drainage.value | default: 5 | json }},"water":{{ profile.target_water_retention.value | default: 5 | json }},"light":{{ profile.light_need.value | default: 5 | json }},"habit":{{ profile.growth_habit.value | json }},"systems":{{ profile.preferred_systems.value | json }},"note":{{ profile.care_note.value | json }}
+    }{% assign first_profile_json = false %}{% endif %}{% endfor %}{% else %}
+      {"handle":"aroids","name":"Aroids / Tropical","group":"Aroids / Tropical","aeration":9,"drainage":9,"water":5,"light":7,"note":"Luftige, grobe Wurzelzone mit guter Drainage."},
+      {"handle":"herbs","name":"Kräuter & Balkon","group":"Kräuter & Balkon","aeration":6,"drainage":6,"water":7,"light":7,"note":"Ausgewogene Feuchteführung und Drainage."},
+      {"handle":"cactus","name":"Kakteen & Sukkulenten","group":"Kakteen & Sukkulenten","aeration":9,"drainage":10,"water":2,"light":9,"note":"Hoher Mineralanteil und zügiger Wasserabzug."},
+      {"handle":"orchids","name":"Orchideen","group":"Orchideen","aeration":10,"drainage":9,"water":4,"light":7,"note":"Sehr luftige, rindenbetonte Struktur."},
+      {"handle":"palms","name":"Palmen & Grünpflanzen","group":"Palmen & Grünpflanzen","aeration":6,"drainage":6,"water":6,"light":6,"note":"Strukturstabile Mischung mit ausgeglichener Wasserführung."},
+      {"handle":"seedlings","name":"Anzucht & Jungpflanzen","group":"Anzucht & Jungpflanzen","aeration":6,"drainage":5,"water":7,"light":6,"note":"Feinere, lockere Basis für empfindliche junge Wurzeln."}
+    {% endif %}
+  ]</script>
+  <script type="application/json" data-project-recipes>[
+    {% assign first_recipe_json = true %}{% for recipe in recipes %}{% if recipe.active.value != false %}{% unless first_recipe_json %},{% endunless %}{
+      "name":{{ recipe.name.value | json }},"group":{{ recipe.plant_group.value | json }},"composition":{{ recipe.composition.value | json }},"aeration":{{ recipe.aeration.value | default: 5 | json }},"drainage":{{ recipe.drainage.value | default: 5 | json }},"water":{{ recipe.water_retention.value | default: 5 | json }},"structure":{{ recipe.structure_stability.value | default: 5 | json }},"systems":{{ recipe.systems.value | json }},"explanation":{{ recipe.explanation.value | json }}
+    }{% assign first_recipe_json = false %}{% endif %}{% endfor %}
+  ]</script>
+  <script type="application/json" data-project-rules>[
+    {% assign first_rule_json = true %}{% for rule in project_rules %}{% if rule.active.value != false %}{% unless first_rule_json %},{% endunless %}{
+      "type":{{ rule.rule_type.value | json }},"conditions":{{ rule.conditions.value | json }},"priority":{{ rule.priority.value | default: 0 | json }},"reason":{{ rule.reason.value | json }}{% if rule.recommended_product.value != blank %},"product":{"title":{{ rule.recommended_product.value.title | json }},"url":{{ rule.recommended_product.value.url | json }}}{% endif %}
+    }{% assign first_rule_json = false %}{% endif %}{% endfor %}
+  ]</script>
+</section></leaf-project-configurator>
+
+{% stylesheet %}
+  .leaf-project { margin-block: var(--space-section); padding: clamp(1.25rem,4vw,3rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .leaf-project__head { display: flex; justify-content: space-between; gap: 2rem; align-items: end; }
+  .leaf-project__head > div { max-width: 760px; }
+  .leaf-project__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .leaf-project h2 { margin: 0; font-size: clamp(2.2rem,5vw,4.6rem); line-height: .95; letter-spacing: -.05em; }
+  .leaf-project__head p:last-child { max-width: 62ch; color: var(--muted); }
+  .leaf-project__pro-link { flex: 0 0 auto; font-weight: 800; }
+  .leaf-project__grid { margin-top: 2rem; display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,.85fr); gap: 1rem; align-items: start; }
+  .leaf-project__form { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .8rem; }
+  .leaf-project__form label { display: grid; gap: .4rem; font-size: .78rem; font-weight: 800; }
+  .leaf-project__form select { width: 100%; min-height: 50px; padding: .65rem .8rem; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--text); }
+  .leaf-project__form button { grid-column: 1/-1; min-height: 52px; }
+  .leaf-project__result { min-height: 100%; padding: 1.2rem; border-radius: var(--radius-large); background: var(--text); color: var(--background); }
+  .leaf-project__result .leaf-project__eyebrow { color: var(--accent-soft); }
+  .leaf-project__result h3 { margin: 0; font-size: clamp(1.5rem,3vw,2.35rem); line-height: 1.05; }
+  .leaf-project__result > p:not(.leaf-project__eyebrow) { color: color-mix(in srgb,var(--background),transparent 22%); }
+  .leaf-project__metrics { margin-top: 1rem; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .45rem; }
+  .leaf-project__metrics span { padding: .55rem .65rem; border: 1px solid color-mix(in srgb,var(--background),transparent 75%); border-radius: 9px; font-size: .75rem; font-weight: 800; }
+  .leaf-project__why { margin-top: 1rem; padding: 1rem; border: 1px solid color-mix(in srgb,var(--background),transparent 75%); border-radius: 10px; }
+  .leaf-project__why-title { display:block; font-size:1rem; }
+  .leaf-project__why-intro { margin:.35rem 0 .75rem; font-size:.78rem; opacity:.78; }
+  .leaf-project__why ol { margin:0; padding-left:1.15rem; display:grid; gap:.65rem; }
+  .leaf-project__why li { padding-left:.2rem; }
+  .leaf-project__why b, .leaf-project__why span { display:block; }
+  .leaf-project__why b { font-size:.76rem; }
+  .leaf-project__why span { margin-top:.12rem; font-size:.75rem; opacity:.82; line-height:1.4; }
+  .leaf-project__recipe { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid color-mix(in srgb,var(--background),transparent 78%); }
+  .leaf-project__recipe ul { margin: .55rem 0 0; padding-left: 1.1rem; }
+  .leaf-project__addons { margin-top: 1rem; display: grid; gap: .5rem; }
+  .leaf-project__addon { padding: .7rem; border: 1px solid color-mix(in srgb,var(--background),transparent 75%); border-radius: 9px; color: inherit; text-decoration: none; }
+  .leaf-project__addon strong, .leaf-project__addon small { display: block; }
+  .leaf-project__addon small { margin-top: .2rem; opacity: .75; }
+  .leaf-project__result .button { margin-top: 1rem; background: var(--accent-soft); color: var(--text); }
+  @media(max-width:800px){.leaf-project__head{align-items:flex-start;flex-direction:column}.leaf-project__grid{grid-template-columns:1fr}.leaf-project__form{grid-template-columns:1fr}.leaf-project__form button{grid-column:1}}
+{% endstylesheet %}
+
+{% javascript %}
+  class LeafProjectConfigurator extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      const read = (selector) => { try { return JSON.parse(this.querySelector(selector)?.textContent || '[]'); } catch { return []; } };
+      this.profiles = read('[data-project-profiles]');
+      this.recipes = read('[data-project-recipes]');
+      this.rules = read('[data-project-rules]');
+      this.form = this.querySelector('[data-project-form]');
+      this.form?.addEventListener('submit', (event) => { event.preventDefault(); this.update(); });
+    }
+    matches(rule, state) {
+      const conditions = rule?.conditions || {};
+      return Object.entries(conditions).every(([key,value]) => {
+        if (value === null || value === '' || value === 'any') return true;
+        const current = state[key];
+        return Array.isArray(value) ? value.includes(current) : String(value) === String(current);
+      });
+    }
+    update() {
+      const plant = this.querySelector('[data-project-plant]')?.value || '';
+      const state = {
+        plant,
+        light: this.querySelector('[data-project-light]')?.value || 'medium',
+        watering: this.querySelector('[data-project-watering]')?.value || 'normal',
+        system: this.querySelector('[data-project-system]')?.value || 'classic',
+        volume: this.querySelector('[data-project-volume]')?.value || '5'
+      };
+      const profile = this.profiles.find((item) => item.handle === plant);
+      if (!profile) return;
+      state.group = profile.group;
+      let candidates = this.recipes.filter((recipe) => String(recipe.group).toLowerCase() === String(profile.group).toLowerCase());
+      if (!candidates.length) candidates = this.recipes;
+      const recipe = candidates.sort((a,b) => this.score(b, profile, state) - this.score(a, profile, state))[0];
+      const title = this.querySelector('[data-project-title]');
+      const copy = this.querySelector('[data-project-copy]');
+      if (title) title.textContent = recipe?.name || profile.name;
+      if (copy) copy.textContent = recipe?.explanation || profile.note || profile.name;
+      this.renderMetrics(recipe || profile);
+      this.renderWhy(profile, recipe, state);
+      this.renderRecipe(recipe, state.volume);
+      this.renderAddons(state);
+      const pro = this.querySelector('[data-project-pro]');
+      if (pro) pro.hidden = false;
+    }
+    score(recipe, profile, state) {
+      let score = 100 - Math.abs(Number(recipe.aeration || 5) - Number(profile.aeration || 5)) * 4 - Math.abs(Number(recipe.drainage || 5) - Number(profile.drainage || 5)) * 4 - Math.abs(Number(recipe.water || 5) - Number(profile.water || 5)) * 4;
+      if (Array.isArray(recipe.systems) && recipe.systems.length && recipe.systems.includes(state.system)) score += 15;
+      if (state.watering === 'frequent') score += Number(recipe.drainage || 0) * 1.5;
+      if (state.watering === 'rare') score += Number(recipe.water || 0) * 1.5;
+      return score;
+    }
+    renderWhy(profile, recipe, state) {
+      const node = this.querySelector('[data-project-why]');
+      if (!node) return;
+      node.replaceChildren();
+      const reasons = [];
+      reasons.push({ title: profile.name, text: profile.note || `Zielprofil: Luftigkeit ${profile.aeration}/10, Drainage ${profile.drainage}/10, Wasserspeicher ${profile.water}/10.` });
+      if (state.watering === 'frequent') reasons.push({ title: 'Gießverhalten', text: `Häufiges Gießen erhöht das Risiko dauerhaft nasser Poren. Deshalb wird Drainage stärker gewichtet${recipe ? `; diese Mischung erreicht ${recipe.drainage}/10` : ''}.` });
+      if (state.watering === 'rare') reasons.push({ title: 'Gießverhalten', text: `Bei größeren Gießabständen wird Wasserspeicherung stärker gewichtet${recipe ? `; diese Mischung erreicht ${recipe.water}/10` : ''}.` });
+      if (state.watering === 'normal') reasons.push({ title: 'Gießverhalten', text: 'Bei normalem Gießrhythmus bleibt die Balance aus Luft, Drainage und Feuchtepuffer im Vordergrund.' });
+      if (state.system === 'self_watering') reasons.push({ title: 'Topfsystem', text: 'Selbstbewässerung verändert die Wasserverfügbarkeit dauerhaft. Geeignete Rezepturen für dieses System erhalten deshalb Vorrang.' });
+      if (state.system === 'semi_hydro') reasons.push({ title: 'Topfsystem', text: 'Semi-Hydro verlangt eine besonders kontrollierbare, strukturstabile Wurzelzone. Systemgeeignete Rezepturen werden bevorzugt.' });
+      if (state.system === 'fabric') reasons.push({ title: 'Topfsystem', text: 'Stofftöpfe trocknen durch ihre hohe Verdunstungsfläche schneller. Die Empfehlung berücksichtigt deshalb den Feuchtepuffer.' });
+      if (state.system === 'classic') reasons.push({ title: 'Topfsystem', text: 'Im klassischen Topf entscheidet vor allem das Verhältnis aus Drainage, Luftporen und Wasserspeicher.' });
+      if (state.light === 'high') reasons.push({ title: 'Licht', text: 'Viel Licht kann Wasserverbrauch und Wachstum erhöhen. Die Empfehlung wird deshalb nicht isoliert vom Gießverhalten betrachtet.' });
+      if (state.light === 'low') reasons.push({ title: 'Licht', text: 'Bei wenig Licht ist der Wasserverbrauch häufig geringer. Eine zu lange nasse Wurzelzone soll deshalb vermieden werden.' });
+      if (recipe?.explanation) reasons.push({ title: 'Rezeptentscheidung', text: recipe.explanation });
+      const heading=document.createElement('strong'); heading.className='leaf-project__why-title'; heading.textContent='Warum diese Empfehlung?';
+      const intro=document.createElement('p'); intro.className='leaf-project__why-intro'; intro.textContent='Die Empfehlung wird aus deinen Angaben und dem hinterlegten Pflanzen- und Rezeptprofil abgeleitet.';
+      const list=document.createElement('ol');
+      reasons.slice(0,6).forEach((reason) => { const li=document.createElement('li'); const b=document.createElement('b'); b.textContent=reason.title; const span=document.createElement('span'); span.textContent=reason.text; li.append(b,span); list.append(li); });
+      node.append(heading,intro,list); node.hidden=false;
+    }
+    renderMetrics(item) {
+      const node = this.querySelector('[data-project-metrics]');
+      if (!node) return;
+      node.replaceChildren();
+      [['Luftigkeit',item.aeration],['Drainage',item.drainage],['Wasserspeicher',item.water],['Struktur',item.structure]].forEach(([label,value]) => {
+        if (value === undefined || value === null || value === '') return;
+        const span = document.createElement('span'); span.textContent = `${label} ${value}/10`; node.append(span);
+      });
+      node.hidden = !node.children.length;
+    }
+    renderRecipe(recipe, volume) {
+      const node = this.querySelector('[data-project-recipe]');
+      if (!node) return;
+      node.replaceChildren();
+      const composition = recipe?.composition;
+      if (!composition || typeof composition !== 'object') { node.hidden = true; return; }
+      node.className = 'leaf-project__recipe';
+      const strong = document.createElement('strong'); strong.textContent = `${volume} L · Mischung`;
+      const list = document.createElement('ul');
+      Object.entries(composition).forEach(([name,share]) => { const li=document.createElement('li'); li.textContent=`${name}: ${share}% · ${(Number(volume)*Number(share)/100).toLocaleString(undefined,{maximumFractionDigits:2})} L`; list.append(li); });
+      node.append(strong,list); node.hidden = false;
+    }
+    renderAddons(state) {
+      const node = this.querySelector('[data-project-addons]');
+      if (!node) return;
+      node.replaceChildren();
+      this.rules.filter((rule) => this.matches(rule,state)).sort((a,b) => Number(b.priority||0)-Number(a.priority||0)).slice(0,4).forEach((rule) => {
+        if (!rule.product) return;
+        const link=document.createElement('a'); link.className='leaf-project__addon'; link.href=rule.product.url;
+        const title=document.createElement('strong'); title.textContent=rule.product.title;
+        const reason=document.createElement('small'); reason.textContent=rule.reason || '';
+        link.append(title,reason); node.append(link);
+      });
+      node.hidden = !node.children.length;
+    }
+  }
+  if (!customElements.get('leaf-project-configurator')) customElements.define('leaf-project-configurator', LeafProjectConfigurator);
+{% endjavascript %}
+
+
+{% schema %}
+{
+  "name": "Pflanzprojekt",
+  "settings": [],
+  "presets": [{ "name": "Pflanzprojekt-Konfigurator" }]
+}
+{% endschema %}

@@ -1,0 +1,243 @@
+{% liquid
+  assign show_configurator = section.settings.show_on_all_products
+  if request.page_type == 'page' and section.settings.show_on_pages
+    assign show_configurator = true
+  endif
+  if product.handle contains 'substrat-konfigurator'
+    assign show_configurator = true
+  endif
+%}
+
+{% if show_configurator %}
+  <substrate-configurator
+    class="substrate-configurator page-width"
+    data-total-label="{{ 'configurator.total' | t | escape }}"
+    data-valid-label="{{ 'configurator.valid' | t | escape }}"
+    data-invalid-label="{{ 'configurator.invalid' | t | escape }}"
+    data-copied-label="{% if request.locale.iso_code == 'de' %}Rezeptur kopiert{% else %}Recipe copied{% endif %}"
+  >
+    <header>
+      <p>{{ 'configurator.eyebrow' | t }}</p>
+      <h2>{{ 'configurator.heading' | t }}</h2>
+      <div>{{ 'configurator.intro' | t }}</div>
+    </header>
+
+    <div class="substrate-configurator__workspace">
+      <div class="substrate-configurator__grid">
+        {% for block in section.blocks %}
+          <label class="substrate-configurator__item" {{ block.shopify_attributes }}>
+            <span>
+              <strong>{{ block.settings.name | escape }}</strong>
+              {% if block.settings.function != blank %}<small>{{ block.settings.function | escape }}</small>{% endif %}
+            </span>
+            <output for="Part-{{ block.id }}">{{ block.settings.default_percentage }}%</output>
+            <input
+              id="Part-{{ block.id }}"
+              type="range"
+              min="0"
+              max="100"
+              step="1"
+              value="{{ block.settings.default_percentage }}"
+              data-mix-part
+              data-name="{{ block.settings.name | escape }}"
+            >
+          </label>
+        {% endfor %}
+      </div>
+
+      <aside class="substrate-configurator__chart-card" aria-label="{{ 'configurator.recipe' | t | escape }}">
+        <div class="substrate-configurator__pie" data-pie role="img"></div>
+        <div class="substrate-configurator__pie-total"><strong data-total-short>100%</strong><span>{{ 'configurator.total' | t }}</span></div>
+        <div class="substrate-configurator__legend" data-pie-legend></div>
+      </aside>
+    </div>
+
+    <div class="substrate-configurator__result" aria-live="polite">
+      <strong data-total></strong>
+      <span data-status></span>
+      <button type="button" class="substrate-configurator__copy" data-copy>{{ 'configurator.copy' | t }}</button>
+    </div>
+    <textarea class="visually-hidden" data-recipe aria-label="{{ 'configurator.recipe' | t }}"></textarea>
+  </substrate-configurator>
+{% endif %}
+
+{% stylesheet %}
+  .substrate-configurator { margin-block: var(--space-section); padding: clamp(1.25rem, 5vw, 4rem); display: block; border-radius: var(--radius-large); background: var(--text); color: var(--background); }
+  .substrate-configurator header { max-width: 800px; }
+  .substrate-configurator header > p { margin: 0; color: var(--accent-soft); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .substrate-configurator h2 { margin: .4rem 0 1rem; font-size: clamp(2.4rem, 6vw, 5.4rem); line-height: .94; letter-spacing: -.055em; }
+  .substrate-configurator header > div { max-width: 65ch; }
+  .substrate-configurator__workspace { margin-top: 2.5rem; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr); gap: clamp(1.25rem, 3vw, 2.5rem); align-items: start; }
+  .substrate-configurator__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+  .substrate-configurator__item { --mix-color: var(--accent-soft); padding: 1rem; display: grid; grid-template-columns: 1fr auto; gap: .8rem 1rem; border: 1px solid color-mix(in srgb, var(--background), transparent 78%); border-radius: var(--radius); }
+  .substrate-configurator__item span, .substrate-configurator__item small { display: block; }
+  .substrate-configurator__item strong { position: relative; padding-left: 1.15rem; }
+  .substrate-configurator__item strong::before { content: ''; position: absolute; left: 0; top: .3em; width: .7rem; height: .7rem; border-radius: 50%; background: var(--mix-color); }
+  .substrate-configurator__item small { margin-top: .25rem; color: color-mix(in srgb, var(--background), transparent 35%); }
+  .substrate-configurator__item output { color: var(--accent-soft); font-weight: 850; font-variant-numeric: tabular-nums; }
+  .substrate-configurator__item input { grid-column: 1 / -1; width: 100%; accent-color: var(--mix-color); cursor: ew-resize; }
+  .substrate-configurator__chart-card { position: sticky; top: 1rem; padding: 1.25rem; border: 1px solid color-mix(in srgb, var(--background), transparent 78%); border-radius: var(--radius-large); background: color-mix(in srgb, var(--background), transparent 94%); }
+  .substrate-configurator__pie { width: min(100%, 360px); aspect-ratio: 1; margin-inline: auto; border-radius: 50%; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--background), transparent 80%); transition: background .18s ease; }
+  .substrate-configurator__pie-total { margin-top: 1rem; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .substrate-configurator__pie-total strong { font-size: 1.65rem; color: var(--accent-soft); }
+  .substrate-configurator__pie-total span { font-size: .82rem; opacity: .72; }
+  .substrate-configurator__legend { margin-top: .9rem; display: grid; gap: .55rem; }
+  .substrate-configurator__legend-row { display: grid; grid-template-columns: 12px 1fr auto; gap: .6rem; align-items: center; font-size: .9rem; }
+  .substrate-configurator__legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+  .substrate-configurator__legend-row b { font-variant-numeric: tabular-nums; }
+  .substrate-configurator__result { margin-top: 1rem; display: flex; align-items: center; gap: 1rem; padding: 1rem; border-radius: var(--radius); background: color-mix(in srgb, var(--background), transparent 92%); }
+  .substrate-configurator__result strong { font-size: 1.2rem; }
+  .substrate-configurator__result span { flex: 1; }
+  .substrate-configurator__copy { border-color: var(--background); background: transparent; color: var(--background); }
+  @media (max-width: 900px) { .substrate-configurator__workspace { grid-template-columns: 1fr; } .substrate-configurator__chart-card { position: static; } }
+  @media (max-width: 720px) { .substrate-configurator__grid { grid-template-columns: 1fr; } .substrate-configurator__result { align-items: stretch; flex-direction: column; } }
+{% endstylesheet %}
+
+{% javascript %}
+  class SubstrateConfigurator extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready === 'true') return;
+      this.dataset.ready = 'true';
+      this.parts = [...this.querySelectorAll('[data-mix-part]')];
+      this.colors = ['#c49363', '#b8c89a', '#eee9dc', '#a87954', '#846b5b', '#9fb7a3', '#d7bf84', '#a4a0bc'];
+
+      this.parts.forEach((part, index) => {
+        part.closest('label')?.style.setProperty('--mix-color', this.colors[index % this.colors.length]);
+        part.addEventListener('input', () => this.rebalance(part));
+      });
+      this.querySelector('[data-copy]')?.addEventListener('click', () => this.copy());
+
+      this.normalizeInitial();
+      this.update();
+    }
+
+    allocate(total, weights) {
+      if (!weights.length) return [];
+      const sum = weights.reduce((acc, value) => acc + Math.max(0, value), 0);
+      const raw = sum > 0
+        ? weights.map((value) => (Math.max(0, value) / sum) * total)
+        : weights.map(() => total / weights.length);
+      const values = raw.map((value) => Math.floor(value));
+      let remainder = total - values.reduce((acc, value) => acc + value, 0);
+      const order = raw
+        .map((value, index) => ({ index, fraction: value - Math.floor(value) }))
+        .sort((a, b) => b.fraction - a.fraction);
+      for (let index = 0; index < remainder; index += 1) values[order[index % order.length].index] += 1;
+      return values;
+    }
+
+    normalizeInitial() {
+      const values = this.parts.map((part) => Number(part.value));
+      const total = values.reduce((sum, value) => sum + value, 0);
+      if (total === 100) return;
+      const normalized = this.allocate(100, values);
+      this.parts.forEach((part, index) => { part.value = normalized[index]; });
+    }
+
+    rebalance(changed) {
+      const changedValue = Math.max(0, Math.min(100, Math.round(Number(changed.value))));
+      changed.value = changedValue;
+      const others = this.parts.filter((part) => part !== changed);
+      const allocated = this.allocate(100 - changedValue, others.map((part) => Number(part.value)));
+      others.forEach((part, index) => { part.value = allocated[index]; });
+      this.update();
+    }
+
+    update() {
+      let total = 0;
+      let cursor = 0;
+      const recipe = [];
+      const stops = [];
+      const legend = this.querySelector('[data-pie-legend]');
+      if (legend) legend.replaceChildren();
+
+      this.parts.forEach((part, index) => {
+        const value = Number(part.value);
+        const color = this.colors[index % this.colors.length];
+        const start = cursor;
+        const end = cursor + value;
+        cursor = end;
+        total += value;
+        part.closest('label')?.querySelector('output')?.replaceChildren(document.createTextNode(`${value}%`));
+        if (value > 0) {
+          recipe.push(`${value} % ${part.dataset.name}`);
+          stops.push(`${color} ${start}% ${end}%`);
+        }
+
+        if (legend && value > 0) {
+          const row = document.createElement('div');
+          row.className = 'substrate-configurator__legend-row';
+          const dot = document.createElement('span');
+          dot.className = 'substrate-configurator__legend-dot';
+          dot.style.background = color;
+          const name = document.createElement('span');
+          name.textContent = part.dataset.name;
+          const amount = document.createElement('b');
+          amount.textContent = `${value}%`;
+          row.append(dot, name, amount);
+          legend.append(row);
+        }
+      });
+
+      const recipeText = recipe.join(' · ');
+      const pie = this.querySelector('[data-pie]');
+      if (pie) {
+        pie.style.background = stops.length ? `conic-gradient(${stops.join(', ')})` : 'transparent';
+        pie.setAttribute('aria-label', recipeText);
+      }
+
+      this.querySelector('[data-total]').textContent = `${this.dataset.totalLabel}: ${total}%`;
+      this.querySelector('[data-total-short]').textContent = `${total}%`;
+      this.querySelector('[data-status]').textContent = total === 100 ? this.dataset.validLabel : this.dataset.invalidLabel;
+      this.querySelector('[data-recipe]').value = recipeText;
+      this.dispatchEvent(new CustomEvent('substrate:change', { bubbles: true, detail: { total, recipe: recipeText } }));
+
+      const creator = document.querySelector('custom-grow-creator');
+      if (creator && typeof creator.updateRecipe === 'function') creator.updateRecipe();
+    }
+
+    async copy() {
+      const field = this.querySelector('[data-recipe]');
+      if (!field?.value) return;
+
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(field.value);
+        } else {
+          field.classList.remove('visually-hidden');
+          field.select();
+          document.execCommand('copy');
+          field.classList.add('visually-hidden');
+        }
+        this.querySelector('[data-status]').textContent = this.dataset.copiedLabel;
+      } catch (error) {
+        this.querySelector('[data-status]').textContent = this.dataset.validLabel;
+      }
+    }
+  }
+
+  if (!customElements.get('substrate-configurator')) customElements.define('substrate-configurator', SubstrateConfigurator);
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Substrat-Konfigurator",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "checkbox", "id": "show_on_pages", "label": "Auf Seiten anzeigen", "default": true },
+    { "type": "checkbox", "id": "show_on_all_products", "label": "Auf allen Produktseiten anzeigen", "default": false }
+  ],
+  "blocks": [
+    {
+      "type": "ingredient",
+      "name": "Bestandteil",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Pinienrinde" },
+        { "type": "text", "id": "function", "label": "Funktion", "default": "Struktur und Luftführung" },
+        { "type": "range", "id": "default_percentage", "label": "Startanteil", "min": 0, "max": 100, "step": 1, "default": 20, "unit": "%" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Substrat-Konfigurator", "blocks": [{ "type": "ingredient" }, { "type": "ingredient" }, { "type": "ingredient" }, { "type": "ingredient" }, { "type": "ingredient" }] }]
+}
+{% endschema %}

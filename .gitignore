@@ -1,0 +1,23 @@
+# Local credentials and generated state
+.env
+.env.*
+!.env.example
+*.local
+*.secret
+credentials.json
+token.json
+
+# Local tooling output
+node_modules/
+.shopify/
+.vscode/
+coverage/
+dist/
+tmp/
+
+# Apps Script local metadata
+.clasp.json
+
+# Scratch exports and logs
+*.zip
+*.log
