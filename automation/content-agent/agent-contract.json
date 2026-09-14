@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "repository": "davidnoehmke/Shop-V5.1",
+  "ssot": "supabase",
+  "production_target": "shopify",
+  "approval_surface": "chatgpt",
+  "candidate_types": ["blog_article", "product", "seo_ux_change"],
+  "states": [
+    "pending_review",
+    "approved",
+    "rejected",
+    "sync_ready",
+    "syncing",
+    "synced",
+    "failed"
+  ],
+  "write_gate": {
+    "required_state": "sync_ready",
+    "requires_explicit_human_approval": true,
+    "approval_identity_fields": ["id", "approval_token"],
+    "allow_automatic_publish": false,
+    "allow_automatic_main_commit": false
+  },
+  "research": {
+    "blog": {"cadence": "daily", "max_candidates_per_run": 1},
+    "product": {"cadence": "daily", "max_candidates_per_run": 1},
+    "seo_ux": {"cadence": "every_2_days"}
+  },
+  "quality_gates": {
+    "fact_validation": true,
+    "source_traceability": true,
+    "uncertainty_marking": true,
+    "diversity_check": true,
+    "cannibalization_check": true,
+    "seo_check": true,
+    "ux_check": true,
+    "internal_linking_check": true,
+    "mobile_check": true,
+    "product_min_net_gross_margin": 0.25
+  }
+}
