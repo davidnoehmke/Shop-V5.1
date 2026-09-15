@@ -68,42 +68,56 @@
           "type": "step",
           "settings": {
             "heading": "Volumen festlegen",
-            "text": "<p>Wähle 2, 5 oder 10 Liter passend zum geplanten Umtopf- oder Anzuchtprojekt.</p>"
+            "text": "<p>Wähle eine verfügbare Menge von 2, 5 oder 10 Litern passend zum geplanten Umtopf- oder Anzuchtprojekt.</p>"
           }
         },
         "step_recipe": {
           "type": "step",
           "settings": {
             "heading": "Rezeptur prüfen und bestellen",
-            "text": "<p>Du siehst Anteile und Liter je Bestandteil, bevor du die Variante in den Warenkorb legst.</p>"
+            "text": "<p>Prüfe Bestandteile, Anteile, Menge und Preis vor dem Hinzufügen. Kontrolliere anschließend die Rezeptur an deiner Warenkorbposition.</p>"
           }
         },
         "faq_function": {
           "type": "faq",
           "settings": {
             "question": "Wie funktioniert der Substrat-Konfigurator?",
-            "answer": "<p>Wähle zuerst die Pflanzengruppe und danach 2, 5 oder 10 Liter. Shopify ordnet deiner Kombination die passende Variante und die fest hinterlegte Volumenrezeptur zu.</p>"
+            "answer": "<p>Wähle ein Pflanzenprofil und eine verfügbare Menge. Als Ausgangspunkt wird eine hinterlegte Volumenrezeptur angezeigt. Unter „Individuell mischen“ kannst du die angebotenen Komponenten und ihre Anteile bearbeiten. Prüfe die angezeigte Zusammenfassung vor dem Bestellen.</p>"
           }
         },
         "faq_volume": {
           "type": "faq",
           "settings": {
             "question": "Welche Mengen kann ich bestellen?",
-            "answer": "<p>Für jedes Pflanzenprofil stehen 2 L, 5 L und 10 L zur Auswahl. Preis und Verfügbarkeit werden direkt aus dem Produkt geladen.</p>"
+            "answer": "<p>Der Konfigurator bietet 2 L, 5 L und 10 L an. Welche Variante aktuell bestellbar ist und was sie kostet, siehst du direkt bei deiner Auswahl. Eine Mengenoption allein ist noch keine Verfügbarkeitszusage.</p>"
           }
         },
         "faq_fixed": {
           "type": "faq",
           "settings": {
             "question": "Sind die Mischverhältnisse frei veränderbar?",
-            "answer": "<p>Nein. Die sechs Grundrezepturen sind bewusst fest hinterlegt. Dadurch bleiben Zusammensetzung, Preis und Bestellung nachvollziehbar. Bei sehr empfindlichen Pflanzen kann die Mischung nachträglich gezielt angepasst werden.</p>"
+            "answer": "<p>Die Pflanzenprofile starten mit festen Grundrezepturen. Im Bereich „Individuell mischen“ stehen bis zu fünf auswählbare Komponenten und Regler zur Anpassung bereit. Prüfe vor dem Hinzufügen die angezeigte Rezeptur, Menge und den Preis. Für darüber hinausgehende Sonderwünsche nutze bitte das Kontaktformular.</p>"
           }
         },
         "faq_beginner": {
           "type": "faq",
           "settings": {
             "question": "Eignet sich die Auswahl auch für Einsteiger?",
-            "answer": "<p>Ja. Starte mit der Pflanzengruppe, die deinem Projekt am nächsten kommt. Die Rezeptur wird transparent angezeigt, damit du die Funktion der Bestandteile nachvollziehen kannst.</p>"
+            "answer": "<p>Ja. Beginne mit dem Pflanzenprofil und der benötigten Menge, statt sofort einzelne Prozentwerte zu verändern. Vergleiche die angezeigten Bestandteile mit deinem Vorhaben. Bei Unsicherheit helfen uns Pflanzenname, Topfmaße und Angaben zu Standort und Gießroutine bei deiner Anfrage.</p>"
+          }
+        },
+        "faq_quantity_check": {
+          "type": "faq",
+          "settings": {
+            "question": "Wie schätze ich die benötigte Substratmenge ab?",
+            "answer": "<p>Entscheidend ist der freie Innenraum des Pflanzgefäßes, nicht dessen Außenmaß. Ein vorhandener Wurzelballen und Einsätze nehmen bereits Platz ein. Ein 10-Liter-Gefäß benötigt deshalb beim Umtopfen nicht automatisch 10 Liter zusätzliches Substrat. Teile uns bei Unsicherheit die Innenmaße und die ungefähre Größe des Wurzelballens mit.</p>"
+          }
+        },
+        "faq_order_check": {
+          "type": "faq",
+          "settings": {
+            "question": "Was sollte ich vor dem Bestellen kontrollieren?",
+            "answer": "<p>Kontrolliere Pflanzenprofil, Komponenten, Prozentanteile, Literangaben, Anzahl und Gesamtpreis. Vergleiche danach die Angaben an der Warenkorbposition mit deiner Auswahl. Fehlt eine Angabe oder stimmt sie nicht überein, bestelle noch nicht und kontaktiere uns mit deiner gewünschten Mischung.</p>"
           }
         }
       },
@@ -120,7 +134,9 @@
         "faq_function",
         "faq_volume",
         "faq_fixed",
-        "faq_beginner"
+        "faq_beginner",
+        "faq_quantity_check",
+        "faq_order_check"
       ],
       "settings": {
         "product": "leafer-substrat-konfigurator",
@@ -128,10 +144,10 @@
         "image_alt": "LEAFerservice Substrat-Konfigurator mit Bestandteilen für verschiedene Pflanzenprofile",
         "eyebrow": "LEAFerservice · Substrat-Konfigurator",
         "heading": "Passendes Substrat nach Pflanzentyp und Menge",
-        "intro": "<p>Wähle zuerst deine Pflanzengruppe und danach 2, 5 oder 10 Liter. Für jede Kombination ist eine feste, nachvollziehbare Volumenrezeptur hinterlegt.</p>",
+        "intro": "<p>Starte mit einem Pflanzenprofil und einer verfügbaren Menge von 2, 5 oder 10 Litern. Nutze die hinterlegte Grundrezeptur als Ausgangspunkt oder bearbeite die angebotenen Komponenten unter „Individuell mischen“.</p>",
         "selection_eyebrow": "Deine Mischung",
         "selection_heading": "Pflanzenprofil und Menge auswählen",
-        "selection_text": "<p>Varianten, Preise und Verfügbarkeit kommen direkt aus Shopify. Nach deiner Auswahl siehst du die hinterlegte Rezeptur und die genaue Literverteilung.</p>",
+        "selection_text": "<p>Wähle zuerst das Profil und die Menge. Prüfe danach die angezeigte Rezeptur, die Literverteilung sowie Preis und Verfügbarkeit.</p>",
         "profile_option_name": "Pflanzentyp",
         "volume_option_name": "Menge",
         "profile_legend": "1. Pflanzentyp wählen",
@@ -142,9 +158,9 @@
         "sold_out_label": "Ausgewählte Variante nicht verfügbar",
         "available_label": "Verfügbar",
         "unavailable_label": "Derzeit nicht verfügbar",
-        "recipe_eyebrow": "Transparent hinterlegt",
-        "recipe_heading": "Deine hinterlegte Rezeptur",
-        "recipe_intro": "<p>Volumenanteile und Literangaben für die gewählte Menge. Die Summe bleibt bei 100 Prozent.</p>",
+        "recipe_eyebrow": "Zusammensetzung prüfen",
+        "recipe_heading": "Rezeptur deiner Auswahl",
+        "recipe_intro": "<p>Vergleiche Volumenanteile und Literangaben mit der gewählten Menge. Die Anteile einer vollständigen Mischung müssen zusammen 100 Prozent ergeben.</p>",
         "steps_eyebrow": "In drei Schritten",
         "steps_heading": "So kommst du zur passenden Grundrezeptur",
         "show_description": true,
@@ -155,7 +171,7 @@
         "show_components": true,
         "components_eyebrow": "Einzeln entdecken",
         "components_heading": "Bestandteile der Rezepturen",
-        "components_text": "<p>Die Komponenten stammen aus der am Produkt gepflegten Bundle-Liste und führen zu den jeweiligen Shopify-Produktseiten.</p>",
+        "components_text": "<p>Erfahre auf den Produktseiten mehr über Eigenschaften und Anwendung der einzelnen Substratbestandteile.</p>",
         "padding_top": 64,
         "padding_bottom": 96
       }
@@ -172,10 +188,18 @@
     "breadcrumbs": {
       "type": "leaf-breadcrumbs",
       "settings": {}
+    },
+    "page_heading": {
+      "type": "leaf-page-heading",
+      "settings": {
+        "heading": "Substrat konfigurieren für dein Pflanzenprojekt",
+        "intro": "<p>Plane dein Pflanzenprojekt oder wähle direkt ein Pflanzenprofil. Vergleiche anschließend Zusammensetzung, Menge und Preis. Die folgenden Fragen helfen dir, deine Auswahl vor dem Bestellen zu prüfen.</p>"
+      }
     }
   },
   "order": [
     "breadcrumbs",
+    "page_heading",
     "project_configurator",
     "main",
     "product_recipe_bzM3LF"

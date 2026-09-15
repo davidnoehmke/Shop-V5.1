@@ -1,0 +1,12 @@
+<header class="leaf-page-heading page-width">
+  <h1>{{ section.settings.heading | default: page.title | escape }}</h1>
+  {% if section.settings.intro != blank %}<div class="leaf-page-heading__intro rte">{{ section.settings.intro }}</div>{% endif %}
+</header>
+{% stylesheet %}
+  .leaf-page-heading { padding-block: clamp(1.5rem, 5vw, 3.5rem); }
+  .leaf-page-heading h1 { max-width: 22ch; margin: 0; font-size: clamp(2rem, 7vw, 4.6rem); line-height: 1.05; text-wrap: balance; overflow-wrap: anywhere; }
+  .leaf-page-heading__intro { max-width: 70ch; margin-top: 1rem; color: var(--muted); line-height: 1.65; }
+{% endstylesheet %}
+{% schema %}
+{"name":"Seitentitel","settings":[{"type":"text","id":"heading","label":"Überschrift"},{"type":"richtext","id":"intro","label":"Einleitung"}],"presets":[{"name":"Seitentitel"}]}
+{% endschema %}

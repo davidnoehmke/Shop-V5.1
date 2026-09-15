@@ -1,40 +1,7 @@
-{% doc %}
-  Outputs FAQPage JSON-LD from the product FAQ metafields.
-
-  @param {product} product - The current product.
-{% enddoc %}
-
-{% assign faq_count = 0 %}
-{% assign faq_keys = 'faq_1,faq_2,faq_3,faq_4' | split: ',' %}
-{% capture faq_entities %}
-  {% for faq_key in faq_keys %}
-    {% assign faq_field = product.metafields.leafer[faq_key] %}
-    {% if faq_field != blank and faq_field.value != blank %}
-      {% assign faq_parts = faq_field.value | split: "||" %}
-      {% if faq_parts.size == 2 and faq_parts[0] != blank and faq_parts[1] != blank %}
-        {% assign faq_question = faq_parts[0] | strip %}
-        {% assign faq_answer = faq_parts[1] | strip %}
-        {% if faq_count > 0 %},{% endif %}
-        {
-          "@type": "Question",
-          "name": {{ faq_question | json }},
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": {{ faq_answer | json }}
-          }
-        }
-        {% assign faq_count = faq_count | plus: 1 %}
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endcapture %}
-
-{% if faq_count > 0 %}
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [{{ faq_entities | strip }}]
-    }
-  </script>
-{% endif %}
+{%- if product != blank -%}
+  {%- capture faq_entities -%}{%- render 'product-faq-entries', product: product, format: 'json' -%}{%- endcapture -%}
+  {%- assign faq_entities = faq_entities | strip -%}
+  {%- if faq_entities != blank -%}
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{{ faq_entities }}]}</script>
+  {%- endif -%}
+{%- endif -%}

@@ -1,252 +1,87 @@
-{% liquid
+{%- liquid
   assign subtitle = product.metafields.leafer.subtitle.value
   assign intro = product.metafields.leafer.intro.value
-  assign suitable_for = product.metafields.leafer.suitable_for.value
-  assign primary_function = product.metafields.leafer.primary_function.value
-  assign use_as = product.metafields.leafer.use_as.value
-  assign ingredients = product.metafields.leafer.ingredients.value
-  assign mixing_ratio = product.metafields.leafer.mixing_ratio.value
-  assign additive_application = product.metafields.leafer.additive_application.value
-  assign water_behavior = product.metafields.leafer.water_behavior.value
-  assign planter_type = product.metafields.leafer.planter_type.value
-
-  assign lighting_style = product.metafields.custom.light_style.value
-  assign lighting_position = product.metafields.custom.lighting_position.value
-  assign recommended_rooms = product.metafields.custom.recommended_room.value
   assign custom_use_case = product.metafields.custom.use_case.value
-  assign custom_faqs = product.metafields.custom.faq.value
+  assign notice_field = product.metafields.leaferservice.hinweis
+  if notice_field.value == blank
+    assign notice_field = product.metafields.leafer.warning
+  endif
   assign has_dynamic_description = false
-  if custom_use_case != blank or lighting_style != blank or lighting_position != blank or recommended_rooms != blank or custom_faqs != blank
+  if custom_use_case != blank or product.metafields.custom.light_style.value != blank or product.metafields.custom.lighting_position.value != blank or product.metafields.custom.recommended_room.value != blank or product.metafields.custom.faq.value != blank
     assign has_dynamic_description = true
   endif
-
-  assign botanical_name = product.metafields.leaferservice.botanischer_name.value
-  assign germination_temperature = product.metafields.leaferservice.keimtemperatur.value
-  assign germination_time = product.metafields.leaferservice.keimdauer.value
-  assign sowing_time = product.metafields.leaferservice.aussaatzeit.value
-  assign sowing_depth = product.metafields.leaferservice.aussaattiefe.value
-  assign location = product.metafields.leaferservice.standort.value
-  assign substrate_recommendation = product.metafields.leaferservice.substrat_empfehlung.value
-  assign watering = product.metafields.leaferservice.giessen.value
-  assign difficulty = product.metafields.leaferservice.schwierigkeitsgrad.value | default: product.metafields.leafer.difficulty.value
-  assign perennial = product.metafields.leaferservice.mehrjaehrig.value
-  assign winter_hardiness = product.metafields.leaferservice.winterhaerte.value
-  assign notice = product.metafields.leaferservice.hinweis.value | default: product.metafields.leafer.warning.value
-
-  assign faq_1_raw = product.metafields.leafer.faq_1.value
-  assign faq_2_raw = product.metafields.leafer.faq_2.value
-  assign faq_3_raw = product.metafields.leafer.faq_3.value
-  assign faq_4_raw = product.metafields.leafer.faq_4.value
-
-  if faq_1_raw != blank
-    assign faq_1_parts = faq_1_raw | split: '||'
-    assign faq_1_question = faq_1_parts[0] | strip
-    assign faq_1_answer = faq_1_parts[1] | strip
-  else
-    assign faq_1_question = product.metafields.vitals.faq_1_question.value
-    assign faq_1_answer = product.metafields.vitals.faq_1_answer.value
-  endif
-  if faq_2_raw != blank
-    assign faq_2_parts = faq_2_raw | split: '||'
-    assign faq_2_question = faq_2_parts[0] | strip
-    assign faq_2_answer = faq_2_parts[1] | strip
-  else
-    assign faq_2_question = product.metafields.vitals.faq_2_question.value
-    assign faq_2_answer = product.metafields.vitals.faq_2_answer.value
-  endif
-  if faq_3_raw != blank
-    assign faq_3_parts = faq_3_raw | split: '||'
-    assign faq_3_question = faq_3_parts[0] | strip
-    assign faq_3_answer = faq_3_parts[1] | strip
-  else
-    assign faq_3_question = product.metafields.vitals.faq_3_question.value
-    assign faq_3_answer = product.metafields.vitals.faq_3_answer.value
-  endif
-  if faq_4_raw != blank
-    assign faq_4_parts = faq_4_raw | split: '||'
-    assign faq_4_question = faq_4_parts[0] | strip
-    assign faq_4_answer = faq_4_parts[1] | strip
-  endif
-
   if request.locale.iso_code == 'de'
+    assign label_index = 2
     assign details_eyebrow = 'Produktwissen'
     assign details_heading = 'Eigenschaften und Anwendung'
     assign benefits_label = 'Produktvorteile'
     assign facts_heading = 'Auf einen Blick'
-    assign function_label = 'Hauptfunktion'
-    assign suitable_label = 'Geeignet für'
-    assign use_label = 'Verwendung als'
-    assign ingredients_label = 'Bestandteile'
-    assign ratio_label = 'Mischverhältnis'
-    assign application_label = 'Anwendung'
-    assign water_label = 'Wasserverhalten'
-    assign planter_label = 'Gefäßtyp'
-    assign botanical_label = 'Botanischer Name'
-    assign germination_temperature_label = 'Keimtemperatur'
-    assign germination_time_label = 'Keimdauer'
-    assign sowing_time_label = 'Aussaatzeit'
-    assign sowing_depth_label = 'Aussaattiefe'
-    assign location_label = 'Standort'
-    assign substrate_label = 'Substrat'
-    assign watering_label = 'Gießen'
-    assign difficulty_label = 'Schwierigkeitsgrad'
-    assign perennial_label = 'Mehrjährig'
-    assign winter_label = 'Winterhärte'
-    assign yes_label = 'Ja'
-    assign no_label = 'Nein'
     assign notice_label = 'Hinweis:'
     assign faq_heading = 'Häufige Fragen'
-    assign lighting_style_label = 'Lichtcharakter'
-    assign lighting_position_label = 'Beleuchtungsposition'
-    assign recommended_rooms_label = 'Geeignete Räume'
     assign description_heading = 'Weitere Produktdetails'
   else
+    assign label_index = 3
     assign details_eyebrow = 'Product knowledge'
     assign details_heading = 'Features and use'
     assign benefits_label = 'Product benefits'
     assign facts_heading = 'At a glance'
-    assign function_label = 'Primary function'
-    assign suitable_label = 'Suitable for'
-    assign use_label = 'Use as'
-    assign ingredients_label = 'Ingredients'
-    assign ratio_label = 'Mixing ratio'
-    assign application_label = 'Application'
-    assign water_label = 'Water behaviour'
-    assign planter_label = 'Planter type'
-    assign botanical_label = 'Botanical name'
-    assign germination_temperature_label = 'Germination temperature'
-    assign germination_time_label = 'Germination time'
-    assign sowing_time_label = 'Sowing period'
-    assign sowing_depth_label = 'Sowing depth'
-    assign location_label = 'Location'
-    assign substrate_label = 'Substrate'
-    assign watering_label = 'Watering'
-    assign difficulty_label = 'Difficulty'
-    assign perennial_label = 'Perennial'
-    assign winter_label = 'Winter hardiness'
-    assign yes_label = 'Yes'
-    assign no_label = 'No'
     assign notice_label = 'Note:'
     assign faq_heading = 'Frequently asked questions'
-    assign lighting_style_label = 'Light character'
-    assign lighting_position_label = 'Lighting position'
-    assign recommended_rooms_label = 'Recommended rooms'
     assign description_heading = 'More product details'
   endif
-
-  assign has_usps = false
-  if product.metafields.leafer.usp_1.value != blank or product.metafields.leafer.usp_2.value != blank or product.metafields.leafer.usp_3.value != blank or product.metafields.leafer.usp_4.value != blank
-    assign has_usps = true
-  endif
-
-  assign has_facts = false
-  if lighting_style != blank or lighting_position != blank or recommended_rooms != blank or primary_function != blank or suitable_for != blank or use_as != blank or ingredients != blank or mixing_ratio != blank or additive_application != blank or water_behavior != blank or planter_type != blank or botanical_name != blank or germination_temperature != blank or germination_time != blank or sowing_time != blank or sowing_depth != blank or location != blank or substrate_recommendation != blank or watering != blank or difficulty != blank or perennial != blank or winter_hardiness != blank
-    assign has_facts = true
-  endif
-
-  assign has_faqs = false
-  if custom_faqs != blank or faq_1_question != blank and faq_1_answer != blank or faq_2_question != blank and faq_2_answer != blank or faq_3_question != blank and faq_3_answer != blank or faq_4_question != blank and faq_4_answer != blank
-    assign has_faqs = true
-  endif
-
-  assign has_details = false
-  if intro != blank or subtitle != blank or custom_use_case != blank or has_usps or has_facts or has_faqs or notice != blank or product.description != blank
-    assign has_details = true
-  endif
-%}
-
-{% if has_details %}
+  assign fact_definitions = 'custom|light_style|Lichtcharakter|Light character||custom|lighting_position|Beleuchtungsposition|Lighting position||custom|recommended_room|Geeignete Räume|Recommended rooms||leafer|primary_function|Hauptfunktion|Primary function||leafer|suitable_for|Geeignet für|Suitable for||leafer|use_as|Verwendung als|Use as||leafer|ingredients|Bestandteile|Ingredients||leafer|mixing_ratio|Mischverhältnis|Mixing ratio||leafer|additive_application|Anwendung|Application||leafer|water_behavior|Wasserverhalten|Water behaviour||leafer|planter_type|Gefäßtyp|Planter type||leaferservice|botanischer_name|Botanischer Name|Botanical name||leaferservice|keimtemperatur|Keimtemperatur|Germination temperature||leaferservice|keimdauer|Keimdauer|Germination time||leaferservice|aussaatzeit|Aussaatzeit|Sowing period||leaferservice|aussaattiefe|Aussaattiefe|Sowing depth||leaferservice|standort|Standort|Location||leaferservice|substrat_empfehlung|Substrat|Substrate||leaferservice|giessen|Gießen|Watering||leaferservice|schwierigkeitsgrad|Schwierigkeitsgrad|Difficulty||leaferservice|mehrjaehrig|Mehrjährig|Perennial||leaferservice|winterhaerte|Winterhärte|Winter hardiness' | split: '||'
+-%}
+{%- capture facts_markup -%}
+  {%- for definition in fact_definitions -%}
+    {%- liquid
+      assign parts = definition | split: '|'
+      assign field_namespace = parts[0]
+      assign field_key = parts[1]
+      assign fact = product.metafields[field_namespace][field_key]
+      if field_key == 'schwierigkeitsgrad' and fact.value == blank
+        assign fact = product.metafields.leafer.difficulty
+      endif
+    -%}
+    {%- if fact.value != blank or fact.type == 'boolean' -%}
+      <div><dt>{{ parts[label_index] | escape }}</dt><dd>
+        {%- if field_key == 'botanischer_name' -%}<i>{%- endif -%}
+        {%- render 'leaf-metafield-value', field: fact -%}
+        {%- if field_key == 'botanischer_name' -%}</i>{%- endif -%}
+      </dd></div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- capture usps_markup -%}
+  {%- for index in (1..4) -%}
+    {%- assign usp_key = 'usp_' | append: index -%}
+    {%- assign usp = product.metafields.leafer[usp_key].value -%}
+    {%- if usp != blank -%}<li><span class="product-seo-details__check" aria-hidden="true">✓</span><span>{{ usp | escape }}</span></li>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- capture faq_markup -%}{%- render 'product-faq-entries', product: product -%}{%- endcapture -%}
+{%- liquid
+  assign facts_markup = facts_markup | strip
+  assign usps_markup = usps_markup | strip
+  assign faq_markup = faq_markup | strip
+-%}
+{% if subtitle != blank or intro != blank or custom_use_case != blank or facts_markup != blank or usps_markup != blank or faq_markup != blank or notice_field.value != blank or product.description != blank %}
   <section class="product-seo-details page-width" aria-labelledby="ProductDetails-{{ section.id }}">
     <header class="product-seo-details__header">
       <p class="product-seo-details__eyebrow">{{ details_eyebrow }}</p>
       <h2 id="ProductDetails-{{ section.id }}">{{ subtitle | default: details_heading | escape }}</h2>
-      {% if custom_use_case != blank %}
-        <p class="product-seo-details__intro">{{ custom_use_case | escape | newline_to_br }}</p>
-      {% elsif intro != blank %}
-        <p class="product-seo-details__intro">{{ intro | escape | newline_to_br }}</p>
-      {% endif %}
+      {% if custom_use_case != blank %}<p class="product-seo-details__intro">{{ custom_use_case | escape | newline_to_br }}</p>
+      {% elsif intro != blank %}<p class="product-seo-details__intro">{{ intro | escape | newline_to_br }}</p>{% endif %}
     </header>
-
-    {% if has_usps %}
-      <ul class="product-seo-details__usps" aria-label="{{ benefits_label | escape }}">
-        {% for index in (1..4) %}
-          {% assign usp_key = 'usp_' | append: index %}
-          {% assign usp = product.metafields.leafer[usp_key].value %}
-          {% if usp != blank %}<li><span class="product-seo-details__check" aria-hidden="true">✓</span><span>{{ usp | escape }}</span></li>{% endif %}
-        {% endfor %}
-      </ul>
-    {% endif %}
-
-    {% if has_facts %}
-      <div class="product-seo-details__facts">
-        <h3>{{ facts_heading }}</h3>
-        <dl>
-          {% if lighting_style != blank %}<div><dt>{{ lighting_style_label }}</dt><dd>{{ lighting_style | escape }}</dd></div>{% endif %}
-          {% if lighting_position != blank %}<div><dt>{{ lighting_position_label }}</dt><dd>{{ lighting_position | escape }}</dd></div>{% endif %}
-          {% if recommended_rooms != blank %}
-            <div>
-              <dt>{{ recommended_rooms_label }}</dt>
-              <dd>
-                <ul class="product-seo-details__room-list">
-                  {% for room in recommended_rooms %}<li>{{ room | escape }}</li>{% endfor %}
-                </ul>
-              </dd>
-            </div>
-          {% endif %}
-          {% if primary_function != blank %}<div><dt>{{ function_label }}</dt><dd>{{ primary_function | escape }}</dd></div>{% endif %}
-          {% if suitable_for != blank %}<div><dt>{{ suitable_label }}</dt><dd>{{ suitable_for | join: ', ' | escape }}</dd></div>{% endif %}
-          {% if use_as != blank %}<div><dt>{{ use_label }}</dt><dd>{{ use_as | join: ', ' | escape }}</dd></div>{% endif %}
-          {% if ingredients != blank %}<div><dt>{{ ingredients_label }}</dt><dd>{{ ingredients | join: ', ' | escape }}</dd></div>{% endif %}
-          {% if mixing_ratio != blank %}<div><dt>{{ ratio_label }}</dt><dd>{{ mixing_ratio | escape | newline_to_br }}</dd></div>{% endif %}
-          {% if additive_application != blank %}<div><dt>{{ application_label }}</dt><dd>{{ additive_application | escape | newline_to_br }}</dd></div>{% endif %}
-          {% if water_behavior != blank %}<div><dt>{{ water_label }}</dt><dd>{{ water_behavior | escape }}</dd></div>{% endif %}
-          {% if planter_type != blank %}<div><dt>{{ planter_label }}</dt><dd>{{ planter_type | escape }}</dd></div>{% endif %}
-          {% if botanical_name != blank %}<div><dt>{{ botanical_label }}</dt><dd><i>{{ botanical_name | escape }}</i></dd></div>{% endif %}
-          {% if germination_temperature != blank %}<div><dt>{{ germination_temperature_label }}</dt><dd>{{ germination_temperature | escape }}</dd></div>{% endif %}
-          {% if germination_time != blank %}<div><dt>{{ germination_time_label }}</dt><dd>{{ germination_time | escape }}</dd></div>{% endif %}
-          {% if sowing_time != blank %}<div><dt>{{ sowing_time_label }}</dt><dd>{{ sowing_time | escape }}</dd></div>{% endif %}
-          {% if sowing_depth != blank %}<div><dt>{{ sowing_depth_label }}</dt><dd>{{ sowing_depth | escape }}</dd></div>{% endif %}
-          {% if location != blank %}<div><dt>{{ location_label }}</dt><dd>{{ location | escape }}</dd></div>{% endif %}
-          {% if substrate_recommendation != blank %}<div><dt>{{ substrate_label }}</dt><dd>{{ substrate_recommendation | escape }}</dd></div>{% endif %}
-          {% if watering != blank %}<div><dt>{{ watering_label }}</dt><dd>{{ watering | escape }}</dd></div>{% endif %}
-          {% if difficulty != blank %}<div><dt>{{ difficulty_label }}</dt><dd>{{ difficulty | escape }}</dd></div>{% endif %}
-          {% if perennial != blank %}<div><dt>{{ perennial_label }}</dt><dd>{% if perennial %}{{ yes_label }}{% else %}{{ no_label }}{% endif %}</dd></div>{% endif %}
-          {% if winter_hardiness != blank %}<div><dt>{{ winter_label }}</dt><dd>{{ winter_hardiness | escape }}</dd></div>{% endif %}
-        </dl>
-      </div>
-    {% endif %}
-
-    {% if notice != blank %}<p class="product-seo-details__notice"><strong>{{ notice_label }}</strong> {{ notice | escape | newline_to_br }}</p>{% endif %}
-
+    {% if usps_markup != blank %}<ul class="product-seo-details__usps" aria-label="{{ benefits_label | escape }}">{{ usps_markup }}</ul>{% endif %}
+    {% if facts_markup != blank %}<div class="product-seo-details__facts"><h3>{{ facts_heading }}</h3><dl>{{ facts_markup }}</dl></div>{% endif %}
+    {% if notice_field.value != blank %}<div class="product-seo-details__notice"><strong>{{ notice_label }}</strong> {% render 'leaf-metafield-value', field: notice_field %}</div>{% endif %}
     {% if has_dynamic_description and product.description != blank %}
-      <div class="product-seo-details__description rte">
-        <h3>{{ description_heading }}</h3>
-        {{ product.description }}
-      </div>
+      <div class="product-seo-details__description rte"><h3>{{ description_heading }}</h3>{{ product.description }}</div>
     {% endif %}
-
-    {% if has_faqs %}
+    {% if faq_markup != blank %}
       <div class="product-seo-details__faq">
-        <div class="product-seo-details__faq-head">
-          <p class="product-seo-details__eyebrow">FAQ</p>
-          <h3>{{ faq_heading }}</h3>
-        </div>
-        <div class="product-seo-details__faq-list">
-          {% if custom_faqs != blank %}
-            {% for item in custom_faqs %}
-              {% if item.question != blank and item.answer != blank %}
-                <details class="product-seo-details__faq-item">
-                  <summary><span>{{ item.question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary>
-                  <div class="product-seo-details__faq-answer"><p>{{ item.answer | escape | newline_to_br }}</p></div>
-                </details>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-          {% if faq_1_question != blank and faq_1_answer != blank %}<details class="product-seo-details__faq-item"><summary><span>{{ faq_1_question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary><div class="product-seo-details__faq-answer"><p>{{ faq_1_answer | escape | newline_to_br }}</p></div></details>{% endif %}
-          {% if faq_2_question != blank and faq_2_answer != blank %}<details class="product-seo-details__faq-item"><summary><span>{{ faq_2_question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary><div class="product-seo-details__faq-answer"><p>{{ faq_2_answer | escape | newline_to_br }}</p></div></details>{% endif %}
-          {% if faq_3_question != blank and faq_3_answer != blank %}<details class="product-seo-details__faq-item"><summary><span>{{ faq_3_question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary><div class="product-seo-details__faq-answer"><p>{{ faq_3_answer | escape | newline_to_br }}</p></div></details>{% endif %}
-          {% if faq_4_question != blank and faq_4_answer != blank %}<details class="product-seo-details__faq-item"><summary><span>{{ faq_4_question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary><div class="product-seo-details__faq-answer"><p>{{ faq_4_answer | escape | newline_to_br }}</p></div></details>{% endif %}
-        </div>
+        <div class="product-seo-details__faq-head"><p class="product-seo-details__eyebrow">FAQ</p><h3>{{ faq_heading }}</h3></div>
+        <div class="product-seo-details__faq-list">{{ faq_markup }}</div>
       </div>
     {% endif %}
   </section>
@@ -260,8 +95,6 @@
   .product-seo-details__intro { max-width: 64ch; margin: 1rem 0 0; color: var(--muted); font-size: clamp(1rem, 4.2vw, 1.2rem); line-height: 1.65; }
   .product-seo-details__description { max-width: 76ch; margin-top: clamp(2rem, 7vw, 4rem); color: var(--muted); line-height: 1.7; }
   .product-seo-details__description h3 { color: var(--text); }
-  .product-seo-details__room-list { display: flex; flex-wrap: wrap; gap: .45rem; margin: 0; padding: 0; list-style: none; }
-  .product-seo-details__room-list li { padding: .35rem .65rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--accent) 6%, var(--surface)); color: var(--text); font-size: .86rem; line-height: 1.25; }
   .product-seo-details__usps { margin: 1.5rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; list-style: none; }
   .product-seo-details__usps li { min-height: 72px; padding: .85rem .9rem; display: flex; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); font-size: .92rem; font-weight: 750; line-height: 1.3; }
   .product-seo-details__check { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); font-size: .85rem; }
@@ -296,14 +129,9 @@
     .product-seo-details__faq-item summary { min-height: 68px; padding: 1rem 1.15rem; font-size: 1.02rem; }
     .product-seo-details__faq-answer { padding: 0 1.15rem 1.15rem; }
   }
-  @media (max-width: 360px) {
-    .product-seo-details__usps { grid-template-columns: 1fr; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .product-seo-details__faq-item, .product-seo-details__faq-icon::before, .product-seo-details__faq-icon::after { transition: none; }
-  }
+  @media (max-width: 360px) { .product-seo-details__usps { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { .product-seo-details__faq-item, .product-seo-details__faq-icon::before, .product-seo-details__faq-icon::after { transition: none; } }
 {% endstylesheet %}
-
 {% schema %}
-{ "name": "SEO-Produktwissen", "settings": [], "presets": [{ "name": "SEO-Produktwissen" }] }
+{"name":"SEO-Produktwissen","settings":[],"presets":[{"name":"SEO-Produktwissen"}]}
 {% endschema %}
