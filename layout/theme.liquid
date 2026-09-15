@@ -17,6 +17,8 @@
       assign seo_page_description = page_description | default: shop.description | strip_html | strip
       assign product_seo_title = blank
       assign product_seo_description = blank
+      assign collection_seo_title = blank
+      assign collection_seo_description = blank
 
       if request.page_type == 'product'
         assign product_seo_title = product.metafields.custom.seo_title.value
@@ -26,6 +28,15 @@
         endif
         if product_seo_description != blank
           assign seo_page_description = product_seo_description | strip_html | strip
+        endif
+      elsif request.page_type == 'collection'
+        assign collection_seo_title = collection.metafields.custom.seo_title.value
+        assign collection_seo_description = collection.metafields.custom.seo_description.value
+        if collection_seo_title != blank
+          assign seo_page_title = collection_seo_title
+        endif
+        if collection_seo_description != blank
+          assign seo_page_description = collection_seo_description | strip_html | strip
         endif
       endif
 
@@ -45,9 +56,8 @@
     <title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>
     {% if seo_page_description != blank %}<meta name="description" content="{{ seo_page_description | escape }}">{% endif %}
     {% render 'seo-meta', seo_title: seo_page_title, seo_description: seo_page_description %}
+    {% render 'structured-content-seo', seo_title: seo_page_title, seo_description: seo_page_description %}
 
-    {% if request.page_type == 'product' %}
-    {% endif %}
     {% if request.page_type == 'product' %}
       {% render 'product-faq-structured-data', product: product %}
     {% endif %}
@@ -96,4 +106,3 @@
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
   </body>
 </html>
-
