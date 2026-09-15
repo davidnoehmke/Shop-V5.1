@@ -1,0 +1,17 @@
+{%- comment -%}
+  Render a populated text, list or boolean metafield without exposing its storage format.
+  Usage: render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for
+{%- endcomment -%}
+{%- if field.type contains 'list.' -%}
+  {{- field.value | join: ', ' | escape -}}
+{%- elsif field.type == 'boolean' -%}
+  {%- if request.locale.iso_code == 'de' -%}
+    {%- if field.value -%}Ja{%- else -%}Nein{%- endif -%}
+  {%- else -%}
+    {%- if field.value -%}Yes{%- else -%}No{%- endif -%}
+  {%- endif -%}
+{%- elsif field.type == 'rich_text_field' -%}
+  {{- field | metafield_tag -}}
+{%- else -%}
+  {{- field.value | escape | newline_to_br -}}
+{%- endif -%}

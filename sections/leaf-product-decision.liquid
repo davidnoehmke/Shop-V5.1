@@ -27,17 +27,17 @@
     </header>
 
     <dl class="leaf-decision__facts">
-      {% if primary_function != blank %}<div><dt>{{ 'product.decision.function' | t }}</dt><dd>{{ primary_function | escape | newline_to_br }}</dd></div>{% endif %}
-      {% if suitable_for != blank %}<div><dt>{{ 'product.decision.suitable_for' | t }}</dt><dd>{{ suitable_for | escape | newline_to_br }}</dd></div>{% endif %}
-      {% if water_behavior != blank %}<div><dt>{{ 'product.decision.water' | t }}</dt><dd>{{ water_behavior | escape | newline_to_br }}</dd></div>{% endif %}
-      {% if mixing_ratio != blank %}<div><dt>{{ 'product.decision.ratio' | t }}</dt><dd>{{ mixing_ratio | escape | newline_to_br }}</dd></div>{% endif %}
-      {% if application != blank %}<div><dt>{{ 'product.decision.application' | t }}</dt><dd>{{ application | escape | newline_to_br }}</dd></div>{% endif %}
-      {% if volume_liters != blank %}<div><dt>{{ 'product.decision.volume' | t }}</dt><dd>{{ volume_liters }} L</dd></div>{% endif %}
-      {% if configurator_role != blank %}<div><dt>{{ 'product.decision.configurator_role' | t }}</dt><dd>{{ configurator_role | escape }}</dd></div>{% endif %}
-      {% if plant_groups != blank %}<div><dt>{{ 'product.decision.plant_groups' | t }}</dt><dd>{{ plant_groups | join: ', ' | escape }}</dd></div>{% endif %}
+      {% if primary_function != blank %}<div><dt>{{ 'product.decision.function' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.primary_function %}</dd></div>{% endif %}
+      {% if suitable_for != blank %}<div><dt>{{ 'product.decision.suitable_for' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for %}</dd></div>{% endif %}
+      {% if water_behavior != blank %}<div><dt>{{ 'product.decision.water' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.water_behavior %}</dd></div>{% endif %}
+      {% if mixing_ratio != blank %}<div><dt>{{ 'product.decision.ratio' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.mixing_ratio %}</dd></div>{% endif %}
+      {% if application != blank %}<div><dt>{{ 'product.decision.application' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.additive_application %}</dd></div>{% endif %}
+      {% if volume_liters != blank %}<div><dt>{{ 'product.decision.volume' | t }}</dt><dd>{{ volume_liters | escape }} L</dd></div>{% endif %}
+      {% if configurator_role != blank %}<div><dt>{{ 'product.decision.configurator_role' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.role %}</dd></div>{% endif %}
+      {% if plant_groups != blank %}<div><dt>{{ 'product.decision.plant_groups' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}</dd></div>{% endif %}
     </dl>
 
-    {% if warning != blank %}<p class="leaf-decision__notice"><strong>{{ 'product.decision.notice' | t }}</strong> {{ warning | escape | newline_to_br }}</p>{% endif %}
+    {% if warning != blank %}<div class="leaf-decision__notice"><strong>{{ 'product.decision.notice' | t }}</strong> {% render 'leaf-metafield-value', field: product.metafields.leafer.warning %}</div>{% endif %}
 
     {% if configurator_enabled %}
       <div class="leaf-decision__cta">
@@ -45,7 +45,7 @@
           <strong>{{ 'product.decision.configurator_title' | t }}</strong>
           <span>{{ 'product.decision.configurator_text' | t }}</span>
         </div>
-        <a class="button" href="/pages/individuelles-substrat">{{ 'product.decision.configurator_cta' | t }}</a>
+        <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat">{{ 'product.decision.configurator_cta' | t }}</a>
       </div>
     {% endif %}
   </section>
@@ -62,7 +62,7 @@
   .leaf-decision__facts > div { padding: 1rem; border-bottom: 1px solid var(--border); }
   .leaf-decision__facts > div:nth-child(odd) { border-right: 1px solid var(--border); }
   .leaf-decision dt { color: var(--muted); font-size: .72rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
-  .leaf-decision dd { margin: .35rem 0 0; line-height: 1.55; }
+  .leaf-decision dd { margin: .35rem 0 0; line-height: 1.55; overflow-wrap: anywhere; }
   .leaf-decision__notice { grid-column: 2; margin: 0; padding: 1rem 1.1rem; border-left: 4px solid var(--accent); border-radius: 12px; background: var(--surface); }
   .leaf-decision__cta { grid-column: 2; padding: 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb,var(--accent) 5%,var(--surface)); }
   .leaf-decision__cta strong, .leaf-decision__cta span { display: block; }
@@ -71,9 +71,5 @@
 {% endstylesheet %}
 
 {% schema %}
-{
-  "name": "Entscheidungshilfe",
-  "settings": [],
-  "presets": [{ "name": "Produkt-Entscheidungshilfe" }]
-}
+{"name":"Entscheidungshilfe","settings":[],"presets":[{"name":"Produkt-Entscheidungshilfe"}]}
 {% endschema %}

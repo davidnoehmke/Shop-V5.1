@@ -1,0 +1,247 @@
+name: LEAF Code Request
+
+on:
+  issues:
+    types: [opened]
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Open authorized [LEAF CODE] issue to process'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+# One request owns the shared preview until merge and live verification finish.
+# queue:max avoids silently replacing an older pending request.
+concurrency:
+  group: leaf-code-delivery
+  queue: max
+  cancel-in-progress: false
+
+env:
+  ISSUE_NUMBER: ${{ inputs.issue_number || github.event.issue.number }}
+  LEAF_ALLOWED_USERS: ${{ vars.LEAF_ALLOWED_USERS }}
+
+jobs:
+  prepare:
+    if: >-
+      github.repository == 'davidnoehmke/Shop-V5.1' &&
+      github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' || startsWith(github.event.issue.title, '[LEAF CODE] '))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      authorized: ${{ steps.prepare.outputs.authorized }}
+      ready: ${{ steps.prepare.outputs.ready }}
+      base_sha: ${{ steps.prepare.outputs.base_sha }}
+      request_digest: ${{ steps.prepare.outputs.request_digest }}
+      prompt: ${{ steps.prepare.outputs.prompt }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - id: prepare
+        name: Check authorization, configuration and branch protections
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LEAF_AUTOMATION_ENABLED: ${{ vars.LEAF_AUTOMATION_ENABLED }}
+          LEAF_NATIVE_SYNC_CONFIRMED: ${{ vars.LEAF_NATIVE_SYNC_CONFIRMED }}
+          HAS_OPENAI_KEY: ${{ secrets.OPENAI_API_KEY != '' }}
+          HAS_SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN != '' }}
+          HAS_SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE != '' }}
+          LEAF_GITHUB_TOKEN: ${{ secrets.LEAF_GITHUB_TOKEN }}
+          LEAF_GITHUB_APP_ID: ${{ vars.LEAF_GITHUB_APP_ID }}
+          LEAF_GITHUB_APP_PRIVATE_KEY: ${{ secrets.LEAF_GITHUB_APP_PRIVATE_KEY }}
+        run: node automation/codex/controller.cjs prepare
+
+  generate:
+    needs: prepare
+    if: needs.prepare.outputs.ready == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    outputs:
+      result: ${{ steps.codex.outputs.final-message }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ needs.prepare.outputs.base_sha }}
+          persist-credentials: false
+      # Codex MUST remain the last step in this job. No write/deploy credentials here.
+      - id: codex
+        uses: openai/codex-action@86365089eb2b84e0a8fb0717b304f8bdcb13b20e
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          codex-version: '0.138.0'
+          model: ${{ vars.LEAF_CODEX_MODEL }}
+          sandbox: read-only
+          safety-strategy: drop-sudo
+          allow-users: davidnoehmke
+          allow-bot-users: ${{ vars.LEAF_ALLOWED_BOTS }}
+          prompt: ${{ needs.prepare.outputs.prompt }}
+          output-schema: '{"type":"object","additionalProperties":false,"required":["summary","files"],"properties":{"summary":{"type":"string"},"files":{"type":"array","items":{"type":"object","additionalProperties":false,"required":["path","content"],"properties":{"path":{"type":"string"},"content":{"type":"string"}}}}}}'
+
+  propose:
+    needs: [prepare, generate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      head_sha: ${{ steps.propose.outputs.head_sha }}
+      pr: ${{ steps.propose.outputs.pr }}
+      marker: ${{ steps.propose.outputs.marker }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - id: propose
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LEAF_GITHUB_TOKEN: ${{ secrets.LEAF_GITHUB_TOKEN }}
+          LEAF_GITHUB_APP_ID: ${{ vars.LEAF_GITHUB_APP_ID }}
+          LEAF_GITHUB_APP_PRIVATE_KEY: ${{ secrets.LEAF_GITHUB_APP_PRIVATE_KEY }}
+          BASE_SHA: ${{ needs.prepare.outputs.base_sha }}
+          REQUEST_DIGEST: ${{ needs.prepare.outputs.request_digest }}
+          CODEX_RESULT: ${{ needs.generate.outputs.result }}
+        run: node automation/codex/controller.cjs propose
+
+  ci:
+    needs: [prepare, propose]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Wait for real PR-triggered CI on the exact generated commit
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LEAF_GITHUB_TOKEN: ${{ secrets.LEAF_GITHUB_TOKEN }}
+          LEAF_GITHUB_APP_ID: ${{ vars.LEAF_GITHUB_APP_ID }}
+          LEAF_GITHUB_APP_PRIVATE_KEY: ${{ secrets.LEAF_GITHUB_APP_PRIVATE_KEY }}
+          BASE_SHA: ${{ needs.prepare.outputs.base_sha }}
+          REQUEST_DIGEST: ${{ needs.prepare.outputs.request_digest }}
+          PR_NUMBER: ${{ needs.propose.outputs.pr }}
+          HEAD_SHA: ${{ needs.propose.outputs.head_sha }}
+        run: node automation/codex/controller.cjs ci
+
+  preview:
+    needs: [propose, ci]
+    uses: ./.github/workflows/push-shopify.yml
+    with:
+      commit_sha: ${{ needs.propose.outputs.head_sha }}
+    secrets:
+      SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+      SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+
+  preview-check:
+    needs: preview
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Install pinned browser test runtime without deployment credentials
+        run: |
+          npm install --prefix "$RUNNER_TEMP/leaf-browser" --ignore-scripts --no-audit --no-fund playwright@1.58.2
+          "$RUNNER_TEMP/leaf-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Test preview navigation, configurator, product and cart
+        env:
+          NODE_PATH: ${{ runner.temp }}/leaf-browser/node_modules
+          TARGET_URL: ${{ needs.preview.outputs.preview_url }}
+          EXPECTED_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+        run: node automation/codex/smoke.cjs
+
+  merge:
+    needs: [prepare, propose, ci, preview-check]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      merge_sha: ${{ steps.merge.outputs.merge_sha }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - id: merge
+        name: Merge only the tested head without bypassing branch protections
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          LEAF_GITHUB_TOKEN: ${{ secrets.LEAF_GITHUB_TOKEN }}
+          LEAF_GITHUB_APP_ID: ${{ vars.LEAF_GITHUB_APP_ID }}
+          LEAF_GITHUB_APP_PRIVATE_KEY: ${{ secrets.LEAF_GITHUB_APP_PRIVATE_KEY }}
+          BASE_SHA: ${{ needs.prepare.outputs.base_sha }}
+          REQUEST_DIGEST: ${{ needs.prepare.outputs.request_digest }}
+          PR_NUMBER: ${{ needs.propose.outputs.pr }}
+          HEAD_SHA: ${{ needs.propose.outputs.head_sha }}
+        run: node automation/codex/controller.cjs merge
+
+  delivery-check:
+    needs: [generate, propose, merge]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      live_url: ${{ steps.verify.outputs.live_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - run: npm install -g @shopify/cli@4.7.0
+      - id: verify
+        name: Read back the release marker and all proposed files from MAIN
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          SHOPIFY_STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          SHOPIFY_LIVE_THEME_ID: ${{ vars.SHOPIFY_LIVE_THEME_ID }}
+          CODEX_RESULT: ${{ needs.generate.outputs.result }}
+          EXPECTED_MARKER: ${{ needs.propose.outputs.marker }}
+        run: node automation/codex/delivery.cjs verify-live
+
+  live-check:
+    needs: delivery-check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - run: |
+          npm install --prefix "$RUNNER_TEMP/leaf-browser" --ignore-scripts --no-audit --no-fund playwright@1.58.2
+          "$RUNNER_TEMP/leaf-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Test delivered storefront in a fresh, unauthenticated browser
+        env:
+          NODE_PATH: ${{ runner.temp }}/leaf-browser/node_modules
+          TARGET_URL: ${{ needs.delivery-check.outputs.live_url }}
+          EXPECTED_THEME_ID: ${{ vars.SHOPIFY_LIVE_THEME_ID }}
+        run: node automation/codex/smoke.cjs
+
+  report:
+    needs: [prepare, generate, propose, ci, preview, preview-check, merge, delivery-check, live-check]
+    if: always() && needs.prepare.outputs.authorized == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+      - name: Record actual outcome on the originating issue
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          JOB_RESULTS: >-
+            {"prepare":{"result":"${{ needs.prepare.result }}"},"generate":{"result":"${{ needs.generate.result }}"},"propose":{"result":"${{ needs.propose.result }}"},"ci":{"result":"${{ needs.ci.result }}"},"preview":{"result":"${{ needs.preview.result }}"},"preview-check":{"result":"${{ needs.preview-check.result }}"},"merge":{"result":"${{ needs.merge.result }}"},"delivery-check":{"result":"${{ needs.delivery-check.result }}"},"live-check":{"result":"${{ needs.live-check.result }}"}}
+        run: node automation/codex/controller.cjs report

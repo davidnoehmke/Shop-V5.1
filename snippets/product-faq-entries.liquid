@@ -1,0 +1,57 @@
+{%- comment -%}
+  Shared source for visible product FAQs and FAQPage JSON-LD.
+  Custom JSON entries take precedence, followed by leafer.faq_1..4 and Vitals fallbacks.
+  Empty pairs and duplicate questions are omitted. Use format: 'json' for JSON members.
+{%- endcomment -%}
+{%- liquid
+  assign custom_entries = product.metafields.custom.faq.value
+  assign custom_count = custom_entries.size | default: 0
+  assign total_count = custom_count | plus: 4
+  assign seen_questions = ''
+  assign emitted_count = 0
+-%}
+{%- for position in (1..total_count) -%}
+  {%- liquid
+    assign question = ''
+    assign answer = ''
+    if position <= custom_count
+      assign custom_index = position | minus: 1
+      assign question = custom_entries[custom_index].question | strip
+      assign answer = custom_entries[custom_index].answer | strip
+    else
+      assign legacy_index = position | minus: custom_count
+      assign legacy_key = 'faq_' | append: legacy_index
+      assign legacy_value = product.metafields.leafer[legacy_key].value
+      if legacy_value contains '||'
+        assign parts = legacy_value | split: '||'
+        assign question = parts.first | strip
+        assign prefix = parts.first | append: '||'
+        assign answer = legacy_value | remove_first: prefix | strip
+      endif
+      if question == blank or answer == blank
+        assign question_key = legacy_key | append: '_question'
+        assign answer_key = legacy_key | append: '_answer'
+        assign question = product.metafields.vitals[question_key].value | strip
+        assign answer = product.metafields.vitals[answer_key].value | strip
+      endif
+    endif
+    assign question_token = question | downcase | json
+  -%}
+  {%- if question != blank and answer != blank -%}
+    {%- unless seen_questions contains question_token -%}
+      {%- if format == 'json' -%}
+        {%- if emitted_count > 0 -%},{%- endif -%}
+        {"@type":"Question","name":{{ question | json | replace: '<', '\u003c' }},"acceptedAnswer":{"@type":"Answer","text":{{ answer | json | replace: '<', '\u003c' }}}}
+      {%- else -%}
+        <details class="product-seo-details__faq-item">
+          <summary><span>{{ question | escape }}</span><span class="product-seo-details__faq-icon" aria-hidden="true"></span></summary>
+          <div class="product-seo-details__faq-answer"><p>{{ answer | escape | newline_to_br }}</p></div>
+        </details>
+      {%- endif -%}
+      {%- liquid
+        assign seen_questions = seen_questions | append: question_token | append: ','
+        assign emitted_count = emitted_count | plus: 1
+      -%}
+    {%- endunless -%}
+  {%- endif -%}
+{%- endfor -%}

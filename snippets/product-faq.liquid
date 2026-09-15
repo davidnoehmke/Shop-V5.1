@@ -1,56 +1,15 @@
-{% doc %}
-  Renders the visible FAQ accordion for a product.
-
-  @param {product} product - The current product.
-{% enddoc %}
-
-{% assign faq_items = "faq_1,faq_2,faq_3,faq_4" | split: "," %}
-{% assign has_faq = false %}
-{% for faq_key in faq_items %}
-  {% assign faq_field = product.metafields.leafer[faq_key] %}
-  {% if faq_field != blank and faq_field.value != blank %}
-    {% assign faq_parts = faq_field.value | split: "||" %}
-    {% if faq_parts.size == 2 and faq_parts[0] != blank and faq_parts[1] != blank %}
-      {% assign has_faq = true %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% if has_faq %}
-  <section class="product-faq page-width" aria-labelledby="ProductFaq-{{ section.id }}">
-    <div class="product-faq__intro">
-      <p class="product-faq__eyebrow">Gut informiert</p>
-      <h2 id="ProductFaq-{{ section.id }}">Häufige Fragen zu {{ product.title | escape }}</h2>
-      <p>Kurze Antworten zur Anwendung, zum Gießen und zur passenden Pflanzenwahl.</p>
-    </div>
-    <div class="product-faq__items">
-      {% for faq_key in faq_items %}
-        {% assign faq_field = product.metafields.leafer[faq_key] %}
-        {% if faq_field != blank and faq_field.value != blank %}
-          {% assign faq_parts = faq_field.value | split: "||" %}
-          {% if faq_parts.size == 2 and faq_parts[0] != blank and faq_parts[1] != blank %}
-            <details>
-              <summary>{{ faq_parts[0] | strip | escape }}<span aria-hidden="true">+</span></summary>
-              <div class="product-faq__answer rte">{{ faq_parts[1] | strip | escape }}</div>
-            </details>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-    </div>
-  </section>
-{% endif %}
-
-{% stylesheet %}
-  .product-faq { display: grid; grid-template-columns: minmax(220px, .7fr) minmax(0, 1.3fr); gap: clamp(1.5rem, 5vw, 5rem); padding-block: var(--space-section); border-top: 1px solid var(--border); }
-  .product-faq__eyebrow { margin: 0 0 .5rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
-  .product-faq h2 { margin: 0; font-size: clamp(1.8rem, 3.5vw, 3rem); line-height: 1; letter-spacing: -.04em; }
-  .product-faq__intro > p:last-child { max-width: 34ch; margin: 1rem 0 0; color: var(--muted); }
-  .product-faq__items { border-top: 1px solid var(--border); }
-  .product-faq details { border-bottom: 1px solid var(--border); }
-  .product-faq summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 58px; cursor: pointer; list-style: none; font-weight: 750; }
-  .product-faq summary::-webkit-details-marker { display: none; }
-  .product-faq summary span { color: var(--accent); font-size: 1.4rem; font-weight: 400; transition: transform .2s ease; }
-  .product-faq details[open] summary span { transform: rotate(45deg); }
-  .product-faq__answer { max-width: 70ch; padding: 0 2rem 1.1rem 0; color: var(--muted); font-size: .92rem; }
-  @media (max-width: 800px) { .product-faq { grid-template-columns: 1fr; gap: 1.5rem; } }
-{% endstylesheet %}
+{%- comment -%}
+  All current product JSON templates render product-seo-details, which owns the
+  visible FAQ block. Do not repeat it beside the purchase form.
+  For a future template without product-seo-details, opt in with standalone: true.
+{%- endcomment -%}
+{%- if standalone -%}
+  {%- capture faq_markup -%}{%- render 'product-faq-entries', product: product -%}{%- endcapture -%}
+  {%- assign faq_markup = faq_markup | strip -%}
+  {%- if faq_markup != blank -%}
+    <section class="product-seo-details__faq">
+      <h2>{% if request.locale.iso_code == 'de' %}Häufige Fragen{% else %}Frequently asked questions{% endif %}</h2>
+      <div class="product-seo-details__faq-list">{{ faq_markup }}</div>
+    </section>
+  {%- endif -%}
+{%- endif -%}

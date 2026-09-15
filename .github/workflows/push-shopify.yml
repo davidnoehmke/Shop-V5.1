@@ -1,122 +1,133 @@
 name: Shopify Staging Delivery
 
 on:
-  workflow_run:
-    workflows: ['LEAF CI']
-    types: [completed]
+  workflow_call:
+    inputs:
+      commit_sha:
+        required: true
+        type: string
+    secrets:
+      SHOPIFY_STORE:
+        required: true
+      SHOPIFY_CLI_THEME_TOKEN:
+        required: true
+      SUPABASE_URL:
+        required: false
+      SUPABASE_SERVICE_ROLE_KEY:
+        required: false
+    outputs:
+      preview_url:
+        value: ${{ jobs.deploy.outputs.preview_url }}
   workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Exact commit to stage; leave empty to use this main revision'
+        required: false
+        type: string
 
 permissions:
   contents: read
 
+# Manual staging shares the outer release lock. A reusable invocation already
+# owns that lock in LEAF Code Request and must not deadlock against itself.
 concurrency:
-  group: shopify-staging-delivery
-  cancel-in-progress: true
+  group: ${{ github.workflow == 'LEAF Code Request' && format('leaf-preview-{0}', github.run_id) || 'leaf-code-delivery' }}
+  queue: max
+  cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Validate, analyze and deploy staging
-    if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
-    runs-on: ubuntu-latest
+    name: Validate and deploy unpublished staging
+    if: github.repository == 'davidnoehmke/Shop-V5.1' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     environment: shopify-preview
+    outputs:
+      preview_url: ${{ steps.delivery.outputs.preview_url }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout trusted delivery controller
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
-          fetch-depth: 2
-
-      - name: Resolve deployment metadata
-        id: meta
-        shell: bash
+          ref: ${{ github.workflow_sha }}
+          path: control
+          persist-credentials: false
+      - name: Validate exact revision and configuration
         env:
-          STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          REVISION: ${{ inputs.commit_sha || github.sha }}
+          STORE: ${{ secrets.SHOPIFY_STORE }}
+          HAS_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN != '' }}
+          STAGING: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          LIVE: ${{ vars.SHOPIFY_LIVE_THEME_ID }}
         run: |
-          set -euo pipefail
-          test -n "$STAGING_THEME_ID"
-          [[ "$STAGING_THEME_ID" =~ ^[0-9]+$ ]]
-          echo "started_ms=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
-          echo "theme_id=$STAGING_THEME_ID" >> "$GITHUB_OUTPUT"
-          echo "files_changed=$(git diff --name-only HEAD^ HEAD 2>/dev/null | wc -l | tr -d ' ')" >> "$GITHUB_OUTPUT"
-
-      - uses: ruby/setup-ruby@v1
+          node <<'JS'
+          const e = process.env;
+          const problems = [];
+          if (!/^[0-9a-f]{40}$/.test(e.REVISION || '')) problems.push('commit_sha must be an exact 40-character SHA');
+          if (!/^[a-z0-9][a-z0-9-]*\.myshopify\.com$/.test(e.STORE || '')) problems.push('SHOPIFY_STORE is missing or is not a canonical myshopify.com host');
+          if (e.HAS_TOKEN !== 'true') problems.push('SHOPIFY_CLI_THEME_TOKEN is missing');
+          if (!/^[1-9][0-9]*$/.test(e.STAGING || '')) problems.push('SHOPIFY_STAGING_THEME_ID is missing');
+          if (!/^[1-9][0-9]*$/.test(e.LIVE || '')) problems.push('SHOPIFY_LIVE_THEME_ID is missing');
+          if (e.STAGING && e.STAGING === e.LIVE) problems.push('Staging must not be the live theme');
+          if (problems.length) { console.error(problems.join('\n')); process.exit(1); }
+          JS
+      - name: Checkout candidate as data, not as the controller
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ruby-version: '3.3'
-          bundler-cache: false
-      - name: Theme quality gate
+          ref: ${{ inputs.commit_sha || github.sha }}
+          path: candidate
+          persist-credentials: false
+      - id: metadata
         run: |
-          gem install theme-check
-          theme-check .
-
-      - uses: actions/setup-node@v4
+          echo "commit=$(git -C candidate rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "started_ms=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: '24'
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli@latest
-
-      - name: Deploy repository theme to permanent staging theme
-        id: push
+      - name: Install pinned Shopify CLI
+        run: npm install -g @shopify/cli@4.7.0
+      - id: delivery
+        name: Check theme roles and quality before uploading
         env:
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
-          THEME_ID: ${{ steps.meta.outputs.theme_id }}
-        run: |
-          set -euo pipefail
-          test -n "$SHOPIFY_STORE"
-          test -n "$SHOPIFY_CLI_THEME_TOKEN"
-          shopify theme push --theme "$THEME_ID" --path . --store "$SHOPIFY_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --nodelete
-
-      - name: Record deployment and analysis in Supabase
+          SHOPIFY_STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          SHOPIFY_LIVE_THEME_ID: ${{ vars.SHOPIFY_LIVE_THEME_ID }}
+          CANDIDATE_PATH: candidate
+        run: node control/automation/codex/delivery.cjs staging
+      - name: Record accurate deployment result
         if: always()
-        shell: bash
         env:
+          REVISION: ${{ steps.metadata.outputs.commit }}
+          STARTED_MS: ${{ steps.metadata.outputs.started_ms }}
+          THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          DELIVERY_OUTCOME: ${{ steps.delivery.outcome }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          THEME_ID: ${{ steps.meta.outputs.theme_id }}
-          STARTED_MS: ${{ steps.meta.outputs.started_ms }}
-          FILES_CHANGED: ${{ steps.meta.outputs.files_changed }}
-          PUSH_OUTCOME: ${{ steps.push.outcome }}
         run: |
-          set -euo pipefail
-          test -n "$SUPABASE_URL"
-          test -n "$SUPABASE_SERVICE_ROLE_KEY"
-          now_ms=$(date +%s%3N)
-          duration=$((now_ms - STARTED_MS))
-          if [ "$PUSH_OUTCOME" = "success" ]; then status=succeeded; else status=failed; fi
-          payload=$(jq -n \
-            --arg commit "$GITHUB_SHA" \
-            --arg theme "$THEME_ID" \
-            --arg run "$GITHUB_RUN_ID" \
-            --arg status "$status" \
-            --argjson duration "$duration" \
-            --argjson files "${FILES_CHANGED:-0}" \
-            '{environment:"staging",commit_sha:$commit,theme_id:$theme,workflow_run_id:$run,status:$status,duration_ms:$duration,files_changed:$files,analysis:{ci:"passed",theme_check:"passed",deployment_mode:"permanent_staging"},finished_at:(now|todate)}')
-          curl --fail-with-body --silent --show-error \
-            -X POST "$SUPABASE_URL/rest/v1/deployments" \
-            -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
-            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-            -H 'Content-Type: application/json' \
-            -H 'Content-Profile: ops' \
-            -H 'Prefer: return=minimal' \
-            --data "$payload"
-
-      - name: Deployment documentation
-        if: always()
-        shell: bash
-        env:
-          THEME_ID: ${{ steps.meta.outputs.theme_id }}
-          FILES_CHANGED: ${{ steps.meta.outputs.files_changed }}
-          PUSH_OUTCOME: ${{ steps.push.outcome }}
-        run: |
-          {
-            echo '### LEAF Shopify staging delivery'
-            echo "- Commit: $GITHUB_SHA"
-            echo "- Permanent staging theme: $THEME_ID"
-            echo "- Files changed in commit: ${FILES_CHANGED:-unknown}"
-            echo "- Push result: ${PUSH_OUTCOME:-not-run}"
-            echo "- Workflow run: $GITHUB_RUN_ID"
-            echo '- CI and Theme Check are mandatory gates.'
-            echo '- Deployment telemetry is written to Supabase ops.deployments.'
-            echo '- Production publication remains a separate controlled gate.'
-          } >> "$GITHUB_STEP_SUMMARY"
+          node <<'JS'
+          const fs = require('node:fs');
+          async function main() {
+            const e = process.env;
+            const status = e.DELIVERY_OUTCOME === 'success' ? 'succeeded' : e.DELIVERY_OUTCOME === 'skipped' ? 'not_started' : 'failed';
+            fs.appendFileSync(e.GITHUB_STEP_SUMMARY, `## Shopify staging\nCommit: ${e.REVISION || 'not checked out'}\nTheme: ${e.THEME_ID || 'not configured'}\nResult: ${status}\nLive publication: not performed by this workflow\n`);
+            if (!e.SUPABASE_URL || !e.SUPABASE_SERVICE_ROLE_KEY) {
+              fs.appendFileSync(e.GITHUB_STEP_SUMMARY, 'Supabase telemetry: not configured; GitHub remains the execution log.\n'); return;
+            }
+            if (!e.REVISION || !e.THEME_ID || !e.STARTED_MS) {
+              fs.appendFileSync(e.GITHUB_STEP_SUMMARY, 'Supabase telemetry: skipped because deployment metadata is incomplete.\n'); return;
+            }
+            const url = new URL('/rest/v1/deployments', e.SUPABASE_URL);
+            if (url.protocol !== 'https:') throw new Error('HTTPS required for telemetry');
+            const payload = {environment: 'staging', commit_sha: e.REVISION, theme_id: e.THEME_ID, workflow_run_id: e.GITHUB_RUN_ID,
+              status: status === 'succeeded' ? 'succeeded' : 'failed', duration_ms: Math.max(0, Date.now() - Number(e.STARTED_MS)),
+              files_changed: 0, analysis: {files_changed_known: false, validation_and_upload: e.DELIVERY_OUTCOME || 'not_run', browser_tests: 'not_run_by_this_workflow'}, finished_at: new Date().toISOString()};
+            const response = await fetch(url, {method: 'POST', redirect: 'error', signal: AbortSignal.timeout(15000),
+              headers: {apikey: e.SUPABASE_SERVICE_ROLE_KEY, Authorization: `Bearer ${e.SUPABASE_SERVICE_ROLE_KEY}`, 'Content-Type': 'application/json', 'Content-Profile': 'ops', Prefer: 'return=minimal'}, body: JSON.stringify(payload)});
+            if (!response.ok) throw new Error(`Telemetry HTTP ${response.status}`);
+            fs.appendFileSync(e.GITHUB_STEP_SUMMARY, 'Supabase telemetry: recorded.\n');
+          }
+          main().catch(() => {
+            console.warn('Optional Supabase telemetry failed; deployment result has not been changed.');
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, 'Supabase telemetry: FAILED; see GitHub for the authoritative execution outcome.\n');
+          });
+          JS
