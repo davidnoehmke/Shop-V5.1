@@ -1,0 +1,45 @@
+{% doc %}
+Central SEO resolver for product and collection content. Longtail terms come from structured metafields and are reused in machine-readable output. No keyword stuffing: terms are emitted only as metadata/JSON-LD and should match visible editorial content.
+{% enddoc %}
+{% liquid
+  assign seo_keywords = blank
+  assign seo_intent = blank
+  assign seo_use_case = blank
+  if request.page_type == 'product'
+    assign seo_keywords = product.metafields.leafer.longtail_keywords.value | default: product.metafields.leafer.keywords.value
+    assign seo_intent = product.metafields.leafer.search_intent.value
+    assign seo_use_case = product.metafields.custom.use_case.value | default: product.metafields.leafer.suitable_for.value
+  elsif request.page_type == 'collection'
+    assign seo_keywords = collection.metafields.leafer.longtail_keywords.value | default: collection.metafields.leafer.keywords.value
+    assign seo_intent = collection.metafields.leafer.search_intent.value
+    assign seo_use_case = collection.metafields.leafer.guide.value
+  endif
+%}
+{% if seo_keywords != blank %}<meta name="keywords" content="{{ seo_keywords | join: ', ' | escape }}">{% endif %}
+{% if request.page_type == 'product' %}
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebPage",
+  "@id":{{ canonical_url | append: '#content' | json }},
+  "url":{{ canonical_url | json }},
+  "name":{{ product.title | json }},
+  "description":{{ product.metafields.custom.seo_description.value | default: product.description | strip_html | strip | truncate: 320 | json }},
+  "mainEntity":{"@id":{{ canonical_url | append: '#product' | json }}}{% if seo_intent != blank %},
+  "about":{{ seo_intent | json }}{% endif %}{% if seo_use_case != blank %},
+  "audience":{"@type":"Audience","audienceType":{{ seo_use_case | strip_html | strip | truncate: 240 | json }}}{% endif %}
+}
+</script>
+{% elsif request.page_type == 'collection' %}
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"CollectionPage",
+  "@id":{{ canonical_url | append: '#collection' | json }},
+  "url":{{ canonical_url | json }},
+  "name":{{ collection.title | json }},
+  "description":{{ collection.description | strip_html | strip | truncate: 320 | json }}{% if seo_intent != blank %},
+  "about":{{ seo_intent | json }}{% endif %}
+}
+</script>
+{% endif %}
