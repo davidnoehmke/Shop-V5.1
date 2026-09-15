@@ -1,9 +1,23 @@
 # LEAFerservice Metafeld-Vertrag
 
-Das Theme liest redaktionelle und konfigurationsbezogene Inhalte aus Shopify-
-Metafeldern. Der Apps-Script-Sync schreibt nur die ausdrücklich dokumentierten
-Update-only-Felder. Die tatsächlichen Definitionen im Shopify-Admin bleiben die
-Runtime-Konfiguration und müssen vor einem Live-Lauf geprüft werden.
+Das Theme liest redaktionelle, SEO- und konfigurationsbezogene Inhalte aus Shopify-Metafeldern. Ziel ist eine gemeinsame Inhaltsquelle für sichtbaren Content, Meta-Daten und strukturierte Daten.
+
+## SEO Content Contract
+
+Für Produkte und Collections gilt dieselbe Priorität: explizite SEO-Felder -> strukturierte LEAFer-Felder -> Shopify Standardinhalt als Fallback.
+
+| Owner | Feld | Zweck |
+| --- | --- | --- |
+| Produkt/Collection | `custom.seo_title` | kontrollierter Seitentitel |
+| Produkt/Collection | `custom.seo_description` | kontrollierte Meta Description |
+| Produkt/Collection | `leafer.longtail_keywords` | priorisierte Longtail-Cluster, bevorzugt `list.single_line_text_field` |
+| Produkt/Collection | `leafer.keywords` | bestehender Keyword-Fallback |
+| Produkt/Collection | `leafer.search_intent` | Suchintention / semantisches Seitenthema |
+| Produkt | `custom.use_case` | primärer Einsatzbereich |
+| Produkt | `leafer.suitable_for` | Eignungs-Fallback |
+| Collection | `leafer.guide` | redaktioneller Guide / Themenkontext |
+
+Longtail-Begriffe dürfen nicht als versteckter Spam-Text ausgegeben werden. Sie müssen den sichtbaren Inhalten entsprechen und werden zentral vom Theme aufgelöst. Produkt-, Collection-, FAQ-, HowTo-, Meta- und JSON-LD-Ausgaben sollen semantisch aus demselben Datensatz gespeist werden.
 
 ## Einheitlicher SEO- und Content-Vertrag
 
@@ -29,26 +43,15 @@ in Keyword-Stuffing.
 
 ## Vom Sync geschriebene Felder
 
-| Owner | Namespace / Key | Typ im Sync | Zweck |
-| --- | --- | --- | --- |
-| Produkt | `leafer.content_db` | `json` | vollständiger freigegebener Produktdatensatz |
-| Produkt | `leafer.faq` | `json` | sichtbare, freigegebene FAQ-Zeilen |
-| Produkt | `leafer.seo_payload` | `json` | freigegebenes SEO-Payload |
-| Produkt | `leafer.cross_sell_payload` | `json` | redaktionelle Cross-Selling-Zuordnung |
-| Produkt | `leafer.cross_sell_products` | `list.product_reference` | eindeutige referenzierte Zielprodukte |
-| Shop | `leafer.problems` | `json` | globale Problemlösungsdaten |
-| Shop | `leafer.solutions` | `json` | globale Lösungsdaten |
-| Shop | `leafer.images` | `json` | globale Bild-/Assetdaten |
-| Shop | `leafer.blogs` | `json` | globale Blogdaten |
-| Shop | `leafer.plants` | `json` | globale Pflanzendaten |
-
-Der Rücksync Shopify → Notion schreibt Commerce-Felder in bestehende Notion-
-Datensätze oder legt bei fehlender Shopify-GID einen neuen Datensatz an. Er
-überschreibt keine redaktionellen HTML-, FAQ-, Rezeptur-, SEO- oder
-Kalkulationsfelder.
+- `leafer.content_db` (json): vollständiger freigegebener Produktdatensatz
+- `leafer.faq` (json): sichtbare FAQ-Daten
+- `leafer.seo_payload` (json): freigegebenes SEO-Payload
+- `leafer.cross_sell_payload` (json): Cross-Selling-Zuordnung
+- `leafer.cross_sell_products` (list.product_reference): Zielprodukte
 
 ## Vom Theme gelesene Produktfelder
 
+`custom`: `seo_title`, `seo_description`, `faq`, `cross_sell_products`, `use_case`, `light_style`, `lighting_position`, `recommended_room`.
 Die folgenden Felder werden im Theme als `.value` verwendet. Die vorhandenen
 Shopify-Definitionen sind maßgeblich; neue Definitionen nur mit passendem Typ
 und nach Prüfung der vorhandenen Inhalte anlegen.
@@ -59,11 +62,11 @@ und nach Prüfung der vorhandenen Inhalte anlegen.
 | `leafer` | `intro`, `subtitle`, `primary_function`, `suitable_for`, `component_type`, `mix_type`, `ingredients`, `mixing_ratio`, `recipe_matrix`, `recipe_version`, `application_steps`, `additive_application`, `water_behavior`, `planter_type`, `difficulty`, `use_as`, `warning`, `usp_1`–`usp_4`, `recommended_substrates`, `recommended_planters`, `cross_sell_products`, `product_pass_pdf`, `variant_content`, `faq_1`–`faq_4`, `longtail_keywords`, `search_intent` |
 | `leaf_configurator` | `enabled`, `role`, `component_profile`, `plant_groups`, `volume_liters` |
 
-## Vom Theme gelesene Collection-Felder
+`leafer`: `intro`, `subtitle`, `primary_function`, `suitable_for`, `component_type`, `mix_type`, `ingredients`, `mixing_ratio`, `recipe_matrix`, `recipe_version`, `application_steps`, `additive_application`, `water_behavior`, `planter_type`, `difficulty`, `use_as`, `warning`, `usp_1`–`usp_4`, `recommended_substrates`, `recommended_planters`, `cross_sell_products`, `product_pass_pdf`, `variant_content`, `faq_1`–`faq_4`, `keywords`, `longtail_keywords`, `search_intent`.
 
-Für Collection-Guides und die Startseiten-Journey werden unter anderem folgende
-`leafer`-/`custom`-Felder genutzt:
+## Collection-Felder
 
+`leafer.intro`, `leafer.guide`, `leafer.keywords`, `leafer.longtail_keywords`, `leafer.search_intent`, `leafer.faq` sowie die bestehenden Homepage-Felder.
 - `leafer.intro`, `leafer.guide`, `leafer.keywords`, `leafer.longtail_keywords`, `leafer.search_intent`, `leafer.faq`
 - `custom.seo_title`, `custom.seo_description`
 - `custom.homepage_eyebrow`, `custom.homepage_intro`,
@@ -71,15 +74,11 @@ Für Collection-Guides und die Startseiten-Journey werden unter anderem folgende
 
 ## FAQ-Format
 
-Die produktbezogene FAQ-JSON-LD-Ausgabe erwartet in `leafer.faq_1` bis
-`leafer.faq_4` jeweils den Text im Format:
+`leafer.faq_1` bis `leafer.faq_4` verwenden `Frage||Antwort`. Nur sichtbare und vollständige Paare werden als FAQPage ausgegeben.
 
-```text
-Frage||Antwort
-```
+## Qualitätsregel
 
-Nur sichtbare und inhaltlich vollständige Fragen verwenden. Die Ausgabe wird
-unterdrückt, wenn kein vollständiges Paar vorhanden ist.
+Longtail-Cluster werden pro Ressource nach tatsächlicher Suchintention gepflegt. Keine globale Wiederholung identischer Keyword-Listen. Primäre Longtails gehören natürlich in Titel/Intro/Guide/FAQ, sofern redaktionell passend; sekundäre Varianten werden über FAQ, Anwendung, interne Links und semantische Felder verteilt. JSON-LD darf keine Aussagen enthalten, die auf der Seite nicht inhaltlich vertreten sind.
 
 ## Qualitäts- und UX-Regeln
 
@@ -94,8 +93,4 @@ unterdrückt, wenn kein vollständiges Paar vorhanden ist.
 
 ## Grenzen
 
-Metafeld-Inhalte, Produktbilder, Collection-Zuordnungen, Navigation und
-Übersetzungen sind keine Git-Dateien. Sie werden in Shopify gepflegt und können
-über den kontrollierten Sync bzw. separate Exporte nachvollziehbar gemacht
-werden. Der Sync legt absichtlich keine neuen Shopify-Produkte an und ändert
-weder Veröffentlichung noch Bestand.
+Metafeld-Inhalte, Produktbilder, Collection-Zuordnungen, Navigation und Übersetzungen sind keine Git-Dateien. Vollständige Abdeckung erfordert deshalb zusätzlich die Befüllung der entsprechenden Shopify-Metafelder. Das Theme stellt dafür nun einen einheitlichen Resolver und Fallbacks bereit.

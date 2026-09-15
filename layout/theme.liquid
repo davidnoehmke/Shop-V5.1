@@ -5,13 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="{{ settings.accent_color }}">
-    {% if request.page_type == 'search' or request.page_type == 'cart' %}
-      <meta name="robots" content="noindex,follow">
-    {% else %}
-      <meta name="robots" content="index,follow,max-image-preview:large">
-    {% endif %}
+    {% if request.page_type == 'search' or request.page_type == 'cart' %}<meta name="robots" content="noindex,follow">{% else %}<meta name="robots" content="index,follow,max-image-preview:large">{% endif %}
     <link rel="canonical" href="{{ canonical_url }}">
-
     {% liquid
       assign seo_page_title = page_title
       assign seo_page_description = page_description | default: shop.description | strip_html | strip
@@ -39,7 +34,6 @@
           assign seo_page_description = collection_seo_description | strip_html | strip
         endif
       endif
-
       if request.page_type == 'index'
         if request.locale.iso_code == 'en'
           assign seo_page_title = 'Plant Substrate, Grow Lights & Indoor Solutions | LEAFerservice'
@@ -49,53 +43,26 @@
           assign seo_page_description = 'Entdecke die LEAFerservice Substratwelt, passende Pflanzgefäße, Anzucht und Interieur Solutions mit Pflanzenlicht – verständlich erklärt und systematisch ausgewählt.'
         endif
       endif
-
       assign seo_page_title_downcase = seo_page_title | downcase
     %}
-
     <title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>
     {% if seo_page_description != blank %}<meta name="description" content="{{ seo_page_description | escape }}">{% endif %}
     {% render 'seo-meta', seo_title: seo_page_title, seo_description: seo_page_description %}
+    {% render 'structured-content-seo' %}
+    {% if request.page_type == 'product' %}
+      <script type="application/ld+json">{{ product | structured_data }}</script>
     {% render 'structured-content-seo', seo_title: seo_page_title, seo_description: seo_page_description %}
 
     {% if request.page_type == 'product' %}
       {% render 'product-faq-structured-data', product: product %}
-    {% endif %}
-    {% if request.page_type == 'article' %}
+    {% elsif request.page_type == 'article' %}
       <script type="application/ld+json">{{ article | structured_data }}</script>
     {% endif %}
-
     {{ content_for_header }}
     {{ 'leafglobal.css' | asset_url | stylesheet_tag }}
     {{ 'leaf-home-refresh.css' | asset_url | stylesheet_tag }}
     {{ 'leaferservice-level-up.css' | asset_url | stylesheet_tag }}
-    <style>
-      :root { --background: {{ settings.background_color }}; --surface: {{ settings.surface_color }}; --text: {{ settings.text_color }}; --muted: {{ settings.muted_color }}; --accent: {{ settings.accent_color }}; --accent-soft: {{ settings.accent_soft_color }}; --border: color-mix(in srgb, var(--text), transparent 86%); --page-width: 1400px; --radius: 10px; --radius-large: 18px; --heading-font: Georgia, "Times New Roman", serif; --shadow-soft: 0 18px 50px color-mix(in srgb, var(--text), transparent 90%); --ease-out: cubic-bezier(.16, 1, .3, 1); --space-section: clamp(3.5rem, 7vw, 7rem); interpolate-size: allow-keywords; }
-      *, *::before, *::after { box-sizing: border-box; }
-      html { scroll-behavior: smooth; }
-      body { margin: 0; background: var(--background); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
-      body, a, button, input, select { color: var(--text); }
-      img, svg { display: block; max-width: 100%; }
-      a { text-underline-offset: .2em; transition: color .2s ease, opacity .2s ease; }
-      button, input, select { font: inherit; }
-      h1, h2, h3 { font-family: var(--heading-font); font-weight: 600; text-wrap: balance; }
-      p { text-wrap: pretty; }
-      button, .button { border: 1px solid var(--accent); border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.5rem; background: var(--accent); color: #fff; font-weight: 750; text-decoration: none; transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), background-color .2s ease; }
-      button:hover, .button:hover { transform: translateY(-2px); box-shadow: 0 9px 24px color-mix(in srgb, var(--accent), transparent 72%); }
-      button:active, .button:active { transform: translateY(0); }
-      .button--secondary { border-color: color-mix(in srgb, var(--text), transparent 35%); background: transparent; color: var(--text); }
-      button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: 3px; }
-      .page-width { width: min(100% - 3rem, var(--page-width)); margin-inline: auto; }
-      .shopify-section { view-transition-name: none; }
-      .skip-link { position: fixed; z-index: 100; top: 1rem; left: 1rem; transform: translateY(-160%); background: var(--text); color: var(--background); padding: .75rem 1rem; border-radius: 999px; }
-      .skip-link:focus { transform: none; }
-      .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
-      .rte > *:first-child { margin-top: 0; }
-      .rte > *:last-child { margin-bottom: 0; }
-      @media (max-width: 700px) { :root { --space-section: 3.25rem; } .page-width { width: min(100% - 1.1rem, var(--page-width)); } body { font-size: 16px; line-height: 1.6; } h1, h2, h3, p, a, summary { overflow-wrap: break-word; hyphens: auto; } button, .button, input, select { min-height: 48px; } }
-      @media (prefers-reduced-motion: no-preference) { ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: var(--ease-out); } }
-      @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
-    </style>
+    <style>:root { --background: {{ settings.background_color }}; --surface: {{ settings.surface_color }}; --text: {{ settings.text_color }}; --muted: {{ settings.muted_color }}; --accent: {{ settings.accent_color }}; --accent-soft: {{ settings.accent_soft_color }}; --border: color-mix(in srgb, var(--text), transparent 86%); --page-width: 1400px; --radius: 10px; --radius-large: 18px; --heading-font: Georgia, "Times New Roman", serif; } *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--background);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.55} img,svg{display:block;max-width:100%}.page-width{width:min(100% - 3rem,var(--page-width));margin-inline:auto}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}@media(max-width:700px){.page-width{width:min(100% - 1.1rem,var(--page-width))}body{font-size:16px;line-height:1.6}}</style>
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
