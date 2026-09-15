@@ -1,0 +1,13 @@
+# actionlint 1.7.12 predates GitHub's concurrency.queue support.
+# Only this one known diagnostic is suppressed, only in the two release files.
+# Their queue value is the literal `max`, with cancel-in-progress: false.
+# All remaining syntax, expression, shell and reusable-workflow checks stay enabled.
+# Native contract: https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax#concurrency
+# Remove these two exceptions when the pinned actionlint version supports queue.
+paths:
+  .github/workflows/leaf-code.yml:
+    ignore:
+      - '^unexpected key "queue" for "concurrency" section\. expected one of "cancel-in-progress", "group"$'
+  .github/workflows/push-shopify.yml:
+    ignore:
+      - '^unexpected key "queue" for "concurrency" section\. expected one of "cancel-in-progress", "group"$'
