@@ -16,9 +16,12 @@ concurrency:
 jobs:
   repository-validation:
     name: Repository validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Validate strict repository JSON
         shell: bash
         run: |
@@ -42,23 +45,29 @@ jobs:
 
   theme-check:
     name: Shopify Theme Check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ruby-version: '3.3'
+          persist-credentials: false
+      - uses: ruby/setup-ruby@bec3f19a76460dbe12f60def7d1a77585f07516c # v1
+        with:
+          ruby-version: '3.3.12'
           bundler-cache: false
-      - name: Install Shopify Theme Check
-        run: gem install theme-check
+      - name: Install pinned Shopify Theme Check
+        run: gem install theme-check --version 1.15.0 --no-document
       - name: Run Theme Check
         run: theme-check .
 
   theme-structure:
     name: Theme structure
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Validate required Shopify theme structure
         shell: bash
         run: |
@@ -75,7 +84,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json, pathlib, re, sys
-          roots = [pathlib.Path('templates'), pathlib.Path('sections'), pathlib.Path('config')]
+          roots = [pathlib.Path('templates'), pathlib.Path('sections'), pathlib.Path('config'), pathlib.Path('locales')]
           failed = False
           for root in roots:
               for path in root.rglob('*.json'):
@@ -84,17 +93,26 @@ jobs:
                   try:
                       json.loads(text)
                   except Exception as exc:
-                      print(f'{path}: {exc}', file=sys.stderr)
+                      print(f'{path}: invalid JSON ({type(exc).__name__})', file=sys.stderr)
                       failed = True
           if failed:
               sys.exit(1)
           PY
+      - name: Validate plain JavaScript syntax without executing storefront code
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find assets -type f -name '*.js' -print0)
 
   migration-validation:
     name: Supabase migration validation
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Validate migration naming and safety invariants
         shell: bash
         run: |
@@ -110,3 +128,22 @@ jobs:
           fi
           grep -q 'enable row level security' supabase/migrations/20260914190200_content_approval_queue.sql
           grep -q 'service_role' supabase/migrations/20260914190200_content_approval_queue.sql
+
+  pipeline-tests:
+    name: Pipeline unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - name: Check controller and browser-script syntax
+        run: |
+          for file in automation/codex/*.cjs; do node --check "$file"; done
+      - name: Run policy and delivery unit tests
+        run: node --test automation/codex/controller.test.cjs
+      - name: Validate workflow syntax and expressions
+        run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -color
