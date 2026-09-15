@@ -9,7 +9,7 @@ const REQUIRED = ['Repository validation', 'Shopify Theme Check', 'Theme structu
 const assert = (ok, message) => { if (!ok) throw new Error(message); };
 const hash = value => crypto.createHash('sha256').update(value).digest('hex');
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
-function number(value) { assert(/^[1-9][0-9]*$/.test(String(value)), 'Invalid numeric identifier'); return Number(value); }
+function number(value) { assert(/^[1-9][0-9]*$/.test(String(value)) && Number.isSafeInteger(Number(value)), 'Invalid numeric identifier'); return Number(value); }
 function sha(value) { assert(/^[0-9a-f]{40}$/.test(value || ''), 'Invalid commit SHA'); return value; }
 function output(key, value) {
   if (!process.env.GITHUB_OUTPUT) return;
@@ -27,7 +27,9 @@ function secretLike(text) {
 }
 function validateProposal(raw) {
   assert(typeof raw === 'string' && Buffer.byteLength(raw) <= 96000, 'Missing or oversized Codex result');
-  const result = JSON.parse(raw);
+  assert(!secretLike(raw), 'Potential credential in generated output');
+  let result;
+  try { result = JSON.parse(raw); } catch { throw new Error('Codex result is not valid JSON'); }
   assert(result && !Array.isArray(result) && Object.keys(result).sort().join(',') === 'files,summary', 'Unexpected proposal fields');
   assert(typeof result.summary === 'string' && result.summary.length <= 2000, 'Invalid proposal summary');
   assert(Array.isArray(result.files) && result.files.length >= 1 && result.files.length <= 12, 'Proposals must contain 1-12 text files');
@@ -41,7 +43,9 @@ function validateProposal(raw) {
     bytes += Buffer.byteLength(file.content);
     assert(bytes <= 64000, 'Change exceeds 64 KB; split the request');
     assert(!secretLike(file.content), 'Potential credential in generated output');
-    if (file.path.endsWith('.json')) JSON.parse(file.content.replace(/^\s*\/\*[\s\S]*?\*\/\s*/, ''));
+    if (file.path.endsWith('.json')) {
+      try { JSON.parse(file.content.replace(/^\s*\/\*[\s\S]*?\*\/\s*/, '')); } catch { throw new Error('Generated theme JSON is invalid'); }
+    }
   }
   assert(!secretLike(result.summary), 'Potential credential in summary');
   return result;
@@ -148,8 +152,10 @@ async function propose() {
   const branch = `leaf/code-${issue.number}-${number(process.env.GITHUB_RUN_ID)}-${number(process.env.GITHUB_RUN_ATTEMPT || '1')}`;
   await assertSnapshot(token);
   await repoApi('git/refs', {method: 'POST', token, body: {ref: `refs/heads/${branch}`, sha: commit.sha}});
+  // Do not copy model-written prose into the PR body: closing keywords could
+  // close an issue at merge time, before live verification has succeeded.
   const pr = await repoApi('pulls', {method: 'POST', token, body: {title: `Theme request #${issue.number}: ${issue.title.slice(12)}`, base: 'main', head: branch,
-    body: `Automated implementation of #${issue.number}.\n\nOnly allowlisted theme files were accepted. CI, preview validation and exact-head merge checks are mandatory.\n\nSource run: https://github.com/${REPO}/actions/runs/${process.env.GITHUB_RUN_ID}\n\nRequest digest: ${process.env.REQUEST_DIGEST}\n\n${proposal.summary}`}});
+    body: `Automated implementation of #${issue.number}.\n\nOnly allowlisted theme files were accepted. CI, preview validation and exact-head merge checks are mandatory.\n\nSource run: https://github.com/${REPO}/actions/runs/${process.env.GITHUB_RUN_ID}\n\nRequest digest: ${process.env.REQUEST_DIGEST}\n\nChanged files:\n${files.map(file => '- ' + file.path).join('\n')}`}});
   output('head_sha', sha(commit.sha)); output('pr', pr.number); output('marker', JSON.stringify(marker));
   summary(`Created PR #${pr.number}, head ${commit.sha}. No merge or live deployment yet.`);
 }
@@ -212,5 +218,5 @@ if (require.main === module) {
   const commands = {prepare, propose, ci, merge, report};
   const command = commands[process.argv[2]];
   assert(command, 'Unknown controller command');
-  command().catch(error => { console.error(error.message); summary(`BLOCKED: ${error.message}`); process.exitCode = 1; });
+  command().catch(error => { const message = error instanceof SyntaxError ? 'Invalid JSON response or configuration' : error.message; console.error(message); summary(`BLOCKED: ${message}`); process.exitCode = 1; });
 }
