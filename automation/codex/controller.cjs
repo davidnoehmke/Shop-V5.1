@@ -70,6 +70,28 @@ function validateProtection(protection) {
   assert([...REQUIRED, 'leaf/preview'].every(name => names.has(name)), 'Required CI/preview branch checks are missing');
   assert((protection.required_pull_request_reviews?.required_approving_review_count || 0) === 0, 'Existing mandatory human review prevents unattended merging; it will not be bypassed');
 }
+function configuration(env = process.env) {
+  const present = value => typeof value === 'string' && value.trim() !== '';
+  const checks = {
+    'OpenAI API key': env.HAS_OPENAI_KEY === 'true',
+    'GitHub App or scoped bot token': present(env.LEAF_GITHUB_TOKEN) || (present(env.LEAF_GITHUB_APP_ID) && present(env.LEAF_GITHUB_APP_PRIVATE_KEY)),
+    'Shopify Theme Access token': env.HAS_SHOPIFY_TOKEN === 'true',
+    'Shopify store domain': env.HAS_SHOPIFY_STORE === 'true',
+    'Shopify staging theme ID': /^[1-9][0-9]*$/.test(env.SHOPIFY_STAGING_THEME_ID || ''),
+    'Shopify live theme ID': /^[1-9][0-9]*$/.test(env.SHOPIFY_LIVE_THEME_ID || ''),
+    'Native Shopify sync verified': env.LEAF_NATIVE_SYNC_CONFIRMED === 'true'
+  };
+  if (checks['Shopify staging theme ID'] && checks['Shopify live theme ID'] && env.SHOPIFY_STAGING_THEME_ID === env.SHOPIFY_LIVE_THEME_ID) {
+    checks['Distinct staging and live themes'] = false;
+  }
+  return {checks, missing: Object.entries(checks).filter(([, ok]) => !ok).map(([name]) => name)};
+}
+function configurationSummary(config, mode) {
+  const lines = ['## LEAF runtime configuration', '', `Mode: ${mode}`, ...Object.entries(config.checks).map(([name, ok]) => `- ${name}: ${ok ? 'configured' : 'MISSING'}`), ''];
+  if (mode === 'dry-run') lines.push('Dry run only: no model call, GitHub write, Shopify upload, merge, sync, or publication was attempted.');
+  else lines.push(config.missing.length ? 'Execution blocked before generation or external writes.' : 'Configuration is present; runtime verification still occurs at each protected stage.');
+  return lines.join('\n');
+}
 let cachedToken;
 async function api(path, {method = 'GET', body, token, allow404 = false} = {}) {
   token ||= process.env.GITHUB_TOKEN;
@@ -112,13 +134,19 @@ async function assertSnapshot(token) {
   return issue;
 }
 async function prepare() {
-  const issue = await currentIssue(); output('authorized', 'true');
-  if (process.env.LEAF_AUTOMATION_ENABLED !== 'true') {
-    output('ready', 'false'); summary('Automation is DISABLED. Request recorded; no generation, merge or deployment was started.'); return;
+  const config = configuration();
+  if (process.env.LEAF_DRY_RUN === 'true') {
+    output('authorized', 'false'); output('ready', 'false');
+    summary(configurationSummary(config, 'dry-run'));
+    return;
   }
-  assert(process.env.HAS_OPENAI_KEY === 'true', 'OPENAI_API_KEY is missing');
-  assert(process.env.HAS_SHOPIFY_TOKEN === 'true' && process.env.HAS_SHOPIFY_STORE === 'true', 'Shopify delivery credentials are missing');
-  assert(process.env.LEAF_NATIVE_SYNC_CONFIRMED === 'true', 'Native Shopify main-to-live sync has not been verified');
+  if (process.env.LEAF_AUTOMATION_ENABLED !== 'true') {
+    output('authorized', 'false'); output('ready', 'false');
+    summary('Automation is DISABLED. No issue was read and no generation, GitHub write, merge, sync, or Shopify operation was started.');
+    return;
+  }
+  assert(config.missing.length === 0, `Runtime configuration is incomplete: ${config.missing.join(', ')}`);
+  const issue = await currentIssue(); output('authorized', 'true');
   const token = await writeToken();
   validateProtection(await repoApi('branches/main/protection', {token}));
   const main = await repoApi('git/ref/heads/main', {token});
@@ -212,7 +240,7 @@ async function report() {
   await repoApi(`issues/${issue}/comments`, {method: 'POST', body: {body: text}}); summary(text);
   if (success) await repoApi(`issues/${issue}`, {method: 'PATCH', body: {state: 'closed'}});
 }
-module.exports = {allowedPath, secretLike, validateProposal, validateIssue, issueDigest, validateProtection, REQUIRED, number, sha};
+module.exports = {allowedPath, secretLike, validateProposal, validateIssue, issueDigest, validateProtection, configuration, configurationSummary, REQUIRED, number, sha};
 if (require.main === module) {
   assert(process.env.GITHUB_REPOSITORY === REPO, 'This controller is restricted to its configured repository');
   const commands = {prepare, propose, ci, merge, report};

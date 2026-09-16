@@ -5,9 +5,14 @@ on:
     types: [opened]
   workflow_dispatch:
     inputs:
-      issue_number:
-        description: 'Open authorized [LEAF CODE] issue to process'
+      dry_run:
+        description: 'Validate runtime configuration only; performs no external writes'
         required: true
+        default: true
+        type: boolean
+      issue_number:
+        description: 'Open authorized [LEAF CODE] issue to process (required only when dry_run is false)'
+        required: false
         type: string
 
 permissions:
@@ -48,6 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           LEAF_AUTOMATION_ENABLED: ${{ vars.LEAF_AUTOMATION_ENABLED }}
+          LEAF_DRY_RUN: ${{ inputs.dry_run || 'false' }}
           LEAF_NATIVE_SYNC_CONFIRMED: ${{ vars.LEAF_NATIVE_SYNC_CONFIRMED }}
           HAS_OPENAI_KEY: ${{ secrets.OPENAI_API_KEY != '' }}
           HAS_SHOPIFY_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN != '' }}
@@ -55,6 +61,8 @@ jobs:
           LEAF_GITHUB_TOKEN: ${{ secrets.LEAF_GITHUB_TOKEN }}
           LEAF_GITHUB_APP_ID: ${{ vars.LEAF_GITHUB_APP_ID }}
           LEAF_GITHUB_APP_PRIVATE_KEY: ${{ secrets.LEAF_GITHUB_APP_PRIVATE_KEY }}
+          SHOPIFY_STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          SHOPIFY_LIVE_THEME_ID: ${{ vars.SHOPIFY_LIVE_THEME_ID }}
         run: node automation/codex/controller.cjs prepare
 
   generate:
