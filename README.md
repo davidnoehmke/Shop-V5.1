@@ -35,6 +35,8 @@ shopify theme push --unpublished --store="$SHOPIFY_STORE" --path theme
 
 Vor einer Veröffentlichung die Checkliste in `docs/DEPLOYMENT.md` ausführen.
 Der aktuelle Theme-Check-Stand ist in `docs/VALIDATION.md` festgehalten.
+Die getrennten Runtime-Secrets, Sicherheitsschalter und der schreibfreie
+Konfigurations-Dry-Run sind in `docs/AUTOMATION_RUNTIME.md` dokumentiert.
 
 ## Verwandte Repositories
 

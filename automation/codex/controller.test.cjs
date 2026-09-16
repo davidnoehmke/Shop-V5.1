@@ -39,6 +39,21 @@ test('rejects missing preview gate', () => assert.throws(() => c.validateProtect
 test('rejects administrator bypass', () => assert.throws(() => c.validateProtection({...protection, enforce_admins: {enabled: false}})));
 test('does not bypass required human review', () => assert.throws(() => c.validateProtection({...protection, required_pull_request_reviews: {required_approving_review_count: 1}})));
 test('rejects force push permission', () => assert.throws(() => c.validateProtection({...protection, allow_force_pushes: {enabled: true}})));
+const completeRuntime = {
+  HAS_OPENAI_KEY: 'true', HAS_SHOPIFY_TOKEN: 'true', HAS_SHOPIFY_STORE: 'true',
+  LEAF_GITHUB_TOKEN: 'configured', SHOPIFY_STAGING_THEME_ID: '123', SHOPIFY_LIVE_THEME_ID: '456',
+  LEAF_NATIVE_SYNC_CONFIRMED: 'true'
+};
+test('accepts a complete runtime contract', () => assert.deepEqual(c.configuration(completeRuntime).missing, []));
+test('reports every missing runtime setting without exposing values', () => {
+  const result = c.configuration({});
+  assert.equal(result.missing.length, 7);
+  assert.match(c.configurationSummary(result, 'dry-run'), /no model call, GitHub write, Shopify upload, merge, sync, or publication/);
+});
+test('rejects identical staging and live theme IDs', () => {
+  const result = c.configuration({...completeRuntime, SHOPIFY_LIVE_THEME_ID: '123'});
+  assert(result.missing.includes('Distinct staging and live themes'));
+});
 const env = {SHOPIFY_STORE: 'example.myshopify.com', SHOPIFY_STAGING_THEME_ID: '123', SHOPIFY_LIVE_THEME_ID: '456', SHOPIFY_CLI_THEME_TOKEN: 'test-only'};
 test('accepts canonical store and distinct IDs', () => assert.equal(d.config(env).staging, 123));
 test('rejects live as the staging destination', () => assert.throws(() => d.config({...env, SHOPIFY_STAGING_THEME_ID: '456'})));
