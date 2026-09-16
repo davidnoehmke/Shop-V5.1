@@ -16,12 +16,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+ADMIN_PASSWORD_SHA256 = os.getenv("ADMIN_PASSWORD_SHA256", "").strip().lower()
 SESSION_HOURS = 12
 
 
 def _password_gate() -> None:
-    if not ADMIN_PASSWORD:
+    if not ADMIN_PASSWORD_SHA256:
         st.error("Admin-Passwort ist serverseitig nicht konfiguriert.")
         st.stop()
 
@@ -38,10 +38,8 @@ def _password_gate() -> None:
         submitted = st.form_submit_button("Anmelden", type="primary", use_container_width=True)
 
     if submitted:
-        if hmac.compare_digest(
-            hashlib.sha256(password.encode("utf-8")).digest(),
-            hashlib.sha256(ADMIN_PASSWORD.encode("utf-8")).digest(),
-        ):
+        submitted_hash = hashlib.sha256(password.encode("utf-8")).hexdigest().lower()
+        if hmac.compare_digest(submitted_hash, ADMIN_PASSWORD_SHA256):
             st.session_state["leaf_password_authorized"] = True
             st.session_state["leaf_password_expires_at"] = now + timedelta(hours=SESSION_HOURS)
             st.rerun()
