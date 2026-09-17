@@ -71,5 +71,33 @@
     {% sections 'footer-group' %}
     <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
+    <script>
+      (() => {
+        const adminHubUrl = 'https://leaferservice.up.railway.app/';
+        const mountAdminHubLink = () => {
+          const actions = document.querySelector('[data-site-header] .site-header__actions');
+          if (!actions || actions.querySelector('[data-leaf-admin-link]')) return;
+
+          const link = document.createElement('a');
+          link.href = adminHubUrl;
+          link.className = 'site-header__admin';
+          link.dataset.leafAdminLink = 'true';
+          link.setAttribute('aria-label', 'Admin Hub');
+          link.setAttribute('title', 'Admin Hub');
+          link.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="15" r="1"></circle></svg>';
+
+          const account = actions.querySelector('.site-header__account');
+          if (account) actions.insertBefore(link, account);
+          else actions.prepend(link);
+        };
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', mountAdminHubLink, { once: true });
+        } else {
+          mountAdminHubLink();
+        }
+        document.addEventListener('shopify:section:load', mountAdminHubLink);
+      })();
+    </script>
   </body>
 </html>
