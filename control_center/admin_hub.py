@@ -46,7 +46,19 @@ LICENSE_ID = os.getenv("LEAF_LICENSE_ID", "Owner")
 SESSION_HOURS = 12
 
 
+def _local_dev_auth_disabled() -> bool:
+    return (
+        os.getenv("LEAF_ENV", "").strip().lower() == "development"
+        and os.getenv("LEAF_DEV_NO_AUTH", "").strip().lower() == "true"
+        and not os.getenv("RAILWAY_ENVIRONMENT")
+        and not os.getenv("RAILWAY_PROJECT_ID")
+    )
+
+
 def _license_gate() -> None:
+    if _local_dev_auth_disabled():
+        st.warning("Lokaler Entwicklungsmodus: Authentifizierung ist deaktiviert.")
+        return
     if not LICENSE_SHA256:
         st.error("Owner-Lizenz ist serverseitig nicht konfiguriert. LEAF_LICENSE_SHA256 fehlt.")
         st.stop()

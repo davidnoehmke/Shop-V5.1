@@ -26,7 +26,19 @@ ADMIN_TOKEN = os.getenv("ADMIN_CHANGELOG_READ_TOKEN", "")
 SESSION_HOURS = 12
 
 
+def _local_dev_auth_disabled() -> bool:
+    return (
+        os.getenv("LEAF_ENV", "").strip().lower() == "development"
+        and os.getenv("LEAF_DEV_NO_AUTH", "").strip().lower() == "true"
+        and not os.getenv("RAILWAY_ENVIRONMENT")
+        and not os.getenv("RAILWAY_PROJECT_ID")
+    )
+
+
 def _password_gate() -> None:
+    if _local_dev_auth_disabled():
+        st.warning("Lokaler Entwicklungsmodus: Passwortschutz ist deaktiviert.")
+        return
     if not ADMIN_PASSWORD_SHA256:
         st.error("Admin-Passwort ist serverseitig nicht konfiguriert.")
         st.stop()
