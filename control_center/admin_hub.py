@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 import hashlib
+import html
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import urllib.error
@@ -29,6 +31,8 @@ st.markdown(
 div.stButton > button, div.stLinkButton > a {border-radius: 10px; min-height: 42px;}
 .leaf-title {font-size: 2rem; font-weight: 760; line-height: 1.15;}
 .leaf-subtle {opacity: .72; font-size: .94rem;}
+.leaf-card-title {font-size: 1.08rem; font-weight: 720; line-height: 1.25; margin-bottom: .15rem;}
+.leaf-card-meta {opacity: .72; font-size: .86rem; margin-bottom: .55rem;}
 </style>
 """,
     unsafe_allow_html=True,
@@ -133,6 +137,95 @@ def show_table(data, *, empty="Keine Datensätze.", links=None):
     st.dataframe(data, use_container_width=True, hide_index=True, column_config=config)
 
 
+def plain_text(value) -> str:
+    if not value:
+        return ""
+    text = re.sub(r"<[^>]+>", " ", str(value))
+    return " ".join(html.unescape(text).split())
+
+
+def euro(value, currency="EUR") -> str:
+    if value in (None, ""):
+        return "-"
+    try:
+        amount = f"{float(value):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    except (TypeError, ValueError):
+        return str(value)
+    return f"{amount} {currency or 'EUR'}"
+
+
+def json_rows(value) -> list[dict]:
+    return value if isinstance(value, list) else []
+
+
+def render_product_card(product: dict) -> None:
+    media = json_rows(product.get("media"))
+    variants = json_rows(product.get("variants"))
+    metafields = json_rows(product.get("metafields"))
+    localizations = json_rows(product.get("localizations"))
+    hero = next((item for item in media if item.get("role") in ("featured", "hero", "primary") and str(item.get("source_url") or "").startswith("https://")), None)
+    hero = hero or next((item for item in media if str(item.get("source_url") or "").startswith("https://")), None)
+
+    with st.container(border=True):
+        visual, summary_col = st.columns([1, 1.8], vertical_alignment="top")
+        with visual:
+            if hero:
+                st.image(hero["source_url"], caption=hero.get("alt_text") or product.get("title"), use_container_width=True)
+            else:
+                st.caption("Kein Produktbild synchronisiert")
+        with summary_col:
+            st.markdown(f'<div class="leaf-card-title">{html.escape(str(product.get("title") or "Unbenanntes Produkt"))}</div>', unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="leaf-card-meta">{html.escape(str(product.get("product_type") or "Ohne Produkttyp"))} · {html.escape(str(product.get("vendor") or "Ohne Hersteller"))}</div>',
+                unsafe_allow_html=True,
+            )
+            st.caption(f"Status: {product.get('status') or '-'} · Handle: {product.get('handle') or '-'}")
+            price_min, price_max = product.get("min_price"), product.get("max_price")
+            price = euro(price_min)
+            if price_max not in (None, "") and price_max != price_min:
+                price = f"{price} – {euro(price_max)}"
+            st.markdown(f"**{price}**")
+            st.caption(f"{len(variants)} Varianten · {len(metafields)} Metafelder · {len(media)} Medien")
+
+        teaser = plain_text(product.get("short_description") or product.get("description_html"))
+        if teaser:
+            st.write(teaser[:280] + ("…" if len(teaser) > 280 else ""))
+        else:
+            st.caption("Keine Kurzbeschreibung synchronisiert")
+
+        with st.expander("Alle Produktdetails anzeigen"):
+            content_tab, variants_tab, metafields_tab, media_tab, system_tab = st.tabs(
+                ["Inhalte", "Varianten", "Metafelder", "Medien", "System"]
+            )
+            with content_tab:
+                st.markdown("**Kurzbeschreibung**")
+                st.write(plain_text(product.get("short_description")) or "Nicht synchronisiert")
+                st.markdown("**Vollständige Beschreibung**")
+                st.write(plain_text(product.get("description_html")) or "Nicht synchronisiert")
+                st.markdown("**Lokalisierungen, USPs, FAQs, Kollektionen und Cross-Sells**")
+                for label, key in (
+                    ("Lokalisierungen", "localizations"), ("USPs", "usps"), ("FAQs", "faqs"),
+                    ("Kollektionen", "collections"), ("Cross-Sells", "cross_sells"),
+                ):
+                    values = json_rows(product.get(key))
+                    st.markdown(f"**{label} ({len(values)})**")
+                    show_table(values, empty="Nicht synchronisiert")
+            with variants_tab:
+                show_table(variants, empty="Keine Varianten synchronisiert")
+            with metafields_tab:
+                show_table(metafields, empty="Keine Metafelder synchronisiert")
+            with media_tab:
+                show_table(media, empty="Keine Medien synchronisiert", links=["source_url", "notion_asset_url"])
+            with system_tab:
+                system = {
+                    "ID": product.get("id"), "Shopify GID": product.get("shopify_product_gid"),
+                    "Shopify ID": product.get("shopify_product_id"), "Notion Page ID": product.get("notion_page_id"),
+                    "Quelle": product.get("canonical_source"), "Version": product.get("canonical_version"),
+                    "Aktualisiert": product.get("updated_at"), "Rohdaten": product.get("data") or {},
+                }
+                st.json(system, expanded=False)
+
+
 with st.sidebar:
     st.markdown("### LEAFerservice")
     st.caption(f"Owner: {LICENSE_ID}")
@@ -221,9 +314,14 @@ with nav[1]:
     if search:
         needle = search.casefold()
         products = [p for p in products if needle in " ".join(str(p.get(k) or "") for k in ("title", "handle", "product_type", "status")).casefold()]
-    show_table(products)
-    st.subheader("Produkt-Sync-Queue")
-    show_table(snapshot.get("product_sync_queue"))
+    st.caption(f"{len(products)} Produktkarten · read-only aus dem Supabase-Snapshot")
+    if not products:
+        st.info("Keine Produkte gefunden.")
+    for index in range(0, len(products), 2):
+        card_columns = st.columns(2)
+        for offset, product in enumerate(products[index:index + 2]):
+            with card_columns[offset]:
+                render_product_card(product)
 
 with nav[2]:
     content_tabs = st.tabs(["Artikel & Ratgeber", "Themen & Keywords", "Freigaben", "Visuals"])
