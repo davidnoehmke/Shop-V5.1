@@ -24,7 +24,7 @@ ADMIN_PASSWORD_SHA256 = os.getenv("ADMIN_PASSWORD_SHA256", "").strip().lower()
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
 ADMIN_TOKEN = os.getenv("ADMIN_CHANGELOG_READ_TOKEN", "")
-SESSION_HOURS = 12
+SESSION_HOURS = 48
 
 
 def _local_dev_auth_disabled() -> bool:
@@ -50,7 +50,7 @@ def _password_gate() -> None:
         return
 
     st.markdown("## LEAFerservice Admin Hub")
-    st.caption("Geschützter Owner-Zugang")
+    st.caption("Geschützter Owner-Zugang · Session 48 Stunden")
 
     with st.form("admin_password_form", clear_on_submit=False):
         username = st.text_input("User", autocomplete="username")
