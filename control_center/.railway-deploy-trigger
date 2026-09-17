@@ -1,1 +1,2 @@
-trigger current main deployment after PR #27
+trigger Railway admin-hub-v2 deployment
+2026-09-18 current-main
