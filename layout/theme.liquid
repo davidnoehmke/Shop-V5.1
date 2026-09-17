@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-    {% include 'booster-seo' %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="{{ settings.accent_color }}">
@@ -48,15 +47,10 @@
     <title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>
     {% if seo_page_description != blank %}<meta name="description" content="{{ seo_page_description | escape }}">{% endif %}
     {% render 'seo-meta', seo_title: seo_page_title, seo_description: seo_page_description %}
-    {% render 'structured-content-seo' %}
-    {% if request.page_type == 'product' %}
-      <script type="application/ld+json">{{ product | structured_data }}</script>
     {% render 'structured-content-seo', seo_title: seo_page_title, seo_description: seo_page_description %}
 
     {% if request.page_type == 'product' %}
       {% render 'product-faq-structured-data', product: product %}
-    {% elsif request.page_type == 'article' %}
-      <script type="application/ld+json">{{ article | structured_data }}</script>
     {% endif %}
     {{ content_for_header }}
     {{ 'leafglobal.css' | asset_url | stylesheet_tag }}
