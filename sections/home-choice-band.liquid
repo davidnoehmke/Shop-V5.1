@@ -19,6 +19,7 @@
       <div class="home-choice__buttons">
         {% if section.settings.primary_link != blank %}<a class="button" href="{{ section.settings.primary_link }}">{{ section.settings.primary_label | escape }} <span aria-hidden="true">→</span></a>{% endif %}
         {% if section.settings.secondary_link != blank %}<a class="button button--secondary" href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_label | escape }}</a>{% endif %}
+        <a class="button button--secondary" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/pflanzenlicht-konfigurator">Pflanzenlicht konfigurieren</a>
       </div>
     </div>
   </div>

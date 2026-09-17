@@ -11,6 +11,14 @@
   assign configurator_role = product.metafields.leaf_configurator.role.value
   assign plant_groups = product.metafields.leaf_configurator.plant_groups.value
   assign volume_liters = product.metafields.leaf_configurator.volume_liters.value
+  assign configurator_path = 'pages/individuelles-substrat'
+  assign configurator_title = 'Produkt passend konfigurieren'
+  assign configurator_text = 'Öffne die passende Auswahlhilfe und vergleiche Produkte im System.'
+  if configurator_role == 'plant-light' or configurator_role == 'aquascape' or configurator_role == 'station'
+    assign configurator_path = 'pages/pflanzenlicht-konfigurator'
+    assign configurator_title = 'Pflanzenlicht passend auswählen'
+    assign configurator_text = 'Vergleiche Einsatz, Leistung und Preis direkt mit den hinterlegten Lichtdaten.'
+  endif
   assign has_content = false
   if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or configurator_enabled != blank or configurator_role != blank or plant_groups != blank or volume_liters != blank
     assign has_content = true
@@ -42,10 +50,10 @@
     {% if configurator_enabled %}
       <div class="leaf-decision__cta">
         <div>
-          <strong>{{ 'product.decision.configurator_title' | t }}</strong>
-          <span>{{ 'product.decision.configurator_text' | t }}</span>
+          <strong>{{ configurator_title }}</strong>
+          <span>{{ configurator_text }}</span>
         </div>
-        <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat">{{ 'product.decision.configurator_cta' | t }}</a>
+        <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}{{ configurator_path }}">Konfigurator öffnen</a>
       </div>
     {% endif %}
   </section>

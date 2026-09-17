@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "lighting": {
+      "type": "leaf-lighting-configurator",
+      "blocks": {
+        "sansi10": {"type":"product","settings":{"product":"sansi-a19-10w-led-pflanzenlampe-vollspektrum","role":"plant-light","watts":10}},
+        "sansi24": {"type":"product","settings":{"product":"sansi-br30-24w-led-pflanzenlampe-e27-vollspektrum","role":"plant-light","watts":24}},
+        "sansi36": {"type":"product","settings":{"product":"sansi-br30-36w-led-pflanzenlampe-e27-vollspektrum","role":"plant-light","watts":36}},
+        "sansi60": {"type":"product","settings":{"product":"sansi-60w-led-pflanzenlampe-faltbare-flugel-e27","role":"plant-light","watts":60}},
+        "daytime": {"type":"product","settings":{"product":"daytime-onex-plant-modulares-led-pflanzenlicht","role":"aquascape","watts":0}},
+        "sera": {"type":"product","settings":{"product":"sera-led-x-change-tube-plantcolor-sunrise","role":"aquascape","watts":0}},
+        "cx83z": {"type":"product","settings":{"product":"barrina-cx83z-indoor-gewachshaus-mit-grow-light","role":"station","watts":40}},
+        "cx91": {"type":"product","settings":{"product":"barrina-cx91-5-stockiges-pflanzenregal-mit-grow-lights","role":"station","watts":100}}
+      },
+      "block_order":["sansi10","sansi24","sansi36","sansi60","daytime","sera","cx83z","cx91"],
+      "settings": {
+        "heading":"Licht passend zu Pflanze, Fläche und Aufbau auswählen.",
+        "intro":"<p>Vergleiche Pflanzenlampen, Aquascape-Licht und komplette Pflanzenstationen visuell. Die Karten greifen direkt auf die hinterlegten Produktdaten und Licht-Metafelder zurück.</p>"
+      }
+    }
+  },
+  "order":["lighting"]
+}
