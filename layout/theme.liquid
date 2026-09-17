@@ -62,7 +62,19 @@
     {{ 'leafglobal.css' | asset_url | stylesheet_tag }}
     {{ 'leaf-home-refresh.css' | asset_url | stylesheet_tag }}
     {{ 'leaferservice-level-up.css' | asset_url | stylesheet_tag }}
-    <style>:root { --background: {{ settings.background_color }}; --surface: {{ settings.surface_color }}; --text: {{ settings.text_color }}; --muted: {{ settings.muted_color }}; --accent: {{ settings.accent_color }}; --accent-soft: {{ settings.accent_soft_color }}; --border: color-mix(in srgb, var(--text), transparent 86%); --page-width: 1400px; --radius: 10px; --radius-large: 18px; --heading-font: Georgia, "Times New Roman", serif; } *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--background);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.55} img,svg{display:block;max-width:100%}.page-width{width:min(100% - 3rem,var(--page-width));margin-inline:auto}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}@media(max-width:700px){.page-width{width:min(100% - 1.1rem,var(--page-width))}body{font-size:16px;line-height:1.6}}</style>
+    <style>
+      :root { --background: {{ settings.background_color }}; --surface: {{ settings.surface_color }}; --text: {{ settings.text_color }}; --muted: {{ settings.muted_color }}; --accent: {{ settings.accent_color }}; --accent-soft: {{ settings.accent_soft_color }}; --border: color-mix(in srgb, var(--text), transparent 86%); --page-width: 1400px; --radius: 10px; --radius-large: 18px; --heading-font: Georgia, "Times New Roman", serif; }
+      *,*::before,*::after{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--background);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:15px;line-height:1.55} img,svg{display:block;max-width:100%}.page-width{width:min(100% - 3rem,var(--page-width));margin-inline:auto}.visually-hidden{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;white-space:nowrap!important}
+      .site-header{transition:background-color .45s ease,box-shadow .45s ease,border-color .45s ease,backdrop-filter .45s ease;will-change:transform,background-color}
+      .site-header .site-header__inner{transition:min-height .45s cubic-bezier(.2,.7,.2,1),transform .25s ease}
+      .site-header .site-header__brand,.site-header .site-header__actions,.site-header .site-header__desktop{transition:transform .35s cubic-bezier(.2,.7,.2,1),opacity .35s ease}
+      .site-header.leaf-header--scrolled{background:color-mix(in srgb,var(--background),transparent 9%);box-shadow:0 10px 34px rgba(0,0,0,.055);border-color:color-mix(in srgb,var(--text),transparent 91%);backdrop-filter:blur(20px) saturate(1.08)}
+      .site-header.leaf-header--scrolled .site-header__inner{min-height:68px}
+      .site-header__admin{transition:transform .3s cubic-bezier(.2,.7,.2,1),background-color .3s ease,opacity .3s ease!important}
+      .site-header__admin:hover{transform:translateY(-2px)}
+      @media(max-width:700px){.page-width{width:min(100% - 1.1rem,var(--page-width))}body{font-size:16px;line-height:1.6}}
+      @media(prefers-reduced-motion:reduce){.site-header,.site-header *{transition:none!important;transform:none!important}}
+    </style>
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
@@ -74,10 +86,12 @@
     <script>
       (() => {
         const adminHubUrl = 'https://leaferservice.up.railway.app/';
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let ticking = false;
+
         const mountAdminHubLink = () => {
           const actions = document.querySelector('[data-site-header] .site-header__actions');
           if (!actions || actions.querySelector('[data-leaf-admin-link]')) return;
-
           const link = document.createElement('a');
           link.href = adminHubUrl;
           link.className = 'site-header__admin';
@@ -85,18 +99,37 @@
           link.setAttribute('aria-label', 'Admin Hub');
           link.setAttribute('title', 'Admin Hub');
           link.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path><circle cx="12" cy="15" r="1"></circle></svg>';
-
           const account = actions.querySelector('.site-header__account');
-          if (account) actions.insertBefore(link, account);
-          else actions.prepend(link);
+          if (account) actions.insertBefore(link, account); else actions.prepend(link);
         };
 
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', mountAdminHubLink, { once: true });
-        } else {
-          mountAdminHubLink();
-        }
-        document.addEventListener('shopify:section:load', mountAdminHubLink);
+        const updateHeaderMotion = () => {
+          const header = document.querySelector('[data-site-header]');
+          if (!header) { ticking = false; return; }
+          const y = Math.max(0, window.scrollY || 0);
+          header.classList.toggle('leaf-header--scrolled', y > 16);
+          if (!reducedMotion.matches) {
+            const shift = Math.min(7, y * 0.035);
+            const brand = header.querySelector('.site-header__brand');
+            const nav = header.querySelector('.site-header__desktop');
+            const actions = header.querySelector('.site-header__actions');
+            if (brand) brand.style.transform = `translate3d(0,${(-shift * .45).toFixed(2)}px,0)`;
+            if (nav) nav.style.transform = `translate3d(0,${(-shift * .7).toFixed(2)}px,0)`;
+            if (actions) actions.style.transform = `translate3d(0,${(-shift).toFixed(2)}px,0)`;
+          }
+          ticking = false;
+        };
+
+        const requestHeaderMotion = () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(updateHeaderMotion);
+        };
+
+        const init = () => { mountAdminHubLink(); requestHeaderMotion(); };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once:true }); else init();
+        window.addEventListener('scroll', requestHeaderMotion, { passive:true });
+        document.addEventListener('shopify:section:load', init);
       })();
     </script>
   </body>
