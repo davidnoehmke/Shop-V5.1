@@ -19,6 +19,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "Admin").strip() or "Admin"
 ADMIN_PASSWORD_SHA256 = os.getenv("ADMIN_PASSWORD_SHA256", "").strip().lower()
 SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
 SUPABASE_KEY = os.getenv("SUPABASE_PUBLISHABLE_KEY", "")
@@ -49,20 +50,23 @@ def _password_gate() -> None:
         return
 
     st.markdown("## LEAFerservice Admin Hub")
-    st.caption("Passwortgeschuetzter Zugang")
+    st.caption("Geschützter Owner-Zugang")
 
     with st.form("admin_password_form", clear_on_submit=False):
+        username = st.text_input("User", autocomplete="username")
         password = st.text_input("Passwort", type="password", autocomplete="current-password")
         submitted = st.form_submit_button("Anmelden", type="primary", use_container_width=True)
 
     if submitted:
         submitted_hash = hashlib.sha256(password.encode("utf-8")).hexdigest().lower()
-        if hmac.compare_digest(submitted_hash, ADMIN_PASSWORD_SHA256):
+        username_ok = hmac.compare_digest(username.strip(), ADMIN_USERNAME)
+        password_ok = hmac.compare_digest(submitted_hash, ADMIN_PASSWORD_SHA256)
+        if username_ok and password_ok:
             st.session_state["leaf_password_authorized"] = True
             st.session_state["leaf_password_expires_at"] = now + timedelta(hours=SESSION_HOURS)
             st.rerun()
         else:
-            st.error("Passwort nicht korrekt.")
+            st.error("Zugangsdaten nicht korrekt.")
 
     st.stop()
 
