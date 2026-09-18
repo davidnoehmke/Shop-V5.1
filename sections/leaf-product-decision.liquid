@@ -11,65 +11,144 @@
   assign configurator_role = product.metafields.leaf_configurator.role.value
   assign plant_groups = product.metafields.leaf_configurator.plant_groups.value
   assign volume_liters = product.metafields.leaf_configurator.volume_liters.value
+  assign rated_power = product.metafields.lighting.rated_power_w.value
+  assign spectrum = product.metafields.lighting.spectrum.value
+  assign cct = product.metafields.lighting.cct_k.value
+  assign coverage = product.metafields.lighting.coverage_guidance.value
+  assign distance = product.metafields.lighting.recommended_distance.value
+  assign use_cases = product.metafields.lighting.use_cases.value
+  assign safety = product.metafields.lighting.safety_notes.value
+  assign is_lighting = false
+  if product.metafields.lighting.manufacturer.value != blank or configurator_role == 'plant_light_recommendation' or configurator_role == 'aquascape_light_configurator' or configurator_role == 'plant_station'
+    assign is_lighting = true
+  endif
+  assign configurator_path = 'pages/individuelles-substrat'
+  assign configurator_title = 'Produkt passend konfigurieren'
+  assign configurator_text = 'Öffne die passende Auswahlhilfe und vergleiche Produkte im System.'
+  if is_lighting
+    assign configurator_path = 'pages/pflanzenlicht-konfigurator'
+    assign configurator_title = 'Pflanzenlicht passend auswählen'
+    assign configurator_text = 'Vergleiche Einsatz, Leistung und Preis direkt mit den hinterlegten Lichtdaten.'
+  endif
   assign has_content = false
-  if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or configurator_enabled != blank or configurator_role != blank or plant_groups != blank or volume_liters != blank
+  if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or rated_power != blank or spectrum != blank or cct != blank or coverage != blank or distance != blank or use_cases != blank or safety != blank
     assign has_content = true
   endif
 %}
 
 {% if has_content %}
-  <section class="leaf-decision page-width" aria-labelledby="LeafDecisionHeading-{{ section.id }}">
-    <header class="leaf-decision__head">
-      <p class="leaf-decision__eyebrow">{{ 'product.decision.eyebrow' | t }}</p>
-      <h2 id="LeafDecisionHeading-{{ section.id }}">{{ 'product.decision.heading' | t }}</h2>
-      {% if subtitle != blank %}<p class="leaf-decision__lead">{{ subtitle | escape }}</p>{% endif %}
-      {% if intro != blank %}<div class="leaf-decision__intro rte">{{ intro | escape | newline_to_br }}</div>{% endif %}
-    </header>
+<section class="leaf-knowledge page-width" aria-labelledby="LeafKnowledgeHeading-{{ section.id }}">
+  <header class="leaf-knowledge__head">
+    <div>
+      <p class="leaf-knowledge__eyebrow">{{ 'product.decision.eyebrow' | t }}</p>
+      <h2 id="LeafKnowledgeHeading-{{ section.id }}">{{ 'product.decision.heading' | t }}</h2>
+    </div>
+    {% if subtitle != blank %}<p class="leaf-knowledge__lead">{{ subtitle | escape }}</p>{% endif %}
+    {% if intro != blank %}<div class="leaf-knowledge__intro rte">{{ intro | escape | newline_to_br }}</div>{% endif %}
+  </header>
 
-    <dl class="leaf-decision__facts">
-      {% if primary_function != blank %}<div><dt>{{ 'product.decision.function' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.primary_function %}</dd></div>{% endif %}
-      {% if suitable_for != blank %}<div><dt>{{ 'product.decision.suitable_for' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for %}</dd></div>{% endif %}
-      {% if water_behavior != blank %}<div><dt>{{ 'product.decision.water' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.water_behavior %}</dd></div>{% endif %}
-      {% if mixing_ratio != blank %}<div><dt>{{ 'product.decision.ratio' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.mixing_ratio %}</dd></div>{% endif %}
-      {% if application != blank %}<div><dt>{{ 'product.decision.application' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.additive_application %}</dd></div>{% endif %}
-      {% if volume_liters != blank %}<div><dt>{{ 'product.decision.volume' | t }}</dt><dd>{{ volume_liters | escape }} L</dd></div>{% endif %}
-      {% if configurator_role != blank %}<div><dt>{{ 'product.decision.configurator_role' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.role %}</dd></div>{% endif %}
-      {% if plant_groups != blank %}<div><dt>{{ 'product.decision.plant_groups' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}</dd></div>{% endif %}
-    </dl>
-
-    {% if warning != blank %}<div class="leaf-decision__notice"><strong>{{ 'product.decision.notice' | t }}</strong> {% render 'leaf-metafield-value', field: product.metafields.leafer.warning %}</div>{% endif %}
-
-    {% if configurator_enabled %}
-      <div class="leaf-decision__cta">
-        <div>
-          <strong>{{ 'product.decision.configurator_title' | t }}</strong>
-          <span>{{ 'product.decision.configurator_text' | t }}</span>
-        </div>
-        <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat">{{ 'product.decision.configurator_cta' | t }}</a>
-      </div>
+  <div class="leaf-knowledge__clusters">
+    {% if is_lighting %}
+      {% if rated_power != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">↯</span><span>Leistung</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{{ rated_power | escape }} W</div>
+        </details>
+      {% endif %}
+      {% if spectrum != blank or cct != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">☼</span><span>Spektrum</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if spectrum != blank %}{{ spectrum | escape }}{% endif %}{% if cct != blank %}<br>{{ cct | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if coverage != blank or distance != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌖</span><span>Fläche & Abstand</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if coverage != blank %}{{ coverage | escape }}{% endif %}{% if distance != blank %}<br>{{ distance | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if use_cases != blank or plant_groups != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌁</span><span>Einsatz</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if use_cases != blank %}{% render 'leaf-metafield-value', field: product.metafields.lighting.use_cases %}{% endif %}{% if plant_groups != blank %}<br>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if safety != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◇</span><span>Sicherheit</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{{ safety | escape | newline_to_br }}</div>
+        </details>
+      {% endif %}
+    {% else %}
+      {% if primary_function != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">✦</span><span>{{ 'product.decision.function' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% render 'leaf-metafield-value', field: product.metafields.leafer.primary_function %}</div>
+        </details>
+      {% endif %}
+      {% if suitable_for != blank or plant_groups != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌁</span><span>{{ 'product.decision.suitable_for' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if suitable_for != blank %}{% render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for %}{% endif %}{% if plant_groups != blank %}<br>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if water_behavior != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◌</span><span>{{ 'product.decision.water' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% render 'leaf-metafield-value', field: product.metafields.leafer.water_behavior %}</div>
+        </details>
+      {% endif %}
+      {% if mixing_ratio != blank or volume_liters != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◫</span><span>{{ 'product.decision.ratio' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if mixing_ratio != blank %}{% render 'leaf-metafield-value', field: product.metafields.leafer.mixing_ratio %}{% endif %}{% if volume_liters != blank %}<br>{{ volume_liters | escape }} L{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if application != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">→</span><span>{{ 'product.decision.application' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% render 'leaf-metafield-value', field: product.metafields.leafer.additive_application %}</div>
+        </details>
+      {% endif %}
     {% endif %}
-  </section>
+  </div>
+
+  {% if warning != blank %}<details class="leaf-knowledge__notice"><summary>{{ 'product.decision.notice' | t }}</summary><div>{% render 'leaf-metafield-value', field: product.metafields.leafer.warning %}</div></details>{% endif %}
+
+  {% if configurator_enabled %}
+    <div class="leaf-knowledge__cta">
+      <div><strong>{{ configurator_title }}</strong><span>{{ configurator_text }}</span></div>
+      <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}{{ configurator_path }}">Konfigurator öffnen</a>
+    </div>
+  {% endif %}
+</section>
 {% endif %}
 
 {% stylesheet %}
-  .leaf-decision { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(240px,.7fr) minmax(0,1.3fr); gap: clamp(2rem,6vw,6rem); padding-block: clamp(2rem,5vw,4rem); border-block: 1px solid var(--border); }
-  .leaf-decision__head { align-self: start; }
-  .leaf-decision__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-  .leaf-decision h2 { margin: 0; font-size: clamp(2rem,5vw,4rem); line-height: .98; letter-spacing: -.045em; }
-  .leaf-decision__lead { margin: 1rem 0 0; color: var(--text); font-size: 1.05rem; font-weight: 750; }
-  .leaf-decision__intro { margin-top: .75rem; color: var(--muted); }
-  .leaf-decision__facts { margin: 0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); border-top: 1px solid var(--border); }
-  .leaf-decision__facts > div { padding: 1rem; border-bottom: 1px solid var(--border); }
-  .leaf-decision__facts > div:nth-child(odd) { border-right: 1px solid var(--border); }
-  .leaf-decision dt { color: var(--muted); font-size: .72rem; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
-  .leaf-decision dd { margin: .35rem 0 0; line-height: 1.55; overflow-wrap: anywhere; }
-  .leaf-decision__notice { grid-column: 2; margin: 0; padding: 1rem 1.1rem; border-left: 4px solid var(--accent); border-radius: 12px; background: var(--surface); }
-  .leaf-decision__cta { grid-column: 2; padding: 1.1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb,var(--accent) 5%,var(--surface)); }
-  .leaf-decision__cta strong, .leaf-decision__cta span { display: block; }
-  .leaf-decision__cta span { margin-top: .25rem; color: var(--muted); font-size: .84rem; }
-  @media (max-width: 780px) { .leaf-decision { grid-template-columns: 1fr; gap: 1.5rem; } .leaf-decision__facts { grid-template-columns: 1fr; } .leaf-decision__facts > div:nth-child(odd) { border-right: 0; } .leaf-decision__notice, .leaf-decision__cta { grid-column: 1; } .leaf-decision__cta { align-items: stretch; flex-direction: column; } }
+.leaf-knowledge{margin-block:var(--space-section);padding-block:clamp(1.5rem,4vw,3rem);border-block:1px solid var(--border)}
+.leaf-knowledge__head{display:grid;grid-template-columns:minmax(220px,.7fr) minmax(0,1.3fr);gap:clamp(1rem,4vw,4rem);align-items:end}
+.leaf-knowledge__eyebrow{margin:0 0 .45rem;color:var(--accent);font-size:.7rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.leaf-knowledge h2{margin:0;font-size:clamp(1.7rem,4vw,3.2rem);line-height:1;letter-spacing:-.04em}
+.leaf-knowledge__lead,.leaf-knowledge__intro{margin:0;color:var(--muted);line-height:1.55}
+.leaf-knowledge__clusters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.65rem;margin-top:1.4rem}
+.leaf-knowledge__tile{position:relative;border:1px solid var(--border);border-radius:14px;background:var(--surface);transition:transform .18s ease,border-color .18s ease}
+.leaf-knowledge__tile:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent),var(--border) 45%)}
+.leaf-knowledge__tile summary{list-style:none;display:grid;grid-template-columns:auto 1fr auto;gap:.6rem;align-items:center;min-height:58px;padding:.7rem .8rem;cursor:pointer;font-size:.78rem;font-weight:800}
+.leaf-knowledge__tile summary::-webkit-details-marker{display:none}
+.leaf-knowledge__icon{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;background:color-mix(in srgb,var(--accent) 10%,var(--surface));color:var(--accent);font-size:1rem}
+.leaf-knowledge__info{display:grid;place-items:center;width:1.25rem;height:1.25rem;border:1px solid var(--border);border-radius:50%;color:var(--muted);font-size:.65rem}
+.leaf-knowledge__value{padding:0 .85rem .9rem;color:var(--muted);font-size:.82rem;line-height:1.5;overflow-wrap:anywhere}
+.leaf-knowledge__tile[open]{border-color:color-mix(in srgb,var(--accent),var(--border) 45%);background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.leaf-knowledge__notice{margin-top:.8rem;border-left:3px solid var(--accent);background:var(--surface);padding:.8rem 1rem}
+.leaf-knowledge__notice summary{cursor:pointer;font-weight:800}
+.leaf-knowledge__notice div{margin-top:.55rem;color:var(--muted);font-size:.84rem;line-height:1.5}
+.leaf-knowledge__cta{margin-top:.8rem;padding:1rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;border:1px solid var(--border);border-radius:14px;background:color-mix(in srgb,var(--accent) 4%,var(--surface))}
+.leaf-knowledge__cta strong,.leaf-knowledge__cta span{display:block}.leaf-knowledge__cta span{margin-top:.2rem;color:var(--muted);font-size:.8rem}
+@media (hover:hover) and (min-width:781px){.leaf-knowledge__tile:not([open]) .leaf-knowledge__value{display:none}.leaf-knowledge__tile:focus-within .leaf-knowledge__value{display:block}}
+@media(max-width:780px){.leaf-knowledge__head{grid-template-columns:1fr;align-items:start}.leaf-knowledge__clusters{grid-template-columns:repeat(2,minmax(0,1fr))}.leaf-knowledge__cta{align-items:stretch;flex-direction:column}}
+@media(max-width:430px){.leaf-knowledge__clusters{grid-template-columns:1fr}}
 {% endstylesheet %}
 
 {% schema %}
-{"name":"Entscheidungshilfe","settings":[],"presets":[{"name":"Produkt-Entscheidungshilfe"}]}
+{"name":"Wissenscluster","settings":[],"presets":[{"name":"Wissenscluster"}]}
 {% endschema %}

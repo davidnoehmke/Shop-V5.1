@@ -1,0 +1,166 @@
+{% comment %}Best-of live sync: deploy the lighting configurator with the storefront.{% endcomment %}
+{% liquid
+  assign section_id = 'LeafLighting-' | append: section.id
+%}
+<section id="{{ section_id }}" class="leaf-lighting page-width" data-lighting-configurator>
+  <header class="leaf-lighting__hero">
+    <div>
+      <p class="leaf-lighting__eyebrow">Pflanzenlicht als System</p>
+      <h1>{{ section.settings.heading | default: 'Finde das Licht, das zu Pflanze und Raum passt.' }}</h1>
+      <div class="leaf-lighting__lead rte">{{ section.settings.intro }}</div>
+    </div>
+    <div class="leaf-lighting__meter" aria-hidden="true">
+      <span>Standort</span><span>Pflanze</span><span>Fläche</span><span>Licht</span>
+    </div>
+  </header>
+
+  <div class="leaf-lighting__controls" aria-label="Pflanzenlicht filtern">
+    <label>
+      <span>Einsatz</span>
+      <select data-filter="role">
+        <option value="all">Alle Systeme</option>
+        <option value="plant-light">Zimmerpflanzen</option>
+        <option value="aquascape">Aquascape / Wabi-Kusa</option>
+        <option value="station">Pflanzenstation</option>
+      </select>
+    </label>
+    <label>
+      <span>Max. Preis</span>
+      <input type="range" min="20" max="400" step="10" value="400" data-filter="price">
+      <strong><span data-price-output>400</span> €</strong>
+    </label>
+    <label>
+      <span>Leistung</span>
+      <select data-filter="power">
+        <option value="all">Alle Leistungen</option>
+        <option value="compact">bis 20 W</option>
+        <option value="medium">21–50 W</option>
+        <option value="high">ab 51 W</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="leaf-lighting__resultbar">
+    <strong data-result-count>0 passende Produkte</strong>
+    <button type="button" class="leaf-lighting__reset" data-reset>Filter zurücksetzen</button>
+  </div>
+
+  <div class="leaf-lighting__grid" data-results>
+    {% for block in section.blocks %}
+      {% assign card_product = block.settings.product %}
+      {% if card_product != blank %}
+        {% assign role = card_product.metafields.leaf_configurator.role.value | default: block.settings.role %}
+        {% assign watts = card_product.metafields.lighting.rated_power_w.value | default: block.settings.watts | plus: 0 %}
+        {% assign price_value = card_product.price | divided_by: 100.0 %}
+        <article class="leaf-lighting__card" data-card data-role="{{ role | escape }}" data-price="{{ price_value }}" data-watts="{{ watts }}" {{ block.shopify_attributes }}>
+          <a href="{{ card_product.url }}" class="leaf-lighting__media" aria-label="{{ card_product.title | escape }} ansehen">
+            {% if card_product.featured_image %}
+              {{ card_product.featured_image | image_url: width: 900, height: 900, crop: 'center' | image_tag: loading: 'lazy', widths: '360,540,720,900', sizes: '(max-width: 749px) 88vw, 32vw', alt: card_product.featured_image.alt | default: card_product.title }}
+            {% else %}
+              {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+            {% endif %}
+          </a>
+          <div class="leaf-lighting__body">
+            <div class="leaf-lighting__meta"><span>{{ card_product.vendor }}</span><span>{{ card_product.price | money }}</span></div>
+            <h2><a href="{{ card_product.url }}">{{ card_product.title }}</a></h2>
+            {% if card_product.metafields.lighting.spectrum.value != blank %}<p>{{ card_product.metafields.lighting.spectrum.value | escape }}</p>{% endif %}
+            <dl>
+              {% if watts > 0 %}<div><dt>Leistung</dt><dd>{{ watts }} W</dd></div>{% endif %}
+              {% if card_product.metafields.lighting.cct_k.value != blank %}<div><dt>Farbtemperatur</dt><dd>{{ card_product.metafields.lighting.cct_k.value | escape }}</dd></div>{% endif %}
+              {% if card_product.metafields.lighting.plant_groups.value != blank %}<div><dt>Geeignet für</dt><dd>{% render 'leaf-metafield-value', field: card_product.metafields.lighting.plant_groups %}</dd></div>{% endif %}
+            </dl>
+            <a class="button button--secondary" href="{{ card_product.url }}">Produkt ansehen</a>
+          </div>
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="leaf-lighting__empty" data-empty hidden>
+    <strong>Für diese Auswahl ist aktuell kein Produkt hinterlegt.</strong>
+    <span>Ändere einen Filter oder setze die Auswahl zurück.</span>
+  </div>
+</section>
+
+<script>
+(() => {
+  const root = document.getElementById({{ section_id | json }});
+  if (!root) return;
+  const cards = [...root.querySelectorAll('[data-card]')];
+  const role = root.querySelector('[data-filter="role"]');
+  const price = root.querySelector('[data-filter="price"]');
+  const power = root.querySelector('[data-filter="power"]');
+  const output = root.querySelector('[data-price-output]');
+  const count = root.querySelector('[data-result-count]');
+  const empty = root.querySelector('[data-empty]');
+  const reset = root.querySelector('[data-reset]');
+
+  function powerMatch(watts, value) {
+    if (value === 'all') return true;
+    if (value === 'compact') return watts <= 20;
+    if (value === 'medium') return watts >= 21 && watts <= 50;
+    return watts >= 51;
+  }
+
+  function apply() {
+    const max = Number(price.value || 400);
+    output.textContent = max;
+    let visible = 0;
+    cards.forEach(card => {
+      const r = card.dataset.role || '';
+      const p = Number(card.dataset.price || 0);
+      const w = Number(card.dataset.watts || 0);
+      const show = (role.value === 'all' || r === role.value) && p <= max && powerMatch(w, power.value);
+      card.hidden = !show;
+      if (show) visible++;
+    });
+    count.textContent = `${visible} passende${visible === 1 ? 's Produkt' : ' Produkte'}`;
+    empty.hidden = visible !== 0;
+  }
+
+  [role, price, power].forEach(el => el && el.addEventListener('input', apply));
+  reset && reset.addEventListener('click', () => {
+    role.value = 'all'; price.value = 400; power.value = 'all'; apply();
+  });
+  apply();
+})();
+</script>
+
+{% stylesheet %}
+.leaf-lighting{padding-block:clamp(2rem,5vw,5rem)}
+.leaf-lighting__hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:clamp(2rem,7vw,7rem);align-items:end;padding-block:clamp(2rem,6vw,6rem);border-bottom:1px solid var(--border)}
+.leaf-lighting__eyebrow{margin:0 0 .75rem;color:var(--accent);font-size:.75rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.leaf-lighting h1{margin:0;max-width:12ch;font-size:clamp(2.8rem,7vw,7rem);line-height:.9;letter-spacing:-.055em}
+.leaf-lighting__lead{max-width:60ch;margin-top:1.25rem;color:var(--muted);font-size:clamp(1rem,2vw,1.25rem)}
+.leaf-lighting__meter{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.leaf-lighting__meter span{padding-top:.7rem;border-top:4px solid var(--accent)}
+.leaf-lighting__controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;padding:1.25rem 0;border-bottom:1px solid var(--border)}
+.leaf-lighting__controls label{display:grid;gap:.5rem}.leaf-lighting__controls label>span{font-size:.72rem;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.leaf-lighting__controls select,.leaf-lighting__controls input[type=range]{width:100%}.leaf-lighting__controls select{min-height:48px;padding:.65rem .8rem;border:1px solid var(--border);border-radius:0;background:var(--surface);color:var(--text)}
+.leaf-lighting__resultbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0 1.5rem}.leaf-lighting__reset{border:0;background:none;text-decoration:underline;cursor:pointer;color:var(--muted)}
+.leaf-lighting__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1rem,2vw,2rem)}
+.leaf-lighting__card{border-top:1px solid var(--border);padding-top:1rem}.leaf-lighting__media{display:block;aspect-ratio:1/1;background:var(--surface);overflow:hidden}.leaf-lighting__media img,.leaf-lighting__media svg{width:100%;height:100%;object-fit:cover}
+.leaf-lighting__body{padding-top:1rem}.leaf-lighting__meta{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.leaf-lighting__body h2{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.05;margin:.55rem 0}.leaf-lighting__body h2 a{text-decoration:none;color:inherit}.leaf-lighting__body p{color:var(--muted)}
+.leaf-lighting__body dl{display:grid;grid-template-columns:1fr 1fr;margin:1rem 0;border-top:1px solid var(--border)}.leaf-lighting__body dl div{padding:.7rem 0;border-bottom:1px solid var(--border)}.leaf-lighting__body dt{font-size:.68rem;color:var(--muted);text-transform:uppercase;font-weight:800}.leaf-lighting__body dd{margin:.2rem 0 0;font-size:.9rem}.leaf-lighting__body .button{width:100%;margin-top:.5rem}
+.leaf-lighting__empty{padding:3rem 0;border-block:1px solid var(--border);display:grid;gap:.35rem}.leaf-lighting__empty[hidden]{display:none}
+@media(max-width:900px){.leaf-lighting__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.leaf-lighting__hero{grid-template-columns:1fr}.leaf-lighting__controls{grid-template-columns:1fr}}
+@media(max-width:620px){.leaf-lighting__grid{grid-template-columns:1fr}.leaf-lighting h1{font-size:clamp(2.6rem,13vw,4.7rem)}.leaf-lighting__meter{grid-template-columns:repeat(2,1fr)}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name":"Licht-Konfigurator",
+  "settings":[
+    {"type":"text","id":"heading","label":"Überschrift","default":"Finde das Licht, das zu Pflanze und Raum passt."},
+    {"type":"richtext","id":"intro","label":"Einleitung","default":"<p>Wähle Einsatz, Budget und Leistung. Die Auswahl nutzt die produktspezifischen Lichtdaten aus Shopify.</p>"}
+  ],
+  "blocks":[
+    {"type":"product","name":"Lichtprodukt","settings":[
+      {"type":"product","id":"product","label":"Produkt"},
+      {"type":"select","id":"role","label":"Fallback Einsatz","default":"plant-light","options":[{"value":"plant-light","label":"Zimmerpflanzen"},{"value":"aquascape","label":"Aquascape / Wabi-Kusa"},{"value":"station","label":"Pflanzenstation"}]},
+      {"type":"number","id":"watts","label":"Fallback Leistung (W)","default":0}
+    ]}
+  ],
+  "max_blocks":16,
+  "presets":[{"name":"Licht-Konfigurator"}]
+}
+{% endschema %}
