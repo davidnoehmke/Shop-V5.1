@@ -12,6 +12,10 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   assign can_quick_add = false
   assign from_price_text = 'product.from_price' | t: price: formatted_price
   assign choose_options_text = 'product.choose_options' | t
+  assign sold_out_text = 'product.sold_out' | t
+  assign bestseller_text = 'product.bestseller' | t
+  assign special_mix_text = 'product.special_mix' | t
+  assign quick_add_text = 'product.quick_add' | t: product: product.title
 
   if card_descriptor == blank
     assign card_descriptor = product.metafields.leafer.primary_function.value
@@ -36,6 +40,19 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     endif
   endif
 
+  if sold_out_text contains 'Translation missing'
+    assign sold_out_text = 'Ausverkauft'
+  endif
+  if bestseller_text contains 'Translation missing'
+    assign bestseller_text = 'Bestseller'
+  endif
+  if special_mix_text contains 'Translation missing'
+    assign special_mix_text = 'Spezialmischung'
+  endif
+  if quick_add_text contains 'Translation missing'
+    assign quick_add_text = 'In den Warenkorb legen'
+  endif
+
   if product.has_only_default_variant and card_variant != blank and card_variant.available
     assign can_quick_add = true
   endif
@@ -54,7 +71,7 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     <div class="product-card__copy">
       {% if product.tags contains 'Bestseller' or product.type == 'Spezialmischung' %}
         <span class="product-card__badge">
-          {% if product.tags contains 'Bestseller' %}{{ 'product.bestseller' | t }}{% else %}{{ 'product.special_mix' | t }}{% endif %}
+          {% if product.tags contains 'Bestseller' %}{{ bestseller_text }}{% else %}{{ special_mix_text }}{% endif %}
         </span>
       {% endif %}
 
@@ -69,7 +86,7 @@ Renders a product card with an optional compact layout and variant-safe quick ad
             {{ formatted_price }}
           {% endif %}
         {% else %}
-          {{ 'product.sold_out' | t }}
+          {{ sold_out_text }}
         {% endif %}
       </strong>
 
@@ -84,7 +101,7 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   {% if can_quick_add %}
     {% form 'product', product, class: 'product-card__form' %}
       <input type="hidden" name="id" value="{{ card_variant.id }}">
-      <button type="submit" name="add" aria-label="{{ 'product.quick_add' | t: product: product.title | escape }}">
+      <button type="submit" name="add" aria-label="{{ quick_add_text | escape }}">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2 12h11l2-9H6M10 10h6M13 7v6M9 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2ZM17 21a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
       </button>
     {% endform %}
