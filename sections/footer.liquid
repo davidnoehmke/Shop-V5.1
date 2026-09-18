@@ -6,7 +6,7 @@
       {% if section.settings.text != blank %}<div class="site-footer__text">{{ section.settings.text }}</div>{% else %}<p>{{ 'footer.text' | t }}</p>{% endif %}
     </div>
     {% if section.settings.menu != blank %}
-      <nav aria-label="{{ 'accessibility.footer_menu' | t }}">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}<a href="/pages/impressum">Impressum</a></nav>
+      <nav aria-label="{{ 'accessibility.footer_menu' | t }}">{% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}<a href="{{ routes.root_url }}pages/impressum">Impressum</a></nav>
     {% endif %}
     <small>{{ 'footer.copyright' | t: year: current_year, shop: shop.name }}</small>
   </div>
