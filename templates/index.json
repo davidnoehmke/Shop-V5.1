@@ -379,7 +379,7 @@
         "handle": "",
         "text": "Substrate, Pflanzen und Setups aus dem vorhandenen LEAFerservice Bildarchiv.",
         "cta_label": "Zimmerpflanzen entdecken",
-        "cta_link": "shopify://collections/zimmerpflanzen-1",
+        "cta_link": "shopify://collections/zimmerpflanzen",
         "show_archive_image": true,
         "archive_asset_filename": "drive-aglaonema-pink-lady.jpg",
         "archive_alt": "Aglaonema mit rosa-grüner Panaschierung im Pflanztopf",
@@ -510,16 +510,16 @@
   },
   "order": [
     "hero",
+    "phone_call",
     "trust",
     "home_collection_journey",
-    "home_choice",
-    "home_guides",
-    "community",
     "home_discovery_path",
     "positioning",
     "leaf_method",
+    "home_choice",
+    "home_guides",
+    "community",
     "faq",
-    "phone_call",
     "shop_videos"
   ]
 }
