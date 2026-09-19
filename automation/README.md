@@ -1,15 +1,17 @@
 # Automation
 
-## Produktive Route
+## Einzige produktive Datenroute
 
-Die einzige produktive Datenroute lautet:
+`Supabase (SSOT) -> Shopify (Storefront / Commerce-Projektion)`
 
-`Supabase (SSOT) -> Shopify (Storefront/Projection)`
+Dieses Repository enthält keinen produktiven Zeitplaner für Notion, Google Sheets,
+LEAF-OS oder Railway. Railway ist ausschließlich Hosting für den read-only Admin Hub.
 
-GitHub versioniert Implementierung und Prüfregeln. Railway hostet nur den Admin Hub und ist keine Datenquelle oder Sync-Schicht.
+## Verbleibende Komponenten
 
-## Legacy
+- `content-agent/`: Verträge, Prompts und Hilfsdateien für kontrollierte Content-Vorbereitung. Keine automatische Veröffentlichung.
+- `codex/`: Policy-, Prüf- und Delivery-Helfer, die von CI-Tests verwendet werden. Kein eigenständiger Scheduler.
 
-`google-apps-script/` enthält historischen Shopify/Google-Sheets/Notion-Sync-Code. Dieser Pfad ist ausdrücklich deaktiviert und nicht Teil der produktiven Architektur. Er darf keine Trigger, Rücksyncs oder schreibenden Automationen gegen Shopify, Supabase oder Notion betreiben.
-
-`experiments/` enthält optionale Prototypen. Sie werden nicht automatisch geladen oder ausgeführt.
+Die einzige GitHub Action ist `.github/workflows/ci.yml`; sie validiert Repository,
+Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
+aktiviert keine externe Legacy-Verbindung.
