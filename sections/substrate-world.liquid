@@ -82,6 +82,14 @@
 
           assign card_image_alt = block.settings.image_alt | default: card_title
           assign card_price = card_product.price_min | money
+          assign card_from_price = 'product.from_price' | t: price: card_price
+          if card_from_price contains 'Translation missing'
+            if request.locale.iso_code == 'de'
+              assign card_from_price = 'Ab ' | append: card_price
+            else
+              assign card_from_price = 'From ' | append: card_price
+            endif
+          endif
         %}
 
         <article class="substrate-world__card substrate-world__card--{{ block.type }}" {{ block.shopify_attributes }}>
@@ -105,7 +113,7 @@
             {% if block.settings.text != blank %}<div class="rte">{{ block.settings.text }}</div>{% endif %}
             {% if card_product != blank and block.settings.show_price %}
               <p class="substrate-world__price">
-                {% if card_product.price_varies %}{{ 'product.from_price' | t: price: card_price }}{% else %}{{ card_price }}{% endif %}
+                {% if card_product.price_varies %}{{ card_from_price }}{% else %}{{ card_price }}{% endif %}
               </p>
             {% endif %}
             {% if block.settings.button_label != blank and card_link != blank %}<a class="substrate-world__text-link" href="{{ card_link }}">{{ block.settings.button_label | escape }} <span aria-hidden="true">→</span></a>{% endif %}
