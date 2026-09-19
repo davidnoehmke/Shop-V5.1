@@ -2,6 +2,8 @@
   assign seo_group = 'default'
   if collection.handle contains 'substrat' or collection.title contains 'Substrat'
     assign seo_group = 'substrates'
+  elsif collection.handle contains 'zimmerpflanzen' or collection.title == 'Zimmerpflanzen'
+    assign seo_group = 'houseplants'
   elsif collection.handle contains 'pflanzgefass' or collection.handle contains 'pflanzgef' or collection.title contains 'Pflanzgef'
     assign seo_group = 'planters'
   elsif collection.handle contains 'smart-grow' or collection.title contains 'Smart Grow'
