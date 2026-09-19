@@ -105,6 +105,34 @@
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
     <script>
       (() => {
+        const marker = 'EMPTY DOM REMOVE PROTECTOR';
+        const clean = (root = document.body) => {
+          if (!root) return;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const remove = [];
+          while (walker.nextNode()) {
+            if (walker.currentNode.nodeValue?.trim() === marker) remove.push(walker.currentNode);
+          }
+          remove.forEach((node) => node.remove());
+        };
+        const start = () => {
+          clean();
+          const observer = new MutationObserver((records) => {
+            for (const record of records) {
+              record.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim() === marker) node.remove();
+                else if (node.nodeType === Node.ELEMENT_NODE) clean(node);
+              });
+            }
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+        else start();
+      })();
+    </script>
+    <script>
+      (() => {
         const sentinel = 'EMPTY DOM REMOVE PROTECTOR';
         const clean = (root = document.body) => {
           const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
