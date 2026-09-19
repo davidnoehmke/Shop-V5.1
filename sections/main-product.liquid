@@ -49,7 +49,7 @@
           endif
         %}
         <div class="main-product__image">
-          {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 88vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+          {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 78vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
         </div>
       {% endfor %}
     {% else %}
@@ -109,7 +109,8 @@
               data-compare-at="{% if variant_on_sale %}{{ variant.compare_at_price | money | escape }}{% endif %}"
               data-unit-price="{{ variant_unit_price | strip | escape }}"
               data-available="{{ variant.available }}"
-              data-sku="{{ variant.sku | escape }}"\n              data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
+              data-sku="{{ variant.sku | escape }}"
+              data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
               {% if variant == selected_variant %}selected{% endif %}
             >
               {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.sold_out' | t }}{% endunless %}
@@ -199,19 +200,24 @@
   .main-product__description > *:last-child { margin-bottom: 0; }
   .main-product__dock { display: none; }
   @media (max-width: 800px) {
-    .main-product { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: 7rem; }
+    .main-product { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
     .main-product__details { position: static; }
     .main-product__media { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -.75rem; padding-inline: .75rem; }
     .main-product__media::-webkit-scrollbar { display: none; }
-    .main-product__image { min-width: 88%; padding: .55rem; aspect-ratio: 1 / 1.12; scroll-snap-align: center; }
+    .main-product__image { min-width: clamp(260px, 78vw, 340px); padding: .55rem; aspect-ratio: 1 / 1; scroll-snap-align: center; }
     .main-product h1 { font-size: clamp(2.35rem, 11vw, 4rem); line-height: .94; }
     .main-product__claim { font-size: 1rem; line-height: 1.5; }
     .main-product__reassurance { grid-template-columns: 1fr; }
-    .main-product__dock { position: fixed; z-index: 25; inset: auto .65rem .65rem; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .8rem; padding: .7rem; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb, var(--background), transparent 3%); box-shadow: 0 16px 42px color-mix(in srgb, var(--text), transparent 78%); backdrop-filter: blur(18px); }
+    .main-product__dock { position: fixed; z-index: 25; inset: auto 5.25rem calc(.65rem + env(safe-area-inset-bottom)) .65rem; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .8rem; padding: .7rem; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb, var(--background), transparent 3%); box-shadow: 0 16px 42px color-mix(in srgb, var(--text), transparent 78%); backdrop-filter: blur(18px); }
     .main-product__dock small, .main-product__dock strong { display: block; }
     .main-product__dock small { overflow: hidden; color: var(--muted); font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
     .main-product__dock strong { font-size: 1rem; }
     .main-product__dock button { min-height: 50px; padding-inline: 1rem; }
+  }
+  @media (max-width: 480px) {
+    .main-product__dock { grid-template-columns: 1fr; }
+    .main-product__dock > div { display: none; }
+    .main-product__dock button { width: 100%; }
   }
 {% endstylesheet %}
 
