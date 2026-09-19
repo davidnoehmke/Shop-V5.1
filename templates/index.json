@@ -510,16 +510,16 @@
   },
   "order": [
     "hero",
-    "phone_call",
     "trust",
     "home_collection_journey",
-    "home_discovery_path",
-    "positioning",
-    "leaf_method",
     "home_choice",
     "home_guides",
     "community",
+    "home_discovery_path",
+    "positioning",
+    "leaf_method",
     "faq",
+    "phone_call",
     "shop_videos"
   ]
 }
