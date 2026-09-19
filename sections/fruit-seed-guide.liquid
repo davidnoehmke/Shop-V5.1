@@ -54,6 +54,14 @@
               assign product_intro = card_product.description | strip_html | strip | truncate: 150
             endif
             assign product_price = card_product.price_min | money
+                assign product_from_price = 'product.from_price' | t: price: product_price
+                if product_from_price contains 'Translation missing'
+                  if request.locale.iso_code == 'de'
+                    assign product_from_price = 'Ab ' | append: product_price
+                  else
+                    assign product_from_price = 'From ' | append: product_price
+                  endif
+                endif
             assign product_alt = card_product.featured_image.alt | default: card_product.title
           %}
 
@@ -73,7 +81,7 @@
                 {% if botanical_name != blank %}<p class="fruit-guide__botanical"><i>{{ botanical_name | escape }}</i></p>{% endif %}
                 {% if block.settings.note != blank %}<p class="fruit-guide__note">{{ block.settings.note | escape }}</p>{% elsif product_intro != blank %}<p class="fruit-guide__note">{{ product_intro | escape }}</p>{% endif %}
                 <div class="fruit-guide__commerce">
-                  <strong>{% if card_product.price_varies %}{{ 'product.from_price' | t: price: product_price }}{% else %}{{ product_price }}{% endif %}</strong>
+                  <strong>{% if card_product.price_varies %}{{ product_from_price }}{% else %}{{ product_price }}{% endif %}</strong>
                   <span>{% if card_product.available %}{% if request.locale.iso_code == 'de' %}Verfügbar{% else %}Available{% endif %}{% else %}{{ 'product.sold_out' | t }}{% endif %}</span>
                 </div>
                 <a class="button button--secondary fruit-guide__link" href="{{ card_product.url }}">
