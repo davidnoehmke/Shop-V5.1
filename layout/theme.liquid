@@ -103,5 +103,20 @@
     {% sections 'footer-group' %}
     <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
+    <script>
+      (() => {
+        const sentinel = 'EMPTY DOM REMOVE PROTECTOR';
+        const clean = (root = document.body) => {
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const stale = [];
+          while (walker.nextNode()) {
+            if (walker.currentNode.nodeValue?.trim() === sentinel) stale.push(walker.currentNode);
+          }
+          stale.forEach((node) => node.remove());
+        };
+        clean();
+        new MutationObserver(() => clean()).observe(document.body, { childList: true, subtree: true });
+      })();
+    </script>
   </body>
 </html>
