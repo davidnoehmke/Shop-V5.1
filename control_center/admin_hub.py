@@ -227,12 +227,11 @@ def render_product_card(product: dict) -> None:
             with metafields_tab:
                 show_table(metafields, empty="Keine Metafelder synchronisiert")
             with media_tab:
-                show_table(media, empty="Keine Medien synchronisiert", links=["source_url", "notion_asset_url"])
+                show_table(media, empty="Keine Medien synchronisiert", links=["source_url"])
             with system_tab:
                 system = {
                     "ID": product.get("id"), "Shopify GID": product.get("shopify_product_gid"),
-                    "Shopify ID": product.get("shopify_product_id"), "Notion Page ID": product.get("notion_page_id"),
-                    "Quelle": product.get("canonical_source"), "Version": product.get("canonical_version"),
+                    "Shopify ID": product.get("shopify_product_id"), "Quelle": product.get("canonical_source"), "Version": product.get("canonical_version"),
                     "Aktualisiert": product.get("updated_at"), "Rohdaten": product.get("data") or {},
                 }
                 st.json(system, expanded=False)
@@ -252,7 +251,7 @@ with st.sidebar:
 
 st.markdown('<div class="leaf-title">Admin Hub</div>', unsafe_allow_html=True)
 st.markdown(
-    '<div class="leaf-subtle">Supabase SSOT · Content · Pipelines · Automationen · Codex/GitHub · Shopify-Übergang</div>',
+    '<div class="leaf-subtle">Supabase SSOT · Shopify Projection · Content · Pipelines · GitHub · Read-only Admin</div>',
     unsafe_allow_html=True,
 )
 

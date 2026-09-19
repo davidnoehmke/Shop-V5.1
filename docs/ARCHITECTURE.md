@@ -1,29 +1,33 @@
 # LEAFerservice development architecture
 
 ```text
-Shop-V5.1/theme/
+Supabase
+  └─ authoritative SSOT for product/content/SEO/configurator data
         │
-        ├── storefront UX, SEO, structured data, configurators
+        ▼
+Shopify
+  └─ storefront, products, collections, metafields, channels
         │
-Shopify runtime data
-        │
-        ├── products, variants, collections, metafields and theme settings
-        │
-Google Sheets approval layer
-        │
-        ├── dry-run, ID matching, controlled update-only sync
-        │
-Notion content database
-        │
-        └── editorial knowledge, FAQ, recipes, SEO and cross-selling
+        ▼
+Customers / search engines / sales channels
+
+GitHub
+  └─ versioned code and migrations
+
+Admin Hub
+  └─ read-only operational view over Supabase
+
+Railway
+  └─ hosting runtime for Admin Hub only
 ```
 
-## Boundaries
+## Verbindliche Grenzen
 
-- Theme code must remain deployable as a Shopify Online Store 2.0 theme and is
-  maintained under `theme/`.
-- Automation code must not embed credentials.
-- Data mutations require explicit approval and a preceding dry-run.
-- Theme settings and product metafields remain the runtime configuration layer;
-  repository files are the versioned implementation layer. Automation and
-  documentation remain outside `theme/`.
+- Supabase ist die einzige editierbare Datenquelle für Commerce- und Content-Daten.
+- Shopify ist Projektionsziel und Rücklesequelle, nicht konkurrierende SSOT.
+- GitHub enthält Code, Migrationen und Dokumentation, aber keine operative Content-SSOT.
+- Railway hostet den Admin Hub; Railway ist weder Datenquelle noch Sync-Bus.
+- Notion und Google Sheets sind nicht Teil der produktiven Route.
+- Legacy-Syncs und Experimente dürfen keine produktiven Trigger ausführen.
+- Schreibende Änderungen an Shopify erfolgen nur kontrolliert aus dem festgelegten Supabase-Projektionspfad.
+- Bestehende aktive Produkte dürfen durch Automationen nicht automatisch deaktiviert oder zurückgestuft werden.

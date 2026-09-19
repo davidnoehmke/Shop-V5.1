@@ -1,14 +1,15 @@
 # Automation
 
-## Google Apps Script
+## Produktive Route
 
-`google-apps-script/` enthält den kontrollierten Shopify↔Google-Sheets-/Notion-
-Sync. Die Datei ist für eine private, an eine Google-Tabelle gebundene Apps-
-Script-Installation gedacht. Die Installation, Berechtigungen und
-Sicherheitsgrenzen stehen in `google-apps-script/INSTALLATION.md`.
+Die einzige produktive Datenroute lautet:
 
-## Experimente
+`Supabase (SSOT) -> Shopify (Storefront/Projection)`
 
-`experiments/` enthält optionale JavaScript-Prototypen. Sie werden nicht
-automatisch in Shopify geladen und gehören nicht zum produktionsreifen
-Theme-Deploy.
+GitHub versioniert Implementierung und Prüfregeln. Railway hostet nur den Admin Hub und ist keine Datenquelle oder Sync-Schicht.
+
+## Legacy
+
+`google-apps-script/` enthält historischen Shopify/Google-Sheets/Notion-Sync-Code. Dieser Pfad ist ausdrücklich deaktiviert und nicht Teil der produktiven Architektur. Er darf keine Trigger, Rücksyncs oder schreibenden Automationen gegen Shopify, Supabase oder Notion betreiben.
+
+`experiments/` enthält optionale Prototypen. Sie werden nicht automatisch geladen oder ausgeführt.

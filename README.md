@@ -9,7 +9,7 @@ Dokumentation, ohne eine zweite Theme-Kopie zu erzeugen.
 | Pfad | Inhalt |
 | --- | --- |
 | `theme/` | vollständiger Shopify-Online-Store-2.0-Theme-Root |
-| `automation/google-apps-script/` | kontrollierter Shopify↔Google-Sheets-/Notion-Sync |
+| `automation/google-apps-script/` | Legacy-Sync-Code, nicht Teil der produktiven Route |
 | `automation/experiments/` | optionale, nicht automatisch aktive Prototypen |
 | `automation/ci-examples/` | inaktive Deployment-Vorlagen |
 | `docs/` | Architektur, Metafeld-Vertrag, SEO, Deployment und QA |
@@ -21,10 +21,7 @@ Der Theme-Code basiert auf `LEAFerservice_Master_Theme_2026-09-14_v3(3)` vom
 Produkt-/Collection-Content, Cross-Selling, Trust-Elemente, FAQ-, Produkt- und
 Breadcrumb-Structured-Data sowie die zuletzt ergänzten UX-/SEO-Bausteine.
 
-Der Sync stammt aus dem bidirektionalen Shopify↔Notion-/Google-Sheets-Stand und
-arbeitet standardmäßig mit Dry-Run, eindeutiger ID-Prüfung, Update-only-
-Schutz, expliziter Freigabe und Audit-Log. Zugangsdaten und Runtime-Daten
-werden nicht in Git versioniert.
+Die produktive Route ist verbindlich: Supabase ist die einzige editierbare SSOT für Commerce- und Content-Daten, Shopify ist Storefront/Projektionsziel und Rücklesequelle, GitHub versioniert Code. Railway hostet ausschließlich den Admin Hub und ist keine Datenquelle. Notion und Google Sheets sind aus dem produktiven Datenpfad getrennt. Legacy-Sync-Code bleibt nur als inaktive Referenz erhalten und darf nicht automatisiert ausgeführt werden. Zugangsdaten und Runtime-Daten werden nicht in Git versioniert.
 
 ## Entwicklung
 
