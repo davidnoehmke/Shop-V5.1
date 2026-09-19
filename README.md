@@ -1,27 +1,42 @@
 # LEAFerservice Shop V5.1
 
-Kanonische, versionierbare Grundlage für den LEAFerservice-Shop. Das Repository
-trennt den deploybaren Shopify-Theme-Code von Sync, Experimenten und
-Dokumentation, ohne eine zweite Theme-Kopie zu erzeugen.
+Kanonische, versionierbare Grundlage für LEAFerservice.
+
+## Verbindliche Produktionsroute
+
+```text
+Supabase (SSOT)
+      │
+      ▼
+Shopify (Storefront / Commerce-Projektion)
+```
+
+GitHub versioniert ausschließlich Code, Migrationen, Prüfregeln und Dokumentation.
+Railway hostet ausschließlich den read-only Admin Hub und ist keine Daten- oder
+Sync-Quelle. Notion, Google Sheets, LEAF-OS und frühere Parallel-Syncs gehören
+nicht zum produktiven Datenpfad.
 
 ## Struktur
 
 | Pfad | Inhalt |
 | --- | --- |
-| `theme/` | vollständiger Shopify-Online-Store-2.0-Theme-Root |
-| `automation/google-apps-script/` | Legacy-Sync-Code, nicht Teil der produktiven Route |
-| `automation/experiments/` | optionale, nicht automatisch aktive Prototypen |
-| `automation/ci-examples/` | inaktive Deployment-Vorlagen |
-| `docs/` | Architektur, Metafeld-Vertrag, SEO, Deployment und QA |
+| `theme/` | Shopify Online Store 2.0 Theme |
+| `supabase/migrations/` | versionierte Supabase-Schemaänderungen |
+| `control_center/` | read-only Admin Hub auf Basis von Supabase |
+| `automation/content-agent/` | Verträge und Vorlagen für kontrollierte Content-Vorbereitung |
+| `automation/codex/` | Policy-/Delivery-Helfer und Tests für CI, kein Scheduler |
+| `.github/workflows/ci.yml` | reine Validierung/Tests bei PR und Push |
+| `docs/` | Architektur, SEO, Deployment und QA |
 
-## Aktueller Stand
+## Betriebsregeln
 
-Der Theme-Code basiert auf `LEAFerservice_Master_Theme_2026-09-14_v3(3)` vom
-14.09.2026 und enthält unter anderem Substrat- und Projekt-Konfigurator,
-Produkt-/Collection-Content, Cross-Selling, Trust-Elemente, FAQ-, Produkt- und
-Breadcrumb-Structured-Data sowie die zuletzt ergänzten UX-/SEO-Bausteine.
-
-Die produktive Route ist verbindlich: Supabase ist die einzige editierbare SSOT für Commerce- und Content-Daten, Shopify ist Storefront/Projektionsziel und Rücklesequelle, GitHub versioniert Code. Railway hostet ausschließlich den Admin Hub und ist keine Datenquelle. Notion und Google Sheets sind aus dem produktiven Datenpfad getrennt. Legacy-Sync-Code bleibt nur als inaktive Referenz erhalten und darf nicht automatisiert ausgeführt werden. Zugangsdaten und Runtime-Daten werden nicht in Git versioniert.
+- Supabase ist die einzige editierbare SSOT für Produkt-, Content-, SEO- und Konfiguratordaten.
+- Shopify ist Storefront, Commerce-Ziel und Verifikations-/Rücklesequelle.
+- Automatisches Zurückstufen aktiver Produkte auf Draft/Archived ist verboten.
+- Bestandsverfolgung bleibt deaktiviert; Varianten dürfen weiterverkauft werden.
+- Kein Notion-, Google-Sheets-, LEAF-OS- oder Railway-Datensync ist Teil der Produktionsroute.
+- Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
+- Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
 
 ## Entwicklung
 
@@ -31,15 +46,3 @@ shopify theme push --unpublished --store="$SHOPIFY_STORE" --path theme
 ```
 
 Vor einer Veröffentlichung die Checkliste in `docs/DEPLOYMENT.md` ausführen.
-Der aktuelle Theme-Check-Stand ist in `docs/VALIDATION.md` festgehalten.
-Die getrennten Runtime-Secrets, Sicherheitsschalter und der schreibfreie
-Konfigurations-Dry-Run sind in `docs/AUTOMATION_RUNTIME.md` dokumentiert.
-
-## Verwandte Repositories
-
-- [LeafersShop/leafertheme_V1](https://github.com/LeafersShop/leafertheme_V1) –
-  vorgesehenes Theme-only-Mirror
-- [davidnoehmke/leaferpage](https://github.com/davidnoehmke/leaferpage) –
-  Headless-/Hydrogen-Arbeitsstand
-- [davidnoehmke/LEAF-OS](https://github.com/davidnoehmke/LEAF-OS) –
-  ältere Oxygen-/Agent-Experimente
