@@ -115,13 +115,22 @@
           }
           remove.forEach((node) => node.remove());
         };
+        const repairLinks = (root = document) => {
+          root.querySelectorAll?.('a[href="/collections/zimmerpflanzen"], a[href$="/collections/zimmerpflanzen"]').forEach((link) => {
+            link.href = '/collections/zimmerpflanzen-1';
+          });
+        };
         const start = () => {
           clean();
+          repairLinks();
           const observer = new MutationObserver((records) => {
             for (const record of records) {
               record.addedNodes.forEach((node) => {
                 if (node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim() === marker) node.remove();
-                else if (node.nodeType === Node.ELEMENT_NODE) clean(node);
+                else if (node.nodeType === Node.ELEMENT_NODE) {
+                  clean(node);
+                  repairLinks(node);
+                }
               });
             }
           });
