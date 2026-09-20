@@ -6,9 +6,10 @@
 |---|---|---|
 | Produkt-/Content-/SEO-Daten | Supabase | einzige editierbare SSOT |
 | Storefront/Commerce | Shopify | Projektion, Checkout, Sales Channels, Rücklesequelle |
-| Code/Migrationen | GitHub `davidnoehmke/Shop-V5.1` | versionierte Implementierung |
-| Admin Hub | `control_center/` | read-only operative Ansicht |
-| Hosting Admin Hub | Railway | reine Laufzeit/Hosting |
+| Orchestrierung | ChatGPT | kontrollierte Research-, Prüf- und Owner-Workflows |
+| Code/Migrationen | GitHub `davidnoehmke/Shop-V5.1` | versionierte Implementierung, keine Runtime |
+| `control_center/` | Legacy | Entwicklungs-/Archivartefakt, nicht produktiv |
+| Railway | ausgeschlossen | keine Runtime, kein Sync-Bus, keine Business-Logik |
 | Notion | getrennt | keine produktive Datenquelle |
 | Google Sheets / Apps Script | getrennt | Legacy, keine produktive Datenquelle |
 
@@ -18,8 +19,8 @@
 - Shopify-IDs und Handles werden erhalten und als Projektion/Rücklese-Referenz verwendet.
 - Automationen dürfen aktive Produkte nicht automatisch auf Draft/Archived zurücksetzen.
 - Kein bidirektionaler Notion-/Sheets-Rücksync darf den produktiven Pfad beeinflussen.
-- Railway-Konfiguration darf keine eigenständige Business-Logik oder Content-Quelle darstellen.
+- Railway darf nicht als Runtime, Sync-Bus, Business-Logik oder Content-Quelle reaktiviert werden.
 
 ## Legacy
 
-Historische Notion-, Google-Sheets-, LEAF-OS- und alternative Sync-Pfade sind nicht Teil der produktiven Architektur. Sie dürfen nur als Dokumentation/Archiv existieren, solange sie keine Trigger oder schreibenden Verbindungen aktivieren.
+Historische Railway-, Notion-, Google-Sheets-, LEAF-OS- und alternative Sync-Pfade sind nicht Teil der produktiven Architektur. Sie dürfen nur als Dokumentation/Archiv existieren, solange sie keine Trigger oder schreibenden Verbindungen aktivieren.
