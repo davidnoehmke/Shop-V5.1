@@ -60,8 +60,66 @@
     {% if request.page_type == 'product' %}
       {% render 'product-faq-structured-data', product: product %}
     {% endif %}
+    {% liquid
+      assign organization_logo = shop.brand.logo
+      if organization_logo == blank
+        assign organization_logo = shop.brand.square_logo
+      endif
+    %}
+
+    {% if request.page_type == 'index' %}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "@id": {{ shop.secure_url | append: '#organization' | json }},
+          "name": {{ shop.name | json }},
+          "url": {{ shop.secure_url | json }}{% if organization_logo != blank %},
+          "logo": {
+            "@type": "ImageObject",
+            "url": {{ organization_logo | image_url: width: 1200 | prepend: 'https:' | json }}
+          }{% endif %}
+        }
+      </script>
+    {% endif %}
+
     {% if request.page_type == 'article' %}
-      <script type="application/ld+json">{{ article | structured_data }}</script>
+      {% liquid
+        assign article_description = page_description | default: article.excerpt | default: article.content | strip_html | strip
+        assign article_image = article.image
+        if article_image == blank
+          assign article_image = organization_logo
+        endif
+      %}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "@id": {{ canonical_url | append: '#article' | json }},
+          "mainEntityOfPage": {"@type": "WebPage", "@id": {{ canonical_url | json }}},
+          "url": {{ canonical_url | json }},
+          "headline": {{ article.title | json }},
+          "name": {{ article.title | json }},
+          "description": {{ article_description | truncate: 320 | json }},
+          "author": {"@type": "Person", "name": {{ article.author | json }}},
+          "publisher": {
+            "@type": "Organization",
+            "@id": {{ shop.secure_url | append: '#organization' | json }},
+            "name": {{ shop.name | json }},
+            "url": {{ shop.secure_url | json }}{% if organization_logo != blank %},
+            "logo": {
+              "@type": "ImageObject",
+              "url": {{ organization_logo | image_url: width: 1200 | prepend: 'https:' | json }}
+            }{% endif %}
+          }{% if article_image != blank %},
+          "image": {
+            "@type": "ImageObject",
+            "url": {{ article_image | image_url: width: 1600 | prepend: 'https:' | json }}
+          }{% endif %},
+          "datePublished": {{ article.published_at | date_to_xmlschema | json }},
+          "dateModified": {{ article.published_at | date_to_xmlschema | json }}
+        }
+      </script>
     {% endif %}
 
     {{ content_for_header }}
