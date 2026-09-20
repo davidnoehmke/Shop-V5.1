@@ -4,7 +4,11 @@
   "ssot": "supabase",
   "production_target": "shopify",
   "approval_surface": "chatgpt",
-  "candidate_types": ["blog_article", "product", "seo_ux_change"],
+  "candidate_types": [
+    "blog_article",
+    "product",
+    "seo_ux_change"
+  ],
   "states": [
     "pending_review",
     "approved",
@@ -17,14 +21,32 @@
   "write_gate": {
     "required_state": "sync_ready",
     "requires_explicit_human_approval": true,
-    "approval_identity_fields": ["id", "approval_token"],
+    "approval_identity_fields": [
+      "id",
+      "approval_token"
+    ],
     "allow_automatic_publish": false,
     "allow_automatic_main_commit": false
   },
   "research": {
-    "blog": {"cadence": "daily", "max_candidates_per_run": 1},
-    "product": {"cadence": "daily", "max_candidates_per_run": 1},
-    "seo_ux": {"cadence": "every_2_days"}
+    "blog": {
+      "cadence": "daily",
+      "max_candidates_per_run": 1
+    },
+    "product": {
+      "cadence": "daily",
+      "max_candidates_per_run": 1
+    },
+    "seo_ux": {
+      "cadence": "on_demand",
+      "triggers": [
+        "verified_bug",
+        "search_console_negative_signal",
+        "analytics_negative_signal",
+        "mandatory_technical_or_legal_requirement",
+        "explicit_owner_request"
+      ]
+    }
   },
   "quality_gates": {
     "fact_validation": true,
@@ -37,5 +59,30 @@
     "internal_linking_check": true,
     "mobile_check": true,
     "product_min_net_gross_margin": 0.25
+  },
+  "storefront_freeze": {
+    "effective_from": "2026-09-19",
+    "default_growth_scope": [
+      "product",
+      "blog_article"
+    ],
+    "frozen_surfaces": [
+      "theme_structure",
+      "homepage_structure",
+      "navigation",
+      "url_handles",
+      "canonicals",
+      "robots",
+      "core_seo_architecture"
+    ],
+    "allow_change_only_when": [
+      "verified_bug",
+      "search_console_negative_signal",
+      "analytics_negative_signal",
+      "mandatory_technical_or_legal_requirement",
+      "explicit_owner_approval"
+    ],
+    "change_strategy": "smallest_safe_change",
+    "require_post_change_verification": true
   }
 }

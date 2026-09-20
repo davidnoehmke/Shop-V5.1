@@ -15,3 +15,12 @@ LEAF-OS oder Railway. Railway ist ausschließlich Hosting für den read-only Adm
 Die einzige GitHub Action ist `.github/workflows/ci.yml`; sie validiert Repository,
 Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
 aktiviert keine externe Legacy-Verbindung.
+
+
+## Storefront-Freeze
+
+Seit 2026-09-19 sind proaktive Theme-/SEO-UX-Umbauten deaktiviert. Der Content-Agent
+bereitet standardmäßig nur Produkt- und Blog-Kandidaten vor. SEO-/UX-Änderungen sind
+nur on-demand zulässig, wenn ein verifizierter Fehler, ein belastbares Signal aus
+Search Console/Analytics, eine zwingende technische/rechtliche Anforderung oder eine
+explizite Owner-Freigabe vorliegt.

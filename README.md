@@ -38,6 +38,24 @@ nicht zum produktiven Datenpfad.
 - Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
 - Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
 
+## Storefront-Freeze ab 2026-09-19
+
+Der aktuelle Shopify-Storefront-Stand gilt als stabile Produktionsbasis.
+
+Standardmäßiges Wachstum erfolgt ab jetzt nur noch über:
+- neue bzw. verbesserte Produkte inklusive Metafeldern, Medien und interner Verlinkung
+- neue bzw. verbesserte Blog-/Ratgeberinhalte inklusive FAQ/HowTo, Quellen und interner Verlinkung
+
+Theme-Struktur, Startseite, Navigation, URL-/Handle-Struktur, Canonicals, Robots-Regeln und grundlegende SEO-Architektur werden nicht mehr proaktiv umgebaut.
+
+Ausnahmen sind nur zulässig, wenn mindestens einer dieser Punkte erfüllt ist:
+- ein reproduzierbarer technischer Fehler liegt vor
+- Search Console oder Analytics zeigen einen belastbaren negativen Effekt
+- eine zwingende technische/gesetzliche Anforderung erfordert die Änderung
+- der Owner gibt die Änderung ausdrücklich frei
+
+Jede Ausnahme folgt weiterhin: Ist-Zustand prüfen -> kleinste sichere Änderung -> CI/QA -> Live-Verifikation.
+
 ## Entwicklung
 
 ```bash
