@@ -8,6 +8,15 @@
     assign cta_heading_default = 'Finde das passende Substrat für deine Pflanze.'
     assign cta_text_default = 'Wähle ein Pflanzenprofil und vergleiche Menge, Preis und Rezeptur vor dem Kauf.'
     assign cta_label_default = 'Substrat konfigurieren'
+    assign comment_eyebrow = 'Austausch'
+    assign comment_heading = 'Was funktioniert bei dir?'
+    assign comment_intro = 'Teile deine Erfahrung mit Substrat, Standort oder Pflege. Kommentare werden vor der Veröffentlichung geprüft.'
+    assign comment_name = 'Name'
+    assign comment_email = 'E-Mail'
+    assign comment_body = 'Kommentar'
+    assign comment_submit = 'Kommentar senden'
+    assign comment_success = 'Danke – dein Kommentar wird vor der Veröffentlichung geprüft.'
+    assign comment_empty = 'Noch keine veröffentlichten Kommentare. Du kannst den Austausch starten.'
   else
     assign article_eyebrow = 'LEAFerservice guides'
     assign back_label = 'All guides'
@@ -17,6 +26,15 @@
     assign cta_heading_default = 'Find the right substrate for your plant.'
     assign cta_text_default = 'Choose a plant profile and compare volume, price and recipe before buying.'
     assign cta_label_default = 'Configure substrate'
+    assign comment_eyebrow = 'Discussion'
+    assign comment_heading = 'What works for you?'
+    assign comment_intro = 'Share your experience with substrate, placement or plant care. Comments are reviewed before publication.'
+    assign comment_name = 'Name'
+    assign comment_email = 'Email'
+    assign comment_body = 'Comment'
+    assign comment_submit = 'Submit comment'
+    assign comment_success = 'Thank you – your comment will be reviewed before publication.'
+    assign comment_empty = 'No published comments yet. You can start the discussion.'
   endif
 
   assign cta_eyebrow = section.settings.cta_eyebrow | default: cta_eyebrow_default
@@ -87,6 +105,63 @@
     </section>
   {% endif %}
 
+  {% if blog.handle == 'leafers-nice2know-blog' and article.handle == 'bims-oder-perlit-unterschiede-pflanzsubstrat' or blog.handle == 'leafers-nice2know-blog' and article.handle == 'monstera-thai-constellation-substrat-mischung' %}
+    <section class="main-article__comments page-width" aria-labelledby="ArticleComments-{{ section.id }}">
+      <div class="main-article__comments-head">
+        <p>{{ comment_eyebrow }}</p>
+        <h2 id="ArticleComments-{{ section.id }}">{{ comment_heading }}</h2>
+        <p>{{ comment_intro }}</p>
+      </div>
+
+      {% paginate article.comments by 20 %}
+        <div class="main-article__comments-list">
+          {% for comment in article.comments %}
+            <article class="main-article__comment">
+              <header>
+                <strong>{{ comment.author | escape }}</strong>
+                <time datetime="{{ comment.created_at | date: '%Y-%m-%d' }}">{{ comment.created_at | date: '%d.%m.%Y' }}</time>
+              </header>
+              <div class="rte">{{ comment.content }}</div>
+            </article>
+          {% else %}
+            <p class="main-article__comments-empty">{{ comment_empty }}</p>
+          {% endfor %}
+        </div>
+
+        {% if paginate.pages > 1 %}
+          <nav class="main-article__comments-pagination" aria-label="{{ comment_heading }}">
+            {{ paginate | default_pagination }}
+          </nav>
+        {% endif %}
+
+        <div class="main-article__comment-form">
+          {% form 'new_comment', article %}
+            {% if form.posted_successfully? %}
+              <p class="main-article__comment-success" role="status">{{ comment_success }}</p>
+            {% else %}
+              {{ form.errors | default_errors }}
+              <div class="main-article__comment-fields">
+                <label>
+                  <span>{{ comment_name }}</span>
+                  <input type="text" name="comment[author]" value="{{ form.author | escape }}" autocomplete="name" required>
+                </label>
+                <label>
+                  <span>{{ comment_email }}</span>
+                  <input type="email" name="comment[email]" value="{{ form.email | escape }}" autocomplete="email" required>
+                </label>
+                <label class="main-article__comment-message">
+                  <span>{{ comment_body }}</span>
+                  <textarea name="comment[body]" rows="6" required>{{ form.body }}</textarea>
+                </label>
+              </div>
+              <button class="button" type="submit">{{ comment_submit }}</button>
+            {% endif %}
+          {% endform %}
+        </div>
+      {% endpaginate %}
+    </section>
+  {% endif %}
+
   {% if section.settings.show_related and blog.articles.size > 1 %}
     <section class="main-article__related page-width" aria-labelledby="RelatedArticles-{{ section.id }}">
       <h2 id="RelatedArticles-{{ section.id }}">{{ related_heading }}</h2>
@@ -149,6 +224,21 @@
   .main-article__cta h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4.2rem); line-height: .98; }
   .main-article__cta .rte, .main-article__cta-text { max-width: 62ch; color: color-mix(in srgb, var(--background), transparent 22%); }
   .main-article__cta .button { flex: 0 0 auto; gap: .5rem; background: var(--accent-soft); color: var(--text); }
+  .main-article__comments { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 5vw, 5rem); margin-top: var(--space-section); padding-top: clamp(2rem, 5vw, 4rem); border-top: 1px solid var(--border); }
+  .main-article__comments-head > p:first-child { margin: 0 0 .65rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-article__comments-head h2 { margin: 0; font-size: clamp(2rem, 4vw, 3.8rem); line-height: 1; letter-spacing: -.04em; }
+  .main-article__comments-head > p:last-child { max-width: 55ch; color: var(--muted); }
+  .main-article__comments-list { display: grid; gap: .75rem; }
+  .main-article__comment { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-article__comment header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 1rem; margin-bottom: .6rem; }
+  .main-article__comment time, .main-article__comments-empty { color: var(--muted); font-size: .82rem; }
+  .main-article__comment-form { margin-top: 1rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb, var(--surface), transparent 10%); }
+  .main-article__comment-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; margin-bottom: 1rem; }
+  .main-article__comment-fields label { display: grid; gap: .4rem; color: var(--muted); font-size: .78rem; font-weight: 750; }
+  .main-article__comment-fields input, .main-article__comment-fields textarea { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: .8rem .9rem; background: var(--background); color: var(--text); }
+  .main-article__comment-message { grid-column: 1 / -1; }
+  .main-article__comment-success { margin: 0; color: var(--accent); font-weight: 800; }
+  .main-article__comments-pagination { margin-top: 1rem; }
   .main-article__related { margin-top: var(--space-section); }
   .main-article__related > h2 { margin: 0 0 1.5rem; font-size: clamp(2rem, 4vw, 3.6rem); }
   .main-article__related-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
@@ -185,12 +275,14 @@
   .main-article__body .article-faq p { margin: 0; padding: 0 1.15rem 1.1rem; color: var(--muted); }
   @media (max-width: 900px) {
     .main-article__layout { grid-template-columns: 1fr; }
+    .main-article__comments { grid-template-columns: 1fr; }
     .main-article__rail { position: static; grid-row: 1; }
     .main-article__cta { align-items: flex-start; flex-direction: column; }
     .main-article__related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 620px) {
     .main-article__related-grid { grid-template-columns: 1fr; }
+    .main-article__comment-fields { grid-template-columns: 1fr; }
     .main-article__cta .button { width: 100%; }
   }
 {% endstylesheet %}
