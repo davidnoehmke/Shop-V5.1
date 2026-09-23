@@ -117,9 +117,10 @@
             "url": {{ article_image | image_url: width: 1600 | prepend: 'https:' | json }}
           }{% endif %},
           "datePublished": {{ article.published_at | date_to_xmlschema | json }},
-          "dateModified": {{ article.published_at | date_to_xmlschema | json }}
+          "dateModified": {{ article.updated_at | date_to_xmlschema | json }}
         }
       </script>
+      {% render 'article-faq-structured-data', article: article, canonical_url: canonical_url %}
     {% endif %}
 
     {{ content_for_header }}
