@@ -288,6 +288,15 @@
       "question_two": "Kann ich Substratbestandteile selbst mischen?",
       "answer_two": "Ja. Beginne mit einer klaren Funktion pro Bestandteil und stelle die Volumenanteile auf insgesamt 100 Prozent ein. Der LEAFer Substrat-Konfigurator hilft beim Planen; Änderungen sollten schrittweise und passend zur Pflanze erfolgen."
     },
+    "houseplants": {
+          "heading": "Zimmerpflanzen passend zu Wurzelraum, Standort und Pflege auswählen",
+          "lead": "Monstera, Philodendron, Alocasia und weitere Zimmerpflanzen unterscheiden sich bei Lichtbedarf, Wurzelstruktur und Feuchtigkeit. Die Auswahl sollte deshalb Pflanze, Gefäß und Substrat gemeinsam betrachten.",
+          "body": "Bei Zimmerpflanzen entscheidet nicht nur die Art, sondern das gesamte System aus Wurzelraum, Substrat, Topf und Standort. Aroiden profitieren häufig von luftigen, strukturstabilen Mischungen; kompaktere Grünpflanzen benötigen teils gleichmäßigere Feuchtigkeit. Nutze die Produkt- und Ratgeberinformationen, um Pflanze, Substrat und Gefäß funktional aufeinander abzustimmen.",
+          "question_one": "Welches Substrat passt zu tropischen Zimmerpflanzen?",
+          "answer_one": "Für viele Monstera-, Philodendron- und Alocasia-Arten ist ein luftiges, grob strukturiertes Substrat sinnvoll. Entscheidend bleiben Topfgröße, Licht und Gießroutine.",
+          "question_two": "Wie wähle ich das passende Gefäß?",
+          "answer_two": "Wähle das Gefäß nach dem vorhandenen Wurzelballen und dem Wasserhaushalt. Zu große Töpfe trocknen langsamer; gute Drainage und ein passendes Substrat bleiben wichtig."
+    },
     "planters": {
       "heading": "Pflanzgefäße, Stofftöpfe und Bewässerungssysteme passend zum Wurzelraum",
       "lead": "Ein Pflanzgefäß bestimmt mehr als die Optik: Volumen, Material, Ablauf und Wasserreservoir verändern, wie schnell ein Substrat trocknet und wie viel Sauerstoff die Wurzeln erreicht.",
