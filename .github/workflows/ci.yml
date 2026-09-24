@@ -104,6 +104,44 @@ jobs:
           while IFS= read -r -d '' file; do
             node --check "$file"
           done < <(find assets -type f -name '*.js' -print0)
+      - name: Validate blog indexability invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          theme = Path('layout/theme.liquid').read_text(encoding='utf-8')
+          blog = Path('sections/main-blog.liquid').read_text(encoding='utf-8')
+
+          required_theme = {
+              'canonical link': '<link rel="canonical" href="{{ canonical_url }}">',
+              'default index robots': '<meta name="robots" content="index,follow,max-image-preview:large">',
+              'search/cart-only noindex gate': "request.page_type == 'search' or request.page_type == 'cart'",
+              'article structured data gate': "request.page_type == 'article'",
+              'Article JSON-LD': '"@type": "Article"',
+          }
+          required_blog = {
+              'article pagination': 'paginate blog.articles',
+              'crawlable pagination links': 'default_pagination',
+              'crawlable article links': 'href="{{ article.url }}"',
+          }
+
+          missing = []
+          for label, token in required_theme.items():
+              if token not in theme:
+                  missing.append(f'layout/theme.liquid: {label}')
+          for label, token in required_blog.items():
+              if token not in blog:
+                  missing.append(f'sections/main-blog.liquid: {label}')
+
+          if missing:
+              print('Blog indexability invariant failed:', file=sys.stderr)
+              for item in missing:
+                  print(f'- {item}', file=sys.stderr)
+              sys.exit(1)
+          PY
 
   migration-validation:
     name: Supabase migration validation
