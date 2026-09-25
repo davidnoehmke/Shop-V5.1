@@ -9,7 +9,7 @@
     {% assign station = product %}
   {% endif %}
   {% if lighting == blank %}
-    {% if product.tags contains 'Pflanzenbeleuchtung' %}
+    {% if product.tags contains 'Pflanzenbeleuchtung' or product.tags contains 'Pflanzenlicht' %}
       {% assign lighting = product %}
     {% elsif product.tags contains 'Grow Light' and product.tags contains 'Indoor-Gewächshaus' %}
       {% assign lighting = product %}
@@ -65,7 +65,7 @@
       </article>
       <article class="interieur-solutions-path interieur-solutions-path--accent">
         <a class="interieur-solutions-path__image" href="{{ lighting.url }}" aria-label="Leuchtmittel und Pflanzenbeleuchtung">
-          {% if lighting.featured_image %}{{ lighting.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: lighting.title }}{% endif %}
+          {% if lighting.featured_image %}{{ lighting.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: lighting.featured_image.alt | default: lighting.title }}{% endif %}
         </a>
         <div class="interieur-solutions-path__body">
           <p class="interieur-solutions-guide__eyebrow">Licht integrieren</p>
