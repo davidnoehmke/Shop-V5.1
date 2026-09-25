@@ -69,8 +69,8 @@
   "order": [
     "breadcrumbs",
     "main",
-    "leaf_guide",
+    "substrat_guide",
     "trust",
-    "substrat_guide"
+    "leaf_guide"
   ]
 }
