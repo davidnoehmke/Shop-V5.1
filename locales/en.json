@@ -167,6 +167,10 @@
       "from_percent": "from %{percent}%",
       "note": "Technical note",
       "cta": "Use in the pro configurator"
+    },
+    "knowledge": {
+      "eyebrow": "Knowledge in layers",
+      "heading": "Understand materials and concepts"
     }
   },
   "product_variant_guide": {
@@ -184,7 +188,9 @@
     "guide": {
       "eyebrow": "Buying guide & knowledge",
       "heading": "How to choose {{ collection }}",
-      "topics": "Collection topics"
+      "topics": "Collection topics",
+      "atoms_eyebrow": "From brief to detailed",
+      "atoms_heading": "Concepts in this product world"
     }
   },
   "recipe": {
@@ -289,13 +295,13 @@
       "answer_two": "Yes. Give every ingredient a purpose and make sure all volume shares add up to 100 percent. The substrate configurator helps you plan the ratio."
     },
     "houseplants": {
-          "heading": "Choose houseplants by root zone, location and care needs",
-          "lead": "Monstera, Philodendron, Alocasia and other houseplants differ in light needs, root structure and moisture requirements. Choose the plant, container and substrate as one system.",
-          "body": "For houseplants, the full system matters: roots, substrate, pot and location. Many aroids benefit from airy, structurally stable mixes, while other foliage plants may prefer more even moisture. Use the product and guide content to match plant, substrate and container by function.",
-          "question_one": "Which substrate suits tropical houseplants?",
-          "answer_one": "Many Monstera, Philodendron and Alocasia species benefit from an airy, coarse mix. Pot size, light and watering habits still determine the final balance.",
-          "question_two": "How should I choose the right container?",
-          "answer_two": "Choose the container around the existing root ball and water balance. Oversized pots dry more slowly, so drainage and substrate structure remain important."
+      "heading": "Choose houseplants by root zone, location and care needs",
+      "lead": "Monstera, Philodendron, Alocasia and other houseplants differ in light needs, root structure and moisture requirements. Choose the plant, container and substrate as one system.",
+      "body": "For houseplants, the full system matters: roots, substrate, pot and location. Many aroids benefit from airy, structurally stable mixes, while other foliage plants may prefer more even moisture. Use the product and guide content to match plant, substrate and container by function.",
+      "question_one": "Which substrate suits tropical houseplants?",
+      "answer_one": "Many Monstera, Philodendron and Alocasia species benefit from an airy, coarse mix. Pot size, light and watering habits still determine the final balance.",
+      "question_two": "How should I choose the right container?",
+      "answer_two": "Choose the container around the existing root ball and water balance. Oversized pots dry more slowly, so drainage and substrate structure remain important."
     },
     "planters": {
       "heading": "Planters, fabric pots and watering systems matched to the root zone",
