@@ -11,6 +11,23 @@
   assign leafer_usp_2 = product.metafields.leafer.usp_2.value
   assign leafer_usp_3 = product.metafields.leafer.usp_3.value
   assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
+  assign leafer_primary_function = product.metafields.leafer.primary_function.value
+  assign leafer_suitable_for = product.metafields.leafer.suitable_for.value
+  assign leafer_ingredients = product.metafields.leafer.ingredients.value
+  assign leafer_application_steps = product.metafields.leafer.application_steps.value
+  assign leafer_mixing_ratio = product.metafields.leafer.mixing_ratio.value
+  assign leafer_care_tip = product.metafields.leafer.care_tip.value
+  assign leafer_difficulty = product.metafields.leafer.difficulty.value
+  assign lighting_power = product.metafields.lighting.rated_power_w.value
+  assign lighting_cct = product.metafields.lighting.cct_k.value
+  assign lighting_spectrum = product.metafields.lighting.spectrum.value
+  assign lighting_ppf = product.metafields.lighting.ppf_umol_s.value
+  assign lighting_ppfd = product.metafields.lighting.ppfd_reference.value
+  assign lighting_mounting = product.metafields.lighting.mounting.value
+  assign lighting_distance = product.metafields.lighting.recommended_distance.value
+  assign lighting_coverage = product.metafields.lighting.coverage_guidance.value
+  assign lighting_ip = product.metafields.lighting.ip_rating.value
+  assign lighting_socket = product.metafields.lighting.socket_connector.value
   assign hero_summary = custom_use_case | default: leafer_intro | default: product.description | strip_html | strip | truncatewords: 32
 %}
 <section class="ls-product" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
@@ -48,6 +65,60 @@
         </div>
       {% endif %}
       {% if leafer_usp_1 != blank or leafer_usp_2 != blank or leafer_usp_3 != blank %}<ul class="ls-product__usp-list" aria-label="{{ 'product.usps.label' | t }}">{% if leafer_usp_1 != blank %}<li>{{ leafer_usp_1 | escape }}</li>{% endif %}{% if leafer_usp_2 != blank %}<li>{{ leafer_usp_2 | escape }}</li>{% endif %}{% if leafer_usp_3 != blank %}<li>{{ leafer_usp_3 | escape }}</li>{% endif %}</ul>{% endif %}
+
+      {% if leafer_primary_function != blank or custom_use_case != blank or leafer_suitable_for != blank or leafer_ingredients != blank or leafer_mixing_ratio != blank or leafer_application_steps != blank or lighting_power != blank or lighting_cct != blank or lighting_spectrum != blank or lighting_mounting != blank %}
+        <div class="ls-product__fact-deck" data-fact-deck>
+          {% if leafer_primary_function != blank or custom_use_case != blank or leafer_suitable_for != blank or leafer_care_tip != blank %}
+            <details class="ls-product__fact">
+              <summary>
+                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg></span>
+                <span>{% if leafer_primary_function != blank %}{{ leafer_primary_function | escape }}{% elsif custom_use_case != blank %}{{ custom_use_case | escape }}{% else %}{{ leafer_suitable_for | first | escape }}{% endif %}</span>
+                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div class="ls-product__fact-panel">
+                {% if leafer_suitable_for != blank %}<p>{{ leafer_suitable_for | join: ' · ' | escape }}</p>{% endif %}
+                {% if leafer_care_tip != blank %}<p>{{ leafer_care_tip | escape }}</p>{% endif %}
+                {% if leafer_difficulty != blank %}<p>{{ leafer_difficulty | escape }}</p>{% endif %}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if leafer_ingredients != blank or leafer_mixing_ratio != blank or leafer_application_steps != blank %}
+            <details class="ls-product__fact">
+              <summary>
+                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg></span>
+                <span>{% if leafer_mixing_ratio != blank %}{{ leafer_mixing_ratio | strip_html | truncatewords: 6 | escape }}{% elsif leafer_ingredients != blank %}{{ leafer_ingredients | first | escape }}{% else %}{{ leafer_application_steps | first | escape }}{% endif %}</span>
+                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div class="ls-product__fact-panel">
+                {% if leafer_ingredients != blank %}<div class="ls-product__fact-tags">{% for ingredient in leafer_ingredients limit: 6 %}<span>{{ ingredient | escape }}</span>{% endfor %}</div>{% endif %}
+                {% if leafer_mixing_ratio != blank %}<p>{{ leafer_mixing_ratio | escape }}</p>{% endif %}
+                {% if leafer_application_steps != blank %}<ol>{% for step in leafer_application_steps limit: 5 %}<li>{{ step | escape }}</li>{% endfor %}</ol>{% endif %}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if lighting_power != blank or lighting_cct != blank or lighting_spectrum != blank or lighting_ppf != blank or lighting_ppfd != blank or lighting_mounting != blank or lighting_distance != blank or lighting_coverage != blank or lighting_ip != blank or lighting_socket != blank %}
+            <details class="ls-product__fact">
+              <summary>
+                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg></span>
+                <span>{% if lighting_power != blank %}{{ lighting_power }} W{% endif %}{% if lighting_power != blank and lighting_cct != blank %} · {% endif %}{% if lighting_cct != blank %}{{ lighting_cct }} K{% endif %}{% if lighting_power == blank and lighting_cct == blank and lighting_socket != blank %}{{ lighting_socket | escape }}{% endif %}</span>
+                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
+              </summary>
+              <div class="ls-product__fact-panel ls-product__fact-panel--technical">
+                {% if lighting_spectrum != blank %}<p>{{ lighting_spectrum | escape }}</p>{% endif %}
+                {% if lighting_ppf != blank %}<p><strong>PPF</strong> {{ lighting_ppf }} µmol/s</p>{% endif %}
+                {% if lighting_ppfd != blank %}<p><strong>PPFD</strong> {{ lighting_ppfd | escape }}</p>{% endif %}
+                {% if lighting_mounting != blank %}<p>{{ lighting_mounting | escape }}</p>{% endif %}
+                {% if lighting_distance != blank %}<p>{{ lighting_distance | escape }}</p>{% endif %}
+                {% if lighting_coverage != blank %}<p>{{ lighting_coverage | escape }}</p>{% endif %}
+                {% if lighting_ip != blank or lighting_socket != blank %}<p>{% if lighting_ip != blank %}{{ lighting_ip | escape }}{% endif %}{% if lighting_ip != blank and lighting_socket != blank %} · {% endif %}{% if lighting_socket != blank %}{{ lighting_socket | escape }}{% endif %}</p>{% endif %}
+              </div>
+            </details>
+          {% endif %}
+        </div>
+      {% endif %}
+
       <div class="ls-product__purchase">
         <div class="ls-product__price" data-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
 
@@ -134,6 +205,23 @@
 .ls-product__knowledge .leaf-atom{background:rgba(255,255,255,.18)}
 .ls-product__usp-list{margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--ls-line);list-style:none;border:1px solid var(--ls-line)}
 .ls-product__usp-list li{min-height:58px;display:flex;align-items:center;padding:10px 12px;background:var(--ls-cream);font-size:.72rem;font-weight:750;line-height:1.35}
+.ls-product__fact-deck{margin:0 0 20px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;border:1px solid var(--ls-line);background:var(--ls-line)}
+.ls-product__fact{min-width:0;background:var(--ls-cream)}
+.ls-product__fact summary{min-height:64px;display:grid;grid-template-columns:30px minmax(0,1fr) 18px;gap:.6rem;align-items:center;padding:.75rem .8rem;cursor:pointer;list-style:none;font-size:.76rem;font-weight:780;line-height:1.3}
+.ls-product__fact summary::-webkit-details-marker{display:none}
+.ls-product__fact-icon{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--ls-line);color:var(--ls-accent)}
+.ls-product__fact-icon svg{width:17px;fill:none;stroke:currentColor;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}
+.ls-product__fact-toggle{font-size:1.15rem;font-weight:400;transition:transform .2s ease}
+.ls-product__fact[open]{grid-column:1/-1}
+.ls-product__fact[open] .ls-product__fact-toggle{transform:rotate(45deg)}
+.ls-product__fact[open] summary{border-bottom:1px solid var(--ls-line)}
+.ls-product__fact-panel{display:grid;gap:.6rem;padding:.85rem .95rem 1rem;color:var(--ls-muted);font-size:.78rem;line-height:1.55}
+.ls-product__fact-panel p,.ls-product__fact-panel ol{margin:0}
+.ls-product__fact-panel ol{padding-left:1.2rem}
+.ls-product__fact-tags{display:flex;flex-wrap:wrap;gap:.35rem}
+.ls-product__fact-tags span{padding:.3rem .45rem;border:1px solid var(--ls-line);background:rgba(255,255,255,.24);color:var(--ls-ink);font-size:.7rem}
+.ls-product__fact-panel--technical{grid-template-columns:repeat(2,minmax(0,1fr))}
+.ls-product__fact-panel--technical p{padding:.45rem 0;border-bottom:1px solid var(--ls-line)}
 .ls-product__purchase{margin-top:1.4rem;padding:1.35rem 0;border-block:1px solid var(--ls-line)}
 .ls-product__price{font-size:1.55rem;font-weight:760;margin-bottom:24px}
 .ls-product__price s{font-size:.75em;color:var(--ls-muted);margin-left:8px;font-weight:500}
@@ -160,12 +248,12 @@
 .ls-product__details summary{cursor:pointer;font-weight:700}
 .ls-product__details details>div{padding-top:12px;color:var(--ls-muted)}
 @media(max-width:980px){.ls-product__grid{grid-template-columns:1fr;gap:32px}.ls-product__media-item:first-child{max-height:520px}.ls-product__info{position:static;padding-left:0;border-left:0}.ls-product__title{font-size:clamp(2.4rem,7vw,4rem)}}
-@media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:12px}.ls-product__grid{gap:26px;padding-left:16px;padding-right:16px}.ls-product__media{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -16px;padding:0 16px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 min(66vw,280px);aspect-ratio:1/1;max-height:min(46vh,280px);padding:.35rem;scroll-snap-align:center}.ls-product__title{font-size:2.25rem}.ls-product__usp-list{grid-template-columns:1fr}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:0;bottom:0;left:0;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--ls-line);background:rgba(244,240,230,.97);box-shadow:0 -12px 32px rgba(23,61,43,.12);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-height:46px;padding:0 14px;border-radius:0}}
+@media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:12px}.ls-product__fact-deck{grid-template-columns:1fr}.ls-product__fact[open]{grid-column:auto}.ls-product__fact summary{min-height:58px}.ls-product__fact-panel--technical{grid-template-columns:1fr}.ls-product__grid{gap:26px;padding-left:16px;padding-right:16px}.ls-product__media{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -16px;padding:0 16px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 min(66vw,280px);aspect-ratio:1/1;max-height:min(46vh,280px);padding:.35rem;scroll-snap-align:center}.ls-product__title{font-size:2.25rem}.ls-product__usp-list{grid-template-columns:1fr}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:0;bottom:0;left:0;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--ls-line);background:rgba(244,240,230,.97);box-shadow:0 -12px 32px rgba(23,61,43,.12);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-height:46px;padding:0 14px;border-radius:0}}
 @media(prefers-reduced-motion:reduce){.ls-product__media{scroll-behavior:auto}}
 {% endstyle %}
 
 <script>
-(()=>{const root=document.getElementById('LeaferserviceProduct-{{ section.id }}');if(!root||root.dataset.ready)return;root.dataset.ready='true';const form=root.querySelector('.ls-product__form'),data=root.querySelector('[data-variants]');if(!form||!data)return;const variants=JSON.parse(data.textContent),idInput=form.querySelector('[data-variant-id]'),price=root.querySelector('[data-price]'),button=root.querySelector('[data-add-to-cart]'),label=root.querySelector('[data-add-label]'),availability=root.querySelector('[data-availability]');const labels={invalid:{{ 'product.availability.invalid_combination' | t | json }},choose:{{ 'product.availability.choose_available' | t | json }},add:{{ 'product.add_to_cart' | t | json }},unavailable:{{ 'product.availability.unavailable_short' | t | json }},available:{{ 'product.availability.available' | t | json }},unavailableLong:{{ 'product.availability.unavailable' | t | json }}};const money=c=>new Intl.NumberFormat('{{ localization.language.iso_code | default: "de-DE" }}',{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}).format(c/100);const mobileBar=root.querySelector('[data-mobile-buy]'),mobilePrice=root.querySelector('[data-mobile-price]'),mobileAdd=root.querySelector('[data-mobile-add]');if(mobileAdd){mobileAdd.addEventListener('click',()=>button?.click())}if(mobileBar){const observer=new IntersectionObserver(entries=>{mobileBar.hidden=entries[0]?.isIntersecting??true},{threshold:.1});observer.observe(button)}function update(){const values=[...form.querySelectorAll('.ls-product__option')].map(group=>group.querySelector('input:checked')?.value);const variant=variants.find(v=>v.options.every((o,i)=>o===values[i]));if(!variant){button.disabled=true;label.textContent=labels.invalid;availability.textContent=labels.choose;return}idInput.value=variant.id;price.textContent=money(variant.price);if(mobilePrice)mobilePrice.textContent=money(variant.price);button.disabled=!variant.available;if(mobileAdd)mobileAdd.disabled=!variant.available;label.textContent=variant.available?labels.add:labels.unavailable;availability.textContent=variant.available?labels.available:labels.unavailableLong;const url=new URL(window.location.href);url.searchParams.set('variant',variant.id);history.replaceState({},'',url)}form.addEventListener('change',e=>{if(e.target.matches('input[type="radio"]'))update()});document.addEventListener('shopify:section:load',e=>{if(e.target.contains(root))root.dataset.ready=''})})();
+(()=>{const root=document.getElementById('LeaferserviceProduct-{{ section.id }}');if(!root||root.dataset.ready)return;root.dataset.ready='true';const form=root.querySelector('.ls-product__form'),data=root.querySelector('[data-variants]');if(!form||!data)return;const variants=JSON.parse(data.textContent),idInput=form.querySelector('[data-variant-id]'),price=root.querySelector('[data-price]'),button=root.querySelector('[data-add-to-cart]'),label=root.querySelector('[data-add-label]'),availability=root.querySelector('[data-availability]');const labels={invalid:{{ 'product.availability.invalid_combination' | t | json }},choose:{{ 'product.availability.choose_available' | t | json }},add:{{ 'product.add_to_cart' | t | json }},unavailable:{{ 'product.availability.unavailable_short' | t | json }},available:{{ 'product.availability.available' | t | json }},unavailableLong:{{ 'product.availability.unavailable' | t | json }}};const money=c=>new Intl.NumberFormat('{{ localization.language.iso_code | default: "de-DE" }}',{style:'currency',currency:'{{ cart.currency.iso_code | default: shop.currency }}'}).format(c/100);root.querySelectorAll('.ls-product__fact').forEach(detail=>{detail.addEventListener('toggle',()=>{if(!detail.open)return;root.querySelectorAll('.ls-product__fact[open]').forEach(other=>{if(other!==detail)other.open=false})})});const mobileBar=root.querySelector('[data-mobile-buy]'),mobilePrice=root.querySelector('[data-mobile-price]'),mobileAdd=root.querySelector('[data-mobile-add]');if(mobileAdd){mobileAdd.addEventListener('click',()=>button?.click())}if(mobileBar){const observer=new IntersectionObserver(entries=>{mobileBar.hidden=entries[0]?.isIntersecting??true},{threshold:.1});observer.observe(button)}function update(){const values=[...form.querySelectorAll('.ls-product__option')].map(group=>group.querySelector('input:checked')?.value);const variant=variants.find(v=>v.options.every((o,i)=>o===values[i]));if(!variant){button.disabled=true;label.textContent=labels.invalid;availability.textContent=labels.choose;return}idInput.value=variant.id;price.textContent=money(variant.price);if(mobilePrice)mobilePrice.textContent=money(variant.price);button.disabled=!variant.available;if(mobileAdd)mobileAdd.disabled=!variant.available;label.textContent=variant.available?labels.add:labels.unavailable;availability.textContent=variant.available?labels.available:labels.unavailableLong;const url=new URL(window.location.href);url.searchParams.set('variant',variant.id);history.replaceState({},'',url)}form.addEventListener('change',e=>{if(e.target.matches('input[type="radio"]'))update()});document.addEventListener('shopify:section:load',e=>{if(e.target.contains(root))root.dataset.ready=''})})();
 </script>
 
 {% schema %}
