@@ -78,8 +78,8 @@
   "order": [
     "breadcrumbs",
     "main",
-    "leaf_guide",
+    "interieur_guide",
     "trust",
-    "interieur_guide"
+    "leaf_guide"
   ]
 }
