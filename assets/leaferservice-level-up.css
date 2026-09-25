@@ -366,3 +366,56 @@ textarea {
     transform: none;
   }
 }
+
+/* Desktop platform layer: keep Shopify as commerce engine, not visual language. */
+@media (min-width: 1051px) {
+  .hero,
+  .trust-bar__inner,
+  .trust-bar__item,
+  .product-card,
+  .featured__product,
+  .collection-product-card,
+  .home-collection-journey__card,
+  .home-guides__card,
+  .community-gallery__item,
+  .home-choice-band__inner,
+  .product-seo-details__usps li,
+  .product-description__benefits li,
+  .hero__buttons .button,
+  .leaf-home__button,
+  .featured__header > a,
+  .product-form button[type="submit"],
+  .product__info-container button[type="submit"],
+  .product-main__info button[type="submit"],
+  input,
+  select,
+  textarea {
+    border-radius: 0;
+  }
+
+  .hero {
+    border-bottom: 1px solid var(--leaf-level-line);
+  }
+
+  .trust-bar {
+    margin-top: 0;
+  }
+
+  .trust-bar__inner {
+    border-inline: 0;
+    box-shadow: none;
+  }
+
+  .product-card,
+  .featured__product,
+  .collection-product-card {
+    box-shadow: none;
+  }
+
+  .product-card:hover,
+  .featured__product:hover,
+  .collection-product-card:hover {
+    box-shadow: 0 18px 42px rgba(30,45,37,.08);
+    transform: translateY(-3px);
+  }
+}
