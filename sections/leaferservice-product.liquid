@@ -6,14 +6,12 @@
   assign custom_lighting_position = product.metafields.custom.lighting_position.value
   assign custom_recommended_rooms = product.metafields.custom.recommended_room.value
   assign leafer_subtitle = product.metafields.leafer.subtitle.value
+  assign leafer_intro = product.metafields.leafer.intro.value
   assign leafer_usp_1 = product.metafields.leafer.usp_1.value
   assign leafer_usp_2 = product.metafields.leafer.usp_2.value
   assign leafer_usp_3 = product.metafields.leafer.usp_3.value
   assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
-  assign has_dynamic_product_description = false
-  if custom_use_case != blank or custom_light_style != blank or custom_lighting_position != blank or custom_recommended_rooms != blank
-    assign has_dynamic_product_description = true
-  endif
+  assign hero_summary = custom_use_case | default: leafer_intro | default: product.description | strip_html | strip | truncatewords: 32
 %}
 <section class="ls-product" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="ls-product__grid page-width">
@@ -87,9 +85,9 @@
         {% endform %}
       </div>
 
-      {% if has_dynamic_product_description %}
+      {% if hero_summary != blank or custom_light_style != blank or custom_lighting_position != blank %}
         <div class="ls-product__description rte">
-          {% if custom_use_case != blank %}<p>{{ custom_use_case | escape | newline_to_br }}</p>{% endif %}
+          {% if hero_summary != blank %}<p>{{ hero_summary | escape }}</p>{% endif %}
           {% if custom_light_style != blank or custom_lighting_position != blank %}
             <p class="ls-product__description-meta">
               {% if custom_light_style != blank %}<strong>{{ custom_light_style | escape }}</strong>{% endif %}
@@ -98,8 +96,6 @@
             </p>
           {% endif %}
         </div>
-      {% elsif product.description != blank %}
-        <div class="ls-product__description rte">{{ product.description }}</div>
       {% endif %}
 
       <div class="ls-product__details">

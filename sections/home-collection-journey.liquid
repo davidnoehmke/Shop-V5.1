@@ -136,7 +136,7 @@
               <div class="home-journey__body">
                 {% if card_eyebrow != blank %}<p class="home-journey__eyebrow">{{ card_eyebrow | escape }}</p>{% endif %}
                 <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
-                {% if card_copy != blank %}<p>{{ card_copy | escape }}</p>{% endif %}
+                {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape }}</p>{% endif %}
                 {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ section.settings.product_label | escape }}</span>{% endif %}
                 <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape }} <span aria-hidden="true">→</span></a>
               </div>
