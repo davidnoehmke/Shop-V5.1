@@ -1,6 +1,7 @@
 {% liquid
   assign sort_by = collection.sort_by | default: collection.default_sort_by
   assign hero_intro = collection.metafields.leafer.intro.value | strip_html | strip
+  assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   if hero_intro == blank
     assign hero_intro = collection.description | strip_html | strip | truncatewords: 38
   endif
@@ -40,6 +41,11 @@
       </p>
       <h1>{{ collection.title | escape }}</h1>
       {% if hero_intro != blank %}<p class="main-collection__intro">{{ hero_intro | escape }}</p>{% endif %}
+      {% if knowledge_atoms != blank %}
+        <div class="main-collection__knowledge">
+          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'one_line', limit: 2 %}
+        </div>
+      {% endif %}
 
       <div class="main-collection__actions">
         <a class="main-collection__primary-action" href="#CollectionProducts-{{ section.id }}">{{ discover_label }} <span aria-hidden="true">↓</span></a>
@@ -136,6 +142,8 @@
   .main-collection__eyebrow-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection h1 { max-width: 14ch; margin: 0; font-size: clamp(3rem, 5.4vw, 5.6rem); line-height: .94; letter-spacing: -.065em; overflow-wrap: anywhere; }
   .main-collection__intro { max-width: 62ch; margin: 1.25rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.35vw, 1.15rem); line-height: 1.65; }
+  .main-collection__knowledge { max-width: 760px; margin-top: 1.25rem; }
+  .main-collection__knowledge .leaf-atoms { margin: 0; }
   .main-collection__actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.7rem; }
   .main-collection__primary-action, .main-collection__secondary-action { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .7rem; padding: .7rem 1rem; border: 1px solid var(--text); text-decoration: none; font-size: .82rem; font-weight: 850; transition: transform .2s ease, background .2s ease, color .2s ease; }
   .main-collection__primary-action { background: var(--text); color: var(--background); }
