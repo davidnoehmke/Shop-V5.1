@@ -70,7 +70,7 @@
         "sunlite7": {
           "type": "product",
           "settings": {
-            "product": "sunlite-7w-led-pflanzenlampe-teleskopstab",
+            "product": "sunlite-7w-led-pflanzenlampe-mit-teleskopstab",
             "role": "plant-light",
             "watts": 7
           }
@@ -78,7 +78,7 @@
         "bloom20": {
           "type": "product",
           "settings": {
-            "product": "neusius-led-bloom-20w-3500k",
+            "product": "neusius-led-bloom-20w-3500k-pflanzenleuchte",
             "role": "plant-light",
             "watts": 20
           }
@@ -86,7 +86,7 @@
         "aurora15": {
           "type": "product",
           "settings": {
-            "product": "neusius-aurora-76cm-led-pflanzenleuchte-15w",
+            "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
             "role": "plant-light",
             "watts": 15
           }
@@ -102,7 +102,7 @@
         "vensoe27": {
           "type": "product",
           "settings": {
-            "product": "venso-e27-pflanzenlampe-indoor-plants",
+            "product": "venso-e27-pflanzenlampe-indoor-plants-7w-15w",
             "role": "plant-light",
             "watts": 0
           }
