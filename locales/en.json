@@ -44,8 +44,8 @@
     "text": "Natural ingredients. Thoughtful blends. For houseplants, herbs, vegetables and more.",
     "configure": "Substrate configurator",
     "benefits": {
-      "shipping_title": "Fast shipping",
-      "shipping_text": "in 1–2 business days",
+      "shipping_title": "Delivery time: currently up to 7 business days (high demand)",
+      "shipping_text": "Delivery is currently within up to 7 business days (high demand)",
       "quality_title": "Hand-mixed quality",
       "quality_text": "carefully made",
       "natural_title": "Natural ingredients",
@@ -96,8 +96,8 @@
     "success": "Thanks for subscribing."
   },
   "services": {
-    "shipping_title": "Fast shipping",
-    "shipping_text": "in 1–2 business days",
+    "shipping_title": "Delivery time: currently up to 7 business days (high demand)",
+    "shipping_text": "Delivery is currently within up to 7 business days (high demand)",
     "payment_title": "Secure payment",
     "payment_text": "with SSL encryption",
     "support_title": "Customer service",

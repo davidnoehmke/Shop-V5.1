@@ -1,5 +1,6 @@
 <section class="newsletter-services">
-  <div class="page-width newsletter-services__inner">
+  <div class="page-width newsletter-services__inner{% unless section.settings.show_signup %} newsletter-services__inner--services-only{% endunless %}">
+    {% if section.settings.show_signup %}
     <div class="newsletter-services__signup">
       <h2>{% if section.settings.heading != blank %}{{ section.settings.heading }}{% else %}{{ 'newsletter.heading' | t }}{% endif %}</h2>
       {% form 'customer', class: 'newsletter-services__form' %}
@@ -11,6 +12,7 @@
         {% if form.errors %}<div class="newsletter-services__message">{{ form.errors | default_errors }}</div>{% endif %}
       {% endform %}
     </div>
+    {% endif %}
     <div class="newsletter-services__items">
       {% for block in section.blocks %}
         {% assign service_key = 'services.' | append: block.settings.icon %}
@@ -36,6 +38,7 @@
   .newsletter-services { border-top: 1px solid var(--border); background: var(--surface); }
   .newsletter-services__inner { min-height: 150px; display: grid; grid-template-columns: 1.15fr 1.5fr; gap: 4rem; align-items: center; padding-block: 2rem; }
   .newsletter-services__signup { display: grid; grid-template-columns: minmax(170px, .6fr) 1fr; gap: 1.5rem; align-items: center; }
+  .newsletter-services__inner--services-only { grid-template-columns: 1fr; }
   .newsletter-services__signup h2 { margin: 0; font-size: 1.15rem; line-height: 1.35; }
   .newsletter-services__form { display: grid; grid-template-columns: 1fr auto; }
   .newsletter-services__form input { min-width: 0; min-height: 46px; border: 1px solid var(--border); border-radius: 5px 0 0 5px; background: var(--background); padding: .7rem 1rem; }
@@ -54,7 +57,10 @@
 {% schema %}
 {
   "name": "t:sections.newsletter.name",
-  "settings": [{ "type": "text", "id": "heading", "label": "t:sections.newsletter.heading" }],
+  "settings": [
+    { "type": "checkbox", "id": "show_signup", "label": "Newsletter-Anmeldung anzeigen", "default": true },
+    { "type": "text", "id": "heading", "label": "t:sections.newsletter.heading" }
+  ],
   "blocks": [
     {
       "type": "service",
