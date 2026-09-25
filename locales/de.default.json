@@ -410,5 +410,28 @@
       "choice_title": "Du behältst die Kontrolle",
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     }
+  },
+  "plant_world": {
+    "eyebrow": "Aus meiner Pflanzenwelt",
+    "fact_light": "Licht",
+    "fact_water": "Wasser",
+    "fact_humidity": "Luftfeuchte",
+    "fact_substrate": "Substrat",
+    "fact_practice": "Praxisfokus",
+    "primary_link": "Passendes Setup ansehen",
+    "practice_eyebrow": "Nicht aus dem Lehrbuch",
+    "practice_heading": "Was ich bei dieser Pflanze tatsächlich beobachte",
+    "experience_label": "Meine Erfahrung",
+    "care_label": "Pflege kompakt",
+    "substrate_label": "Wurzelraum & Substrat",
+    "light_label": "Licht",
+    "gallery_eyebrow": "Eigene Dokumentation",
+    "gallery_heading": "So sieht die Entwicklung bei mir aus",
+    "gallery_intro": "Keine Stockfotos. Die Bilder stammen aus meiner eigenen Pflanzenhaltung.",
+    "products_eyebrow": "Passend zum Thema",
+    "products_heading": "Produkte, die zu diesem Setup passen",
+    "products_intro": "Ausgewählt nach Funktion und Einsatzbereich – nicht als pauschales Muss.",
+    "longform_eyebrow": "Einordnung",
+    "longform_heading": "Was ich daraus für den Alltag ableite"
   }
 }
