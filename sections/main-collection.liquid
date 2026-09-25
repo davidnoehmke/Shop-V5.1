@@ -43,7 +43,7 @@
       {% if hero_intro != blank %}<p class="main-collection__intro">{{ hero_intro | escape }}</p>{% endif %}
       {% if knowledge_atoms != blank %}
         <div class="main-collection__knowledge">
-          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'one_line', limit: 2 %}
+          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'short', limit: 2 %}
         </div>
       {% endif %}
 
