@@ -196,7 +196,7 @@ jobs:
               ],
               'sections/leaferservice-product.liquid': [
                   'metafields.leafer.knowledge_atoms',
-                  "mode: 'one_line'",
+                  "mode: 'chips'",
               ],
               'sections/product-seo-details.liquid': [
                   'metafields.leafer.knowledge_atoms',
@@ -204,7 +204,7 @@ jobs:
               ],
               'sections/main-collection.liquid': [
                   'metafields.leafer.knowledge_atoms',
-                  "mode: 'short'",
+                  "mode: 'chips'",
               ],
               'sections/leaf-collection-guide.liquid': [
                   'metafields.leafer.knowledge_atoms',

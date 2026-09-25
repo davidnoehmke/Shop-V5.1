@@ -46,7 +46,7 @@
       {% if leafer_subtitle != blank %}<p class="ls-product__subtitle">{{ leafer_subtitle | escape }}</p>{% endif %}
       {% if knowledge_atoms != blank %}
         <div class="ls-product__knowledge">
-          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'one_line', limit: 2 %}
+          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'chips', limit: 3 %}
         </div>
       {% endif %}
       {% if leafer_usp_1 != blank or leafer_usp_2 != blank or leafer_usp_3 != blank %}<ul class="ls-product__usp-list" aria-label="{{ 'product.usps.label' | t }}">{% if leafer_usp_1 != blank %}<li>{{ leafer_usp_1 | escape }}</li>{% endif %}{% if leafer_usp_2 != blank %}<li>{{ leafer_usp_2 | escape }}</li>{% endif %}{% if leafer_usp_3 != blank %}<li>{{ leafer_usp_3 | escape }}</li>{% endif %}</ul>{% endif %}

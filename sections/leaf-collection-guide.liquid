@@ -1,11 +1,10 @@
 {% liquid
-  assign collection_intro = collection.metafields.leafer.intro.value
   assign collection_faq = collection.metafields.leafer.faq.value
   assign collection_keywords = collection.metafields.leafer.keywords.value
   assign collection_guide = collection.metafields.leafer.guide.value
   assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   assign has_guide = false
-  if collection_intro != blank or collection_guide != blank or collection_faq != blank or collection_keywords != blank or knowledge_atoms != blank
+  if collection_guide != blank or collection_faq != blank or collection_keywords != blank or knowledge_atoms != blank
     assign has_guide = true
   endif
 %}
@@ -19,7 +18,6 @@
         </span>
         <p>{{ 'collection.guide.eyebrow' | t }}</p>
         <h2 id="LeafCollectionGuideHeading-{{ section.id }}">{{ 'collection.guide.heading' | t: collection: collection.title }}</h2>
-        {% if collection_intro != blank %}<div class="rte">{{ collection_intro | escape | newline_to_br }}</div>{% endif %}
       </header>
 
       <div class="leaf-collection-guide__content">
