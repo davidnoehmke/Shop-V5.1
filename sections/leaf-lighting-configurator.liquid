@@ -147,7 +147,7 @@
 .leaf-lighting__controls select,.leaf-lighting__controls input[type=range]{width:100%}.leaf-lighting__controls select{min-height:48px;padding:.65rem .8rem;border:1px solid var(--border);border-radius:0;background:var(--surface);color:var(--text)}
 .leaf-lighting__resultbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0 1.5rem}.leaf-lighting__reset{border:0;background:none;text-decoration:underline;cursor:pointer;color:var(--muted)}
 .leaf-lighting__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1rem,2vw,2rem)}
-.leaf-lighting__card{border-top:1px solid var(--border);padding-top:1rem}.leaf-lighting__media{display:block;aspect-ratio:1/1;background:var(--surface);overflow:hidden}.leaf-lighting__media img,.leaf-lighting__media svg{width:100%;height:100%;object-fit:cover}
+.leaf-lighting__card{border-top:1px solid var(--border);padding-top:1rem}.leaf-lighting__media{display:grid;place-items:center;aspect-ratio:1/1;background:var(--surface);overflow:hidden;padding:clamp(.45rem,1.2vw,.85rem)}.leaf-lighting__media img,.leaf-lighting__media svg{width:100%;height:100%;object-fit:contain;object-position:center}
 .leaf-lighting__body{padding-top:1rem}.leaf-lighting__meta{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.leaf-lighting__body h2{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.05;margin:.55rem 0}.leaf-lighting__body h2 a{text-decoration:none;color:inherit}.leaf-lighting__body p{color:var(--muted)}.leaf-lighting__function{min-height:3.2em;margin:.65rem 0 0;line-height:1.55}
 .leaf-lighting__body dl{display:grid;grid-template-columns:1fr 1fr;margin:1rem 0;border-top:1px solid var(--border)}.leaf-lighting__body dl div{padding:.7rem 0;border-bottom:1px solid var(--border)}.leaf-lighting__body dt{font-size:.68rem;color:var(--muted);text-transform:uppercase;font-weight:800}.leaf-lighting__body dd{margin:.2rem 0 0;font-size:.9rem}.leaf-lighting__body .button{width:100%;margin-top:.5rem}
 .leaf-lighting__empty{padding:3rem 0;border-block:1px solid var(--border);display:grid;gap:.35rem}.leaf-lighting__empty[hidden]{display:none}
@@ -173,3 +173,5 @@
   "presets":[{"name":"Licht-Konfigurator"}]
 }
 {% endschema %}
+
+{% stylesheet %}@media(max-width:749px){.leaf-lighting__grid{grid-template-columns:1fr}.leaf-lighting__media{width:min(64vw,240px);margin-inline:auto;aspect-ratio:1/1}.leaf-lighting__card{padding-top:.8rem}}{% endstylesheet %}
