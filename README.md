@@ -5,18 +5,19 @@ Kanonische, versionierbare Grundlage für LEAFerservice.
 ## Verbindliche Produktionsroute
 
 ```text
-ChatGPT
-   │
-   ▼
-Supabase (SSOT)
-   │
-   ▼
-Shopify (Storefront / Commerce-Projektion)
+Content / Daten:
+ChatGPT -> Supabase (SSOT) -> Shopify (Storefront / Commerce-Projektion)
+
+Code / Theme / Migrationen:
+ChatGPT -> GitHub PR -> CI -> Merge -> Shopify
+                       └────────────> Supabase-Migrationen
 ```
 
 ChatGPT ist die kontrollierte Orchestrierungs- und Arbeitsebene. Supabase ist die
-einzige editierbare SSOT. Shopify ist Storefront und Commerce-Projektion.
-GitHub versioniert ausschließlich Code, Migrationen, Prüfregeln und Dokumentation.
+einzige editierbare SSOT für fachliche Daten. GitHub versioniert Code, Theme,
+Migrationen, Prüfregeln und Dokumentation und ist der verpflichtende Release-Gate
+für Codeänderungen. Shopify ist Storefront und Commerce-Projektion.
+
 Railway, Notion, Google Sheets, LEAF-OS und frühere Parallel-Syncs gehören nicht
 zum produktiven Datenpfad.
 
@@ -25,20 +26,23 @@ zum produktiven Datenpfad.
 | Pfad | Inhalt |
 | --- | --- |
 | `theme/` | Shopify Online Store 2.0 Theme |
-| `supabase/migrations/` | versionierte Supabase-Schemaänderungen |
+| `supabase/migrations/` | versionierte Supabase-Schema-/Policy-Änderungen |
 | `control_center/` | Legacy-/Entwicklungsartefakt; keine produktive Runtime |
 | `automation/content-agent/` | Verträge und Vorlagen für kontrollierte Content-Vorbereitung |
 | `automation/codex/` | Policy-/Delivery-Helfer und Tests für CI, kein Scheduler |
-| `.github/workflows/ci.yml` | reine Validierung/Tests bei PR und Push |
+| `.github/workflows/ci.yml` | Validierung/Tests bei PR und Push |
 | `docs/` | Architektur, SEO, Deployment und QA |
 
 ## Betriebsregeln
 
 - Supabase ist die einzige editierbare SSOT für Produkt-, Content-, SEO- und Konfiguratordaten.
 - Shopify ist Storefront, Commerce-Ziel und Verifikations-/Rücklesequelle.
+- GitHub ist für Theme-/Codeänderungen Pflichtpfad: Branch -> PR -> CI -> Merge -> Shopify.
+- Supabase-Schema- und Policy-Änderungen werden in GitHub versioniert.
 - Automatisches Zurückstufen aktiver Produkte auf Draft/Archived ist verboten.
 - Bestandsverfolgung bleibt deaktiviert; Varianten dürfen weiterverkauft werden.
-- Die produktive Pipeline ist ausschließlich ChatGPT -> Supabase -> Shopify.
+- Daten-/Contentprojektion erfolgt Supabase -> Shopify.
+- Theme-/Codeprojektion erfolgt ausschließlich aus einem gemergten GitHub-Stand.
 - Railway, Notion, Google Sheets und LEAF-OS sind vollständig außerhalb der produktiven Runtime.
 - Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
 - Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
