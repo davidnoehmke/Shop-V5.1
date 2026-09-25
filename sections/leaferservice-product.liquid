@@ -9,6 +9,7 @@
   assign leafer_usp_1 = product.metafields.leafer.usp_1.value
   assign leafer_usp_2 = product.metafields.leafer.usp_2.value
   assign leafer_usp_3 = product.metafields.leafer.usp_3.value
+  assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
   assign has_dynamic_product_description = false
   if custom_use_case != blank or custom_light_style != blank or custom_lighting_position != blank or custom_recommended_rooms != blank
     assign has_dynamic_product_description = true
@@ -43,6 +44,11 @@
       {% if section.settings.show_vendor and product.vendor != blank %}<p class="ls-product__eyebrow">{{ product.vendor }}</p>{% endif %}
       <h1 class="ls-product__title">{{ product.title }}</h1>
       {% if leafer_subtitle != blank %}<p class="ls-product__subtitle">{{ leafer_subtitle | escape }}</p>{% endif %}
+      {% if knowledge_atoms != blank %}
+        <div class="ls-product__knowledge">
+          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'one_line', limit: 2 %}
+        </div>
+      {% endif %}
       {% if leafer_usp_1 != blank or leafer_usp_2 != blank or leafer_usp_3 != blank %}<ul class="ls-product__usp-list" aria-label="{{ 'product.usps.label' | t }}">{% if leafer_usp_1 != blank %}<li>{{ leafer_usp_1 | escape }}</li>{% endif %}{% if leafer_usp_2 != blank %}<li>{{ leafer_usp_2 | escape }}</li>{% endif %}{% if leafer_usp_3 != blank %}<li>{{ leafer_usp_3 | escape }}</li>{% endif %}</ul>{% endif %}
       <div class="ls-product__purchase">
         <div class="ls-product__price" data-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
@@ -127,6 +133,9 @@
 .ls-product__eyebrow{margin:0 0 10px;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:800;color:var(--ls-muted)}
 .ls-product__title{font-size:clamp(2.6rem,4.6vw,4.8rem);line-height:.96;margin:0 0 18px;font-weight:500;letter-spacing:-.05em;overflow-wrap:anywhere}
 .ls-product__subtitle{max-width:52ch;margin:-4px 0 18px;color:var(--ls-muted);font-size:1rem;line-height:1.6}
+.ls-product__knowledge{margin:0 0 18px}
+.ls-product__knowledge .leaf-atoms{margin:0}
+.ls-product__knowledge .leaf-atom{background:rgba(255,255,255,.18)}
 .ls-product__usp-list{margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--ls-line);list-style:none;border:1px solid var(--ls-line)}
 .ls-product__usp-list li{min-height:58px;display:flex;align-items:center;padding:10px 12px;background:var(--ls-cream);font-size:.72rem;font-weight:750;line-height:1.35}
 .ls-product__purchase{margin-top:1.4rem;padding:1.35rem 0;border-block:1px solid var(--ls-line)}
