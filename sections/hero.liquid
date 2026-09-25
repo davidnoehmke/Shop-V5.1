@@ -15,6 +15,12 @@
 
   <div class="page-width hero__inner">
     <div class="hero__content" data-leaf-reveal>
+      {% if section.settings.show_brand_logo and section.settings.brand_logo != blank %}
+        <div class="hero__brand-lockup" style="--hero-brand-width: {{ section.settings.brand_logo_width }}px" aria-label="LEAFerservice™">
+          {{ section.settings.brand_logo | image_url: width: 700 | image_tag: widths: '220, 320, 480, 700', sizes: '(min-width: 700px) 260px, 210px', loading: 'eager', alt: 'LEAFerservice' }}
+          <sup class="hero__brand-tm" aria-hidden="true">™</sup>
+        </div>
+      {% endif %}
       {% if section.settings.eyebrow != blank %}<p class="hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
       <h1 id="HeroHeading-{{ section.id }}">{{ hero_heading }}</h1>
       {% if section.settings.text != blank %}<div class="hero__text rte">{{ section.settings.text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
@@ -66,6 +72,9 @@
   .hero__fallback span:nth-child(3) { right: 36%; bottom: 6%; width: 15%; height: 60%; border-radius: 9px; background: #f0e7d7; transform: none; }
   .hero__inner { position: relative; min-height: inherit; display: grid; align-content: space-between; padding-block: clamp(3.6rem, 7vw, 6rem) 2.4rem; }
   .hero__content { max-width: 720px; }
+  .hero__brand-lockup { position: relative; width: min(100%, var(--hero-brand-width)); margin: 0 0 1rem; }
+  .hero__brand-lockup img { width: 100%; height: auto; }
+  .hero__brand-tm { position: absolute; top: -.12rem; right: -.75rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem; font-weight: 800; line-height: 1; }
   .hero__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
   .hero h1 { max-width: 12ch; margin: 0 0 1rem; font-size: clamp(2.8rem, 5.3vw, 5.45rem); line-height: .98; letter-spacing: -.04em; }
   .hero__text, .hero__content > p { max-width: 600px; font-size: clamp(1rem, 1.5vw, 1.16rem); }
@@ -93,6 +102,8 @@
     .hero__shade { background: linear-gradient(0deg, rgba(232,226,213,1) 0 55%, rgba(232,226,213,.74) 70%, rgba(232,226,213,.08) 100%); }
     .hero__inner { align-content: end; padding-block: 2rem 1.25rem; }
     .hero__content { padding-top: 42svh; }
+    .hero__brand-lockup { width: min(210px, 72vw); margin-bottom: .65rem; }
+    .hero__brand-tm { right: -.6rem; font-size: .6rem; }
     .hero h1 { max-width: 13ch; font-size: clamp(2.45rem, 10.8vw, 4rem); line-height: .96; }
     .hero__content > p, .hero__text { font-size: 1rem; line-height: 1.55; }
     .hero__buttons { display: grid; grid-template-columns: 1fr; gap: .65rem; margin-top: 1.2rem; }
@@ -107,6 +118,9 @@
 {
   "name": "t:sections.hero.name",
   "settings": [
+    { "type": "image_picker", "id": "brand_logo", "label": "Markenlogo" },
+    { "type": "checkbox", "id": "show_brand_logo", "label": "Logo im Hero anzeigen", "default": true },
+    { "type": "range", "id": "brand_logo_width", "label": "Logo-Breite", "min": 160, "max": 320, "step": 10, "default": 250, "unit": "px" },
     { "type": "image_picker", "id": "image", "label": "t:sections.hero.image" },
     { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "min": 20, "max": 100, "step": 5, "default": 70, "unit": "%" },
     { "type": "text", "id": "eyebrow", "label": "Kicker" },
