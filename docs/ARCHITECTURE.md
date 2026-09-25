@@ -54,3 +54,10 @@ Neue Konfiguratorlogik darf keine feste Shopify-Hostadresse oder festen Cart-End
 Browsercode wird nicht als Geheimnis behandelt. Geschützt werden Secrets, interne Admin-/Beschaffungsdaten und serverseitige Fähigkeiten. Produktions-Source-Maps und TypeScript-Quelldateien dürfen nicht an die Storefront ausgeliefert werden.
 
 Siehe `docs/STOREFRONT_PORTABILITY.md`.
+
+
+## Öffentliche UX vs. interne Strategie
+
+Dynamische UX-Felder bleiben ausdrücklich erhalten. Dazu gehören Slider, rezept-/variantenabhängige Informationsblöcke, Bestandteile, Mischverhältnisse, sichtbare technische Daten, Icons, Hinweise und sofort aktualisierte Zusammenfassungen.
+
+Die Storefront erhält nur die Daten, die für diese Kundenerfahrung benötigt werden. Interne Research-Herkunft, Longtail-Zielcluster, Search-Intent-Rohlabels, Scoringgewichte, redaktionelle Priorisierung und Admin-/Beschaffungsdaten bleiben außerhalb der öffentlichen Storefront-Projektion.
