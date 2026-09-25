@@ -7,9 +7,10 @@
   if notice_field.value == blank
     assign notice_field = product.metafields.leafer.warning
   endif
-  assign has_dynamic_description = false
-  if custom_use_case != blank or product.metafields.custom.light_style.value != blank or product.metafields.custom.lighting_position.value != blank or product.metafields.custom.recommended_room.value != blank or product.metafields.custom.faq.value != blank
-    assign has_dynamic_description = true
+  assign description_plain = product.description | strip_html | strip
+  assign show_full_description = false
+  if description_plain != blank and description_plain != intro and description_plain != custom_use_case
+    assign show_full_description = true
   endif
   assign show_intro = false
   if intro != blank and intro != custom_use_case and intro != subtitle
@@ -101,8 +102,15 @@
       </div>
     {% endif %}
     {% if notice_field.value != blank %}<div class="product-seo-details__notice"><strong>{{ notice_label }}</strong> {% render 'leaf-metafield-value', field: notice_field %}</div>{% endif %}
-    {% if has_dynamic_description and product.description != blank %}
-      <div class="product-seo-details__description rte"><h3>{{ description_heading }}</h3>{{ product.description }}</div>
+    {% if show_full_description %}
+      <details class="product-seo-details__description">
+        <summary>
+          <span class="product-seo-details__description-icon" aria-hidden="true">{% render 'leaf-knowledge-icon', icon_key: 'leaf' %}</span>
+          <span>{{ description_heading }}</span>
+          <span class="product-seo-details__description-plus" aria-hidden="true">+</span>
+        </summary>
+        <div class="product-seo-details__description-body rte">{{ product.description }}</div>
+      </details>
     {% endif %}
     {% if faq_markup != blank %}
       <div class="product-seo-details__faq">
@@ -119,8 +127,15 @@
   .product-seo-details__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .product-seo-details h2 { margin: 0; max-width: 18ch; font-size: clamp(2rem, 9vw, 4.7rem); line-height: 1; letter-spacing: -.045em; text-wrap: balance; }
   .product-seo-details__intro { max-width: 64ch; margin: 1rem 0 0; color: var(--muted); font-size: clamp(1rem, 4.2vw, 1.2rem); line-height: 1.65; }
-  .product-seo-details__description { max-width: 76ch; margin-top: clamp(2rem, 7vw, 4rem); color: var(--muted); line-height: 1.7; }
-  .product-seo-details__description h3 { color: var(--text); }
+  .product-seo-details__description { max-width: 900px; margin-top: clamp(2rem, 7vw, 4rem); border-block: 1px solid var(--border); }
+  .product-seo-details__description summary { min-height: 68px; display: grid; grid-template-columns: 36px minmax(0,1fr) 32px; gap: .8rem; align-items: center; cursor: pointer; list-style: none; color: var(--text); font-weight: 800; }
+  .product-seo-details__description summary::-webkit-details-marker { display: none; }
+  .product-seo-details__description summary::marker { content: ''; }
+  .product-seo-details__description-icon { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); }
+  .product-seo-details__description-icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+  .product-seo-details__description-plus { width: 30px; height: 30px; display: grid; place-items: center; font-size: 1.2rem; transition: transform .2s ease; }
+  .product-seo-details__description[open] .product-seo-details__description-plus { transform: rotate(45deg); }
+  .product-seo-details__description-body { max-width: 76ch; padding: 0 0 1.4rem 2.8rem; color: var(--muted); line-height: 1.72; }
   .product-seo-details__facts, .product-seo-details__knowledge, .product-seo-details__faq { margin-top: clamp(2.4rem, 8vw, 4.5rem); }
   .product-seo-details__knowledge { max-width: 980px; }
   .product-seo-details__knowledge > .leaf-atoms { margin-top: 1rem; }
@@ -155,7 +170,8 @@
     .product-seo-details__faq-item summary { min-height: 68px; padding: 1rem 1.15rem; font-size: 1.02rem; }
     .product-seo-details__faq-answer { padding: 0 1.15rem 1.15rem; }
   }
-  @media (prefers-reduced-motion: reduce) { .product-seo-details__faq-item, .product-seo-details__faq-icon::before, .product-seo-details__faq-icon::after { transition: none; } }
+  @media (max-width: 560px) { .product-seo-details__description-body { padding-left: 0; } }
+  @media (prefers-reduced-motion: reduce) { .product-seo-details__faq-item, .product-seo-details__faq-icon::before, .product-seo-details__faq-icon::after, .product-seo-details__description-plus { transition: none; } }
 {% endstylesheet %}
 {% schema %}
 {"name":"SEO-Produktwissen","settings":[],"presets":[{"name":"SEO-Produktwissen"}]}
