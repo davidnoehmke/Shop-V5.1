@@ -6,8 +6,10 @@
   endif
 
   assign hero_image = collection.image
+  assign hero_image_is_product = false
   if hero_image == blank and collection.products.first != blank
     assign hero_image = collection.products.first.featured_image
+    assign hero_image_is_product = true
   endif
 
   assign product_types = collection.products | map: 'type' | compact | uniq | sort_natural
@@ -64,9 +66,9 @@
       </div>
     </div>
 
-    <div class="main-collection__hero-media">
+    <div class="main-collection__hero-media{% if hero_image_is_product %} main-collection__hero-media--product{% endif %}">
       {% if hero_image != blank %}
-        {{ hero_image | image_url: width: 1600 | image_tag: widths: '600,900,1200,1600', sizes: '(min-width: 990px) 44vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: hero_image.alt | default: collection.title }}
+        {{ hero_image | image_url: width: 1600 | image_tag: widths: '480,720,960,1200,1600', sizes: '(min-width: 1051px) 42vw, (min-width: 901px) 48vw, calc(100vw - 2rem)', loading: 'eager', fetchpriority: 'high', alt: hero_image.alt | default: collection.title }}
       {% else %}
         <div class="main-collection__hero-placeholder" aria-hidden="true">
           <svg viewBox="0 0 120 120"><path d="M60 104V50M60 72C35 70 22 53 23 26c24 2 36 18 37 42M60 61c22-2 36-18 38-43-24 1-37 17-38 39"/></svg>
@@ -129,7 +131,7 @@
 
 {% stylesheet %}
   .main-collection { padding-block: clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem); }
-  .main-collection__hero { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: stretch; margin-bottom: clamp(2rem, 4vw, 3.6rem); }
+  .main-collection__hero { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: center; margin-bottom: clamp(2rem, 4vw, 3.6rem); }
   .main-collection__hero-copy { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-block: clamp(1.5rem, 4vw, 4rem); }
   .main-collection__eyebrow { display: inline-flex; align-items: center; gap: .55rem; margin: 0 0 1rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .main-collection__eyebrow-icon { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); }
@@ -146,9 +148,10 @@
   .main-collection__signals span { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: .55rem; color: var(--muted); font-size: .72rem; line-height: 1.35; }
   .main-collection__signals svg { width: 22px; fill: none; stroke: var(--accent); stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__signals b { color: var(--text); }
-  .main-collection__hero-media { position: relative; min-height: 460px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
-  .main-collection__hero-media > img { width: 100%; height: 100%; min-height: 460px; object-fit: cover; }
-  .main-collection__hero-placeholder { min-height: 460px; display: grid; place-items: center; background: linear-gradient(135deg, var(--surface), var(--background)); }
+  .main-collection__hero-media { position: relative; aspect-ratio: 4 / 3; min-height: 0; max-height: 440px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
+  .main-collection__hero-media > img { width: 100%; height: 100%; min-height: 0; object-fit: cover; object-position: center; }
+  .main-collection__hero-media--product > img { object-fit: contain; padding: clamp(.8rem, 2vw, 1.6rem); }
+  .main-collection__hero-placeholder { height: 100%; min-height: 0; display: grid; place-items: center; background: linear-gradient(135deg, var(--surface), var(--background)); }
   .main-collection__hero-placeholder svg { width: min(44%, 190px); fill: none; stroke: var(--accent); stroke-width: 1.1; opacity: .7; }
   .main-collection__media-note { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .75rem .9rem; border: 1px solid color-mix(in srgb, white, transparent 45%); background: color-mix(in srgb, var(--background), transparent 10%); backdrop-filter: blur(12px); }
   .main-collection__media-note span { color: var(--muted); font-size: .72rem; }
@@ -176,7 +179,8 @@
   @media (max-width: 900px) {
     .main-collection__hero { grid-template-columns: 1fr; }
     .main-collection__hero-copy { padding-bottom: 0; }
-    .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 360px; }
+    .main-collection__hero-media { aspect-ratio: 16 / 10; max-height: none; }
+    .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
     .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 620px) {
@@ -184,7 +188,8 @@
     .main-collection h1 { font-size: clamp(2.6rem, 13vw, 4.2rem); line-height: .94; }
     .main-collection__intro { font-size: .95rem; }
     .main-collection__signals { display: none; }
-    .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 280px; }
+    .main-collection__hero-media { aspect-ratio: 16 / 10; }
+    .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
     .main-collection__media-note { left: .6rem; right: .6rem; bottom: .6rem; }
     .main-collection__sort { justify-content: stretch; }
     .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

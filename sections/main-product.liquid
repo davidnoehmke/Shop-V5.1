@@ -49,7 +49,7 @@
           endif
         %}
         <div class="main-product__image">
-          {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 78vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+          {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 430px, (min-width: 801px) 45vw, 74vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
         </div>
       {% endfor %}
     {% else %}
@@ -169,7 +169,7 @@
   .main-product__breadcrumbs a { color: inherit; }
   .main-product__media { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
   @media (min-width: 1280px) { .main-product { width: min(100% - 2rem, 1560px); } }
-  .main-product__image { aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; padding: clamp(.8rem, 2.5vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
+  .main-product__image { aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; padding: clamp(.65rem, 1.6vw, 1.4rem); border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
   .main-product__image img, .main-product__image svg { width: 100%; height: 100%; object-fit: contain; object-position: center; }
   .main-product__details { position: sticky; top: 108px; min-width: 0; }
   .main-product__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
@@ -204,7 +204,7 @@
     .main-product__details { position: static; }
     .main-product__media { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -.75rem; padding-inline: .75rem; }
     .main-product__media::-webkit-scrollbar { display: none; }
-    .main-product__image { min-width: clamp(260px, 78vw, 340px); padding: .55rem; aspect-ratio: 1 / 1; scroll-snap-align: center; }
+    .main-product__image { min-width: clamp(240px, 74vw, 320px); max-height: 58vh; padding: .4rem; aspect-ratio: 1 / 1; scroll-snap-align: center; }
     .main-product h1 { font-size: clamp(2.35rem, 11vw, 4rem); line-height: .94; }
     .main-product__claim { font-size: 1rem; line-height: 1.5; }
     .main-product__reassurance { grid-template-columns: 1fr; }
