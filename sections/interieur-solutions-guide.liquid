@@ -27,17 +27,29 @@
       <h2 id="interieur-solutions-guide-heading">{{ section.settings.heading }}</h2>
       <div class="interieur-solutions-guide__text">{{ section.settings.text }}</div>
     </div>
-    <div class="interieur-solutions-guide__principles" aria-label="Projektprinzipien">
-      <span><strong>Gestaltung</strong> für den Raum</span>
-      <span><strong>Licht</strong> für die Pflanzen</span>
-      <span><strong>System</strong> für den Alltag</span>
-    </div>
+
+    <nav class="interieur-solutions-guide__principles" aria-label="Projektprinzipien">
+      <a href="#InterieurPathWorlds-{{ section.id }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V8l8-4 8 4v11H4ZM8 19v-6h8v6M7 9h10"/></svg>
+        <span><strong>Gestaltung</strong> für den Raum</span>
+      </a>
+      <a href="#InterieurPathLight-{{ section.id }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
+        <span><strong>Licht</strong> für die Pflanzen</span>
+      </a>
+      <a href="#InterieurProject-{{ section.id }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h14v12H5zM9 10h6M9 14h6M7 4v4M17 4v4"/></svg>
+        <span><strong>System</strong> für den Alltag</span>
+      </a>
+    </nav>
+
     <div class="interieur-solutions-guide__paths">
-      <article class="interieur-solutions-path">
+      <article class="interieur-solutions-path" id="InterieurPathWorlds-{{ section.id }}">
         <a class="interieur-solutions-path__image" href="{{ terrarium.url }}" aria-label="Pflanzenterrarien und Pflanzenlandschaften">
-          {% if terrarium.featured_image %}{{ terrarium.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: terrarium.title }}{% endif %}
+          {% if terrarium.featured_image %}{{ terrarium.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: terrarium.featured_image.alt | default: terrarium.title }}{% endif %}
         </a>
         <div class="interieur-solutions-path__body">
+          <span class="interieur-solutions-path__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5zM8 16c2-5 6-6 9-7M10 13c-2 0-4-1-5-3 3-1 5 0 6 2"/></svg></span>
           <p class="interieur-solutions-guide__eyebrow">Pflanzenwelten</p>
           <h3><a href="{{ terrarium.url }}">Pflanzenterrarien &amp; Biotope</a></h3>
           {% if terrarium.metafields.leafer.intro.value != blank %}<p>{{ terrarium.metafields.leafer.intro.value }}</p>{% elsif terrarium.metafields.global.description_tag.value != blank %}<p>{{ terrarium.metafields.global.description_tag.value }}</p>{% else %}<p>Systeme für individuelle Pflanzenlandschaften, trockene Ökosysteme und dekorative Indoor-Biotope.</p>{% endif %}
@@ -46,11 +58,13 @@
           <a class="interieur-solutions-path__link" href="{{ terrarium.url }}">Pflanzenwelt planen <span aria-hidden="true">→</span></a>
         </div>
       </article>
+
       <article class="interieur-solutions-path">
         <a class="interieur-solutions-path__image" href="{{ station.url }}" aria-label="Pflanzenregale und Indoor-Gewächshäuser">
-          {% if station.featured_image %}{{ station.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: station.title }}{% endif %}
+          {% if station.featured_image %}{{ station.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: station.featured_image.alt | default: station.title }}{% endif %}
         </a>
         <div class="interieur-solutions-path__body">
+          <span class="interieur-solutions-path__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6zM6 9h12M6 14h12M9 20v2M15 20v2"/></svg></span>
           <p class="interieur-solutions-guide__eyebrow">Indoor kultivieren</p>
           <h3><a href="{{ station.url }}">Pflanzenregale &amp; Indoor-Gewächshäuser</a></h3>
           {% if station.metafields.leafer.intro.value != blank %}<p>{{ station.metafields.leafer.intro.value }}</p>{% else %}<p>Strukturierte Pflanzenstationen für Anzucht, Jungpflanzen, Kräuter und anspruchsvolle Zimmerpflanzen.</p>{% endif %}
@@ -63,11 +77,13 @@
           <a class="interieur-solutions-path__link" href="{{ station.url }}">System auswählen <span aria-hidden="true">→</span></a>
         </div>
       </article>
-      <article class="interieur-solutions-path interieur-solutions-path--accent">
+
+      <article class="interieur-solutions-path interieur-solutions-path--accent" id="InterieurPathLight-{{ section.id }}">
         <a class="interieur-solutions-path__image" href="{{ lighting.url }}" aria-label="Leuchtmittel und Pflanzenbeleuchtung">
           {% if lighting.featured_image %}{{ lighting.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: lighting.featured_image.alt | default: lighting.title }}{% endif %}
         </a>
         <div class="interieur-solutions-path__body">
+          <span class="interieur-solutions-path__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg></span>
           <p class="interieur-solutions-guide__eyebrow">Licht integrieren</p>
           <h3><a href="{{ lighting.url }}">Leuchtmittel &amp; Pflanzenbeleuchtung</a></h3>
           {% if lighting.metafields.leafer.intro.value != blank %}<p>{{ lighting.metafields.leafer.intro.value }}</p>{% else %}<p>Wohnliche Grow-Lights und integrierte Beleuchtung für Regale, Sideboards, Pflanzenstationen und einzelne Arrangements.</p>{% endif %}
@@ -81,7 +97,11 @@
         </div>
       </article>
     </div>
-    <div class="interieur-solutions-guide__project">
+
+    <div class="interieur-solutions-guide__project" id="InterieurProject-{{ section.id }}">
+      <div class="interieur-solutions-guide__project-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 9h8M8 13h5M16 16l2 2 3-4"/></svg>
+      </div>
       <div>
         <p class="interieur-solutions-guide__eyebrow">Projektbezogene Lösungen</p>
         <h3>Vom Produkt zur fertigen Pflanzenwelt</h3>
@@ -93,7 +113,7 @@
 </section>
 
 {% stylesheet %}
-.interieur-solutions-guide{background:#f3f0ea;color:#242522;padding:4.5rem 1.25rem}.interieur-solutions-guide__inner{max-width:1240px;margin:0 auto}.interieur-solutions-guide__intro{max-width:780px;margin-bottom:1.5rem}.interieur-solutions-guide__eyebrow{color:#9a6b43;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 .65rem}.interieur-solutions-guide h2{font-size:clamp(2rem,4vw,3.5rem);line-height:1.05;margin:0 0 1rem}.interieur-solutions-guide__text{color:#626158;font-size:1.05rem;line-height:1.65}.interieur-solutions-guide__principles{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.75rem 0 2rem}.interieur-solutions-guide__principles span{background:#fff;border:1px solid #e3ddd3;border-radius:999px;padding:.65rem 1rem;font-size:.9rem}.interieur-solutions-guide__principles strong{color:#8c5c38}.interieur-solutions-guide__paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.interieur-solutions-path{background:#fff;border:1px solid #e4ded5;border-radius:1.1rem;overflow:hidden;display:flex;flex-direction:column;min-width:0}.interieur-solutions-path--accent{border-color:#c49368;box-shadow:0 10px 30px rgba(121,82,48,.1)}.interieur-solutions-path__image{aspect-ratio:1/1;background:#e9e5dc;display:block;overflow:hidden}.interieur-solutions-path__image img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.interieur-solutions-path:hover .interieur-solutions-path__image img{transform:scale(1.035)}.interieur-solutions-path__body{display:flex;flex-direction:column;gap:.65rem;padding:1.25rem;height:100%}.interieur-solutions-path__body .interieur-solutions-guide__eyebrow{margin-bottom:0}.interieur-solutions-path h3{font-size:1.25rem;line-height:1.2;margin:0}.interieur-solutions-path h3 a{color:inherit;text-decoration:none}.interieur-solutions-path p:not(.interieur-solutions-guide__eyebrow){color:#626158;font-size:.92rem;line-height:1.55;margin:0}.interieur-solutions-path__tagline{color:#8c5c38;font-size:.82rem;font-weight:600;line-height:1.45}.interieur-solutions-path__meta{color:#626158;font-size:.78rem;line-height:1.45}.interieur-solutions-path__benefits{display:flex;flex-wrap:wrap;gap:.35rem}.interieur-solutions-path__benefits span{background:#f7f1ea;border-radius:999px;color:#8c5c38;font-size:.72rem;padding:.35rem .55rem}.interieur-solutions-path__link{color:#8c5c38;font-size:.88rem;font-weight:700;margin-top:auto;text-decoration:none}.interieur-solutions-guide__project{align-items:center;background:#292b28;border-radius:1rem;color:#fff;display:flex;gap:1rem;justify-content:space-between;margin-top:1.5rem;padding:1.4rem}.interieur-solutions-guide__project h3{font-size:1.35rem;margin:0}.interieur-solutions-guide__project p:not(.interieur-solutions-guide__eyebrow){color:#d8d4c8;line-height:1.5;margin:.35rem 0 0;max-width:720px}.interieur-solutions-guide__project>a{background:#d6a474;border-radius:999px;color:#292b28;font-weight:700;padding:.75rem 1rem;text-decoration:none;white-space:nowrap}.interieur-solutions-guide__project>a span{display:inline}@media(max-width:900px){.interieur-solutions-guide__paths{grid-template-columns:1fr 1fr}.interieur-solutions-path:last-child{grid-column:1/-1;max-width:calc(50% - .5rem)}}@media(max-width:600px){.interieur-solutions-guide{padding:3rem 1rem}.interieur-solutions-guide__paths{grid-template-columns:1fr}.interieur-solutions-path:last-child{grid-column:auto;max-width:none}.interieur-solutions-guide__project{align-items:flex-start;flex-direction:column}.interieur-solutions-guide__project>a{justify-self:start}}
+.interieur-solutions-guide{background:#f3f0ea;color:#242522;padding:clamp(3.5rem,6vw,6rem) 1.25rem}.interieur-solutions-guide__inner{max-width:1380px;margin:0 auto}.interieur-solutions-guide__intro{display:grid;grid-template-columns:minmax(0,.9fr) minmax(320px,.7fr);gap:2rem;align-items:end;margin-bottom:1.5rem}.interieur-solutions-guide__intro h2{grid-column:1;}.interieur-solutions-guide__intro .interieur-solutions-guide__text{grid-column:2;grid-row:1/3}.interieur-solutions-guide__eyebrow{color:#9a6b43;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin:0 0 .65rem}.interieur-solutions-guide h2{font-size:clamp(2.4rem,4vw,4.2rem);line-height:.98;letter-spacing:-.045em;margin:0}.interieur-solutions-guide__text{color:#626158;font-size:1.02rem;line-height:1.65}.interieur-solutions-guide__principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65rem;margin:2rem 0}.interieur-solutions-guide__principles a{min-height:66px;display:flex;align-items:center;gap:.75rem;border:1px solid #ddd5c9;background:#fff;padding:.75rem 1rem;color:inherit;text-decoration:none;transition:transform .2s ease,border-color .2s ease}.interieur-solutions-guide__principles a:hover{transform:translateY(-2px);border-color:#9a6b43}.interieur-solutions-guide__principles svg{width:26px;flex:0 0 auto;fill:none;stroke:#9a6b43;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.interieur-solutions-guide__principles strong{color:#8c5c38}.interieur-solutions-guide__paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.interieur-solutions-path{scroll-margin-top:110px;background:#fff;border:1px solid #e4ded5;overflow:hidden;display:flex;flex-direction:column;min-width:0;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}.interieur-solutions-path:hover,.interieur-solutions-path:focus-within{transform:translateY(-5px);border-color:#c49368;box-shadow:0 16px 36px rgba(85,60,38,.09)}.interieur-solutions-path--accent{border-color:#c49368}.interieur-solutions-path__image{aspect-ratio:4/3;background:#e9e5dc;display:block;overflow:hidden}.interieur-solutions-path__image img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.interieur-solutions-path:hover .interieur-solutions-path__image img{transform:scale(1.035)}.interieur-solutions-path__body{position:relative;display:flex;flex-direction:column;gap:.65rem;padding:1.35rem;height:100%}.interieur-solutions-path__icon{width:42px;height:42px;display:grid;place-items:center;margin-top:-2.7rem;border:1px solid #d8cabb;background:#f8f3ec;color:#8c5c38}.interieur-solutions-path__icon svg{width:22px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.interieur-solutions-path__body .interieur-solutions-guide__eyebrow{margin-bottom:0}.interieur-solutions-path h3{font-size:1.28rem;line-height:1.2;margin:0}.interieur-solutions-path h3 a{color:inherit;text-decoration:none}.interieur-solutions-path p:not(.interieur-solutions-guide__eyebrow){color:#626158;font-size:.92rem;line-height:1.55;margin:0}.interieur-solutions-path__tagline{color:#8c5c38;font-size:.82rem;font-weight:600;line-height:1.45}.interieur-solutions-path__meta{color:#626158;font-size:.78rem;line-height:1.45}.interieur-solutions-path__benefits{display:flex;flex-wrap:wrap;gap:.35rem}.interieur-solutions-path__benefits span{background:#f7f1ea;border:1px solid #eadfce;color:#8c5c38;font-size:.72rem;padding:.35rem .55rem}.interieur-solutions-path__link{display:inline-flex;align-items:center;gap:.4rem;color:#8c5c38;font-size:.88rem;font-weight:700;margin-top:auto;text-decoration:none}.interieur-solutions-path__link span{transition:transform .2s ease}.interieur-solutions-path__link:hover span{transform:translateX(3px)}.interieur-solutions-guide__project{scroll-margin-top:110px;align-items:center;background:#292b28;color:#fff;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:1.2rem;margin-top:1.5rem;padding:1.4rem}.interieur-solutions-guide__project-icon{width:52px;height:52px;display:grid;place-items:center;border:1px solid #615f58;color:#d6a474}.interieur-solutions-guide__project-icon svg{width:28px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.interieur-solutions-guide__project h3{font-size:1.35rem;margin:0}.interieur-solutions-guide__project p:not(.interieur-solutions-guide__eyebrow){color:#d8d4c8;line-height:1.5;margin:.35rem 0 0;max-width:720px}.interieur-solutions-guide__project>a{border:1px solid #d6a474;color:#f0c79f;font-weight:700;padding:.75rem 1rem;text-decoration:none;white-space:nowrap;transition:background .2s ease,color .2s ease}.interieur-solutions-guide__project>a:hover{background:#d6a474;color:#292b28}@media(max-width:900px){.interieur-solutions-guide__intro{grid-template-columns:1fr}.interieur-solutions-guide__intro h2,.interieur-solutions-guide__intro .interieur-solutions-guide__text{grid-column:auto;grid-row:auto}.interieur-solutions-guide__principles{grid-template-columns:1fr}.interieur-solutions-guide__paths{grid-template-columns:1fr 1fr}.interieur-solutions-path:last-child{grid-column:1/-1}.interieur-solutions-guide__project{grid-template-columns:auto 1fr}.interieur-solutions-guide__project>a{grid-column:1/-1;justify-self:start}}@media(max-width:600px){.interieur-solutions-guide{padding:3rem 1rem}.interieur-solutions-guide__paths{grid-template-columns:1fr}.interieur-solutions-path:last-child{grid-column:auto}.interieur-solutions-guide__project{grid-template-columns:1fr}.interieur-solutions-guide__project-icon{display:none}}
 {% endstylesheet %}
 
 {% schema %}
