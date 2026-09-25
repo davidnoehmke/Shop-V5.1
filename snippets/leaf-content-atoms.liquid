@@ -23,7 +23,12 @@ Renders reusable LEAF content atoms at different information depths.
         assign atom_aliases = atom.aliases.value
       %}
       {% if atom_name != blank %}
-        {% if render_mode == 'long' %}
+        {% if render_mode == 'chips' %}
+          <span class="leaf-atom leaf-atom--chip">
+            <span class="leaf-atom__icon">{% render 'leaf-knowledge-icon', icon_key: atom_icon %}</span>
+            <strong>{{ atom_name | escape }}</strong>
+          </span>
+        {% elsif render_mode == 'long' %}
           <details class="leaf-atom leaf-atom--long">
             <summary>
               <span class="leaf-atom__icon">{% render 'leaf-knowledge-icon', icon_key: atom_icon %}</span>
@@ -62,7 +67,11 @@ Renders reusable LEAF content atoms at different information depths.
 
 {% stylesheet %}
   .leaf-atoms { display: grid; gap: .65rem; }
+  .leaf-atoms--chips { display: flex; flex-wrap: wrap; gap: .5rem; }
   .leaf-atoms--one_line { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: 1rem 1.15rem; }
+  .leaf-atom--chip { min-height: 38px; display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .6rem; background: var(--surface, rgba(255,255,255,.32)); font-size: .76rem; font-weight: 780; }
+  .leaf-atom--chip .leaf-atom__icon { width: 26px; height: 26px; border: 0; }
+  .leaf-atom--chip .leaf-atom__icon svg { width: 17px; height: 17px; }
   .leaf-atoms--short { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .leaf-atom { min-width: 0; border: 1px solid var(--border, rgba(23,61,43,.16)); background: var(--surface, rgba(255,255,255,.32)); color: inherit; }
   .leaf-atom--one_line, .leaf-atom--short { display: grid; grid-template-columns: 36px minmax(0,1fr); gap: .7rem; align-items: start; padding: .8rem; }
