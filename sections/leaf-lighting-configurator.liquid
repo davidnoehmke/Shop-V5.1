@@ -50,7 +50,14 @@
       {% assign card_product = block.settings.product %}
       {% if card_product != blank %}
         {% assign role = card_product.metafields.leaf_configurator.role.value | default: block.settings.role %}
+        {% if role == 'plant_light_recommendation' %}{% assign role = 'plant-light' %}{% endif %}
+        {% if role == 'aquascape_light_configurator' %}{% assign role = 'aquascape' %}{% endif %}
+        {% if role == 'plant_station' %}{% assign role = 'station' %}{% endif %}
         {% assign watts = card_product.metafields.lighting.rated_power_w.value | default: block.settings.watts | plus: 0 %}
+        {% assign primary_function = card_product.metafields.leafer.primary_function.value %}
+        {% assign use_cases = card_product.metafields.lighting.use_cases.value %}
+        {% assign manufacturer = card_product.metafields.lighting.manufacturer.value %}
+        {% assign mounting = card_product.metafields.lighting.mounting.value %}
         {% assign price_value = card_product.price | divided_by: 100.0 %}
         <article class="leaf-lighting__card" data-card data-role="{{ role | escape }}" data-price="{{ price_value }}" data-watts="{{ watts }}" {{ block.shopify_attributes }}>
           <a href="{{ card_product.url }}" class="leaf-lighting__media" aria-label="{{ card_product.title | escape }} ansehen">
@@ -61,15 +68,16 @@
             {% endif %}
           </a>
           <div class="leaf-lighting__body">
-            <div class="leaf-lighting__meta"><span>{{ card_product.vendor }}</span><span>{{ card_product.price | money }}</span></div>
+            <div class="leaf-lighting__meta"><span>{{ manufacturer | default: card_product.vendor | escape }}</span><span>{{ card_product.price | money }}</span></div>
             <h2><a href="{{ card_product.url }}">{{ card_product.title }}</a></h2>
-            {% if card_product.metafields.lighting.spectrum.value != blank %}<p>{{ card_product.metafields.lighting.spectrum.value | escape }}</p>{% endif %}
+            {% if primary_function != blank %}<p class="leaf-lighting__function">{{ primary_function | escape }}</p>{% elsif card_product.metafields.leafer.subtitle.value != blank %}<p class="leaf-lighting__function">{{ card_product.metafields.leafer.subtitle.value | escape }}</p>{% endif %}
             <dl>
               {% if watts > 0 %}<div><dt>Leistung</dt><dd>{{ watts }} W</dd></div>{% endif %}
-              {% if card_product.metafields.lighting.cct_k.value != blank %}<div><dt>Farbtemperatur</dt><dd>{{ card_product.metafields.lighting.cct_k.value | escape }}</dd></div>{% endif %}
-              {% if card_product.metafields.lighting.plant_groups.value != blank %}<div><dt>Geeignet für</dt><dd>{% render 'leaf-metafield-value', field: card_product.metafields.lighting.plant_groups %}</dd></div>{% endif %}
+              {% if card_product.metafields.lighting.cct_k.value != blank %}<div><dt>Farbtemperatur</dt><dd>{{ card_product.metafields.lighting.cct_k.value | escape }} K</dd></div>{% endif %}
+              {% if use_cases != blank %}<div><dt>Einsatz</dt><dd>{% render 'leaf-metafield-value', field: card_product.metafields.lighting.use_cases %}</dd></div>{% endif %}
+              {% if mounting != blank %}<div><dt>Montage</dt><dd>{{ mounting | escape }}</dd></div>{% endif %}
             </dl>
-            <a class="button button--secondary" href="{{ card_product.url }}">Produkt ansehen</a>
+            <a class="button button--secondary" href="{{ card_product.url }}">Details &amp; Kaufoptionen</a>
           </div>
         </article>
       {% endif %}
@@ -97,6 +105,7 @@
 
   function powerMatch(watts, value) {
     if (value === 'all') return true;
+    if (!Number.isFinite(watts) || watts <= 0) return false;
     if (value === 'compact') return watts <= 20;
     if (value === 'medium') return watts >= 21 && watts <= 50;
     return watts >= 51;
@@ -139,7 +148,7 @@
 .leaf-lighting__resultbar{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0 1.5rem}.leaf-lighting__reset{border:0;background:none;text-decoration:underline;cursor:pointer;color:var(--muted)}
 .leaf-lighting__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(1rem,2vw,2rem)}
 .leaf-lighting__card{border-top:1px solid var(--border);padding-top:1rem}.leaf-lighting__media{display:block;aspect-ratio:1/1;background:var(--surface);overflow:hidden}.leaf-lighting__media img,.leaf-lighting__media svg{width:100%;height:100%;object-fit:cover}
-.leaf-lighting__body{padding-top:1rem}.leaf-lighting__meta{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.leaf-lighting__body h2{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.05;margin:.55rem 0}.leaf-lighting__body h2 a{text-decoration:none;color:inherit}.leaf-lighting__body p{color:var(--muted)}
+.leaf-lighting__body{padding-top:1rem}.leaf-lighting__meta{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.leaf-lighting__body h2{font-size:clamp(1.3rem,2.4vw,2rem);line-height:1.05;margin:.55rem 0}.leaf-lighting__body h2 a{text-decoration:none;color:inherit}.leaf-lighting__body p{color:var(--muted)}.leaf-lighting__function{min-height:3.2em;margin:.65rem 0 0;line-height:1.55}
 .leaf-lighting__body dl{display:grid;grid-template-columns:1fr 1fr;margin:1rem 0;border-top:1px solid var(--border)}.leaf-lighting__body dl div{padding:.7rem 0;border-bottom:1px solid var(--border)}.leaf-lighting__body dt{font-size:.68rem;color:var(--muted);text-transform:uppercase;font-weight:800}.leaf-lighting__body dd{margin:.2rem 0 0;font-size:.9rem}.leaf-lighting__body .button{width:100%;margin-top:.5rem}
 .leaf-lighting__empty{padding:3rem 0;border-block:1px solid var(--border);display:grid;gap:.35rem}.leaf-lighting__empty[hidden]{display:none}
 @media(max-width:900px){.leaf-lighting__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.leaf-lighting__hero{grid-template-columns:1fr}.leaf-lighting__controls{grid-template-columns:1fr}}

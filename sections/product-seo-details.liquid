@@ -29,7 +29,7 @@
     assign faq_heading = 'Frequently asked questions'
     assign description_heading = 'More product details'
   endif
-  assign fact_definitions = 'custom|light_style|Lichtcharakter|Light character||custom|lighting_position|Beleuchtungsposition|Lighting position||custom|recommended_room|Geeignete Räume|Recommended rooms||leafer|primary_function|Hauptfunktion|Primary function||leafer|suitable_for|Geeignet für|Suitable for||leafer|use_as|Verwendung als|Use as||leafer|ingredients|Bestandteile|Ingredients||leafer|mixing_ratio|Mischverhältnis|Mixing ratio||leafer|additive_application|Anwendung|Application||leafer|water_behavior|Wasserverhalten|Water behaviour||leafer|planter_type|Gefäßtyp|Planter type||leaferservice|botanischer_name|Botanischer Name|Botanical name||leaferservice|keimtemperatur|Keimtemperatur|Germination temperature||leaferservice|keimdauer|Keimdauer|Germination time||leaferservice|aussaatzeit|Aussaatzeit|Sowing period||leaferservice|aussaattiefe|Aussaattiefe|Sowing depth||leaferservice|standort|Standort|Location||leaferservice|substrat_empfehlung|Substrat|Substrate||leaferservice|giessen|Gießen|Watering||leaferservice|schwierigkeitsgrad|Schwierigkeitsgrad|Difficulty||leaferservice|mehrjaehrig|Mehrjährig|Perennial||leaferservice|winterhaerte|Winterhärte|Winter hardiness' | split: '||'
+  assign fact_definitions = 'custom|light_style|Lichtcharakter|Light character||custom|lighting_position|Beleuchtungsposition|Lighting position||custom|recommended_room|Geeignete Räume|Recommended rooms||leafer|primary_function|Hauptfunktion|Primary function||leafer|suitable_for|Geeignet für|Suitable for||leafer|use_as|Verwendung als|Use as||leafer|ingredients|Bestandteile|Ingredients||leafer|mixing_ratio|Mischverhältnis|Mixing ratio||leafer|additive_application|Anwendung|Application||leafer|water_behavior|Wasserverhalten|Water behaviour||leafer|planter_type|Gefäßtyp|Planter type||leaferservice|botanischer_name|Botanischer Name|Botanical name||leaferservice|keimtemperatur|Keimtemperatur|Germination temperature||leaferservice|keimdauer|Keimdauer|Germination time||leaferservice|aussaatzeit|Aussaatzeit|Sowing period||leaferservice|aussaattiefe|Aussaattiefe|Sowing depth||leaferservice|standort|Standort|Location||leaferservice|substrat_empfehlung|Substrat|Substrate||leaferservice|giessen|Gießen|Watering||leaferservice|schwierigkeitsgrad|Schwierigkeitsgrad|Difficulty||leaferservice|mehrjaehrig|Mehrjährig|Perennial||leaferservice|winterhaerte|Winterhärte|Winter hardiness||lighting|manufacturer|Hersteller|Manufacturer||lighting|model|Modell|Model||lighting|rated_power_w|Nennleistung|Rated power||lighting|cct_k|Farbtemperatur|Color temperature||lighting|spectrum|Spektrum|Spectrum||lighting|ppf_umol_s|PPF|PPF||lighting|ppfd_reference|PPFD-Referenz|PPFD reference||lighting|coverage_guidance|Ausleuchtung|Coverage||lighting|recommended_distance|Empfohlener Abstand|Recommended distance||lighting|mounting|Montage|Mounting||lighting|timer_control|Timer / Steuerung|Timer / control||lighting|dimmable|Dimmbar|Dimmable||lighting|ip_rating|Schutzart|IP rating||lighting|socket_connector|Sockel / Anschluss|Socket / connector||lighting|voltage|Spannung|Voltage||lighting|use_cases|Einsatzbereiche|Use cases' | split: '||'
 -%}
 {%- capture facts_markup -%}
   {%- for definition in fact_definitions -%}
@@ -45,7 +45,15 @@
     {%- if fact.value != blank or fact.type == 'boolean' -%}
       <div><dt>{{ parts[label_index] | escape }}</dt><dd>
         {%- if field_key == 'botanischer_name' -%}<i>{%- endif -%}
-        {%- render 'leaf-metafield-value', field: fact -%}
+        {%- if field_namespace == 'lighting' and field_key == 'rated_power_w' -%}
+          {{ fact.value | escape }} W
+        {%- elsif field_namespace == 'lighting' and field_key == 'cct_k' -%}
+          {{ fact.value | escape }} K
+        {%- elsif field_namespace == 'lighting' and field_key == 'ppf_umol_s' -%}
+          {{ fact.value | escape }} µmol/s
+        {%- else -%}
+          {%- render 'leaf-metafield-value', field: fact -%}
+        {%- endif -%}
         {%- if field_key == 'botanischer_name' -%}</i>{%- endif -%}
       </dd></div>
     {%- endif -%}

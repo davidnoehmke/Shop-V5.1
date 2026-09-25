@@ -173,6 +173,16 @@ jobs:
               'sections/leaf-lighting-configurator.liquid': [
                   'data-result-count',
                   "addEventListener('input'",
+                  'plant_light_recommendation',
+                  'metafields.lighting.use_cases',
+              ],
+              'templates/page.pflanzenlicht-konfigurator.json': [
+                  'sunlite-7w-led-pflanzenlampe-teleskopstab',
+                  'neusius-led-bloom-20w-3500k',
+                  'neusius-aurora-76cm-led-pflanzenleuchte-15w',
+                  'venso-sunlite-xl-25w-led-pflanzenlampe',
+                  'venso-e27-pflanzenlampe-indoor-plants',
+                  'mother-plantspectrum-16-32-pflanzenleuchte',
               ],
               'sections/leaf-project-configurator.liquid': [
                   'data-project-light',
