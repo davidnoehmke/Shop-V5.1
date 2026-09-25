@@ -6,7 +6,8 @@
     <a class="main-cart__continue" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
   {% else %}
     {% form 'cart', cart %}
-      <div class="main-cart__items">
+      <div class="main-cart__layout">
+        <div class="main-cart__items">
         {% for item in cart.items %}
           <article class="main-cart__item">
             <a class="main-cart__image" href="{{ item.url }}" aria-label="{{ item.product.title | escape }}">
@@ -54,47 +55,57 @@
         {% endfor %}
       </div>
 
-      <div class="main-cart__summary">
-        <p><span>{{ 'cart.subtotal' | t }}</span><strong>{{ cart.total_price | money }}</strong></p>
-        <div>
-          <button class="button button--secondary" type="submit" name="update">{{ 'cart.update' | t }}</button>
-          <button type="submit" name="checkout">{{ 'cart.checkout' | t }}</button>
-        </div>
+        <aside class="main-cart__summary" aria-label="{{ 'cart.subtotal' | t }}">
+          <p class="main-cart__summary-kicker">{% if request.locale.iso_code == 'de' %}Bestellübersicht{% else %}Order summary{% endif %}</p>
+          <p class="main-cart__subtotal"><span>{{ 'cart.subtotal' | t }}</span><strong>{{ cart.total_price | money }}</strong></p>
+          <div class="main-cart__summary-actions">
+            <button class="button button--secondary" type="submit" name="update">{{ 'cart.update' | t }}</button>
+            <button class="main-cart__checkout" type="submit" name="checkout">{{ 'cart.checkout' | t }} <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="main-cart__assurances">
+            <span>{% if request.locale.iso_code == 'de' %}Sichere Zahlung{% else %}Secure payment{% endif %}</span>
+            <span>{% if request.locale.iso_code == 'de' %}Versandinformationen vor Abschluss{% else %}Shipping details before completion{% endif %}</span>
+            <span>{% if request.locale.iso_code == 'de' %}Persönlicher Support{% else %}Personal support{% endif %}</span>
+          </div>
+        </aside>
       </div>
     {% endform %}
   {% endif %}
 </section>
 
 {% stylesheet %}
-  .main-cart { padding-block: clamp(3rem, 7vw, 7rem); }
-  .main-cart > h1 { margin-top: 0; font-size: clamp(3rem, 8vw, 7rem); line-height: .95; letter-spacing: -.07em; }
-  .main-cart__continue { border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.4rem; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; }
+  .main-cart { padding-block: clamp(2.5rem, 6vw, 6rem); }
+  .main-cart > h1 { max-width: 12ch; margin: 0 0 clamp(2rem,4vw,4rem); font-size: clamp(2.8rem, 5.3vw, 5.4rem); line-height: .94; letter-spacing: -.06em; }
+  .main-cart__continue { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.1rem; border: 1px solid var(--accent); border-radius: 0; background: var(--accent); color: #fff; font-weight: 750; text-decoration: none; }
+  .main-cart__layout { display: grid; grid-template-columns: minmax(0,1fr) minmax(320px,380px); gap: clamp(2rem,5vw,5rem); align-items: start; }
+  .main-cart__items { min-width: 0; border-bottom: 1px solid var(--border); }
   .main-cart__item { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 1.5rem; padding-block: 1.5rem; border-top: 1px solid var(--border); }
-  .main-cart__image { aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; padding: .7rem; border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
+  .main-cart__image { aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; padding: .7rem; border: 1px solid var(--border); border-radius: 0; background: #f5f2eb; }
   .main-cart__image img { width: 100%; height: 100%; object-fit: contain; object-position: center; }
   .main-cart__content { min-width: 0; }
   .main-cart__item h2 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.7rem); }
   .main-cart__item h2 a { text-decoration: none; }
   .main-cart__variant { margin: .35rem 0 0; color: var(--muted); }
-  .main-cart__properties { max-width: 760px; margin: 1rem 0; padding: .9rem 1rem; display: grid; gap: .65rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 72%); border-radius: var(--radius); background: color-mix(in srgb, var(--accent), transparent 94%); }
+  .main-cart__properties { max-width: 760px; margin: 1rem 0; padding: .9rem 1rem; display: grid; gap: .65rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 72%); border-radius: 0; background: color-mix(in srgb, var(--accent), transparent 94%); }
   .main-cart__properties > div { display: grid; grid-template-columns: minmax(130px, .35fr) minmax(0, .65fr); gap: .8rem; }
   .main-cart__properties dt { color: var(--muted); font-size: .78rem; font-weight: 750; }
   .main-cart__properties dd { margin: 0; overflow-wrap: anywhere; font-size: .88rem; }
   .main-cart__line-price { font-size: 1.05rem; font-weight: 800; }
   .main-cart__controls { display: flex; flex-wrap: wrap; align-items: end; gap: .55rem 1rem; }
   .main-cart__controls label { width: 100%; font-size: .78rem; font-weight: 750; }
-  .main-cart__controls input { width: 90px; min-height: 44px; border: 1px solid color-mix(in srgb, var(--text), transparent 70%); border-radius: 10px; background: transparent; padding: .5rem; }
+  .main-cart__controls input { width: 90px; min-height: 44px; border: 1px solid color-mix(in srgb, var(--text), transparent 70%); border-radius: 0; background: transparent; padding: .5rem; }
   .main-cart__controls a { min-height: 44px; display: inline-flex; align-items: center; color: var(--muted); }
-  .main-cart__summary { margin-left: auto; max-width: 540px; padding-top: 2rem; border-top: 2px solid var(--text); }
-  .main-cart__summary > p { display: flex; justify-content: space-between; gap: 1rem; font-size: 1.3rem; }
-  .main-cart__summary > div { display: flex; justify-content: flex-end; gap: .7rem; flex-wrap: wrap; }
-
-  @media (max-width: 620px) {
-    .main-cart__item { grid-template-columns: 96px minmax(0, 1fr); gap: .9rem; }
-    .main-cart__properties > div { grid-template-columns: 1fr; gap: .15rem; }
-    .main-cart__summary > div { display: grid; }
-    .main-cart__summary button { width: 100%; }
-  }
+  .main-cart__summary { position: sticky; top: 104px; padding: 1.4rem; border: 1px solid var(--border); background: var(--surface); }
+  .main-cart__summary-kicker { margin: 0 0 1.4rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-cart__subtotal { display: flex; justify-content: space-between; gap: 1rem; margin: 0; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); font-size: 1.15rem; }
+  .main-cart__subtotal strong { font-size: 1.45rem; }
+  .main-cart__summary-actions { display: grid; gap: .55rem; margin-top: 1.25rem; }
+  .main-cart__summary-actions button { width: 100%; min-height: 50px; border-radius: 0; }
+  .main-cart__checkout { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--accent); background: var(--accent); color: #fff; padding-inline: 1rem; font-weight: 800; cursor: pointer; }
+  .main-cart__assurances { display: grid; gap: .55rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
+  .main-cart__assurances span::before { content: '✓'; margin-right: .4rem; color: var(--accent); font-weight: 900; }
+  @media (max-width: 900px) { .main-cart__layout { grid-template-columns: 1fr; gap: 2rem; } .main-cart__summary { position: static; } }
+  @media (max-width: 620px) { .main-cart__item { grid-template-columns: 96px minmax(0, 1fr); gap: .9rem; } .main-cart__properties > div { grid-template-columns: 1fr; gap: .15rem; } }
 {% endstylesheet %}
 
 {% schema %}
