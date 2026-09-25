@@ -81,6 +81,15 @@ jobs:
             exit 1
           fi
 
+      - name: Prevent internal SEO strategy leaks
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'metafields\.leafer\.(longtail_keywords|search_intent)' -- assets sections snippets layout templates; then
+            echo 'Internal SEO strategy field referenced by storefront-delivered code.' >&2
+            exit 1
+          fi
+
   theme-check:
     name: Shopify Theme Check
     runs-on: ubuntu-24.04
@@ -142,6 +151,52 @@ jobs:
           while IFS= read -r -d '' file; do
             node --check "$file"
           done < <(find assets -type f -name '*.js' -print0)
+      - name: Validate dynamic configurator UX invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          required = {
+              'sections/substrate-configurator.liquid': [
+                  "addEventListener('input'",
+                  'data-recipe',
+                  'substrate:change',
+              ],
+              'sections/leafer-substrate-selector.liquid': [
+                  'data-recipe-matrix',
+                  'data-recipe-list',
+                  "addEventListener('input'",
+              ],
+              'sections/leaf-lighting-configurator.liquid': [
+                  'data-result-count',
+                  "addEventListener('input'",
+              ],
+              'sections/leaf-project-configurator.liquid': [
+                  'data-project-light',
+                  'data-project-rules',
+              ],
+          }
+
+          missing = []
+          for filename, tokens in required.items():
+              path = Path(filename)
+              if not path.exists():
+                  missing.append(f'{filename}: file missing')
+                  continue
+              content = path.read_text(encoding='utf-8')
+              for token in tokens:
+                  if token not in content:
+                      missing.append(f'{filename}: {token}')
+
+          if missing:
+              print('Dynamic configurator UX invariant failed:', file=sys.stderr)
+              for item in missing:
+                  print(f'- {item}', file=sys.stderr)
+              sys.exit(1)
+          PY
       - name: Validate blog indexability invariants
         shell: bash
         run: |
