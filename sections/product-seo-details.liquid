@@ -2,6 +2,7 @@
   assign subtitle = product.metafields.leafer.subtitle.value
   assign intro = product.metafields.leafer.intro.value
   assign custom_use_case = product.metafields.custom.use_case.value
+  assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
   assign notice_field = product.metafields.leaferservice.hinweis
   if notice_field.value == blank
     assign notice_field = product.metafields.leafer.warning
@@ -72,7 +73,7 @@
   assign usps_markup = usps_markup | strip
   assign faq_markup = faq_markup | strip
 -%}
-{% if subtitle != blank or intro != blank or custom_use_case != blank or facts_markup != blank or usps_markup != blank or faq_markup != blank or notice_field.value != blank or product.description != blank %}
+{% if subtitle != blank or intro != blank or custom_use_case != blank or knowledge_atoms != blank or facts_markup != blank or usps_markup != blank or faq_markup != blank or notice_field.value != blank or product.description != blank %}
   <section class="product-seo-details page-width" aria-labelledby="ProductDetails-{{ section.id }}">
     <header class="product-seo-details__header">
       <p class="product-seo-details__eyebrow">{{ details_eyebrow }}</p>
@@ -82,6 +83,13 @@
     </header>
     {% if usps_markup != blank %}<ul class="product-seo-details__usps" aria-label="{{ benefits_label | escape }}">{{ usps_markup }}</ul>{% endif %}
     {% if facts_markup != blank %}<div class="product-seo-details__facts"><h3>{{ facts_heading }}</h3><dl>{{ facts_markup }}</dl></div>{% endif %}
+    {% if knowledge_atoms != blank %}
+      <div class="product-seo-details__knowledge">
+        <p class="product-seo-details__eyebrow">{{ 'product.knowledge.eyebrow' | t }}</p>
+        <h3>{{ 'product.knowledge.heading' | t }}</h3>
+        {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'long', limit: 8 %}
+      </div>
+    {% endif %}
     {% if notice_field.value != blank %}<div class="product-seo-details__notice"><strong>{{ notice_label }}</strong> {% render 'leaf-metafield-value', field: notice_field %}</div>{% endif %}
     {% if has_dynamic_description and product.description != blank %}
       <div class="product-seo-details__description rte"><h3>{{ description_heading }}</h3>{{ product.description }}</div>
@@ -106,7 +114,9 @@
   .product-seo-details__usps { margin: 1.5rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; list-style: none; }
   .product-seo-details__usps li { min-height: 72px; padding: .85rem .9rem; display: flex; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); font-size: .92rem; font-weight: 750; line-height: 1.3; }
   .product-seo-details__check { width: 26px; height: 26px; flex: 0 0 26px; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); font-size: .85rem; }
-  .product-seo-details__facts, .product-seo-details__faq { margin-top: clamp(2.4rem, 8vw, 4.5rem); }
+  .product-seo-details__facts, .product-seo-details__knowledge, .product-seo-details__faq { margin-top: clamp(2.4rem, 8vw, 4.5rem); }
+  .product-seo-details__knowledge { max-width: 980px; }
+  .product-seo-details__knowledge > .leaf-atoms { margin-top: 1rem; }
   .product-seo-details h3 { margin: 0 0 1rem; font-size: clamp(1.45rem, 6vw, 2.2rem); line-height: 1.1; letter-spacing: -.025em; }
   .product-seo-details__facts dl { margin: 0; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border); }
   .product-seo-details__facts dl > div { display: grid; grid-template-columns: 1fr; gap: .3rem; padding: .95rem .15rem; border-bottom: 1px solid var(--border); }

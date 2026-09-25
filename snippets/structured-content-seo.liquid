@@ -8,16 +8,19 @@ Internal keyword/search-intent strategy is intentionally not emitted to the stor
   assign structured_description = blank
   assign public_about = blank
   assign use_case = blank
+  assign knowledge_atoms = blank
 
   if request.page_type == 'product'
     assign structured_name = seo_title | default: product.title
     assign structured_description = seo_description | default: product.metafields.custom.seo_description.value | default: product.description | strip_html | strip
     assign public_about = product.metafields.leafer.primary_function.value | default: product.type | strip_html | strip
     assign use_case = product.metafields.custom.use_case.value | default: product.metafields.leafer.suitable_for.value | strip_html | strip
+    assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
   elsif request.page_type == 'collection'
     assign structured_name = seo_title | default: collection.title
-    assign structured_description = seo_description | default: collection.description | strip_html | strip
+    assign structured_description = seo_description | default: collection.metafields.leafer.intro.value | default: collection.description | strip_html | strip
     assign public_about = collection.title | strip_html | strip
+    assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   endif
 %}
 
@@ -32,7 +35,12 @@ Internal keyword/search-intent strategy is intentionally not emitted to the stor
       "description": {{ structured_description | truncate: 320 | json }},
       "mainEntity": {"@id": {{ canonical_url | append: '#product' | json }}}{% if public_about != blank %},
       "about": {{ public_about | json }}{% endif %}{% if use_case != blank %},
-      "audience": {"@type": "Audience", "audienceType": {{ use_case | truncate: 240 | json }}}{% endif %}
+      "audience": {"@type": "Audience", "audienceType": {{ use_case | truncate: 240 | json }}}{% endif %}{% if knowledge_atoms != blank %},
+      "mentions": [
+        {% for atom in knowledge_atoms limit: 12 %}
+          {"@type":"Thing","name":{{ atom.name.value | json }}}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]{% endif %}
     }
   </script>
 {% elsif request.page_type == 'collection' %}
@@ -44,7 +52,12 @@ Internal keyword/search-intent strategy is intentionally not emitted to the stor
       "url": {{ canonical_url | json }},
       "name": {{ structured_name | json }},
       "description": {{ structured_description | truncate: 320 | json }}{% if public_about != blank %},
-      "about": {{ public_about | json }}{% endif %}
+      "about": {{ public_about | json }}{% endif %}{% if knowledge_atoms != blank %},
+      "mentions": [
+        {% for atom in knowledge_atoms limit: 12 %}
+          {"@type":"Thing","name":{{ atom.name.value | json }}}{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]{% endif %}
     }
   </script>
 {% endif %}
