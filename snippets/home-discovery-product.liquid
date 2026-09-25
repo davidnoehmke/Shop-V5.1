@@ -1,1 +1,37 @@
-{% if product != blank %}{% assign copy=product.metafields.leafer.intro.value | default: product.description | strip_html | truncate: 190 %}{% assign function=product.metafields.leafer.primary_function.value | default: product.metafields.leafer.subtitle.value | default: 'Ausgewählte Lösung' %}<article class="home-discovery__product" data-item data-topic="{{ topic }}">{% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', alt: product.featured_image.alt | default: product.title }}{% endif %}<div class="home-discovery__product-body"><p class="home-discovery__eyebrow">{{ label }}</p><h3>{{ product.title }}</h3><p class="home-discovery__function">{{ function }}</p>{% assign product_rating = product.metafields.reviews.rating.value %}{% assign product_rating_count = product.metafields.reviews.rating_count.value %}{% if product_rating != blank and product_rating_count != blank and product_rating_count > 0 %}<p class="home-discovery__rating" aria-label="{{ product_rating.rating }} von {{ product_rating.scale_max }} Sternen bei {{ product_rating_count }} Bewertungen"><span aria-hidden="true">★★★★★</span> <span>{{ product_rating.rating }} / {{ product_rating.scale_max }} · {{ product_rating_count }} {% if product_rating_count == 1 %}Bewertung{% else %}Bewertungen{% endif %}</span></p>{% endif %}<p>{{ copy }}</p><a href="{{ product.url }}">{{ details }}</a></div></article>{% endif %}
+{% if product != blank %}
+  {% assign copy = product.metafields.leafer.intro.value | default: product.description | strip_html | truncate: 190 %}
+  {% assign function = product.metafields.leafer.primary_function.value | default: product.metafields.leafer.subtitle.value | default: 'Ausgewählte Lösung' %}
+  {% assign card_image = product.featured_image %}
+  {% if card_image == blank and product.media.first.preview_image != blank %}
+    {% assign card_image = product.media.first.preview_image %}
+  {% endif %}
+  <article class="home-discovery__product" data-item data-topic="{{ topic }}">
+    <a class="home-discovery__media" href="{{ product.url }}" aria-label="{{ product.title | escape }} ansehen">
+      {% if card_image != blank %}
+        {{ card_image | image_url: width: 900 | image_tag:
+          loading: 'lazy',
+          widths: '320, 480, 640, 900',
+          sizes: '(min-width: 900px) 22vw, 100vw',
+          alt: card_image.alt | default: product.title
+        }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'home-discovery__placeholder' }}
+      {% endif %}
+    </a>
+    <div class="home-discovery__product-body">
+      <p class="home-discovery__eyebrow">{{ label }}</p>
+      <h3>{{ product.title }}</h3>
+      <p class="home-discovery__function">{{ function }}</p>
+      {% assign product_rating = product.metafields.reviews.rating.value %}
+      {% assign product_rating_count = product.metafields.reviews.rating_count.value %}
+      {% if product_rating != blank and product_rating_count != blank and product_rating_count > 0 %}
+        <p class="home-discovery__rating" aria-label="{{ product_rating.rating }} von {{ product_rating.scale_max }} Sternen bei {{ product_rating_count }} Bewertungen">
+          <span aria-hidden="true">★★★★★</span>
+          <span>{{ product_rating.rating }} / {{ product_rating.scale_max }} · {{ product_rating_count }} {% if product_rating_count == 1 %}Bewertung{% else %}Bewertungen{% endif %}</span>
+        </p>
+      {% endif %}
+      <p>{{ copy }}</p>
+      <a href="{{ product.url }}">{{ details }}</a>
+    </div>
+  </article>
+{% endif %}
