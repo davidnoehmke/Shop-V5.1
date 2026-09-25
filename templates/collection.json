@@ -69,8 +69,8 @@
   "order": [
     "breadcrumbs",
     "main",
-    "leaf_guide",
     "trust",
+    "leaf_guide",
     "seo_copy"
   ]
 }
