@@ -2,6 +2,7 @@
 Renders a product card with an optional compact layout and variant-safe quick add.
 @param {product} product - Product to display
 @param {boolean} [compact] - Use the compact card layout
+@param {boolean} [interactive_facts] - Enable tap/click quick facts on collection cards
 {% enddoc %}
 
 {% liquid
@@ -9,7 +10,20 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   assign formatted_price = product.price_min | money
   assign card_image_alt = product.featured_image.alt | default: product.title
   assign card_descriptor = product.metafields.leafer.subtitle.value
+  assign card_function = product.metafields.leafer.primary_function.value
+  assign card_suitable = product.metafields.leafer.suitable_for.value
+  assign card_difficulty = product.metafields.leafer.difficulty.value
+  assign card_power = product.metafields.lighting.rated_power_w.value
+  assign card_cct = product.metafields.lighting.cct_k.value
+  assign card_mounting = product.metafields.lighting.mounting.value
   assign can_quick_add = false
+  assign has_quick_facts = false
+
+  if interactive_facts
+    if card_function != blank or card_suitable != blank or card_difficulty != blank or card_power != blank or card_cct != blank or card_mounting != blank
+      assign has_quick_facts = true
+    endif
+  endif
   assign from_price_text = 'product.from_price' | t: price: formatted_price
   assign choose_options_text = 'product.choose_options' | t
   assign sold_out_text = 'product.sold_out' | t
@@ -98,6 +112,46 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     </div>
   </a>
 
+  {% if has_quick_facts %}
+    <details class="product-card__facts">
+      <summary aria-label="{{ card_function | default: card_descriptor | default: product.title | escape }}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v7M12 7h.01"/></svg>
+      </summary>
+      <div class="product-card__facts-panel">
+        {% if card_function != blank %}
+          <span class="product-card__fact-row">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
+            <span>{{ card_function | escape }}</span>
+          </span>
+        {% endif %}
+        {% if card_suitable != blank %}
+          <span class="product-card__fact-row">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 18c3-6 6-9 14-12M7 7c2 0 4 2 4 4-3 0-5-1-6-3M13 13c2-2 5-2 7-1-1 3-3 5-7 5"/></svg>
+            <span>{{ card_suitable | join: ' · ' | escape }}</span>
+          </span>
+        {% endif %}
+        {% if card_power != blank or card_cct != blank %}
+          <span class="product-card__fact-row">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
+            <span>{% if card_power != blank %}{{ card_power }} W{% endif %}{% if card_power != blank and card_cct != blank %} · {% endif %}{% if card_cct != blank %}{{ card_cct }} K{% endif %}</span>
+          </span>
+        {% endif %}
+        {% if card_mounting != blank %}
+          <span class="product-card__fact-row">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16M7 20V8h10v12M9 8V4h6v4"/></svg>
+            <span>{{ card_mounting | strip_html | truncatewords: 10 | escape }}</span>
+          </span>
+        {% endif %}
+        {% if card_difficulty != blank %}
+          <span class="product-card__fact-row">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18h4l3-5 3 3 2-6 4 8"/></svg>
+            <span>{{ card_difficulty | escape }}</span>
+          </span>
+        {% endif %}
+      </div>
+    </details>
+  {% endif %}
+
   {% if can_quick_add %}
     {% form 'product', product, class: 'product-card__form' %}
       <input type="hidden" name="id" value="{{ card_variant.id }}">
@@ -125,7 +179,15 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   .product-card__copy p { min-height: 1.3em; color: var(--muted); font-size: .78rem; }
   .product-card__copy strong { margin-top: .8rem; font-size: 1.05rem; }
   .product-card__options { display: inline-flex; align-items: center; gap: .35rem; margin-top: .65rem; color: var(--accent); font-size: .78rem; font-weight: 800; }
-  .product-card__form { position: absolute; right: 1rem; bottom: 1rem; }
+  .product-card__facts { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+  .product-card__facts summary { position: absolute; top: 1.65rem; right: 1.65rem; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--border); background: color-mix(in srgb, var(--background), white 18%); color: var(--text); cursor: pointer; list-style: none; pointer-events: auto; transition: background .2s ease, color .2s ease, border-color .2s ease; }
+  .product-card__facts summary::-webkit-details-marker { display: none; }
+  .product-card__facts summary svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 1.55; stroke-linecap: round; stroke-linejoin: round; }
+  .product-card__facts[open] summary { border-color: var(--accent); background: var(--accent); color: #fff; }
+  .product-card__facts-panel { position: absolute; top: 4.55rem; left: .75rem; right: .75rem; display: grid; gap: .55rem; padding: .8rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); background: color-mix(in srgb, var(--background), white 10%); box-shadow: 0 16px 34px rgba(30,45,37,.14); backdrop-filter: blur(14px); pointer-events: auto; }
+  .product-card__fact-row { display: grid; grid-template-columns: 22px minmax(0,1fr); align-items: start; gap: .55rem; color: var(--text); font-size: .72rem; line-height: 1.4; }
+  .product-card__fact-row svg { width: 18px; fill: none; stroke: var(--accent); stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+  .product-card__form { position: absolute; right: 1rem; bottom: 1rem; z-index: 4; }
   .product-card__form button { width: 48px; min-height: 48px; padding: 0; }
   .product-card__form svg { width: 21px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .product-card--compact .product-card__link { padding: .8rem; }
@@ -148,6 +210,9 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     .product-card__copy p { display: block; min-height: 1.3em; margin-top: .35rem; font-size: .7rem; }
     .product-card__copy strong { margin-top: .45rem; font-size: .95rem; }
     .product-card__options { font-size: .72rem; }
+    .product-card__facts summary { top: .85rem; right: .85rem; width: 36px; height: 36px; }
+    .product-card__facts-panel { top: 3.45rem; left: .45rem; right: .45rem; padding: .65rem; }
+    .product-card__fact-row { font-size: .68rem; }
     .product-card__form { right: .55rem; bottom: .55rem; }
     .product-card__form button,
     .product-card--compact .product-card__form button { width: 48px; min-height: 48px; }

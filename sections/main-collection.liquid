@@ -94,7 +94,7 @@
       <div class="main-collection__filter-landscape">
         <p class="main-collection__landscape-label">{{ landscape_label }}</p>
         <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
-        <button type="button" class="main-collection__filter" data-product-filter="all" aria-pressed="true">
+        <button type="button" class="main-collection__filter" data-product-filter="all" data-filter-label="{{ 'collection.all' | t | escape }}" aria-pressed="true">
           <span class="main-collection__filter-icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
           </span>
@@ -102,7 +102,7 @@
         </button>
         {% for product_type in product_types %}
           {% assign product_type_downcase = product_type | downcase %}
-          <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" aria-pressed="false">
+          <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" data-filter-label="{{ product_type | escape }}" aria-pressed="false">
             <span class="main-collection__filter-icon" aria-hidden="true">
               {% if product_type_downcase contains 'licht' or product_type_downcase contains 'led' or product_type_downcase contains 'lamp' %}
                 <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
@@ -132,9 +132,19 @@
     </form>
   </div>
 
-  {% paginate collection.products by 12 %}
+  {% if section.settings.show_type_filters and product_types.size > 1 %}
+    <div class="main-collection__active-context" data-filter-context aria-live="polite">
+      <span class="main-collection__context-icon" data-filter-context-icon aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+      </span>
+      <strong data-filter-context-label>{{ 'collection.all' | t }}</strong>
+      <span class="main-collection__context-count" data-filter-context-count>{{ collection.products_count }}</span>
+    </div>
+  {% endif %}
+
+  {% paginate collection.products by 24 %}
     <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
-      {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product %}</div>{% endfor %}
+      {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
     </div>
     {% if paginate.pages > 1 %}<nav class="main-collection__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
   {% endpaginate %}
@@ -181,6 +191,11 @@
   .main-collection__sort { display: flex; align-items: center; gap: .7rem; }
   .main-collection__sort label { font-size: .75rem; font-weight: 800; }
   .main-collection__sort select { min-height: 44px; min-width: 220px; border: 1px solid var(--border); border-radius: 0; background: var(--background); padding: .6rem 2.2rem .6rem .8rem; }
+  .main-collection__active-context { min-height: 52px; display: grid; grid-template-columns: 34px minmax(0,1fr) auto; gap: .7rem; align-items: center; margin: -1px 0 1.2rem; padding: .55rem .7rem; border: 1px solid var(--border); background: var(--surface); }
+  .main-collection__context-icon { width: 30px; height: 30px; display: grid; place-items: center; color: var(--accent); }
+  .main-collection__context-icon svg { width: 19px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .main-collection__active-context strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; }
+  .main-collection__context-count { min-width: 34px; height: 30px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .72rem; font-weight: 850; }
   .main-collection__grid { scroll-margin-top: 110px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; }
   .main-collection__grid > div[hidden] { display: none; }
   .main-collection__pagination { display: flex; justify-content: center; padding-top: 3rem; }
@@ -220,17 +235,36 @@
     select.addEventListener('change', () => select.form.requestSubmit());
   });
 
-  document.querySelectorAll('.main-collection__filters').forEach((filters) => {
+  document.querySelectorAll('.main-collection').forEach((collectionSection) => {
+    const filters = collectionSection.querySelector('.main-collection__filters');
+    if (!filters) return;
+    const context = collectionSection.querySelector('[data-filter-context]');
+    const contextIcon = context?.querySelector('[data-filter-context-icon]');
+    const contextLabel = context?.querySelector('[data-filter-context-label]');
+    const contextCount = context?.querySelector('[data-filter-context-count]');
+
+    const syncFilter = (button) => {
+      const selected = button.dataset.productFilter;
+      const cards = [...collectionSection.querySelectorAll('[data-product-type]')];
+      cards.forEach((card) => {
+        card.hidden = selected !== 'all' && card.dataset.productType !== selected;
+      });
+      const visible = cards.filter((card) => !card.hidden).length;
+      if (contextLabel) contextLabel.textContent = button.dataset.filterLabel || button.textContent.trim();
+      if (contextCount) contextCount.textContent = String(visible);
+      const sourceIcon = button.querySelector('.main-collection__filter-icon');
+      if (contextIcon && sourceIcon) contextIcon.innerHTML = sourceIcon.innerHTML;
+    };
+
     filters.addEventListener('click', (event) => {
       const button = event.target.closest('[data-product-filter]');
       if (!button) return;
-      const collectionSection = filters.closest('.main-collection');
       filters.querySelectorAll('button').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-      const selected = button.dataset.productFilter;
-      collectionSection.querySelectorAll('[data-product-type]').forEach((card) => {
-        card.hidden = selected !== 'all' && card.dataset.productType !== selected;
-      });
+      syncFilter(button);
     });
+
+    const initial = filters.querySelector('[aria-pressed="true"]');
+    if (initial) syncFilter(initial);
   });
 {% endjavascript %}
 
