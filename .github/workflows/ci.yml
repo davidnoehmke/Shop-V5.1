@@ -188,6 +188,32 @@ jobs:
                   'data-project-light',
                   'data-project-rules',
               ],
+              'snippets/leaf-content-atoms.liquid': [
+                  'one_liner',
+                  'short_explanation',
+                  'long_explanation',
+                  "render 'leaf-knowledge-icon'",
+              ],
+              'sections/leaferservice-product.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'one_line'",
+              ],
+              'sections/product-seo-details.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'long'",
+              ],
+              'sections/main-collection.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'short'",
+              ],
+              'sections/leaf-collection-guide.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'long'",
+              ],
+              'snippets/structured-content-seo.liquid': [
+                  'knowledge_atoms',
+                  '"mentions"',
+              ],
           }
 
           missing = []
