@@ -42,6 +42,44 @@ jobs:
             echo 'Potential committed secret detected.' >&2
             exit 1
           fi
+      - name: Enforce storefront portability and browser safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          storefront_paths=(assets sections snippets layout templates config)
+
+          leaked_artifact=$(find "${storefront_paths[@]}" -type f \( -name '*.map' -o -name '*.ts' -o -name '*.tsx' \) -print -quit)
+          if [ -n "$leaked_artifact" ]; then
+            echo "Storefront source artifact must not be deployed: $leaked_artifact" >&2
+            exit 1
+          fi
+
+          if git grep -nE '(SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]+|OPENAI_API_KEY|SHOPIFY_CLI_THEME_TOKEN|LEAF_GITHUB_TOKEN|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY)' -- "${storefront_paths[@]}"; then
+            echo 'Server credential or private key reference found in storefront-delivered code.' >&2
+            exit 1
+          fi
+
+          if git grep -n 'sourceMappingURL=' -- assets sections snippets layout templates; then
+            echo 'Production storefront source maps are forbidden.' >&2
+            exit 1
+          fi
+
+          configurators=(
+            sections/substrate-configurator.liquid
+            sections/leafer-substrate-selector.liquid
+            sections/leaf-project-configurator.liquid
+            sections/leaf-lighting-configurator.liquid
+            sections/custom-grow-creator.liquid
+          )
+          existing_configurators=()
+          for file in "${configurators[@]}"; do
+            [ -f "$file" ] && existing_configurators+=("$file")
+          done
+
+          if [ "${#existing_configurators[@]}" -gt 0 ] && git grep -nE 'https?://[^"[:space:]]*\.myshopify\.com|/cart/add\.js' -- "${existing_configurators[@]}"; then
+            echo 'Hard-coded Shopify commerce endpoint found inside configurator core. Inject the adapter URL instead.' >&2
+            exit 1
+          fi
 
   theme-check:
     name: Shopify Theme Check
