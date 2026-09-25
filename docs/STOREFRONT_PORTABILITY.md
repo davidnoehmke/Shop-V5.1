@@ -103,3 +103,30 @@ Any portability change to a critical configurator must preserve:
 - no unnecessary framework/runtime dependency,
 - mobile performance at least equal to the previous production state,
 - desktop performance measured against the same interaction and rendering budget.
+
+
+## Dynamic UX invariants
+
+Security, portability or SEO changes must not remove or degrade the dynamic customer experience.
+
+Protected behavior includes:
+- range sliders and percentage sliders react immediately in the browser,
+- selection-dependent information blocks update without page reloads,
+- ingredients, mixing ratios, recipe distributions and visible product facts remain transparent,
+- result counts, recommendations and selected-state summaries update immediately,
+- icons, helper text and contextual notices remain available,
+- variant-dependent public content may change with the selected option,
+- ordinary slider/input changes never require a server roundtrip.
+
+The storefront may receive a compact, pre-resolved public payload containing only values required for the customer experience.
+
+Internal strategy is not part of that public payload. Keep these outside storefront delivery:
+- Deep Research provenance and prompts,
+- raw longtail keyword targets and keyword clusters,
+- internal search-intent labels,
+- ranking/scoring weights,
+- editorial prioritization,
+- procurement/cost/admin metadata,
+- unpublished candidate evaluation.
+
+Visible customer copy is necessarily public. The protected boundary is the internal derivation and strategy, not the final content users and search engines must receive.
