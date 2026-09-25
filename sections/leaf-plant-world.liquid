@@ -1,0 +1,215 @@
+{% liquid
+  assign plant_name = page.metafields.leafer.plant_scientific_name.value | default: page.title
+  assign subtitle = page.metafields.leafer.plant_subtitle.value
+  assign hero_image = page.metafields.leafer.hero_image.value
+  assign gallery = page.metafields.leafer.gallery.value
+  assign experience = page.metafields.leafer.experience.value
+  assign care_summary = page.metafields.leafer.care_summary.value
+  assign light_note = page.metafields.leafer.light_note.value
+  assign substrate_note = page.metafields.leafer.substrate_note.value
+  assign facts = page.metafields.leafer.facts.value
+  assign recommended_products = page.metafields.leafer.recommended_products.value
+  assign hero_alt = hero_image.alt | default: page.title
+%}
+
+<article class="plant-world">
+  <section class="plant-world__hero page-width" aria-labelledby="PlantWorldTitle-{{ section.id }}">
+    <div class="plant-world__hero-media">
+      {% if hero_image != blank %}
+        {{ hero_image | image_url: width: 1800 | image_tag: widths: '520, 760, 1000, 1400, 1800', sizes: '(min-width: 900px) 55vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: hero_alt }}
+      {% elsif section.settings.fallback_image != blank %}
+        {{ section.settings.fallback_image | image_url: width: 1800 | image_tag: widths: '520, 760, 1000, 1400, 1800', sizes: '(min-width: 900px) 55vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: page.title }}
+      {% endif %}
+    </div>
+
+    <div class="plant-world__hero-copy">
+      <p class="plant-world__eyebrow">{{ 'plant_world.eyebrow' | t }}</p>
+      <h1 id="PlantWorldTitle-{{ section.id }}">{{ page.title | escape }}</h1>
+      {% if plant_name != blank and plant_name != page.title %}<p class="plant-world__scientific">{{ plant_name | escape }}</p>{% endif %}
+      {% if subtitle != blank %}<p class="plant-world__lead">{{ subtitle | escape }}</p>{% endif %}
+
+      {% if facts != blank %}
+        <dl class="plant-world__facts">
+          {% if facts.light != blank %}<div><dt>{{ 'plant_world.fact_light' | t }}</dt><dd>{{ facts.light | escape }}</dd></div>{% endif %}
+          {% if facts.water != blank %}<div><dt>{{ 'plant_world.fact_water' | t }}</dt><dd>{{ facts.water | escape }}</dd></div>{% endif %}
+          {% if facts.humidity != blank %}<div><dt>{{ 'plant_world.fact_humidity' | t }}</dt><dd>{{ facts.humidity | escape }}</dd></div>{% endif %}
+          {% if facts.substrate != blank %}<div><dt>{{ 'plant_world.fact_substrate' | t }}</dt><dd>{{ facts.substrate | escape }}</dd></div>{% endif %}
+          {% if facts.practice != blank %}<div><dt>{{ 'plant_world.fact_practice' | t }}</dt><dd>{{ facts.practice | escape }}</dd></div>{% endif %}
+        </dl>
+      {% endif %}
+
+      {% if recommended_products != blank %}
+        {% assign first_product = recommended_products | first %}
+        {% if first_product != blank %}
+          <a class="button plant-world__primary-link" href="{{ first_product.url }}">{{ 'plant_world.primary_link' | t }} <span aria-hidden="true">→</span></a>
+        {% endif %}
+      {% endif %}
+    </div>
+  </section>
+
+  <section class="plant-world__practice page-width" aria-labelledby="PlantWorldPractice-{{ section.id }}">
+    <div class="plant-world__section-heading">
+      <p class="plant-world__eyebrow">{{ 'plant_world.practice_eyebrow' | t }}</p>
+      <h2 id="PlantWorldPractice-{{ section.id }}">{{ 'plant_world.practice_heading' | t }}</h2>
+    </div>
+
+    <div class="plant-world__practice-grid">
+      {% if experience != blank %}
+        <div class="plant-world__experience">
+          <p class="plant-world__card-label">{{ 'plant_world.experience_label' | t }}</p>
+          <div class="plant-world__body">{{ experience | escape | newline_to_br }}</div>
+        </div>
+      {% endif %}
+
+      <div class="plant-world__knowledge">
+        {% if care_summary != blank %}
+          <section class="plant-world__knowledge-card">
+            <p class="plant-world__card-label">{{ 'plant_world.care_label' | t }}</p>
+            <div class="plant-world__body">{{ care_summary | escape | newline_to_br }}</div>
+          </section>
+        {% endif %}
+        {% if substrate_note != blank %}
+          <section class="plant-world__knowledge-card">
+            <p class="plant-world__card-label">{{ 'plant_world.substrate_label' | t }}</p>
+            <div class="plant-world__body">{{ substrate_note | escape | newline_to_br }}</div>
+          </section>
+        {% endif %}
+        {% if light_note != blank %}
+          <section class="plant-world__knowledge-card">
+            <p class="plant-world__card-label">{{ 'plant_world.light_label' | t }}</p>
+            <div class="plant-world__body">{{ light_note | escape | newline_to_br }}</div>
+          </section>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if gallery != blank %}
+    <section class="plant-world__gallery page-width" aria-labelledby="PlantWorldGallery-{{ section.id }}">
+      <div class="plant-world__section-heading plant-world__section-heading--row">
+        <div>
+          <p class="plant-world__eyebrow">{{ 'plant_world.gallery_eyebrow' | t }}</p>
+          <h2 id="PlantWorldGallery-{{ section.id }}">{{ 'plant_world.gallery_heading' | t }}</h2>
+        </div>
+        <p>{{ 'plant_world.gallery_intro' | t }}</p>
+      </div>
+      <div class="plant-world__gallery-grid">
+        {% for image in gallery limit: 6 %}
+          {% assign image_alt = image.alt | default: page.title %}
+          <figure>
+            {{ image | image_url: width: 1400 | image_tag: widths: '420, 640, 900, 1200, 1400', sizes: '(min-width: 900px) 46vw, 92vw', loading: 'lazy', alt: image_alt }}
+          </figure>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_products and recommended_products != blank %}
+    <section class="plant-world__products page-width" aria-labelledby="PlantWorldProducts-{{ section.id }}">
+      <div class="plant-world__section-heading plant-world__section-heading--row">
+        <div>
+          <p class="plant-world__eyebrow">{{ 'plant_world.products_eyebrow' | t }}</p>
+          <h2 id="PlantWorldProducts-{{ section.id }}">{{ 'plant_world.products_heading' | t }}</h2>
+        </div>
+        <p>{{ 'plant_world.products_intro' | t }}</p>
+      </div>
+      <div class="plant-world__product-grid">
+        {% for related_product in recommended_products limit: 4 %}
+          {% if related_product != blank %}
+            {% render 'product-card', product: related_product, compact: true, interactive_facts: true %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section.settings.show_page_content and page.content != blank %}
+    <section class="plant-world__longform page-width">
+      <div class="plant-world__section-heading">
+        <p class="plant-world__eyebrow">{{ 'plant_world.longform_eyebrow' | t }}</p>
+        <h2>{{ 'plant_world.longform_heading' | t }}</h2>
+      </div>
+      <div class="plant-world__longform-body rte">{{ page.content }}</div>
+    </section>
+  {% endif %}
+</article>
+
+{% stylesheet %}
+  .plant-world { --plant-world-surface: color-mix(in srgb, var(--surface), white 28%); --plant-world-soft: color-mix(in srgb, var(--accent-soft), white 32%); }
+  .plant-world__hero { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(360px, .92fr); min-height: min(760px, 82vh); padding-block: clamp(1rem, 3vw, 2.25rem) clamp(3.5rem, 7vw, 6.5rem); }
+  .plant-world__hero-media { min-height: 560px; overflow: hidden; background: var(--plant-world-soft); }
+  .plant-world__hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+  .plant-world__hero-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(2rem, 5vw, 5rem); border: 1px solid var(--border); border-left: 0; background: var(--background); }
+  .plant-world__eyebrow, .plant-world__card-label { margin: 0 0 .65rem; color: var(--accent); font-size: .74rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .plant-world h1 { max-width: 12ch; margin: 0; font-size: clamp(2.5rem, 5.2vw, 5.6rem); line-height: .94; letter-spacing: -.045em; text-wrap: balance; }
+  .plant-world__scientific { margin: 1rem 0 0; color: var(--muted); font-size: .95rem; font-style: italic; }
+  .plant-world__lead { max-width: 56ch; margin: 1.25rem 0 0; color: color-mix(in srgb, var(--text), transparent 18%); font-size: clamp(1.03rem, 1.4vw, 1.18rem); line-height: 1.65; }
+  .plant-world__facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; margin: clamp(1.8rem, 4vw, 2.7rem) 0 0; border-top: 1px solid var(--border); border-left: 1px solid var(--border); }
+  .plant-world__facts div { min-width: 0; padding: .9rem 1rem; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .plant-world__facts dt { color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .plant-world__facts dd { margin: .25rem 0 0; font-size: .88rem; font-weight: 720; line-height: 1.35; }
+  .plant-world__primary-link { align-self: flex-start; margin-top: 1.5rem; }
+  .plant-world__primary-link span { transition: transform .2s ease; }
+  .plant-world__primary-link:hover span { transform: translateX(.2rem); }
+
+  .plant-world__practice, .plant-world__gallery, .plant-world__products, .plant-world__longform { padding-block: clamp(3.5rem, 7vw, 7rem); border-top: 1px solid var(--border); }
+  .plant-world__section-heading { max-width: 760px; margin-bottom: clamp(1.6rem, 3.5vw, 2.8rem); }
+  .plant-world__section-heading--row { display: flex; max-width: none; align-items: end; justify-content: space-between; gap: 2rem; }
+  .plant-world__section-heading--row > p { max-width: 42ch; margin: 0 0 .25rem; color: var(--muted); font-size: .9rem; line-height: 1.55; }
+  .plant-world h2 { max-width: 18ch; margin: 0; font-size: clamp(2rem, 4vw, 4.2rem); line-height: 1; letter-spacing: -.035em; text-wrap: balance; }
+
+  .plant-world__practice-grid { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr); gap: clamp(1rem, 2vw, 1.5rem); }
+  .plant-world__experience { display: flex; min-height: 420px; flex-direction: column; justify-content: flex-end; padding: clamp(1.6rem, 4vw, 3.25rem); background: var(--plant-world-soft); }
+  .plant-world__experience .plant-world__body { max-width: 62ch; font-size: clamp(1.08rem, 1.8vw, 1.35rem); line-height: 1.65; }
+  .plant-world__knowledge { display: grid; gap: 1rem; }
+  .plant-world__knowledge-card { padding: clamp(1.25rem, 2.5vw, 2rem); border: 1px solid var(--border); background: var(--plant-world-surface); }
+  .plant-world__body { color: color-mix(in srgb, var(--text), transparent 12%); line-height: 1.65; }
+
+  .plant-world__gallery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.75rem, 1.5vw, 1.25rem); }
+  .plant-world__gallery-grid figure { min-width: 0; margin: 0; overflow: hidden; background: var(--plant-world-soft); }
+  .plant-world__gallery-grid img { width: 100%; height: 100%; min-height: 420px; max-height: 720px; object-fit: cover; }
+
+  .plant-world__product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(.75rem, 1.4vw, 1.15rem); }
+  .plant-world__longform { max-width: 1040px; }
+  .plant-world__longform-body { max-width: 76ch; font-size: clamp(1rem, 1.3vw, 1.1rem); line-height: 1.75; }
+  .plant-world__longform-body > :first-child { margin-top: 0; }
+
+  @media (max-width: 1040px) {
+    .plant-world__hero { grid-template-columns: minmax(0, 1fr) minmax(320px, .86fr); }
+    .plant-world__product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @media (max-width: 820px) {
+    .plant-world__hero { grid-template-columns: 1fr; min-height: 0; }
+    .plant-world__hero-media { min-height: 0; aspect-ratio: 4 / 5; }
+    .plant-world__hero-copy { padding: 1.6rem 1.1rem 2rem; border-left: 1px solid var(--border); border-top: 0; }
+    .plant-world__practice-grid { grid-template-columns: 1fr; }
+    .plant-world__experience { min-height: 0; }
+    .plant-world__section-heading--row { display: block; }
+    .plant-world__section-heading--row > p { margin-top: 1rem; }
+  }
+
+  @media (max-width: 560px) {
+    .plant-world__hero { width: 100%; padding-top: 0; }
+    .plant-world__hero-copy { margin-inline: 1rem; }
+    .plant-world h1 { font-size: clamp(2.25rem, 11vw, 3.5rem); }
+    .plant-world__facts { grid-template-columns: 1fr; }
+    .plant-world__primary-link { width: 100%; justify-content: center; }
+    .plant-world__gallery-grid { display: flex; gap: .8rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: .4rem; }
+    .plant-world__gallery-grid figure { flex: 0 0 84vw; scroll-snap-align: start; }
+    .plant-world__gallery-grid img { min-height: 0; aspect-ratio: 4 / 5; }
+    .plant-world__product-grid { gap: .55rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pflanzenwelt Landingpage",
+  "settings": [
+    { "type": "image_picker", "id": "fallback_image", "label": "Fallback-Bild" },
+    { "type": "checkbox", "id": "show_products", "label": "Passende Produkte anzeigen", "default": true },
+    { "type": "checkbox", "id": "show_page_content", "label": "Zusätzlichen Seitentext anzeigen", "default": true }
+  ],
+  "presets": [{ "name": "Pflanzenwelt Landingpage" }]
+}
+{% endschema %}
