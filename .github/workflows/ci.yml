@@ -197,10 +197,12 @@ jobs:
               'sections/leaferservice-product.liquid': [
                   'metafields.leafer.knowledge_atoms',
                   "mode: 'chips'",
+                  'truncatewords: 32',
               ],
               'sections/product-seo-details.liquid': [
                   'metafields.leafer.knowledge_atoms',
                   "mode: 'long'",
+                  '<details class="product-seo-details__description">',
               ],
               'sections/main-collection.liquid': [
                   'metafields.leafer.knowledge_atoms',
@@ -209,6 +211,18 @@ jobs:
               'sections/leaf-collection-guide.liquid': [
                   'metafields.leafer.knowledge_atoms',
                   "mode: 'long'",
+                  '<details class="leaf-collection-guide__panel">',
+              ],
+              'snippets/home-discovery-product.liquid': [
+                  'truncatewords: 18',
+              ],
+              'sections/home-collection-journey.liquid': [
+                  'truncatewords: 22',
+              ],
+              'sections/home-discovery-path.liquid': [
+                  'home-discovery__story-icon',
+                  'home-discovery__story-body',
+                  '<details class="home-discovery__story"',
               ],
               'snippets/structured-content-seo.liquid': [
                   'knowledge_atoms',
