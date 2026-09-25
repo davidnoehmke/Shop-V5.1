@@ -1,0 +1,88 @@
+{% doc %}
+Renders reusable LEAF content atoms at different information depths.
+
+@param {array} atoms - Metaobjects from a list.metaobject_reference metafield.
+@param {string} [mode] - one_line, short, or long.
+@param {number} [limit] - Maximum number of atoms to render.
+{% enddoc %}
+
+{% liquid
+  assign render_mode = mode | default: 'short'
+  assign render_limit = limit | default: 6
+%}
+
+{% if atoms != blank %}
+  <div class="leaf-atoms leaf-atoms--{{ render_mode | escape }}">
+    {% for atom in atoms limit: render_limit %}
+      {% liquid
+        assign atom_name = atom.name.value
+        assign atom_icon = atom.icon_key.value
+        assign atom_one_liner = atom.one_liner.value
+        assign atom_short = atom.short_explanation.value | default: atom_one_liner
+        assign atom_long = atom.long_explanation.value | default: atom_short
+        assign atom_aliases = atom.aliases.value
+      %}
+      {% if atom_name != blank %}
+        {% if render_mode == 'long' %}
+          <details class="leaf-atom leaf-atom--long">
+            <summary>
+              <span class="leaf-atom__icon">{% render 'leaf-knowledge-icon', icon_key: atom_icon %}</span>
+              <span class="leaf-atom__summary-copy">
+                <strong>{{ atom_name | escape }}</strong>
+                {% if atom_one_liner != blank %}<span>{{ atom_one_liner | escape }}</span>{% endif %}
+              </span>
+              <span class="leaf-atom__plus" aria-hidden="true">+</span>
+            </summary>
+            <div class="leaf-atom__detail">
+              {% if atom_long != blank %}<p>{{ atom_long | escape | newline_to_br }}</p>{% endif %}
+              {% if atom_aliases != blank %}
+                <div class="leaf-atom__aliases">
+                  {% for alias in atom_aliases %}<span>{{ alias | escape }}</span>{% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </details>
+        {% else %}
+          <article class="leaf-atom leaf-atom--{{ render_mode | escape }}">
+            <span class="leaf-atom__icon">{% render 'leaf-knowledge-icon', icon_key: atom_icon %}</span>
+            <div class="leaf-atom__copy">
+              <strong>{{ atom_name | escape }}</strong>
+              {% if render_mode == 'one_line' %}
+                {% if atom_one_liner != blank %}<p>{{ atom_one_liner | escape }}</p>{% endif %}
+              {% elsif atom_short != blank %}
+                <p>{{ atom_short | escape | newline_to_br }}</p>
+              {% endif %}
+            </div>
+          </article>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .leaf-atoms { display: grid; gap: .65rem; }
+  .leaf-atoms--one_line { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: 1rem 1.15rem; }
+  .leaf-atoms--short { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .leaf-atom { min-width: 0; border: 1px solid var(--border, rgba(23,61,43,.16)); background: var(--surface, rgba(255,255,255,.32)); color: inherit; }
+  .leaf-atom--one_line, .leaf-atom--short { display: grid; grid-template-columns: 36px minmax(0,1fr); gap: .7rem; align-items: start; padding: .8rem; }
+  .leaf-atom__icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--accent, currentColor); border: 1px solid color-mix(in srgb, currentColor, transparent 72%); }
+  .leaf-atom__icon svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+  .leaf-atom__copy strong, .leaf-atom__summary-copy strong { display: block; font-size: .82rem; line-height: 1.25; }
+  .leaf-atom__copy p, .leaf-atom__summary-copy span { margin: .22rem 0 0; color: var(--muted, #647267); font-size: .76rem; line-height: 1.45; }
+  .leaf-atom--long { overflow: clip; }
+  .leaf-atom--long summary { min-height: 68px; display: grid; grid-template-columns: 40px minmax(0,1fr) 30px; gap: .75rem; align-items: center; padding: .8rem .9rem; cursor: pointer; list-style: none; }
+  .leaf-atom--long summary::-webkit-details-marker { display: none; }
+  .leaf-atom--long summary::marker { content: ''; }
+  .leaf-atom__plus { width: 28px; height: 28px; display: grid; place-items: center; font-size: 1.25rem; transition: transform .2s ease; }
+  .leaf-atom--long[open] .leaf-atom__plus { transform: rotate(45deg); }
+  .leaf-atom__detail { padding: 0 1rem 1rem 3.95rem; }
+  .leaf-atom__detail p { max-width: 78ch; margin: 0; color: var(--muted, #647267); line-height: 1.7; }
+  .leaf-atom__aliases { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .75rem; }
+  .leaf-atom__aliases span { padding: .28rem .48rem; border: 1px solid var(--border, rgba(23,61,43,.16)); font-size: .7rem; color: var(--muted, #647267); }
+  @media (max-width: 700px) {
+    .leaf-atoms--one_line, .leaf-atoms--short { grid-template-columns: 1fr; }
+    .leaf-atom__detail { padding-left: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { .leaf-atom__plus { transition: none; } }
+{% endstylesheet %}
