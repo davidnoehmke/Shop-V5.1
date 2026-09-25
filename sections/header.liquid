@@ -75,20 +75,20 @@
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
-        {% for link in section.settings.menu.links %}<a href="{{ link.url }}">{{ link.title }}</a>{% endfor %}
+        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
       </nav>
     {% endif %}
     <div class="site-header__actions">
-      <a href="{{ routes.search_url }}" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></a>
-      <a class="site-header__account" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
-      <a class="site-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span>{{ cart.item_count }}</span>{% endif %}</a>
+      <a href="{{ routes.search_url }}" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><span class="site-header__action-label">{{ 'header.search' | t }}</span></a>
+      <a class="site-header__account" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg><span class="site-header__action-label">{{ 'header.account' | t }}</span></a>
+      <a class="site-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg><span class="site-header__action-label">{{ 'cart.title' | t }}</span>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
     </div>
   </div>
 </header>
 
 {% stylesheet %}
   .site-header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 3%); backdrop-filter: blur(14px); }
-  .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(180px, 1fr) auto minmax(180px, 1fr); align-items: center; gap: 2.5rem; }
+  .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(180px, .8fr) auto minmax(280px, .8fr); align-items: center; gap: clamp(1rem, 2vw, 2.5rem); }
   .site-header__brand { width: min(100%, var(--logo-width)); display: inline-flex; align-items: center; gap: .55rem; font-family: var(--heading-font); font-size: 1.45rem; font-weight: 600; text-decoration: none; }
   .site-header__brand > svg { width: 34px; flex: 0 0 auto; }
   .site-header__brand img { width: 100%; height: auto; }
@@ -97,12 +97,16 @@
   .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
   .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
   .site-header__desktop a:hover { color: var(--accent); }
-  .site-header__actions { justify-self: end; display: flex; align-items: center; gap: 1.15rem; }
-  .site-header__actions > a, .site-header__mobile > summary { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; border-radius: 50%; }
-  .site-header__actions > a:hover, .site-header__mobile > summary:hover { background: var(--surface); }
+  .site-header__actions { justify-self: end; display: flex; align-items: stretch; gap: .35rem; }
+  .site-header__actions > a { position: relative; min-height: 42px; display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .7rem; border: 1px solid transparent; color: var(--text); text-decoration: none; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
+  .site-header__actions > a:hover, .site-header__actions > a:focus-visible { border-color: var(--border); background: var(--surface); color: var(--accent); }
+  .site-header__mobile > summary { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
+  .site-header__mobile > summary:hover { background: var(--surface); }
   .site-header__actions svg, .site-header__mobile svg { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-  .site-header__actions svg, .site-header__menu-icon { width: 24px; }
-  .site-header__cart span { position: absolute; top: -6px; right: -9px; min-width: 17px; height: 17px; padding-inline: 3px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: .65rem; font-weight: 800; }
+  .site-header__actions svg { width: 20px; }
+  .site-header__menu-icon { width: 24px; }
+  .site-header__action-label { font-size: .72rem; font-weight: 760; letter-spacing: .02em; }
+  .site-header__cart-count { position: absolute; top: 2px; right: 2px; min-width: 16px; height: 16px; padding-inline: 3px; display: grid; place-items: center; background: var(--accent); color: #fff; font-size: .6rem; font-weight: 800; }
   .site-header__mobile { display: none; }
   .site-header__mobile > summary, .site-header__mobile-disclosure > summary { list-style: none; }
   .site-header__mobile > summary::-webkit-details-marker, .site-header__mobile-disclosure > summary::-webkit-details-marker { display: none; }
@@ -127,7 +131,7 @@
   .site-header__mobile-panel [aria-current="page"] { color: var(--accent); }
   html.site-header-menu-open, html.site-header-menu-open body { overflow: hidden; overscroll-behavior: none; }
   html.site-header-menu-open body { padding-inline-end: var(--site-header-scrollbar-width, 0px); }
-  @media (max-width: 1050px) { .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } }
+  @media (max-width: 1050px) { .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
   @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
 {% endstylesheet %}
 
