@@ -42,7 +42,8 @@
       "block_order": ["shipping", "payment", "support"],
       "custom_css": ["section {padding: 0}"],
       "settings": {
-        "heading": "Newsletter abonnieren"
+        "show_signup": false,
+        "heading": ""
       }
     },
     "footer": {
