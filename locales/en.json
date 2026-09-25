@@ -418,5 +418,28 @@
       "choice_title": "You stay in control",
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     }
+  },
+  "plant_world": {
+    "eyebrow": "From my plant collection",
+    "fact_light": "Light",
+    "fact_water": "Water",
+    "fact_humidity": "Humidity",
+    "fact_substrate": "Substrate",
+    "fact_practice": "Practice focus",
+    "primary_link": "View the matching setup",
+    "practice_eyebrow": "Not from a textbook",
+    "practice_heading": "What I actually observe with this plant",
+    "experience_label": "My experience",
+    "care_label": "Care at a glance",
+    "substrate_label": "Root zone & substrate",
+    "light_label": "Light",
+    "gallery_eyebrow": "My own documentation",
+    "gallery_heading": "How this plant is developing here",
+    "gallery_intro": "No stock photos. These images are from my own plants.",
+    "products_eyebrow": "Related to this setup",
+    "products_heading": "Products that fit this setup",
+    "products_intro": "Selected by function and use case, not as mandatory purchases.",
+    "longform_eyebrow": "Context",
+    "longform_heading": "What I take from this for everyday care"
   }
 }
