@@ -46,6 +46,8 @@ zum produktiven Datenpfad.
 - Railway, Notion, Google Sheets und LEAF-OS sind vollständig außerhalb der produktiven Runtime.
 - Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
 - Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
+- Konfiguratoren bleiben performance-first und browserlokal für hochfrequente Interaktionen; Shopify-spezifische Commerce-Funktionen bleiben austauschbare Randintegration.
+- Produktions-Storefronts enthalten keine TypeScript-Quelldateien oder Source Maps; die Portabilitätsregeln stehen in `docs/STOREFRONT_PORTABILITY.md`.
 
 ## Storefront-Freeze ab 2026-09-19
 
