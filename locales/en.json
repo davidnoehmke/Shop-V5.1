@@ -191,6 +191,63 @@
       "topics": "Collection topics",
       "atoms_eyebrow": "From brief to detailed",
       "atoms_heading": "Concepts in this product world"
+    },
+    "interieur": {
+      "eyebrow": "Interieur Solutions configurator",
+      "heading": "Plan plant lighting as part of the room.",
+      "intro": "Choose the room, project, mounting style, light level and budget. The configurator ranks products from this collection by fit and turns the idea into a concrete solution.",
+      "steps": {
+        "room": "Room",
+        "project": "Project",
+        "mount": "Mounting",
+        "light": "Light need",
+        "budget": "Budget"
+      },
+      "room": {
+        "living": "Living space",
+        "office": "Office",
+        "kitchen": "Kitchen",
+        "plantroom": "Plant room"
+      },
+      "project": {
+        "single": "Single plant",
+        "shelf": "Shelf & sideboard",
+        "pendant": "Pendant & wall",
+        "station": "Plant station",
+        "habitat": "Terrarium & aquascape"
+      },
+      "mount": {
+        "open": "Still open",
+        "e27": "E27 fixture",
+        "shelf": "Shelf / under-cabinet",
+        "pendant": "Pendant / wall",
+        "floor": "Floor solution",
+        "system": "Complete system"
+      },
+      "light": {
+        "supplement": "Supplemental light",
+        "balanced": "Balanced year-round",
+        "intensive": "High light demand"
+      },
+      "budget": {
+        "under_75": "Up to €75",
+        "under_150": "Up to €150",
+        "under_300": "Up to €300",
+        "under_500": "Up to €500",
+        "open": "Open budget"
+      },
+      "reset": "Reset selection",
+      "result_eyebrow": "Your room profile",
+      "result_default": "Interieur profile",
+      "result_copy": "Your choices are matched against product type, mounting, power, use case and price across the current Interieur Solutions range.",
+      "result_one": "1 matching recommendation",
+      "result_many": "matching recommendations",
+      "no_result": "No direct match",
+      "budget_relaxed": "There is no direct match for this setup inside the selected budget, so the closest systems are shown regardless of price.",
+      "all_products": "Compare the full range",
+      "recommendations_eyebrow": "Dynamic shortlist",
+      "recommendations": "Solutions matched to your project",
+      "recommendations_intro": "The order is based on your selections. Product pages then provide the detailed light output, mounting, variants and intended use."
     }
   },
   "recipe": {
