@@ -94,6 +94,158 @@
   </header>
 
   {% if collection.handle == 'interieur-solutions' %}
+    <interieur-room-builder
+      class="interieur-room-builder"
+      data-cart-add-url="{{ routes.cart_add_url | append: '.js' }}"
+      data-cart-url="{{ routes.cart_url }}"
+      data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+      data-added-label="{{ 'collection.interieur.builder_added' | t | escape }}"
+      data-error-label="{{ 'collection.interieur.builder_error' | t | escape }}"
+    >
+      <section class="interieur-room-builder__section" aria-labelledby="InterieurRoomBuilderHeading">
+        <header class="interieur-room-builder__head">
+          <div>
+            <p class="interieur-room-builder__eyebrow">{{ 'collection.interieur.builder_eyebrow' | t }}</p>
+            <h2 id="InterieurRoomBuilderHeading">{{ 'collection.interieur.builder_heading' | t }}</h2>
+            <p>{{ 'collection.interieur.builder_intro' | t }}</p>
+          </div>
+          <div class="interieur-room-builder__steps" aria-label="{{ 'collection.interieur.builder_steps_label' | t }}">
+            <span>01 · {{ 'collection.interieur.builder_step_room' | t }}</span>
+            <span>02 · {{ 'collection.interieur.builder_step_place' | t }}</span>
+            <span>03 · {{ 'collection.interieur.builder_step_setup' | t }}</span>
+          </div>
+        </header>
+
+        <div class="interieur-room-builder__desktop">
+          <div class="interieur-room-builder__toolbar">
+            <div class="interieur-room-builder__room">
+              <strong>{{ 'collection.interieur.builder_room' | t }}</strong>
+              <label>
+                <span>{{ 'collection.interieur.builder_width' | t }}</span>
+                <input type="number" min="2" max="12" step="0.1" value="4.2" data-room-width>
+              </label>
+              <label>
+                <span>{{ 'collection.interieur.builder_depth' | t }}</span>
+                <input type="number" min="2" max="12" step="0.1" value="3.2" data-room-depth>
+              </label>
+              <label>
+                <span>{{ 'collection.interieur.builder_height' | t }}</span>
+                <input type="number" min="2" max="5" step="0.1" value="2.5" data-room-height>
+              </label>
+            </div>
+
+            <div class="interieur-room-builder__library">
+              <strong>{{ 'collection.interieur.builder_elements' | t }}</strong>
+              <div class="interieur-room-builder__primitive-actions">
+                <button type="button" data-add-primitive="plant">{{ 'collection.interieur.builder_plant' | t }}</button>
+                <button type="button" data-add-primitive="shelf">{{ 'collection.interieur.builder_shelf' | t }}</button>
+                <button type="button" data-add-primitive="window">{{ 'collection.interieur.builder_window' | t }}</button>
+              </div>
+            </div>
+
+            <div class="interieur-room-builder__products">
+              <strong>{{ 'collection.interieur.builder_products' | t }}</strong>
+              <label class="visually-hidden" for="InterieurBuilderProduct-{{ section.id }}">{{ 'collection.interieur.builder_product_select' | t }}</label>
+              <select id="InterieurBuilderProduct-{{ section.id }}" data-builder-product-select>
+                {% for product in collection.products limit: 50 %}
+                  {% liquid
+                    assign builder_variant = product.selected_or_first_available_variant
+                    assign builder_watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+                    assign builder_mounting = product.metafields.lighting.mounting.value
+                    assign builder_tags = product.tags | join: ' '
+                    capture builder_search
+                      echo product.title
+                      echo ' '
+                      echo product.type
+                      echo ' '
+                      echo builder_mounting
+                      echo ' '
+                      echo builder_tags
+                    endcapture
+                    assign builder_search = builder_search | strip_newlines | downcase | strip
+                  %}
+                  {% if builder_variant != blank %}
+                    <option
+                      value="{{ builder_variant.id }}"
+                      data-title="{{ product.title | escape }}"
+                      data-price="{{ builder_variant.price }}"
+                      data-watts="{{ builder_watts }}"
+                      data-search="{{ builder_search | escape }}"
+                      data-url="{{ product.url }}"
+                      {% if product.featured_image != blank %}data-image="{{ product.featured_image | image_url: width: 320 }}"{% endif %}
+                    >
+                      {{ product.title | escape }} · {{ builder_variant.price | money }}
+                    </option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <button type="button" class="interieur-room-builder__add-product" data-add-product>
+                {{ 'collection.interieur.builder_add_product' | t }}
+              </button>
+            </div>
+          </div>
+
+          <div class="interieur-room-builder__viewport" data-builder-viewport>
+            <canvas
+              class="interieur-room-builder__canvas"
+              data-room-canvas
+              width="1600"
+              height="900"
+              aria-label="{{ 'collection.interieur.builder_canvas_label' | t }}"
+            ></canvas>
+            <div class="interieur-room-builder__hint">{{ 'collection.interieur.builder_hint' | t }}</div>
+            <div class="interieur-room-builder__selection" data-selection hidden>
+              <strong data-selection-title></strong>
+              <span data-selection-meta></span>
+            </div>
+          </div>
+
+          <div class="interieur-room-builder__controls">
+            <div class="interieur-room-builder__camera" role="group" aria-label="{{ 'collection.interieur.builder_camera' | t }}">
+              <button type="button" data-camera="-15" aria-label="{{ 'collection.interieur.builder_camera_left' | t }}">↶</button>
+              <button type="button" data-camera="15" aria-label="{{ 'collection.interieur.builder_camera_right' | t }}">↷</button>
+            </div>
+
+            <div class="interieur-room-builder__object-actions" role="group" aria-label="{{ 'collection.interieur.builder_object_actions' | t }}">
+              <button type="button" data-object-rotate="-15">{{ 'collection.interieur.builder_rotate_left' | t }}</button>
+              <button type="button" data-object-rotate="15">{{ 'collection.interieur.builder_rotate_right' | t }}</button>
+              <button type="button" data-duplicate>{{ 'collection.interieur.builder_duplicate' | t }}</button>
+              <button type="button" data-delete>{{ 'collection.interieur.builder_delete' | t }}</button>
+            </div>
+
+            <button type="button" class="interieur-room-builder__reset" data-builder-reset>
+              {{ 'collection.interieur.builder_reset' | t }}
+            </button>
+          </div>
+
+          <div class="interieur-room-builder__summary">
+            <div>
+              <span>{{ 'collection.interieur.builder_objects' | t }}</span>
+              <strong data-summary-count>0</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_price' | t }}</span>
+              <strong data-summary-price>—</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_power' | t }}</span>
+              <strong data-summary-watts>0 W</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_density' | t }}</span>
+              <strong data-summary-density>0 W/m²</strong>
+            </div>
+            <button type="button" class="interieur-room-builder__cart" data-add-setup disabled>
+              {{ 'collection.interieur.builder_cart' | t }}
+            </button>
+            <p class="interieur-room-builder__status" data-builder-status aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+    </interieur-room-builder>
+  {% endif %}
+
+  {% if collection.handle == 'interieur-solutions' %}
     <interieur-solutions-configurator
     class="interieur-configurator"
     data-result-one="{{ 'collection.interieur.result_one' | t | escape }}"
@@ -403,6 +555,51 @@
     .main-collection__sort select { width: 100%; min-width: 0; }
     .main-collection__catalog--filtered .main-collection__grid, .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
   }
+
+  .interieur-room-builder { display: none; }
+  @media (min-width: 1100px) {
+    .interieur-room-builder { display: block; margin-block: clamp(3rem, 6vw, 6rem); }
+    .interieur-room-builder__section { border-block: 1px solid var(--border); padding-block: clamp(3rem, 5vw, 5rem); }
+    .interieur-room-builder__head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; margin-bottom: 1.5rem; }
+    .interieur-room-builder__eyebrow { margin: 0 0 .6rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .interieur-room-builder__head h2 { max-width: 11ch; margin: 0; font-size: clamp(2.8rem, 5vw, 5.5rem); line-height: .94; letter-spacing: -.055em; }
+    .interieur-room-builder__head p:not(.interieur-room-builder__eyebrow) { max-width: 68ch; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
+    .interieur-room-builder__steps { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .5rem; }
+    .interieur-room-builder__steps span { min-height: 64px; display: flex; align-items: flex-end; border-top: 3px solid var(--accent); padding: .65rem .4rem; color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .interieur-room-builder__desktop { display: grid; gap: .85rem; }
+    .interieur-room-builder__toolbar { display: grid; grid-template-columns: 1.05fr .85fr 1.6fr; gap: .75rem; }
+    .interieur-room-builder__toolbar > div { min-width: 0; border: 1px solid var(--border); background: var(--surface); padding: .85rem; }
+    .interieur-room-builder__toolbar strong { display: block; margin-bottom: .7rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+    .interieur-room-builder__room { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .45rem; }
+    .interieur-room-builder__room > strong { grid-column: 1 / -1; }
+    .interieur-room-builder__room label { display: grid; gap: .25rem; color: var(--muted); font-size: .68rem; font-weight: 750; }
+    .interieur-room-builder__room input, .interieur-room-builder__products select { width: 100%; min-height: 42px; border: 1px solid var(--border); border-radius: 0; background: var(--background); padding: .45rem .55rem; }
+    .interieur-room-builder__primitive-actions { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .4rem; }
+    .interieur-room-builder__primitive-actions button, .interieur-room-builder__controls button { min-height: 42px; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .45rem .65rem; box-shadow: none; font-size: .72rem; }
+    .interieur-room-builder__primitive-actions button:hover, .interieur-room-builder__controls button:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 92%); transform: none; box-shadow: none; }
+    .interieur-room-builder__products { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .45rem; }
+    .interieur-room-builder__products strong { grid-column: 1 / -1; }
+    .interieur-room-builder__add-product { min-height: 42px; border-radius: 0; padding-inline: 1rem; white-space: nowrap; }
+    .interieur-room-builder__viewport { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--border); background: linear-gradient(145deg, color-mix(in srgb, var(--surface), #fff 20%), color-mix(in srgb, var(--background), var(--accent) 4%)); }
+    .interieur-room-builder__canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+    .interieur-room-builder__canvas:active { cursor: grabbing; }
+    .interieur-room-builder__hint { position: absolute; left: .75rem; bottom: .75rem; max-width: 38ch; padding: .45rem .6rem; background: color-mix(in srgb, var(--background), transparent 8%); border: 1px solid var(--border); color: var(--muted); font-size: .68rem; pointer-events: none; }
+    .interieur-room-builder__selection { position: absolute; top: .75rem; right: .75rem; max-width: min(320px, 32%); padding: .6rem .7rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 4%); pointer-events: none; }
+    .interieur-room-builder__selection strong, .interieur-room-builder__selection span { display: block; }
+    .interieur-room-builder__selection strong { font-size: .8rem; }
+    .interieur-room-builder__selection span { margin-top: .18rem; color: var(--muted); font-size: .68rem; }
+    .interieur-room-builder__controls { display: grid; grid-template-columns: auto 1fr auto; gap: .65rem; align-items: center; }
+    .interieur-room-builder__camera, .interieur-room-builder__object-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .interieur-room-builder__reset { justify-self: end; }
+    .interieur-room-builder__summary { display: grid; grid-template-columns: repeat(4, minmax(0, .65fr)) minmax(180px, 1fr); gap: 1px; border: 1px solid var(--border); background: var(--border); }
+    .interieur-room-builder__summary > div { min-height: 76px; display: flex; flex-direction: column; justify-content: center; background: var(--surface); padding: .75rem; }
+    .interieur-room-builder__summary span { color: var(--muted); font-size: .67rem; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; }
+    .interieur-room-builder__summary strong { margin-top: .2rem; font-size: 1.05rem; }
+    .interieur-room-builder__cart { min-height: 76px; border: 0; border-radius: 0; }
+    .interieur-room-builder__cart:disabled { cursor: not-allowed; opacity: .45; transform: none; box-shadow: none; }
+    .interieur-room-builder__status { grid-column: 1 / -1; margin: 0; background: var(--surface); padding: .45rem .7rem; color: var(--muted); font-size: .72rem; }
+  }
+
 {% endstylesheet %}
 
 {% javascript %}
@@ -601,6 +798,662 @@
       if (!customElements.get('interieur-solutions-configurator')) {
         customElements.define('interieur-solutions-configurator', InterieurSolutionsConfigurator);
       }
+
+  class InterieurRoomBuilder extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready === 'true') return;
+      if (!window.matchMedia('(min-width: 1100px)').matches) return;
+      this.dataset.ready = 'true';
+      this.canvas = this.querySelector('[data-room-canvas]');
+      if (!this.canvas) return;
+      this.ctx = this.canvas.getContext('2d');
+      this.room = {
+        width: Number(this.querySelector('[data-room-width]')?.value || 4.2),
+        depth: Number(this.querySelector('[data-room-depth]')?.value || 3.2),
+        height: Number(this.querySelector('[data-room-height]')?.value || 2.5)
+      };
+      this.camera = -35;
+      this.objects = [];
+      this.selectedId = null;
+      this.drag = null;
+      this.objectId = 0;
+      this.productImages = new Map();
+      this.currency = this.dataset.currency || 'EUR';
+      this.locale = document.documentElement.lang || 'de-DE';
+
+      this.bind();
+      this.restore();
+      if (!this.objects.length) {
+        this.addPrimitive('plant', -0.75, 0.2);
+        this.addPrimitive('plant', 0.55, 0.55);
+      }
+      this.resizeObserver = new ResizeObserver(() => this.resize());
+      this.resizeObserver.observe(this.canvas);
+      this.resize();
+      this.updateSummary();
+    }
+
+    disconnectedCallback() {
+      this.resizeObserver?.disconnect();
+    }
+
+    bind() {
+      ['width', 'depth', 'height'].forEach((key) => {
+        this.querySelector(`[data-room-${key}]`)?.addEventListener('input', (event) => {
+          const limits = key === 'height' ? [2, 5] : [2, 12];
+          this.room[key] = this.clamp(Number(event.target.value || limits[0]), limits[0], limits[1]);
+          this.clampObjects();
+          this.save();
+          this.draw();
+          this.updateSummary();
+        });
+      });
+
+      this.querySelectorAll('[data-add-primitive]').forEach((button) => {
+        button.addEventListener('click', () => this.addPrimitive(button.dataset.addPrimitive));
+      });
+      this.querySelector('[data-add-product]')?.addEventListener('click', () => this.addProduct());
+      this.querySelectorAll('[data-camera]').forEach((button) => {
+        button.addEventListener('click', () => {
+          this.camera += Number(button.dataset.camera || 0);
+          this.draw();
+          this.save();
+        });
+      });
+      this.querySelectorAll('[data-object-rotate]').forEach((button) => {
+        button.addEventListener('click', () => this.rotateSelected(Number(button.dataset.objectRotate || 0)));
+      });
+      this.querySelector('[data-delete]')?.addEventListener('click', () => this.deleteSelected());
+      this.querySelector('[data-duplicate]')?.addEventListener('click', () => this.duplicateSelected());
+      this.querySelector('[data-builder-reset]')?.addEventListener('click', () => this.reset());
+      this.querySelector('[data-add-setup]')?.addEventListener('click', () => this.addSetupToCart());
+
+      this.canvas.addEventListener('pointerdown', (event) => this.pointerDown(event));
+      this.canvas.addEventListener('pointermove', (event) => this.pointerMove(event));
+      this.canvas.addEventListener('pointerup', () => this.pointerUp());
+      this.canvas.addEventListener('pointercancel', () => this.pointerUp());
+    }
+
+    resize() {
+      const rect = this.canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (this.canvas.width !== width || this.canvas.height !== height) {
+        this.canvas.width = width;
+        this.canvas.height = height;
+      }
+      this.draw();
+    }
+
+    addPrimitive(kind, x = 0, z = 0) {
+      const presets = {
+        plant: {title: 'Plant', width: .52, depth: .52, height: 1.05, color: '#55784e'},
+        shelf: {title: 'Shelf', width: 1.2, depth: .38, height: 1.8, color: '#8a7257'},
+        window: {title: 'Window', width: 1.4, depth: .12, height: 1.25, color: '#b8d5da'}
+      };
+      const preset = presets[kind];
+      if (!preset) return;
+      const obj = {
+        id: ++this.objectId,
+        kind,
+        title: this.querySelector(`[data-add-primitive="${kind}"]`)?.textContent?.trim() || preset.title,
+        x,
+        z,
+        rotation: 0,
+        width: preset.width,
+        depth: preset.depth,
+        height: preset.height,
+        color: preset.color,
+        variantId: null,
+        price: 0,
+        watts: 0,
+        url: ''
+      };
+      this.objects.push(obj);
+      this.selectedId = obj.id;
+      this.clampObject(obj);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    addProduct() {
+      const select = this.querySelector('[data-builder-product-select]');
+      const option = select?.selectedOptions?.[0];
+      if (!option?.value) return;
+      const search = (option.dataset.search || '').toLowerCase();
+      const kind = this.productKind(search);
+      const preset = this.productPreset(kind);
+      const obj = {
+        id: ++this.objectId,
+        kind,
+        title: option.dataset.title || option.textContent.trim(),
+        x: 0,
+        z: 0,
+        rotation: 0,
+        width: preset.width,
+        depth: preset.depth,
+        height: preset.height,
+        color: preset.color,
+        variantId: option.value,
+        price: Number(option.dataset.price || 0),
+        watts: Number(option.dataset.watts || 0),
+        url: option.dataset.url || '',
+        image: option.dataset.image || ''
+      };
+      this.objects.push(obj);
+      this.selectedId = obj.id;
+      this.preloadImage(obj.image);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    productKind(search) {
+      if (/terrarium|gewächshaus|growzelt|pflanzenregal|station/.test(search)) return 'system';
+      if (/regal|grove|bar|tube|unterbau/.test(search)) return 'shelf-light';
+      if (/pendel|pendant|wand|aspect|luna/.test(search)) return 'pendant';
+      if (/stand|willow|stello|alta|teleskop/.test(search)) return 'floor-light';
+      if (/aquascap|wasserpflanz|sera|daytime/.test(search)) return 'habitat';
+      return 'light';
+    }
+
+    productPreset(kind) {
+      const presets = {
+        system: {width: 1.25, depth: .72, height: 1.75, color: '#6f7f72'},
+        'shelf-light': {width: 1.15, depth: .38, height: 1.55, color: '#78936e'},
+        pendant: {width: .45, depth: .45, height: 2.0, color: '#b9a76f'},
+        'floor-light': {width: .52, depth: .52, height: 1.85, color: '#9d916f'},
+        habitat: {width: 1.0, depth: .55, height: 1.0, color: '#587d83'},
+        light: {width: .42, depth: .42, height: 1.65, color: '#a39d73'}
+      };
+      return presets[kind] || presets.light;
+    }
+
+    preloadImage(url) {
+      if (!url || this.productImages.has(url)) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => this.draw();
+      img.src = url;
+      this.productImages.set(url, img);
+    }
+
+    clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    clampObject(obj) {
+      const halfW = this.room.width / 2;
+      const halfD = this.room.depth / 2;
+      obj.x = this.clamp(obj.x, -halfW + .15, halfW - .15);
+      obj.z = this.clamp(obj.z, -halfD + .15, halfD - .15);
+    }
+
+    clampObjects() {
+      this.objects.forEach((obj) => this.clampObject(obj));
+    }
+
+    metrics() {
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+      const scale = Math.min(w / (this.room.width + this.room.depth + 2), h / (this.room.depth + this.room.height + 2)) * 1.35;
+      return {w, h, scale, ox: w * .5, oy: h * .69};
+    }
+
+    project(x, y, z) {
+      const {scale, ox, oy} = this.metrics();
+      const a = this.camera * Math.PI / 180;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      const xr = x * c - z * s;
+      const zr = x * s + z * c;
+      return {
+        x: ox + xr * scale,
+        y: oy + zr * scale * .48 - y * scale * .88
+      };
+    }
+
+    localPoint(obj, x, z) {
+      const angle = obj.rotation * Math.PI / 180;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      return {
+        x: obj.x + x * c - z * s,
+        z: obj.z + x * s + z * c
+      };
+    }
+
+    roomFloorPoints() {
+      const hw = this.room.width / 2;
+      const hd = this.room.depth / 2;
+      return [
+        this.project(-hw, 0, -hd),
+        this.project(hw, 0, -hd),
+        this.project(hw, 0, hd),
+        this.project(-hw, 0, hd)
+      ];
+    }
+
+    polygon(points, fill, stroke = null, width = 1) {
+      const ctx = this.ctx;
+      ctx.beginPath();
+      points.forEach((p, index) => index ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.closePath();
+      if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+      }
+      if (stroke) {
+        ctx.lineWidth = width;
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+      }
+    }
+
+    drawRoom() {
+      const ctx = this.ctx;
+      const floor = this.roomFloorPoints();
+      this.polygon(floor, '#f2f2ec', '#819087', Math.max(1, this.canvas.width / 1400));
+
+      const grid = .5;
+      const hw = this.room.width / 2;
+      const hd = this.room.depth / 2;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(67, 91, 77, .13)';
+      ctx.lineWidth = Math.max(1, this.canvas.width / 1800);
+      for (let x = -hw; x <= hw + .001; x += grid) {
+        const a = this.project(x, 0, -hd);
+        const b = this.project(x, 0, hd);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      for (let z = -hd; z <= hd + .001; z += grid) {
+        const a = this.project(-hw, 0, z);
+        const b = this.project(hw, 0, z);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      ctx.restore();
+
+      const backLeft = this.project(-hw, 0, -hd);
+      const backRight = this.project(hw, 0, -hd);
+      const backLeftTop = this.project(-hw, this.room.height, -hd);
+      const backRightTop = this.project(hw, this.room.height, -hd);
+      this.polygon([backLeft, backRight, backRightTop, backLeftTop], 'rgba(232,236,228,.75)', 'rgba(92,112,100,.25)');
+
+      const sideBottom = this.project(-hw, 0, hd);
+      const sideTop = this.project(-hw, this.room.height, hd);
+      this.polygon([backLeft, sideBottom, sideTop, backLeftTop], 'rgba(224,231,222,.62)', 'rgba(92,112,100,.2)');
+
+      ctx.fillStyle = 'rgba(42,61,51,.68)';
+      ctx.font = `${Math.max(12, this.canvas.width / 95)}px system-ui, sans-serif`;
+      ctx.fillText(`${this.room.width.toFixed(1)} m × ${this.room.depth.toFixed(1)} m × ${this.room.height.toFixed(1)} m`, floor[3].x + 10, floor[3].y + 24);
+    }
+
+    drawPrism(obj, fill = obj.color) {
+      const hw = obj.width / 2;
+      const hd = obj.depth / 2;
+      const baseLocal = [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]];
+      const base = baseLocal.map(([x,z]) => {
+        const p = this.localPoint(obj,x,z);
+        return this.project(p.x,0,p.z);
+      });
+      const top = baseLocal.map(([x,z]) => {
+        const p = this.localPoint(obj,x,z);
+        return this.project(p.x,obj.height,p.z);
+      });
+      this.polygon([base[1],base[2],top[2],top[1]], this.shade(fill,-14));
+      this.polygon([base[2],base[3],top[3],top[2]], this.shade(fill,-24));
+      this.polygon(top, fill, 'rgba(30,45,37,.24)');
+      return this.project(obj.x,obj.height,obj.z);
+    }
+
+    shade(hex, amount) {
+      const raw = hex.replace('#','');
+      if (raw.length !== 6) return hex;
+      const num = parseInt(raw,16);
+      const r = this.clamp((num >> 16) + amount,0,255);
+      const g = this.clamp(((num >> 8) & 255) + amount,0,255);
+      const b = this.clamp((num & 255) + amount,0,255);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    drawPlant(obj) {
+      const pot = {...obj, width: obj.width * .55, depth: obj.depth * .55, height: .32, color: '#8b6f55'};
+      const top = this.drawPrism(pot, pot.color);
+      const ctx = this.ctx;
+      const stemTop = this.project(obj.x, obj.height * .78, obj.z);
+      ctx.strokeStyle = '#4c7047';
+      ctx.lineWidth = Math.max(2, this.canvas.width / 600);
+      ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.lineTo(stemTop.x, stemTop.y); ctx.stroke();
+      const size = Math.max(10, this.metrics().scale * .23);
+      [['#557b4f',0,0],['#6d8f60',-.55,-.15],['#486c46',.55,-.05],['#73986b',0,.48]].forEach(([color,dx,dy]) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.ellipse(stemTop.x + Number(dx)*size, stemTop.y + Number(dy)*size, size*.52, size*.32, -.45, 0, Math.PI*2);
+        ctx.fill();
+      });
+      return stemTop;
+    }
+
+    drawLight(obj) {
+      const ctx = this.ctx;
+      const base = {...obj, width: .34, depth: .34, height: .08, color: '#77756a'};
+      this.drawPrism(base, base.color);
+      const bottom = this.project(obj.x,.08,obj.z);
+      const top = this.project(obj.x,obj.height,obj.z);
+      ctx.strokeStyle = '#68685f';
+      ctx.lineWidth = Math.max(2,this.canvas.width/700);
+      ctx.beginPath(); ctx.moveTo(bottom.x,bottom.y); ctx.lineTo(top.x,top.y); ctx.stroke();
+      const lamp = this.project(obj.x,obj.height-.08,obj.z);
+      const coneFloor = this.project(obj.x,0,obj.z);
+      const radius = Math.max(18, this.metrics().scale * (.36 + Math.min(obj.watts,60)/180));
+      ctx.save();
+      ctx.fillStyle = 'rgba(238, 212, 112, .11)';
+      ctx.beginPath();
+      ctx.moveTo(lamp.x,lamp.y);
+      ctx.lineTo(coneFloor.x-radius,coneFloor.y);
+      ctx.lineTo(coneFloor.x+radius,coneFloor.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = '#c7b96f';
+      ctx.beginPath(); ctx.arc(lamp.x,lamp.y,Math.max(6,this.metrics().scale*.08),0,Math.PI*2); ctx.fill();
+      return lamp;
+    }
+
+    drawWindow(obj) {
+      const p = this.project(obj.x,obj.height*.6,obj.z);
+      const ctx = this.ctx;
+      const scale = this.metrics().scale;
+      const w = obj.width * scale * .45;
+      const h = obj.height * scale * .42;
+      ctx.fillStyle = 'rgba(164, 205, 214, .54)';
+      ctx.fillRect(p.x-w/2,p.y-h,w,h);
+      ctx.strokeStyle = 'rgba(73,112,120,.7)';
+      ctx.strokeRect(p.x-w/2,p.y-h,w,h);
+      ctx.beginPath(); ctx.moveTo(p.x,p.y-h);ctx.lineTo(p.x,p.y);ctx.moveTo(p.x-w/2,p.y-h/2);ctx.lineTo(p.x+w/2,p.y-h/2);ctx.stroke();
+      return p;
+    }
+
+    drawObject(obj) {
+      let anchor;
+      if (obj.kind === 'plant') anchor = this.drawPlant(obj);
+      else if (obj.kind === 'window') anchor = this.drawWindow(obj);
+      else if (['light','floor-light','pendant','shelf-light'].includes(obj.kind)) anchor = this.drawLight(obj);
+      else anchor = this.drawPrism(obj);
+
+      obj.screen = {x: anchor.x, y: anchor.y};
+      if (obj.image) {
+        this.preloadImage(obj.image);
+        const img = this.productImages.get(obj.image);
+        if (img?.complete) {
+          const size = Math.max(24, Math.min(46, this.canvas.width / 28));
+          this.ctx.save();
+          this.ctx.globalAlpha = .94;
+          this.ctx.fillStyle = '#fff';
+          this.ctx.fillRect(anchor.x-size/2,anchor.y-size-12,size,size);
+          try { this.ctx.drawImage(img,anchor.x-size/2+2,anchor.y-size-10,size-4,size-4); } catch {}
+          this.ctx.restore();
+        }
+      }
+
+      if (obj.id === this.selectedId) {
+        const radius = Math.max(18,this.metrics().scale*.24);
+        const floor = this.project(obj.x,0,obj.z);
+        this.ctx.strokeStyle = '#315c3d';
+        this.ctx.lineWidth = Math.max(2,this.canvas.width/700);
+        this.ctx.setLineDash([7,5]);
+        this.ctx.beginPath(); this.ctx.arc(floor.x,floor.y,radius,0,Math.PI*2); this.ctx.stroke();
+        this.ctx.setLineDash([]);
+      }
+
+      this.ctx.fillStyle = 'rgba(31,49,39,.88)';
+      this.ctx.font = `600 ${Math.max(10,this.canvas.width/125)}px system-ui, sans-serif`;
+      const label = obj.title.length > 28 ? `${obj.title.slice(0,27)}…` : obj.title;
+      this.ctx.fillText(label, anchor.x + 8, anchor.y - 4);
+    }
+
+    draw() {
+      if (!this.ctx) return;
+      const ctx = this.ctx;
+      ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+      const gradient = ctx.createLinearGradient(0,0,0,this.canvas.height);
+      gradient.addColorStop(0,'#f6f7f3');
+      gradient.addColorStop(1,'#e8eee7');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+      this.drawRoom();
+
+      const sorted = [...this.objects].sort((a,b) => {
+        const pa = this.project(a.x,0,a.z);
+        const pb = this.project(b.x,0,b.z);
+        return pa.y - pb.y;
+      });
+      sorted.forEach((obj) => this.drawObject(obj));
+      this.updateSelection();
+    }
+
+    pointerPosition(event) {
+      const rect = this.canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * (this.canvas.width / rect.width),
+        y: (event.clientY - rect.top) * (this.canvas.height / rect.height)
+      };
+    }
+
+    hitTest(point) {
+      let best = null;
+      let bestDistance = Infinity;
+      this.objects.forEach((obj) => {
+        const p = obj.screen || this.project(obj.x,obj.height,obj.z);
+        const distance = Math.hypot(point.x-p.x,point.y-p.y);
+        const threshold = Math.max(28,this.metrics().scale*.35);
+        if (distance < threshold && distance < bestDistance) {
+          best = obj;
+          bestDistance = distance;
+        }
+      });
+      return best;
+    }
+
+    pointerDown(event) {
+      const point = this.pointerPosition(event);
+      const obj = this.hitTest(point);
+      if (!obj) {
+        this.selectedId = null;
+        this.draw();
+        return;
+      }
+      this.selectedId = obj.id;
+      this.drag = {last: point, id: obj.id};
+      this.canvas.setPointerCapture?.(event.pointerId);
+      this.draw();
+    }
+
+    pointerMove(event) {
+      if (!this.drag) return;
+      const obj = this.objects.find((item) => item.id === this.drag.id);
+      if (!obj) return;
+      const point = this.pointerPosition(event);
+      const dx = point.x - this.drag.last.x;
+      const dy = point.y - this.drag.last.y;
+      const {scale} = this.metrics();
+      const a = this.camera * Math.PI / 180;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      const dxr = dx / scale;
+      const dzr = dy / (scale * .48);
+      obj.x += dxr * c + dzr * s;
+      obj.z += -dxr * s + dzr * c;
+      this.clampObject(obj);
+      this.drag.last = point;
+      this.draw();
+      this.updateSummary();
+    }
+
+    pointerUp() {
+      if (this.drag) this.save();
+      this.drag = null;
+    }
+
+    selected() {
+      return this.objects.find((obj) => obj.id === this.selectedId) || null;
+    }
+
+    rotateSelected(delta) {
+      const obj = this.selected();
+      if (!obj) return;
+      obj.rotation = (obj.rotation + delta + 360) % 360;
+      this.save();
+      this.draw();
+    }
+
+    deleteSelected() {
+      if (!this.selectedId) return;
+      this.objects = this.objects.filter((obj) => obj.id !== this.selectedId);
+      this.selectedId = null;
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    duplicateSelected() {
+      const obj = this.selected();
+      if (!obj) return;
+      const copy = {...obj, id: ++this.objectId, x: obj.x + .25, z: obj.z + .25};
+      delete copy.screen;
+      this.clampObject(copy);
+      this.objects.push(copy);
+      this.selectedId = copy.id;
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    updateSelection() {
+      const panel = this.querySelector('[data-selection]');
+      const obj = this.selected();
+      if (!panel) return;
+      panel.hidden = !obj;
+      if (!obj) return;
+      const title = panel.querySelector('[data-selection-title]');
+      const meta = panel.querySelector('[data-selection-meta]');
+      if (title) title.textContent = obj.title;
+      if (meta) {
+        const parts = [`${obj.x.toFixed(1)} × ${obj.z.toFixed(1)} m`, `${obj.rotation}°`];
+        if (obj.watts) parts.push(`${obj.watts} W`);
+        meta.textContent = parts.join(' · ');
+      }
+    }
+
+    formatMoney(cents) {
+      try {
+        return new Intl.NumberFormat(this.locale,{style:'currency',currency:this.currency}).format(cents/100);
+      } catch {
+        return `${(cents/100).toFixed(2)} €`;
+      }
+    }
+
+    updateSummary() {
+      const productObjects = this.objects.filter((obj) => obj.variantId);
+      const total = productObjects.reduce((sum,obj) => sum + Number(obj.price || 0),0);
+      const watts = productObjects.reduce((sum,obj) => sum + Number(obj.watts || 0),0);
+      const area = Math.max(.1,this.room.width*this.room.depth);
+      const count = this.querySelector('[data-summary-count]');
+      const price = this.querySelector('[data-summary-price]');
+      const power = this.querySelector('[data-summary-watts]');
+      const density = this.querySelector('[data-summary-density]');
+      const cart = this.querySelector('[data-add-setup]');
+      if (count) count.textContent = String(this.objects.length);
+      if (price) price.textContent = productObjects.length ? this.formatMoney(total) : '—';
+      if (power) power.textContent = `${Math.round(watts)} W`;
+      if (density) density.textContent = `${(watts/area).toFixed(1)} W/m²`;
+      if (cart) cart.disabled = productObjects.length === 0;
+    }
+
+    async addSetupToCart() {
+      const button = this.querySelector('[data-add-setup]');
+      const status = this.querySelector('[data-builder-status]');
+      const products = this.objects.filter((obj) => obj.variantId);
+      if (!products.length || !button) return;
+      const grouped = new Map();
+      products.forEach((obj) => grouped.set(obj.variantId,(grouped.get(obj.variantId)||0)+1));
+      const items = [...grouped.entries()].map(([id,quantity]) => ({id,quantity}));
+      button.disabled = true;
+      if (status) status.textContent = '';
+      try {
+        const response = await fetch(this.dataset.cartAddUrl || '/cart/add.js',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify({items})
+        });
+        if (!response.ok) throw new Error('cart');
+        if (status) status.textContent = this.dataset.addedLabel || '';
+        window.setTimeout(() => {
+          window.location.href = this.dataset.cartUrl || '/cart';
+        },500);
+      } catch {
+        if (status) status.textContent = this.dataset.errorLabel || '';
+        button.disabled = false;
+      }
+    }
+
+    save() {
+      try {
+        localStorage.setItem('leafer-interieur-room-v1',JSON.stringify({
+          room:this.room,
+          camera:this.camera,
+          objects:this.objects.map(({screen,...obj}) => obj),
+          objectId:this.objectId
+        }));
+      } catch {}
+    }
+
+    restore() {
+      try {
+        const raw = localStorage.getItem('leafer-interieur-room-v1');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (saved?.room) {
+          this.room = {...this.room,...saved.room};
+          ['width','depth','height'].forEach((key) => {
+            const input = this.querySelector(`[data-room-${key}]`);
+            if (input) input.value = this.room[key];
+          });
+        }
+        if (Number.isFinite(saved?.camera)) this.camera = saved.camera;
+        if (Array.isArray(saved?.objects)) {
+          this.objects = saved.objects.slice(0,40);
+          this.objects.forEach((obj) => this.preloadImage(obj.image));
+        }
+        if (Number.isFinite(saved?.objectId)) this.objectId = saved.objectId;
+      } catch {}
+    }
+
+    reset() {
+      try { localStorage.removeItem('leafer-interieur-room-v1'); } catch {}
+      this.room = {width:4.2,depth:3.2,height:2.5};
+      this.camera = -35;
+      this.objects = [];
+      this.selectedId = null;
+      this.objectId = 0;
+      ['width','depth','height'].forEach((key) => {
+        const input = this.querySelector(`[data-room-${key}]`);
+        if (input) input.value = this.room[key];
+      });
+      this.addPrimitive('plant',-.75,.2);
+      this.addPrimitive('plant',.55,.55);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+  }
+
+  if (!customElements.get('interieur-room-builder')) {
+    customElements.define('interieur-room-builder',InterieurRoomBuilder);
+  }
+
 {% endjavascript %}
 
 {% schema %}
