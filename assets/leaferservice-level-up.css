@@ -83,7 +83,7 @@ body {
 .featured__inner,
 .faq__inner,
 .community-gallery__inner {
-  width: min(100% - 2rem, 1240px);
+  width: min(100% - 3rem, 1240px);
   margin-inline: auto;
 }
 
@@ -207,7 +207,7 @@ body {
 .product-seo-details,
 .product-description,
 .product-cross-sell {
-  width: min(100% - 2rem, 1120px);
+  width: min(100% - 3rem, 1120px);
   margin-inline: auto;
 }
 
@@ -478,3 +478,18 @@ textarea {
       .interieur-configurator__form fieldset { padding: .75rem; }
       .interieur-configurator__options span { min-height: 46px; padding: .45rem; font-size: .7rem; }
     }
+
+
+@media (min-width: 1051px) and (max-width: 1180px) {
+  .site-header__inner {
+    gap: .8rem;
+  }
+
+  .site-header__desktop {
+    gap: clamp(.6rem, 1.25vw, 1rem);
+  }
+
+  .site-header nav a {
+    font-size: .74rem;
+  }
+}
