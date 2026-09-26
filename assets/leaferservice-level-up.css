@@ -419,3 +419,62 @@ textarea {
     transform: translateY(-3px);
   }
 }
+
+.interieur-configurator { display: block; margin-block: clamp(2.5rem, 5vw, 5rem); }
+    .interieur-configurator__section { border-block: 1px solid var(--border); padding-block: clamp(2.5rem, 5vw, 5rem); }
+    .interieur-configurator__head { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; }
+    .interieur-configurator__eyebrow { margin: 0 0 .6rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .interieur-configurator__head h2 { max-width: 13ch; margin: 0; font-size: clamp(2.5rem, 5vw, 5rem); line-height: .96; letter-spacing: -.05em; }
+    .interieur-configurator__intro { max-width: 68ch; margin: 1rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.65; }
+    .interieur-configurator__progress { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .35rem; }
+    .interieur-configurator__progress span { min-height: 52px; display: flex; align-items: flex-end; padding: .55rem .45rem; border-top: 3px solid var(--accent); color: var(--muted); font-size: .64rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; }
+
+    .interieur-configurator__workspace { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: clamp(1.5rem, 4vw, 4rem); margin-top: 2rem; align-items: start; }
+    .interieur-configurator__form { display: grid; gap: 1rem; }
+    .interieur-configurator__form fieldset { margin: 0; padding: 1rem; border: 1px solid var(--border); }
+    .interieur-configurator__form legend { padding: 0 .45rem; color: var(--text); font-size: .78rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+    .interieur-configurator__options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .45rem; }
+    .interieur-configurator__options--wide { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .interieur-configurator__options label { min-width: 0; }
+    .interieur-configurator__options input { position: absolute; opacity: 0; pointer-events: none; }
+    .interieur-configurator__options span { min-height: 48px; display: flex; align-items: center; justify-content: center; padding: .55rem .65rem; border: 1px solid var(--border); background: var(--surface); color: var(--text); cursor: pointer; font-size: .76rem; font-weight: 750; line-height: 1.25; text-align: center; transition: border-color .18s ease, background-color .18s ease, color .18s ease, transform .18s ease; }
+    .interieur-configurator__options input:checked + span { border-color: var(--accent); background: var(--accent); color: #fff; }
+    .interieur-configurator__options input:focus-visible + span { outline: 3px solid color-mix(in srgb, var(--accent), white 40%); outline-offset: 2px; }
+    @media (hover: hover) { .interieur-configurator__options span:hover { transform: translateY(-2px); border-color: var(--accent); } }
+    .interieur-configurator__reset { justify-self: start; min-height: 44px; border: 0; border-bottom: 1px solid currentColor; border-radius: 0; padding: 0; background: transparent; color: var(--muted); box-shadow: none; font-size: .78rem; }
+    .interieur-configurator__reset:hover { transform: none; box-shadow: none; color: var(--accent); }
+
+    .interieur-configurator__profile { position: sticky; top: 100px; padding: clamp(1.2rem, 2.5vw, 2rem); border: 1px solid var(--border); background: color-mix(in srgb, var(--surface), var(--background) 20%); }
+    .interieur-configurator__profile h3 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1; letter-spacing: -.04em; }
+    .interieur-configurator__profile > p:not(.interieur-configurator__eyebrow) { margin: .9rem 0 0; color: var(--muted); line-height: 1.6; }
+    .interieur-configurator__chips { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1rem; }
+    .interieur-configurator__chips span { padding: .35rem .5rem; border: 1px solid var(--border); color: var(--muted); font-size: .7rem; font-weight: 750; }
+    .interieur-configurator__count { display: block; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 1.05rem; }
+    .interieur-configurator__budget-note { display: block; margin-top: .5rem; color: var(--accent); font-size: .76rem; font-weight: 750; }
+    .interieur-configurator__budget-note[hidden] { display: none; }
+    .interieur-configurator__all-link { display: inline-flex; gap: .45rem; align-items: center; margin-top: 1.2rem; color: var(--text); font-size: .8rem; font-weight: 800; text-decoration: none; }
+
+    .interieur-configurator__recommendations { margin-top: clamp(2rem, 5vw, 4rem); }
+    .interieur-configurator__recommendations > header { display: grid; grid-template-columns: minmax(0, .8fr) minmax(300px, 1.2fr); gap: 1rem 3rem; align-items: end; margin-bottom: 1.2rem; }
+    .interieur-configurator__recommendations > header .interieur-configurator__eyebrow { grid-column: 1 / -1; margin-bottom: 0; }
+    .interieur-configurator__recommendations h3 { margin: 0; font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1; letter-spacing: -.04em; }
+    .interieur-configurator__recommendations > header > p:last-child { margin: 0; color: var(--muted); line-height: 1.6; }
+    .interieur-configurator__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    .interieur-configurator__product[hidden] { display: none; }
+
+    @media (max-width: 1050px) {
+      .interieur-configurator__head, .interieur-configurator__workspace { grid-template-columns: 1fr; }
+      .interieur-configurator__profile { position: static; }
+      .interieur-configurator__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .interieur-configurator__progress { grid-template-columns: repeat(5, minmax(76px, 1fr)); overflow-x: auto; padding-bottom: .35rem; }
+      .interieur-configurator__options, .interieur-configurator__options--wide { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .interieur-configurator__recommendations > header { grid-template-columns: 1fr; }
+      .interieur-configurator__recommendations > header .interieur-configurator__eyebrow { grid-column: auto; }
+      .interieur-configurator__grid { gap: .55rem; }
+    }
+    @media (max-width: 390px) {
+      .interieur-configurator__form fieldset { padding: .75rem; }
+      .interieur-configurator__options span { min-height: 46px; padding: .45rem; font-size: .7rem; }
+    }
