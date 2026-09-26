@@ -93,7 +93,11 @@
     </div>
   </header>
 
-  <div class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
+  {% if collection.handle == 'interieur-solutions' %}
+    {% render 'interieur-solutions-configurator', collection: collection %}
+  {% endif %}
+
+  <div{% if collection.handle == 'interieur-solutions' %} id="InterieurCatalog"{% endif %} class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
     {% if has_type_filters %}
       <aside class="main-collection__sidebar" id="CollectionFilters-{{ section.id }}">
         {% if section.settings.brand_logo != blank %}
