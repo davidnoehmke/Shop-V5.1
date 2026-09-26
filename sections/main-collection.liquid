@@ -94,7 +94,148 @@
   </header>
 
   {% if collection.handle == 'interieur-solutions' %}
-    {% render 'interieur-solutions-configurator', collection: collection %}
+    <interieur-solutions-configurator
+    class="interieur-configurator"
+    data-result-one="{{ 'collection.interieur.result_one' | t | escape }}"
+    data-result-many="{{ 'collection.interieur.result_many' | t | escape }}"
+    data-no-result="{{ 'collection.interieur.no_result' | t | escape }}"
+    data-budget-relaxed="{{ 'collection.interieur.budget_relaxed' | t | escape }}"
+    data-profile-copy="{{ 'collection.interieur.result_copy' | t | escape }}"
+  >
+    <section class="interieur-configurator__section" aria-labelledby="InterieurConfiguratorHeading">
+      <header class="interieur-configurator__head">
+        <div>
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.eyebrow' | t }}</p>
+          <h2 id="InterieurConfiguratorHeading">{{ 'collection.interieur.heading' | t }}</h2>
+          <p class="interieur-configurator__intro">{{ 'collection.interieur.intro' | t }}</p>
+        </div>
+        <div class="interieur-configurator__progress" aria-hidden="true">
+          <span>{{ 'collection.interieur.steps.room' | t }}</span>
+          <span>{{ 'collection.interieur.steps.project' | t }}</span>
+          <span>{{ 'collection.interieur.steps.mount' | t }}</span>
+          <span>{{ 'collection.interieur.steps.light' | t }}</span>
+          <span>{{ 'collection.interieur.steps.budget' | t }}</span>
+        </div>
+      </header>
+
+      <div class="interieur-configurator__workspace">
+        <form class="interieur-configurator__form" data-config-form>
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.room' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="room" value="living" checked><span data-option-label>{{ 'collection.interieur.room.living' | t }}</span></label>
+              <label><input type="radio" name="room" value="office"><span data-option-label>{{ 'collection.interieur.room.office' | t }}</span></label>
+              <label><input type="radio" name="room" value="kitchen"><span data-option-label>{{ 'collection.interieur.room.kitchen' | t }}</span></label>
+              <label><input type="radio" name="room" value="plantroom"><span data-option-label>{{ 'collection.interieur.room.plantroom' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.project' | t }}</legend>
+            <div class="interieur-configurator__options interieur-configurator__options--wide">
+              <label><input type="radio" name="project" value="single" checked><span data-option-label>{{ 'collection.interieur.project.single' | t }}</span></label>
+              <label><input type="radio" name="project" value="shelf"><span data-option-label>{{ 'collection.interieur.project.shelf' | t }}</span></label>
+              <label><input type="radio" name="project" value="pendant"><span data-option-label>{{ 'collection.interieur.project.pendant' | t }}</span></label>
+              <label><input type="radio" name="project" value="station"><span data-option-label>{{ 'collection.interieur.project.station' | t }}</span></label>
+              <label><input type="radio" name="project" value="habitat"><span data-option-label>{{ 'collection.interieur.project.habitat' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.mount' | t }}</legend>
+            <div class="interieur-configurator__options interieur-configurator__options--wide">
+              <label><input type="radio" name="mount" value="open" checked><span data-option-label>{{ 'collection.interieur.mount.open' | t }}</span></label>
+              <label><input type="radio" name="mount" value="e27"><span data-option-label>{{ 'collection.interieur.mount.e27' | t }}</span></label>
+              <label><input type="radio" name="mount" value="shelf"><span data-option-label>{{ 'collection.interieur.mount.shelf' | t }}</span></label>
+              <label><input type="radio" name="mount" value="pendant"><span data-option-label>{{ 'collection.interieur.mount.pendant' | t }}</span></label>
+              <label><input type="radio" name="mount" value="floor"><span data-option-label>{{ 'collection.interieur.mount.floor' | t }}</span></label>
+              <label><input type="radio" name="mount" value="system"><span data-option-label>{{ 'collection.interieur.mount.system' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.light' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="light" value="supplement" checked><span data-option-label>{{ 'collection.interieur.light.supplement' | t }}</span></label>
+              <label><input type="radio" name="light" value="balanced"><span data-option-label>{{ 'collection.interieur.light.balanced' | t }}</span></label>
+              <label><input type="radio" name="light" value="intensive"><span data-option-label>{{ 'collection.interieur.light.intensive' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.budget' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="budget" value="75"><span data-option-label>{{ 'collection.interieur.budget.under_75' | t }}</span></label>
+              <label><input type="radio" name="budget" value="150" checked><span data-option-label>{{ 'collection.interieur.budget.under_150' | t }}</span></label>
+              <label><input type="radio" name="budget" value="300"><span data-option-label>{{ 'collection.interieur.budget.under_300' | t }}</span></label>
+              <label><input type="radio" name="budget" value="500"><span data-option-label>{{ 'collection.interieur.budget.under_500' | t }}</span></label>
+              <label><input type="radio" name="budget" value="open"><span data-option-label>{{ 'collection.interieur.budget.open' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <button type="button" class="interieur-configurator__reset" data-reset>
+            {{ 'collection.interieur.reset' | t }}
+          </button>
+        </form>
+
+        <aside class="interieur-configurator__profile" aria-live="polite">
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.result_eyebrow' | t }}</p>
+          <h3 data-profile-title>{{ 'collection.interieur.result_default' | t }}</h3>
+          <p data-profile-copy>{{ 'collection.interieur.result_copy' | t }}</p>
+          <div class="interieur-configurator__chips" data-profile-chips></div>
+          <strong class="interieur-configurator__count" data-result-count></strong>
+          <span class="interieur-configurator__budget-note" data-budget-note hidden></span>
+          <a class="interieur-configurator__all-link" href="#InterieurCatalog">
+            {{ 'collection.interieur.all_products' | t }} <span aria-hidden="true">↓</span>
+          </a>
+        </aside>
+      </div>
+
+      <div class="interieur-configurator__recommendations">
+        <header>
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.recommendations_eyebrow' | t }}</p>
+          <h3>{{ 'collection.interieur.recommendations' | t }}</h3>
+          <p>{{ 'collection.interieur.recommendations_intro' | t }}</p>
+        </header>
+
+        <div class="interieur-configurator__grid" data-recommendations>
+          {% for product in collection.products limit: 50 %}
+            {% liquid
+              assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+              assign mounting = product.metafields.lighting.mounting.value
+              assign role = product.metafields.leaf_configurator.role.value
+              assign price_value = product.price_min | divided_by: 100.0
+              assign tags_text = product.tags | join: ' '
+              capture search_blob
+                echo product.title
+                echo ' '
+                echo product.type
+                echo ' '
+                echo product.vendor
+                echo ' '
+                echo tags_text
+                echo ' '
+                echo mounting
+                echo ' '
+                echo role
+              endcapture
+              assign search_blob = search_blob | strip_newlines | downcase | strip
+            %}
+            <div
+              class="interieur-configurator__product"
+              data-solution-card
+              data-search="{{ search_blob | escape }}"
+              data-price="{{ price_value }}"
+              data-watts="{{ watts }}"
+              {% if forloop.index > 4 %}hidden{% endif %}
+            >
+              {% render 'product-card', product: product, compact: true, interactive_facts: true %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </interieur-solutions-configurator>
   {% endif %}
 
   <div{% if collection.handle == 'interieur-solutions' %} id="InterieurCatalog"{% endif %} class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
