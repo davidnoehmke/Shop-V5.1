@@ -155,7 +155,7 @@
         </form>
       </div>
 
-      {% paginate collection.products by 24 %}
+      {% paginate collection.products by 48 %}
         <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
           {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
         </div>
