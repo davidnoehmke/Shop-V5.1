@@ -97,11 +97,11 @@
   }
 
   @media (max-width: 700px) {
-    .hero { min-height: 760px; }
-    .hero__image { height: 46%; object-position: center 38%; }
+    .hero { min-height: clamp(660px, 88svh, 720px); }
+    .hero__image { height: 40%; object-position: center 38%; }
     .hero__shade { background: linear-gradient(0deg, rgba(232,226,213,1) 0 55%, rgba(232,226,213,.74) 70%, rgba(232,226,213,.08) 100%); }
     .hero__inner { align-content: end; padding-block: 2rem 1.25rem; }
-    .hero__content { padding-top: 42svh; }
+    .hero__content { padding-top: 34svh; }
     .hero__brand-lockup { width: min(210px, 72vw); margin-bottom: .65rem; }
     .hero__brand-tm { right: -.6rem; font-size: .6rem; }
     .hero h1 { max-width: 13ch; font-size: clamp(2.45rem, 10.8vw, 4rem); line-height: .96; }
@@ -111,7 +111,7 @@
     .hero__benefits { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-top: 1.4rem; }
   }
 
-  @media (max-width: 420px) { .hero { min-height: 790px; } .hero__image { height: 40%; } .hero__content { padding-top: 35svh; } }
+  @media (max-width: 420px) { .hero { min-height: clamp(680px, 92svh, 730px); } .hero__image { height: 34%; } .hero__content { padding-top: 29svh; } }
 {% endstylesheet %}
 
 {% schema %}
