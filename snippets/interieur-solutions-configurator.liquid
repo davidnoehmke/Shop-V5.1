@@ -95,7 +95,7 @@ Renders the Interieur Solutions system configurator for the dedicated collection
           <div class="interieur-configurator__chips" data-profile-chips></div>
           <strong class="interieur-configurator__count" data-result-count></strong>
           <span class="interieur-configurator__budget-note" data-budget-note hidden></span>
-          <a class="interieur-configurator__all-link" href="#CollectionProducts-{{ section.id | default: 'interieur' }}">
+          <a class="interieur-configurator__all-link" href="#InterieurCatalog">
             {{ 'collection.interieur.all_products' | t }} <span aria-hidden="true">↓</span>
           </a>
         </aside>
@@ -137,7 +137,7 @@ Renders the Interieur Solutions system configurator for the dedicated collection
               data-search="{{ search_blob | escape }}"
               data-price="{{ price_value }}"
               data-watts="{{ watts }}"
-              hidden
+              {% if forloop.index > 4 %}hidden{% endif %}
             >
               {% render 'product-card', product: product, compact: true, interactive_facts: true %}
             </div>
