@@ -128,7 +128,7 @@
     },
     "trust": {
       "label": "Vorteile beim Kauf",
-      "shipping": "Deutschlandweit kostenloser Versand",
+      "shipping": "Versandkosten werden im Checkout angezeigt",
       "payment": "Sichere Zahlung über Shopify",
       "support": "Persönliche Hilfe bei Fragen"
     },

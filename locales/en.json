@@ -128,7 +128,7 @@
     },
     "trust": {
       "label": "Purchase benefits",
-      "shipping": "Free shipping within Germany",
+      "shipping": "Shipping costs are shown at checkout",
       "payment": "Secure payment via Shopify",
       "support": "Personal help when needed"
     },
