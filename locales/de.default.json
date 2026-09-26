@@ -191,6 +191,63 @@
       "topics": "Themen dieser Kollektion",
       "atoms_eyebrow": "Kurz bis ausführlich",
       "atoms_heading": "Begriffe in dieser Produktwelt"
+    },
+    "interieur": {
+      "eyebrow": "Interieur Solutions Konfigurator",
+      "heading": "Plane Pflanzenlicht als Teil des Raums.",
+      "intro": "Wähle Raum, Projekt, Montage, Lichtniveau und Budget. Der Konfigurator ordnet die Produkte dieser Kollektion nach Passung und führt dich von der Idee zur konkreten Lösung.",
+      "steps": {
+        "room": "Raum",
+        "project": "Projekt",
+        "mount": "Montage",
+        "light": "Lichtbedarf",
+        "budget": "Budget"
+      },
+      "room": {
+        "living": "Wohnraum",
+        "office": "Büro",
+        "kitchen": "Küche",
+        "plantroom": "Pflanzenzimmer"
+      },
+      "project": {
+        "single": "Einzelpflanze",
+        "shelf": "Regal & Sideboard",
+        "pendant": "Pendel & Wand",
+        "station": "Pflanzenstation",
+        "habitat": "Terrarium & Aquascape"
+      },
+      "mount": {
+        "open": "Noch offen",
+        "e27": "E27-Leuchte",
+        "shelf": "Regal / Unterbau",
+        "pendant": "Pendel / Wand",
+        "floor": "Standlösung",
+        "system": "Komplettsystem"
+      },
+      "light": {
+        "supplement": "Ergänzungslicht",
+        "balanced": "Ganzjährig ausgewogen",
+        "intensive": "Hoher Lichtbedarf"
+      },
+      "budget": {
+        "under_75": "Bis 75 €",
+        "under_150": "Bis 150 €",
+        "under_300": "Bis 300 €",
+        "under_500": "Bis 500 €",
+        "open": "Budget offen"
+      },
+      "reset": "Auswahl zurücksetzen",
+      "result_eyebrow": "Dein Raumprofil",
+      "result_default": "Interieur-Profil",
+      "result_copy": "Die Auswahl wird mit Produkttyp, Montage, Leistung, Einsatzbereich und Preis der vorhandenen Interieur-Solutions-Produkte abgeglichen.",
+      "result_one": "1 passende Empfehlung",
+      "result_many": "passende Empfehlungen",
+      "no_result": "Keine direkte Übereinstimmung",
+      "budget_relaxed": "Für diese Kombination liegt kein direkter Treffer im gewählten Budget. Deshalb werden die passendsten Systeme unabhängig vom Budget gezeigt.",
+      "all_products": "Gesamtes Sortiment vergleichen",
+      "recommendations_eyebrow": "Dynamische Vorauswahl",
+      "recommendations": "Passende Lösungen für dein Projekt",
+      "recommendations_intro": "Die Reihenfolge entsteht aus deinen Angaben. Details zu Lichtleistung, Montage, Varianten und Einsatz findest du anschließend direkt auf der Produktseite."
     }
   },
   "recipe": {
