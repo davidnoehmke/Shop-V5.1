@@ -2,10 +2,10 @@
   "sections": {
     "main": {
       "type": "social-greens",
-      "settings": {
-        "calendly_url": ""
-      }
+      "settings": {}
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
