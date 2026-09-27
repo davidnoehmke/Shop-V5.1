@@ -2,6 +2,13 @@
   const body = document.body;
   if (!body || !body.classList.contains('template-index')) return;
 
+  // Keep motion deliberate: homepage videos wait for an explicit user action.
+  document.querySelectorAll('#MainContent video[autoplay]').forEach((video) => {
+    video.removeAttribute('autoplay');
+    video.autoplay = false;
+    video.pause();
+  });
+
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const sectionWrappers = document.querySelectorAll('#MainContent > .shopify-section');
 
