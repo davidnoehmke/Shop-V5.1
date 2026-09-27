@@ -1,0 +1,163 @@
+{% liquid
+  assign contact_href = section.settings.contact_url
+  if contact_href == blank
+    assign contact_href = '/pages/contact'
+  endif
+
+  assign secondary_href = section.settings.secondary_url
+  if secondary_href == blank
+    assign secondary_href = '/pages/pflanzenwelt'
+  endif
+%}
+
+<section class="social-greens" aria-labelledby="SocialGreensTitle-{{ section.id }}">
+  <div class="page-width social-greens__hero">
+    <div class="social-greens__hero-copy">
+      <p class="social-greens__eyebrow">{{ 'social_greens.eyebrow' | t }}</p>
+      <h1 id="SocialGreensTitle-{{ section.id }}">{{ 'social_greens.title' | t }}</h1>
+      <p class="social-greens__intro">{{ 'social_greens.intro' | t }}</p>
+      <div class="social-greens__actions">
+        <a class="button" href="{{ contact_href }}">{{ 'social_greens.cta_primary' | t }}</a>
+        <a class="social-greens__text-link" href="{{ secondary_href }}">
+          {{ 'social_greens.cta_secondary' | t }}
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 6l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="social-greens__principles" aria-label="{{ 'social_greens.principles_label' | t }}">
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'layers' %}</span>
+        <div>
+          <strong>{{ 'social_greens.ek_value' | t }}</strong>
+          <span>{{ 'social_greens.ek_label' | t }}</span>
+        </div>
+      </article>
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'support' %}</span>
+        <div>
+          <strong>{{ 'social_greens.work_value' | t }}</strong>
+          <span>{{ 'social_greens.work_label' | t }}</span>
+        </div>
+      </article>
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'sprout' %}</span>
+        <div>
+          <strong>{{ 'social_greens.margin_value' | t }}</strong>
+          <span>{{ 'social_greens.margin_label' | t }}</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="page-width social-greens__body">
+    <section class="social-greens__audience" aria-labelledby="SocialGreensAudience-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{{ 'social_greens.audience_eyebrow' | t }}</p>
+        <h2 id="SocialGreensAudience-{{ section.id }}">{{ 'social_greens.audience_heading' | t }}</h2>
+        <p>{{ 'social_greens.audience_intro' | t }}</p>
+      </div>
+      <div class="social-greens__chips">
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'sprout' %}{{ 'social_greens.audience_kitas' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'care' %}{{ 'social_greens.audience_care' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'support' %}{{ 'social_greens.audience_inclusion' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'room' %}{{ 'social_greens.audience_community' | t }}</span>
+      </div>
+    </section>
+
+    <section class="social-greens__process" aria-labelledby="SocialGreensProcess-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{{ 'social_greens.process_eyebrow' | t }}</p>
+        <h2 id="SocialGreensProcess-{{ section.id }}">{{ 'social_greens.process_heading' | t }}</h2>
+      </div>
+      <ol class="social-greens__steps">
+        <li>
+          <span class="social-greens__step-number">01</span>
+          <div><h3>{{ 'social_greens.step_1_title' | t }}</h3><p>{{ 'social_greens.step_1_text' | t }}</p></div>
+        </li>
+        <li>
+          <span class="social-greens__step-number">02</span>
+          <div><h3>{{ 'social_greens.step_2_title' | t }}</h3><p>{{ 'social_greens.step_2_text' | t }}</p></div>
+        </li>
+        <li>
+          <span class="social-greens__step-number">03</span>
+          <div><h3>{{ 'social_greens.step_3_title' | t }}</h3><p>{{ 'social_greens.step_3_text' | t }}</p></div>
+        </li>
+      </ol>
+    </section>
+
+    <aside class="social-greens__cost-note">
+      <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'leaf' %}</span>
+      <div>
+        <h2>{{ 'social_greens.cost_heading' | t }}</h2>
+        <p>{{ 'social_greens.cost_text' | t }}</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% stylesheet %}
+  .social-greens { --sg-line: color-mix(in srgb, var(--border), transparent 8%); padding-bottom: clamp(4rem, 9vw, 8rem); }
+  .social-greens__hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 7vw, 6rem); }
+  .social-greens__hero-copy { max-width: 760px; }
+  .social-greens__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+  .social-greens h1 { max-width: 13ch; margin: 0; font-size: clamp(3rem, 8vw, 7rem); line-height: .91; letter-spacing: -.06em; text-wrap: balance; }
+  .social-greens__intro { max-width: 62ch; margin: 1.5rem 0 0; color: var(--muted); font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.65; }
+  .social-greens__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem; margin-top: 2rem; }
+  .social-greens__text-link { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; color: var(--text); font-weight: 720; text-decoration: none; }
+  .social-greens__text-link:hover { color: var(--accent); }
+  .social-greens__text-link svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__principles { border-top: 1px solid var(--sg-line); }
+  .social-greens__principle { display: grid; grid-template-columns: 38px 1fr; gap: .85rem; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--sg-line); }
+  .social-greens__principle strong, .social-greens__principle span { display: block; }
+  .social-greens__principle strong { font-family: var(--heading-font); font-size: clamp(1.25rem, 2vw, 1.65rem); letter-spacing: -.025em; }
+  .social-greens__principle div > span { margin-top: .15rem; color: var(--muted); font-size: .9rem; }
+  .social-greens__icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--accent); }
+  .social-greens__icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__body { display: grid; gap: clamp(4rem, 9vw, 8rem); }
+  .social-greens__audience, .social-greens__process { display: grid; grid-template-columns: minmax(240px, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .social-greens__section-heading h2, .social-greens__cost-note h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4rem); line-height: 1; letter-spacing: -.045em; }
+  .social-greens__section-heading > p:last-child { max-width: 54ch; margin: 1rem 0 0; color: var(--muted); line-height: 1.65; }
+
+  .social-greens__chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--sg-line); }
+  .social-greens__chips > span { min-height: 76px; display: flex; align-items: center; gap: .75rem; padding: 1rem 0; border-bottom: 1px solid var(--sg-line); font-weight: 700; }
+  .social-greens__chips > span:nth-child(odd) { padding-right: 1.25rem; }
+  .social-greens__chips > span:nth-child(even) { padding-left: 1.25rem; border-left: 1px solid var(--sg-line); }
+  .social-greens__chips svg { width: 22px; height: 22px; flex: 0 0 auto; fill: none; stroke: var(--accent); stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__steps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--sg-line); }
+  .social-greens__steps li { display: grid; grid-template-columns: 62px 1fr; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--sg-line); }
+  .social-greens__step-number { color: var(--accent); font: 800 .75rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; }
+  .social-greens__steps h3 { margin: -.2rem 0 .4rem; font-size: clamp(1.25rem, 2vw, 1.7rem); letter-spacing: -.025em; }
+  .social-greens__steps p { max-width: 62ch; margin: 0; color: var(--muted); line-height: 1.65; }
+
+  .social-greens__cost-note { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 1rem; max-width: 920px; padding-top: 1.6rem; border-top: 1px solid var(--sg-line); }
+  .social-greens__cost-note h2 { font-size: clamp(1.7rem, 3.2vw, 2.7rem); }
+  .social-greens__cost-note p { max-width: 70ch; margin: .8rem 0 0; color: var(--muted); line-height: 1.65; }
+
+  @media (max-width: 900px) {
+    .social-greens__hero, .social-greens__audience, .social-greens__process { grid-template-columns: 1fr; }
+    .social-greens__hero { align-items: start; }
+    .social-greens__principles { max-width: 620px; }
+  }
+  @media (max-width: 560px) {
+    .social-greens__hero { padding-top: 3rem; }
+    .social-greens h1 { font-size: clamp(2.65rem, 15vw, 4.8rem); }
+    .social-greens__chips { grid-template-columns: 1fr; }
+    .social-greens__chips > span:nth-child(odd), .social-greens__chips > span:nth-child(even) { padding-inline: 0; border-left: 0; }
+    .social-greens__steps li { grid-template-columns: 46px 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Social Greens",
+  "settings": [
+    { "type": "url", "id": "contact_url", "label": "Projektanfrage-Link" },
+    { "type": "url", "id": "secondary_url", "label": "Sekundärer Link" }
+  ],
+  "presets": [{ "name": "Social Greens" }]
+}
+{% endschema %}
