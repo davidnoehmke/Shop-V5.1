@@ -1,3 +1,4 @@
+{% unless request.page_type == 'index' %}
 <section class="home-positioning" aria-labelledby="HomePositioning-{{ section.id }}">
   <div class="home-positioning__inner">
     <div class="home-positioning__intro">
@@ -17,6 +18,8 @@
     </div>
   </div>
 </section>
+
+{% endunless %}
 
 {% stylesheet %}
   .home-positioning { padding: clamp(4rem, 9vw, 8rem) 0; background: var(--surface); }

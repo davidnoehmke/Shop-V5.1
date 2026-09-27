@@ -1,6 +1,12 @@
 {% liquid
   assign section_heading = section.settings.heading
   assign section_intro = section.settings.intro
+  assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
+
+  if request.page_type == 'index'
+    assign section_heading = 'Finde deinen Projektbereich'
+    assign section_intro = '<p>Wähle zuerst den Bereich, den du lösen möchtest. Produkte, Wissen und Konfiguratoren bleiben danach miteinander verknüpft.</p>'
+  endif
 %}
 
 <section class="home-journey" id="HomeJourney-{{ section.id }}" data-home-journey data-result-prefix="{{ section.settings.result_prefix | escape }}" data-result-suffix="{{ section.settings.result_suffix | escape }}" aria-labelledby="HomeJourneyHeading-{{ section.id }}">
@@ -18,7 +24,7 @@
       <button type="button" class="home-journey__filter is-active" data-journey-filter="all" aria-pressed="true">{{ section.settings.filter_all | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="substrate" aria-pressed="false">{{ section.settings.filter_substrate | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="interieur" aria-pressed="false">{{ section.settings.filter_interieur | escape }}</button>
-      <button type="button" class="home-journey__filter" data-journey-filter="bundle" aria-pressed="false">{{ section.settings.filter_bundle | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="bundle" aria-pressed="false">{{ filter_bundle | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="grow" aria-pressed="false">{{ section.settings.filter_grow | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="equipment" aria-pressed="false">{{ section.settings.filter_equipment | escape }}</button>
     </div>
@@ -77,6 +83,12 @@
             if destination == blank
               assign destination = routes.collections_url
             endif
+
+            if selected_collection.handle == 'starter-sets-mehrerer-arten' or destination contains 'starter-sets-mehrerer-arten'
+              assign card_category = 'bundle'
+              assign card_icon = 'bundle'
+            endif
+
             if card_icon == blank
               case card_category
                 when 'substrate'
@@ -194,6 +206,11 @@
   .home-journey__footer { display: flex; justify-content: center; margin-top: 2rem; }
   .home-journey__footer .button { gap: .6rem; }
   .home-journey__card[hidden] { display: none; }
+  .home-journey__card[data-category="substrate"] { order: 1; }
+  .home-journey__card[data-category="interieur"] { order: 2; }
+  .home-journey__card[data-category="bundle"] { order: 3; }
+  .home-journey__card[data-category="grow"] { order: 4; }
+  .home-journey__card[data-category="equipment"] { order: 5; }
 
   @media (hover: hover) and (pointer: fine) {
     .home-journey__card:hover { transform: translateY(-7px); border-color: color-mix(in srgb, var(--accent), transparent 58%); box-shadow: var(--shadow-soft); }
