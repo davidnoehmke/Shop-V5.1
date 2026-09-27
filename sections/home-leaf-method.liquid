@@ -1,8 +1,19 @@
+{% liquid
+  assign method_eyebrow = section.settings.eyebrow
+  assign method_heading = section.settings.heading
+  assign method_text = section.settings.text
+
+  if request.page_type == 'index'
+    assign method_eyebrow = 'Drei Wege zur passenden Lösung'
+    assign method_heading = 'Wähle nur so viel Führung, wie du brauchst.'
+    assign method_text = '<p>Direkt kaufen, selbst konfigurieren oder ein komplettes Pflanzprojekt planen – ohne denselben Entscheidungsweg mehrfach durchlaufen zu müssen.</p>'
+  endif
+%}
 <section class="leaf-method page-width" aria-labelledby="LeafMethodHeading-{{ section.id }}">
   <header class="leaf-method__head">
-    <p class="leaf-method__eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h2 id="LeafMethodHeading-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
-    {% if section.settings.text != blank %}<div class="leaf-method__lead rte">{{ section.settings.text }}</div>{% endif %}
+    <p class="leaf-method__eyebrow">{{ method_eyebrow | escape }}</p>
+    <h2 id="LeafMethodHeading-{{ section.id }}">{{ method_heading | escape }}</h2>
+    {% if method_text != blank %}<div class="leaf-method__lead rte">{{ method_text }}</div>{% endif %}
   </header>
 
   <div class="leaf-method__paths">
