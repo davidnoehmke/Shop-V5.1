@@ -563,9 +563,22 @@
     "booking_point_one": "Free and non-binding until implementation",
     "booking_point_two": "No obligation to accept or implement a project",
     "booking_point_three": "Personal planning instead of a standard package",
-    "book_now": "Open appointment in Calendly",
+    "book_now": "Book an appointment",
     "calendar_note": "The appointment link is managed in the theme editor. Once the Social Greens event exists in Calendly, this button leads directly to it.",
     "calendar_placeholder": "Add the Calendly URL in the theme editor to activate booking.",
-    "reference_text": "For completed projects, the finished room and planting concept may be photographed by prior agreement. People are not shown without separate consent. Any review or recommendation remains voluntary."
+    "reference_text": "For completed projects, the finished room and planting concept may be photographed by prior agreement. People are not shown without separate consent. Any review or recommendation remains voluntary.",
+    "slots_heading": "10 initial appointments from Monday",
+    "slots_text": "20 minutes each, from 3 pm. Choose a preferred time and send a short request.",
+    "slots_label": "Available initial appointment times",
+    "contact_eyebrow": "Appointment & contact",
+    "contact_heading": "Book an appointment or contact us by email.",
+    "contact_text": "Choose a preferred time and briefly describe the institution and room. Alternatively, contact LEAFerservice directly by email.",
+    "contact_success": "Thank you. Your request has been sent. I will get back to confirm the appointment.",
+    "form_org": "Institution / organisation",
+    "form_name": "Contact person",
+    "form_email": "Email",
+    "form_time": "Preferred time",
+    "form_message": "What is the project about?",
+    "form_submit": "Send appointment request"
   }
 }
