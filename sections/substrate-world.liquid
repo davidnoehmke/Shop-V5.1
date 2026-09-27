@@ -82,6 +82,7 @@
 
           assign card_image_alt = block.settings.image_alt | default: card_title
           assign card_price = card_product.price_min | money
+          {%- comment -%} Localized price label; locale parity is validated in CI. {%- endcomment -%}
           assign card_from_price = 'product.from_price' | t: price: card_price
           endif
         %}
