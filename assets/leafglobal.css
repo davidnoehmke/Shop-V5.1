@@ -235,9 +235,9 @@
   --leaf-muted: #68756e;
   --leaf-accent: #4f715d;
 
-  --leaf-radius-sm: 12px;
-  --leaf-radius: 20px;
-  --leaf-radius-lg: 32px;
+  --leaf-radius-sm: 0px;
+  --leaf-radius: 0px;
+  --leaf-radius-lg: 0px;
 
   --leaf-shadow:
     0 18px 50px rgba(30, 45, 37, 0.10);
