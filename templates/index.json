@@ -509,6 +509,12 @@
         "heading": "Nicht jeder braucht dieselbe Lösung.",
         "text": "<p>Wähle, wie viel Führung du möchtest: eine fertige Mischung, volle Kontrolle über deine Rezeptur oder ein komplettes Pflanzprojekt.</p>"
       }
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {
+        "link": ""
+      }
     }
   },
   "order": [
@@ -518,6 +524,7 @@
     "home_collection_journey",
     "home_discovery_path",
     "positioning",
+    "brand_story",
     "leaf_method",
     "home_choice",
     "home_guides",
