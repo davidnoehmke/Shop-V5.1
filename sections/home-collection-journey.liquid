@@ -18,6 +18,7 @@
       <button type="button" class="home-journey__filter is-active" data-journey-filter="all" aria-pressed="true">{{ section.settings.filter_all | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="substrate" aria-pressed="false">{{ section.settings.filter_substrate | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="interieur" aria-pressed="false">{{ section.settings.filter_interieur | escape }}</button>
+      <button type="button" class="home-journey__filter" data-journey-filter="bundle" aria-pressed="false">{{ section.settings.filter_bundle | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="grow" aria-pressed="false">{{ section.settings.filter_grow | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="equipment" aria-pressed="false">{{ section.settings.filter_equipment | escape }}</button>
     </div>
@@ -84,6 +85,8 @@
                   assign card_icon = 'light'
                 when 'grow'
                   assign card_icon = 'seedling'
+                when 'bundle'
+                  assign card_icon = 'bundle'
                 else
                   assign card_icon = 'care'
               endcase
@@ -167,7 +170,7 @@
   .home-journey__filter { min-height: 42px; padding-inline: 1rem; border: 1px solid var(--border); border-radius: 999px; background: transparent; color: var(--text); font-size: .8rem; }
   .home-journey__filter:hover, .home-journey__filter.is-active { border-color: var(--accent); background: var(--accent); color: #fff; }
   .home-journey__grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 1rem; }
-  .home-journey__card { grid-column: span 3; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--background); box-shadow: 0 14px 38px color-mix(in srgb, var(--text), transparent 94%); transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .25s ease; }
+  .home-journey__card { grid-column: span 3; min-width: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: 0; background: var(--background); box-shadow: 0 14px 38px color-mix(in srgb, var(--text), transparent 94%); transition: transform .35s var(--ease-out), box-shadow .35s var(--ease-out), border-color .25s ease; }
   .home-journey__card--featured { grid-column: span 6; }
   .home-journey__media { position: relative; display: block; aspect-ratio: 4 / 3; overflow: hidden; background: var(--accent-soft); }
   .home-journey__card--featured .home-journey__media { aspect-ratio: 16 / 9; }
@@ -244,6 +247,7 @@
     { "type": "text", "id": "filter_all", "label": "Filter alle", "default": "Alles" },
     { "type": "text", "id": "filter_substrate", "label": "Filter Substrat", "default": "Substrat & Wurzelraum" },
     { "type": "text", "id": "filter_interieur", "label": "Filter Interieur", "default": "Interieur Solutions" },
+    { "type": "text", "id": "filter_bundle", "label": "Filter Sets & Bundles", "default": "Sets & Bundles" },
     { "type": "text", "id": "filter_grow", "label": "Filter Anzucht", "default": "Anzucht & Aussaat" },
     { "type": "text", "id": "filter_equipment", "label": "Filter Ausstattung", "default": "Gefäße & Pflege" },
     { "type": "text", "id": "result_prefix", "label": "Ergebnis-Präfix", "default": "Sichtbar:" },
@@ -263,6 +267,7 @@
         { "type": "select", "id": "category", "label": "Bereich", "options": [
           { "value": "substrate", "label": "Substrat & Wurzelraum" },
           { "value": "interieur", "label": "Interieur Solutions" },
+          { "value": "bundle", "label": "Sets & Bundles" },
           { "value": "grow", "label": "Anzucht & Aussaat" },
           { "value": "equipment", "label": "Gefäße & Pflege" }
         ], "default": "substrate" },
