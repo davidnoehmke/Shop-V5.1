@@ -152,6 +152,11 @@
       .visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; overflow: hidden !important; clip: rect(0 0 0 0) !important; white-space: nowrap !important; }
       .rte > *:first-child { margin-top: 0; }
       .rte > *:last-child { margin-bottom: 0; }
+      .legal-responsibility { margin-block: clamp(2.5rem,5vw,4rem); padding-top: 1.5rem; border-top: 1px solid var(--border); }
+      .legal-responsibility__eyebrow { margin: 0 0 .5rem; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .legal-responsibility h2 { margin: 0 0 .75rem; font-size: clamp(1.45rem,2.5vw,2rem); }
+      .legal-responsibility p { max-width: 76ch; margin: 0 0 .7rem; color: var(--muted); }
+      .legal-responsibility strong { color: var(--text); }
       @media (max-width: 700px) { :root { --space-section: 3.25rem; } .page-width { width: min(100% - 1.1rem, var(--page-width)); } body { font-size: 16px; line-height: 1.6; } h1, h2, h3, p, a, summary { overflow-wrap: break-word; hyphens: auto; } button, .button, input, select { min-height: 48px; } }
       @media (prefers-reduced-motion: no-preference) { ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: var(--ease-out); } }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
@@ -160,7 +165,26 @@
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
     {% sections 'header-group' %}
-    <main id="MainContent" tabindex="-1">{{ content_for_layout }}</main>
+    <main id="MainContent" tabindex="-1">
+      {{ content_for_layout }}
+      {% if request.page_type == 'policy' and request.path contains '/policies/legal-notice' %}
+        <section class="legal-responsibility page-width" aria-labelledby="legal-responsibility-title">
+          {% if request.locale.iso_code == 'de' %}
+            <p class="legal-responsibility__eyebrow">Verantwortung bei LEAFerservice</p>
+            <h2 id="legal-responsibility-title">Gründer, Inhaber und operative Verantwortung</h2>
+            <p><strong>David Nöhmke</strong> ist Gründer und Inhaber von LEAFerservice.</p>
+            <p>Verantwortlich für den Betrieb von LEAFerservice.com sowie für redaktionelle Inhalte, Produkt- und Fachinhalte, Marketing, Konzeption, technische Entwicklung, Programmierung/Coding und die Weiterentwicklung der digitalen Systeme: David Nöhmke.</p>
+            <p>Geschäftlicher Kontakt: <a href="mailto:management@leaferservice.com">management@leaferservice.com</a></p>
+          {% else %}
+            <p class="legal-responsibility__eyebrow">Responsibility at LEAFerservice</p>
+            <h2 id="legal-responsibility-title">Founder, owner and operational responsibility</h2>
+            <p><strong>David Nöhmke</strong> is the founder and owner of LEAFerservice.</p>
+            <p>Responsible for the operation of LEAFerservice.com as well as editorial, product and specialist content, marketing, concept development, technical development, programming/coding and the continued development of the digital systems: David Nöhmke.</p>
+            <p>Business contact: <a href="mailto:management@leaferservice.com">management@leaferservice.com</a></p>
+          {% endif %}
+        </section>
+      {% endif %}
+    </main>
     {% sections 'footer-group' %}
     <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
