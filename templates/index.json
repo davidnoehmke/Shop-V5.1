@@ -148,7 +148,7 @@
           "type": "collection",
           "settings": {
             "collection": "starter-sets-mehrerer-arten",
-            "category": "grow",
+            "category": "bundle",
             "image": "",
             "eyebrow": "",
             "badge": "",
@@ -164,15 +164,15 @@
       "block_order": [
         "substrate",
         "interieur",
+        "sets",
         "grow",
         "planters",
-        "care",
-        "sets"
+        "care"
       ],
       "settings": {
         "eyebrow": "Nach deinem Projekt",
-        "heading": "Finde den passenden Einstieg",
-        "intro": "<p>Substrat, Raumgestaltung, Anzucht oder Ausstattung: Wähle deinen nächsten sinnvollen Schritt.</p>",
+        "heading": "Finde deinen Projektbereich",
+        "intro": "<p>Wähle zuerst den Bereich, den du lösen möchtest. Produkte, Wissen und Konfiguratoren bleiben danach miteinander verknüpft.</p>",
         "filter_label": "Sortiment filtern",
         "filter_all": "Alles",
         "filter_substrate": "Substrat & Wurzelraum",
@@ -185,20 +185,8 @@
         "card_cta": "Entdecken",
         "empty_label": "Für diesen Filter sind aktuell keine Bereiche hinterlegt.",
         "all_label": "Gesamtes Sortiment ansehen",
-        "all_link": "shopify://collections/all"
-      }
-    },
-    "home_choice": {
-      "type": "home-choice-band",
-      "settings": {
-        "image": "shopify://shop_images/LEAFers_Bl_hton_die_perfekte_Drainage.jpg",
-        "eyebrow": "Substrat verstehen und auswählen",
-        "heading": "Bewährte Rezeptur oder eigener Mix",
-        "text": "<p>Vergleiche die passende Grundrezeptur mit deiner eigenen Mischung: Wähle Pflanzentyp, Komponenten und Volumen und sieh direkt, was sich im Wurzelraum verändert.</p>",
-        "primary_label": "Konfigurator öffnen",
-        "primary_link": "shopify://pages/individuelles-substrat",
-        "secondary_label": "Substratwelt entdecken",
-        "secondary_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+        "all_link": "shopify://collections/all",
+        "filter_bundle": "Sets & Bundles"
       }
     },
     "home_guides": {
@@ -284,20 +272,20 @@
             "video_4": "shopify://files/videos/254112.mp4",
             "slider_style": "none",
             "modal_style": "side",
-            "video_autoplay": "true",
+            "video_autoplay": "false",
             "play_button_position": "none",
             "play_button_size": "small",
             "item_border_style": "none",
             "item_border_width": 1,
             "item_border_color": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            "item_border_radius": 96,
+            "item_border_radius": 0,
             "item_padding": 0,
             "grid_items": "3",
             "thumbnail_shape": "rectangle",
             "block_border_style": "none",
             "block_border_width": 1,
             "block_border_color": "#d7d7d7",
-            "block_border_radius": 16,
+            "block_border_radius": 0,
             "block_bg_color": "",
             "block_padding_vertical": 8,
             "block_padding_horizontal": 0,
@@ -389,54 +377,12 @@
         "archive_link": ""
       }
     },
-    "positioning": {
-      "type": "home-positioning",
-      "blocks": {
-        "p1": {
-          "type": "pillar",
-          "settings": {
-            "heading": "Substrat mit Funktion",
-            "text": "Mischungen und Einzelbestandteile mit klarer Aufgabe: Luft, Drainage und Feuchtepuffer.",
-            "link_label": "Substrate entdecken",
-            "link": "shopify://collections/substrate-verbesserer"
-          }
-        },
-        "p2": {
-          "type": "pillar",
-          "settings": {
-            "heading": "System statt Einzelprodukt",
-            "text": "Gefäß, Licht und Pflege werden passend zum Wurzelraum gedacht – nicht zufällig zusammengestellt.",
-            "link_label": "Lösungen ansehen",
-            "link": "shopify://collections/interieur-solutions"
-          }
-        },
-        "p3": {
-          "type": "pillar",
-          "settings": {
-            "heading": "Verstehen und selbst entscheiden",
-            "text": "Ratgeber, Rezepturen und Konfigurator geben dir die Grundlage für eine eigene, sichere Entscheidung.",
-            "link_label": "Ratgeber lesen",
-            "link": "shopify://blogs/leafers-nice2know-blog"
-          }
-        }
-      },
-      "block_order": [
-        "p1",
-        "p2",
-        "p3"
-      ],
-      "settings": {
-        "eyebrow": "Mehr als ein Pflanzenshop",
-        "heading": "Pflanzenpflege beginnt im Wurzelraum.",
-        "text": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>"
-      }
-    },
     "home_discovery_path": {
       "type": "home-discovery-path",
       "settings": {
-        "eyebrow": "Kurz erklärt, dann passend weiter",
-        "heading": "Finde deinen nächsten sinnvollen Schritt",
-        "text": "<p>Entdecke die Idee hinter einer Lösung und direkt danach ein passendes Highlight aus dem Sortiment. Du entscheidest selbst, wie tief du einsteigst.</p>",
+        "eyebrow": "Entscheidungen im Pflanzenprojekt",
+        "heading": "Vier Faktoren bestimmen dein Setup",
+        "text": "<p>Wurzelraum, Licht, Anzucht und Bewässerung greifen ineinander. Öffne nur das Thema, das du gerade klären möchtest.</p>",
         "filter_label": "Themen filtern",
         "filter_all": "Alle Themen",
         "filter_substrate": "Substrat",
@@ -446,11 +392,11 @@
         "highlight_label": "Highlight aus dem Sortiment",
         "details_label": "Details ansehen",
         "empty_label": "Für diesen Themenfilter sind aktuell keine Bereiche hinterlegt.",
-        "service_eyebrow": "Auch für größere Projekte",
-        "service_heading": "Lieferung und Aufbau nach Absprache",
-        "service_text": "Bei größeren Pflanzenwelten, Regalen, Gewächshäusern oder Terrarien arrangiere ich gerne die Lieferung und – sofern möglich – auch den Aufbau vor Ort.",
-        "service_cta": "Kooperationen & Projekte anfragen",
-        "service_link": "/pages/kooperationen-pflanzenprojekte"
+        "service_eyebrow": "Projekte & soziale Begrünung",
+        "service_heading": "Planung für Räume, Projekte und Social Greens",
+        "service_text": "Größere Pflanzenwelten planen wir projektbezogen. Für soziale Einrichtungen gibt es zusätzlich Social Greens mit transparenter Selbstkostenlogik.",
+        "service_cta": "Projekte & Social Greens ansehen",
+        "service_link": "/pages/social-greens"
       }
     },
     "phone_call": {
@@ -505,9 +451,9 @@
         "project"
       ],
       "settings": {
-        "eyebrow": "Die LEAF Methode",
-        "heading": "Nicht jeder braucht dieselbe Lösung.",
-        "text": "<p>Wähle, wie viel Führung du möchtest: eine fertige Mischung, volle Kontrolle über deine Rezeptur oder ein komplettes Pflanzprojekt.</p>"
+        "eyebrow": "Drei Wege zur passenden Lösung",
+        "heading": "Wähle nur so viel Führung, wie du brauchst.",
+        "text": "<p>Direkt kaufen, selbst konfigurieren oder ein komplettes Pflanzprojekt planen – ohne denselben Entscheidungsweg mehrfach durchlaufen zu müssen.</p>"
       }
     },
     "brand_story": {
@@ -519,16 +465,14 @@
   },
   "order": [
     "hero",
-    "phone_call",
     "trust",
     "home_collection_journey",
     "home_discovery_path",
-    "positioning",
-    "brand_story",
     "leaf_method",
-    "home_choice",
     "home_guides",
+    "brand_story",
     "community",
+    "phone_call",
     "faq",
     "shop_videos"
   ]
