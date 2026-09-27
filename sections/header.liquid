@@ -66,13 +66,7 @@
       </details>
     {% endif %}
     <a class="site-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
-      {% if section.settings.logo != blank %}
-        {{ section.settings.logo | image_url: width: 480 | image_tag: widths: '160, 240, 320, 480', loading: 'eager', alt: 'LEAFerservice' }}
-        <sup class="site-header__tm" aria-hidden="true">™</sup>
-      {% else %}
-        <svg viewBox="0 0 38 42" aria-hidden="true"><path d="M19 39V18M19 29C10 28 5 22 5 12c9 0 14 5 14 14M19 22c7-1 12-6 13-15-8 0-13 5-13 12M13 15C13 9 16 5 21 2c3 6 2 11-2 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>{{ shop.name }}</span>
-      {% endif %}
+      <span class="site-header__wordmark">LEAFerservice</span><sup class="site-header__tm" aria-hidden="true">™</sup>
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
@@ -80,9 +74,13 @@
       </nav>
     {% endif %}
     <div class="site-header__actions">
-      <a href="{{ routes.search_url }}" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><span class="site-header__action-label">{{ 'header.search' | t }}</span></a>
-      <a class="site-header__account" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg><span class="site-header__action-label">{{ 'header.account' | t }}</span></a>
-      <a class="site-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg><span class="site-header__action-label">{{ 'cart.title' | t }}</span>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
+      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search">
+        <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'header.search' | t }}</label>
+        <input id="HeaderSearch-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search' | t }}" autocomplete="off">
+        <button type="submit" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+      </form>
+      <a class="site-header__account site-header__icon-action" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
+      <a class="site-header__cart site-header__icon-action" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
     </div>
   </div>
 </header>
@@ -92,6 +90,7 @@
   .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(180px, .8fr) auto minmax(280px, .8fr); align-items: center; gap: clamp(1rem, 2vw, 2.5rem); }
   .site-header__brand { width: min(100%, var(--logo-width)); display: inline-flex; align-items: center; gap: .55rem; font-family: var(--heading-font); font-size: 1.45rem; font-weight: 600; text-decoration: none; }
   .site-header__brand > svg { width: 34px; flex: 0 0 auto; }
+  .site-header__wordmark { font-family: var(--heading-font); font-size: clamp(1.35rem, 1.5vw, 1.8rem); font-weight: 700; letter-spacing: -.035em; line-height: 1; }
   .site-header__brand img { width: 100%; height: auto; }
   .site-header__tm { align-self: flex-start; margin: .22rem 0 0 -.35rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .72rem; font-weight: 900; line-height: 1; text-shadow: 0 0 1px currentColor; }
   .site-header__desktop { display: flex; justify-content: center; gap: clamp(1rem, 2.4vw, 2.6rem); white-space: nowrap; }
@@ -99,7 +98,12 @@
   .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
   .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
   .site-header__desktop a:hover { color: var(--accent); }
-  .site-header__actions { justify-self: end; display: flex; align-items: stretch; gap: .35rem; }
+  .site-header__actions { justify-self: end; display: flex; align-items: center; gap: .35rem; }
+  .site-header__search { width: clamp(170px, 15vw, 250px); min-height: 42px; display: grid; grid-template-columns: 1fr 42px; align-items: center; border: 1px solid var(--border); background: var(--background); }
+  .site-header__search input { width: 100%; min-width: 0; height: 40px; padding: 0 .75rem; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: .82rem; }
+  .site-header__search button { width: 42px; height: 40px; display: grid; place-items: center; border: 0; border-left: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
+  .site-header__search button:hover, .site-header__search button:focus-visible { background: var(--surface); color: var(--accent); }
+  .site-header__icon-action { width: 44px; justify-content: center; padding-inline: 0 !important; }
   .site-header__actions > a { position: relative; min-height: 42px; display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .7rem; border: 1px solid transparent; color: var(--text); text-decoration: none; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
   .site-header__actions > a:hover, .site-header__actions > a:focus-visible { border-color: var(--border); background: var(--surface); color: var(--accent); }
   .site-header__mobile > summary { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
@@ -146,7 +150,7 @@
     .site-header__brand { width: min(100%, max(var(--logo-width), 225px)); }
     .site-header__tm { font-size: .82rem; }
   }
-  @media (max-width: 1050px) { .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
+  @media (max-width: 1050px) { .site-header__search { width: 44px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { border: 0; } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
   @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
 {% endstylesheet %}
 
