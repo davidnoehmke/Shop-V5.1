@@ -555,9 +555,22 @@
     "booking_point_one": "Kostenlos und unverbindlich bis zur Umsetzung",
     "booking_point_two": "Keine Verpflichtung zur Projektannahme oder Umsetzung",
     "booking_point_three": "Persönliche Planung statt Standardpaket",
-    "book_now": "Termin bei Calendly öffnen",
+    "book_now": "Termin vereinbaren",
     "calendar_note": "Der Termin-Link wird direkt im Theme-Editor gepflegt. Sobald der Social-Greens-Termin in Calendly angelegt ist, führt dieser Button dorthin.",
     "calendar_placeholder": "Calendly-Link im Theme-Editor hinterlegen, um die Terminbuchung zu aktivieren.",
-    "reference_text": "Bei umgesetzten Projekten kann nach vorheriger Vereinbarung das fertige Raum- und Pflanzkonzept fotografisch dokumentiert werden. Personen werden nicht ohne gesonderte Einwilligung abgebildet. Eine Bewertung oder Empfehlung bleibt freiwillig."
+    "reference_text": "Bei umgesetzten Projekten kann nach vorheriger Vereinbarung das fertige Raum- und Pflanzkonzept fotografisch dokumentiert werden. Personen werden nicht ohne gesonderte Einwilligung abgebildet. Eine Bewertung oder Empfehlung bleibt freiwillig.",
+    "slots_heading": "10 Ersttermine ab Montag",
+    "slots_text": "Je 20 Minuten, ab 15 Uhr. Wunschzeit auswählen und kurz per Formular anfragen.",
+    "slots_label": "Verfügbare Ersttermin-Zeiten",
+    "contact_eyebrow": "Termin & Kontakt",
+    "contact_heading": "Termin vereinbaren oder per Mail melden.",
+    "contact_text": "Wähle eine Wunschzeit und beschreibe kurz die Einrichtung und den Raum. Alternativ erreichst du LEAFerservice direkt per E-Mail.",
+    "contact_success": "Danke. Deine Anfrage wurde übermittelt. Ich melde mich zur Terminbestätigung.",
+    "form_org": "Einrichtung / Träger",
+    "form_name": "Ansprechpartner",
+    "form_email": "E-Mail",
+    "form_time": "Wunschzeit",
+    "form_message": "Worum geht es?",
+    "form_submit": "Terminanfrage senden"
   }
 }
