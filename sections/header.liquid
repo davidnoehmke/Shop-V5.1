@@ -19,7 +19,7 @@
                 {% if link.links != blank %}
                   <details class="site-header__mobile-disclosure">
                     <summary>
-                      <span>{{ link.title }}</span>
+                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></span>
                       <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                     </summary>
                     <div class="site-header__mobile-submenu">
@@ -57,7 +57,7 @@
                     </div>
                   </details>
                 {% else %}
-                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></a>
                 {% endif %}
               </li>
             {% endfor %}
@@ -70,7 +70,7 @@
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
-        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
+        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></a>{% endfor %}
       </nav>
     {% endif %}
     <div class="site-header__actions">
@@ -94,7 +94,11 @@
   .site-header__brand img { width: 100%; height: auto; }
   .site-header__tm { align-self: flex-start; margin: .22rem 0 0 -.35rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .88rem; font-weight: 900; line-height: 1; text-shadow: 0 0 1px currentColor; }
   .site-header__desktop { display: flex; justify-content: center; gap: clamp(.85rem, 1.45vw, 1.7rem); white-space: nowrap; }
-  .site-header__desktop a { position: relative; min-height: 44px; display: inline-flex; align-items: center; font-size: .84rem; font-weight: 680; text-decoration: none; }
+  .site-header__desktop a { position: relative; min-height: 44px; display: inline-flex; align-items: center; gap: .42rem; font-size: .84rem; font-weight: 680; text-decoration: none; }
+  .site-header__nav-icon { width: 17px; height: 17px; display: inline-grid; place-items: center; flex: 0 0 auto; color: var(--accent); }
+  .site-header__nav-icon svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+  .site-header__mobile-title { display: inline-flex; align-items: center; gap: .65rem; min-width: 0; }
+  .site-header__mobile-link > .site-header__nav-icon { margin-right: .65rem; }
   .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
   .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
   .site-header__desktop a:hover { color: var(--accent); }
