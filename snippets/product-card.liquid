@@ -38,34 +38,6 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     assign card_descriptor = product.type
   endif
 
-  if from_price_text contains 'Translation missing'
-    if request.locale.iso_code == 'de'
-      assign from_price_text = 'Ab ' | append: formatted_price
-    else
-      assign from_price_text = 'From ' | append: formatted_price
-    endif
-  endif
-
-  if choose_options_text contains 'Translation missing'
-    if request.locale.iso_code == 'de'
-      assign choose_options_text = 'Optionen wählen'
-    else
-      assign choose_options_text = 'Choose options'
-    endif
-  endif
-
-  if sold_out_text contains 'Translation missing'
-    assign sold_out_text = 'Ausverkauft'
-  endif
-  if bestseller_text contains 'Translation missing'
-    assign bestseller_text = 'Bestseller'
-  endif
-  if special_mix_text contains 'Translation missing'
-    assign special_mix_text = 'Spezialmischung'
-  endif
-  if quick_add_text contains 'Translation missing'
-    assign quick_add_text = 'In den Warenkorb legen'
-  endif
 
   if product.has_only_default_variant and card_variant != blank and card_variant.available
     assign can_quick_add = true
