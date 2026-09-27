@@ -1,0 +1,220 @@
+{% liquid
+  assign design_product = all_products['rillen-pflanzgefass-schwarz']
+  assign water_product = all_products['leafer-pot']
+  assign hanging_product = all_products['haengeampel-wasserhyazinthe']
+  assign functional_product = all_products['growpro-stofftopf-mit-untersetzer']
+  assign outdoor_product = all_products['outdoor-pflanzkubel-grau-grosses-gefass-fur-eingangsbereich-terrasse']
+  assign substrate_configurator = all_products['leafer-substrat-konfigurator']
+
+  if request.locale.iso_code == 'de'
+    assign eyebrow = 'LEAFerservice Gefäßwelt'
+    assign heading = 'Gefäße nach Raum, Pflanze und Wasserführung wählen'
+    assign intro = collection.metafields.leafer.intro.value | default: 'Pflanzgefäße verbinden Raumwirkung und Wurzelraum. Vergleiche Design, Platzierung und Wasserführung als zusammenhängendes System.'
+    assign principle_design = 'Gestaltung'
+    assign principle_design_copy = 'für den Wohnraum'
+    assign principle_root = 'Wurzelraum'
+    assign principle_root_copy = 'für die Pflanze'
+    assign principle_water = 'Wasserführung'
+    assign principle_water_copy = 'für den Alltag'
+    assign design_label = 'Design & Wohnraum'
+    assign design_copy = 'Ruhige Formen, strukturierte Oberflächen und standfeste Gefäße für Sideboard, Regal oder Statement-Pflanzen.'
+    assign water_label = 'Bewässerung & Alltag'
+    assign water_copy = 'Gefäße mit Bewässerungseinsatz verbinden Wohnraumoptik mit kontrollierter Feuchtigkeit.'
+    assign hanging_label = 'Hängend & vertikal'
+    assign hanging_copy = 'Hängegefäße nutzen die Raumhöhe und schaffen Begrünung, ohne Stellfläche zu belegen.'
+    assign functional_label = 'Funktionale Pflanzsysteme'
+    assign functional_copy = 'Stoffsysteme priorisieren Wurzelbelüftung und Wasserabfluss statt dekorativer Wirkung.'
+    assign outdoor_label = 'Outdoor & große Gefäße'
+    assign outdoor_copy = 'Standfeste Gefäße für Terrasse, Eingangsbereich und größere Solitärpflanzen.'
+    assign example_label = 'Beispiel'
+    assign view_label = 'Produkt ansehen'
+    assign method_heading = 'Gefäß und Substrat zusammen denken'
+    assign method_copy = 'Drainage, Wasserspeicherung und Luftführung entstehen aus Gefäß und Substrat gemeinsam. Prüfe deshalb beides als System.'
+    assign substrate_label = 'Substrat konfigurieren'
+    assign interior_label = 'Interieur Solutions'
+  else
+    assign eyebrow = 'LEAFerservice planter world'
+    assign heading = 'Choose planters by room, plant and water management'
+    assign intro = collection.metafields.leafer.intro.value | default: 'Planters connect interior design and root-zone function. Compare design, placement and water management as one system.'
+    assign principle_design = 'Design'
+    assign principle_design_copy = 'for the room'
+    assign principle_root = 'Root zone'
+    assign principle_root_copy = 'for the plant'
+    assign principle_water = 'Water'
+    assign principle_water_copy = 'for daily care'
+    assign design_label = 'Design & interior'
+    assign design_copy = 'Calm forms, structured surfaces and stable planters for shelves, sideboards and statement plants.'
+    assign water_label = 'Watering & everyday use'
+    assign water_copy = 'Planters with watering inserts combine interior styling with controlled moisture.'
+    assign hanging_label = 'Hanging & vertical'
+    assign hanging_copy = 'Hanging planters use room height and add greenery without taking floor space.'
+    assign functional_label = 'Functional growing systems'
+    assign functional_copy = 'Fabric systems prioritise root aeration and drainage over decorative styling.'
+    assign outdoor_label = 'Outdoor & large planters'
+    assign outdoor_copy = 'Stable planters for terraces, entrances and larger specimen plants.'
+    assign example_label = 'Example'
+    assign view_label = 'View product'
+    assign method_heading = 'Think of planter and substrate as one system'
+    assign method_copy = 'Drainage, water retention and aeration result from planter and substrate together. Evaluate both as one system.'
+    assign substrate_label = 'Configure substrate'
+    assign interior_label = 'Interior Solutions'
+  endif
+%}
+
+<section class="planter-world" aria-labelledby="PlanterWorldHeading-{{ section.id }}">
+  <div class="planter-world__inner">
+    <header class="planter-world__intro">
+      <div>
+        <p class="planter-world__eyebrow">{{ eyebrow }}</p>
+        <h2 id="PlanterWorldHeading-{{ section.id }}">{{ heading }}</h2>
+      </div>
+      <p>{{ intro }}</p>
+    </header>
+
+    <nav class="planter-world__principles" aria-label="{{ heading | escape }}">
+      <span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19V7l7-3 7 3v12H5ZM8 11h8M8 15h8"/></svg>
+        <b>{{ principle_design }}</b><small>{{ principle_design_copy }}</small>
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V9M12 13c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 11c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
+        <b>{{ principle_root }}</b><small>{{ principle_root_copy }}</small>
+      </span>
+      <span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c4 5 6 8 6 11a6 6 0 1 1-12 0c0-3 2-6 6-11Z"/></svg>
+        <b>{{ principle_water }}</b><small>{{ principle_water_copy }}</small>
+      </span>
+    </nav>
+
+    <div class="planter-world__paths">
+      {% assign product = design_product %}
+      <article class="planter-world__card planter-world__card--feature">
+        {% if product != blank %}
+          <a class="planter-world__image" href="{{ product.url }}">
+            {% if product.featured_image %}{{ product.featured_image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '480,720,1000', sizes: '(min-width: 900px) 40vw, 100vw', alt: product.featured_image.alt | default: product.title }}{% endif %}
+          </a>
+        {% endif %}
+        <div class="planter-world__body">
+          <p class="planter-world__eyebrow">{{ design_label }}</p>
+          <h3>{{ design_label }}</h3>
+          <p>{{ design_copy }}</p>
+          {% if product != blank %}
+            <div class="planter-world__facts">
+              {% if product.metafields.leafer.planter_type.value != blank %}<span>{{ product.metafields.leafer.planter_type.value }}</span>{% endif %}
+              {% assign placements = product.metafields.leafer.placement.value %}
+              {% if placements != blank %}{% for placement in placements limit: 2 %}<span>{{ placement }}</span>{% endfor %}{% endif %}
+            </div>
+            <small class="planter-world__example">{{ example_label }} · {{ product.title }}</small>
+            <a class="planter-world__link" href="{{ product.url }}">{{ view_label }} <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </article>
+
+      {% assign product = water_product %}
+      <article class="planter-world__card">
+        {% if product != blank %}
+          <a class="planter-world__image" href="{{ product.url }}">
+            {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '420,650,900', sizes: '(min-width: 900px) 28vw, 100vw', alt: product.featured_image.alt | default: product.title }}{% endif %}
+          </a>
+        {% endif %}
+        <div class="planter-world__body">
+          <p class="planter-world__eyebrow">{{ water_label }}</p>
+          <h3>{{ water_label }}</h3>
+          <p>{{ water_copy }}</p>
+          {% if product != blank %}
+            <div class="planter-world__facts">
+              {% if product.metafields.leafer.water_behavior.value != blank %}<span>{{ product.metafields.leafer.water_behavior.value }}</span>{% endif %}
+            </div>
+            <small class="planter-world__example">{{ example_label }} · {{ product.title }}</small>
+            <a class="planter-world__link" href="{{ product.url }}">{{ view_label }} <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </article>
+
+      {% assign product = hanging_product %}
+      <article class="planter-world__card">
+        {% if product != blank %}
+          <a class="planter-world__image" href="{{ product.url }}">
+            {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '420,650,900', sizes: '(min-width: 900px) 28vw, 100vw', alt: product.featured_image.alt | default: product.title }}{% endif %}
+          </a>
+        {% endif %}
+        <div class="planter-world__body">
+          <p class="planter-world__eyebrow">{{ hanging_label }}</p>
+          <h3>{{ hanging_label }}</h3>
+          <p>{{ hanging_copy }}</p>
+          {% if product != blank %}
+            <div class="planter-world__facts">
+              {% assign placements = product.metafields.leafer.placement.value %}
+              {% if placements != blank %}{% for placement in placements limit: 2 %}<span>{{ placement }}</span>{% endfor %}{% endif %}
+            </div>
+            <small class="planter-world__example">{{ example_label }} · {{ product.title }}</small>
+            <a class="planter-world__link" href="{{ product.url }}">{{ view_label }} <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </article>
+
+      {% assign product = functional_product %}
+      <article class="planter-world__card">
+        {% if product != blank %}
+          <a class="planter-world__image" href="{{ product.url }}">
+            {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '420,650,900', sizes: '(min-width: 900px) 28vw, 100vw', alt: product.featured_image.alt | default: product.title }}{% endif %}
+          </a>
+        {% endif %}
+        <div class="planter-world__body">
+          <p class="planter-world__eyebrow">{{ functional_label }}</p>
+          <h3>{{ functional_label }}</h3>
+          <p>{{ functional_copy }}</p>
+          {% if product != blank %}
+            <div class="planter-world__facts">
+              {% if product.metafields.leafer.water_behavior.value != blank %}<span>{{ product.metafields.leafer.water_behavior.value }}</span>{% endif %}
+            </div>
+            <small class="planter-world__example">{{ example_label }} · {{ product.title }}</small>
+            <a class="planter-world__link" href="{{ product.url }}">{{ view_label }} <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </article>
+
+      {% assign product = outdoor_product %}
+      <article class="planter-world__card">
+        {% if product != blank %}
+          <a class="planter-world__image" href="{{ product.url }}">
+            {% if product.featured_image %}{{ product.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '420,650,900', sizes: '(min-width: 900px) 28vw, 100vw', alt: product.featured_image.alt | default: product.title }}{% endif %}
+          </a>
+        {% endif %}
+        <div class="planter-world__body">
+          <p class="planter-world__eyebrow">{{ outdoor_label }}</p>
+          <h3>{{ outdoor_label }}</h3>
+          <p>{{ outdoor_copy }}</p>
+          {% if product != blank %}
+            <div class="planter-world__facts">
+              {% assign placements = product.metafields.leafer.placement.value %}
+              {% if placements != blank %}{% for placement in placements limit: 2 %}<span>{{ placement }}</span>{% endfor %}{% endif %}
+            </div>
+            <small class="planter-world__example">{{ example_label }} · {{ product.title }}</small>
+            <a class="planter-world__link" href="{{ product.url }}">{{ view_label }} <span aria-hidden="true">→</span></a>
+          {% endif %}
+        </div>
+      </article>
+    </div>
+
+    <aside class="planter-world__method">
+      <div>
+        <p class="planter-world__eyebrow">{{ principle_root }} · {{ principle_water }}</p>
+        <h3>{{ method_heading }}</h3>
+        <p>{{ method_copy }}</p>
+      </div>
+      <div class="planter-world__actions">
+        {% if substrate_configurator != blank %}<a href="{{ substrate_configurator.url }}">{{ substrate_label }} <span aria-hidden="true">→</span></a>{% endif %}
+        <a href="{{ routes.root_url }}collections/interieur-solutions">{{ interior_label }} <span aria-hidden="true">→</span></a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% stylesheet %}
+.planter-world{background:#f3f0ea;color:#242522;padding:clamp(3.5rem,6vw,6rem) 0}.planter-world__inner{width:min(100% - 3rem,1240px);margin:0 auto}.planter-world__intro{display:grid;grid-template-columns:minmax(0,.95fr) minmax(320px,.7fr);gap:2.5rem;align-items:end}.planter-world__eyebrow{margin:0 0 .6rem;color:#8c5c38;font-size:.72rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.planter-world__intro h2{margin:0;font-size:clamp(2.35rem,4.4vw,4.4rem);line-height:.98;letter-spacing:-.045em}.planter-world__intro>p{margin:0;color:#626158;font-size:1.02rem;line-height:1.68}.planter-world__principles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:2rem 0;background:#dcd4c9;border:1px solid #dcd4c9}.planter-world__principles span{min-height:74px;display:grid;grid-template-columns:34px auto;grid-template-rows:auto auto;column-gap:.75rem;align-content:center;background:#fff;padding:.8rem 1rem}.planter-world__principles svg{grid-row:1/3;width:28px;align-self:center;fill:none;stroke:#8c5c38;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.planter-world__principles b{font-size:.9rem}.planter-world__principles small{color:#777269;font-size:.75rem}.planter-world__paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.planter-world__card{display:flex;flex-direction:column;min-width:0;border:1px solid #e0d8cc;background:#fff}.planter-world__card--feature{grid-column:span 2}.planter-world__image{display:block;aspect-ratio:4/3;overflow:hidden;background:#ebe7df}.planter-world__card--feature .planter-world__image{aspect-ratio:16/9}.planter-world__image img{width:100%;height:100%;object-fit:cover;transition:transform .35s ease}.planter-world__card:hover .planter-world__image img{transform:scale(1.025)}.planter-world__body{display:flex;flex-direction:column;gap:.65rem;padding:1.25rem;height:100%}.planter-world__body .planter-world__eyebrow{margin:0}.planter-world__body h3{margin:0;font-size:1.28rem;line-height:1.15}.planter-world__body>p:not(.planter-world__eyebrow){margin:0;color:#626158;font-size:.9rem;line-height:1.55}.planter-world__facts{display:flex;flex-wrap:wrap;gap:.35rem}.planter-world__facts span{padding:.32rem .5rem;border:1px solid #e6ddd1;background:#f8f3ec;color:#79563a;font-size:.7rem;line-height:1.2}.planter-world__example{margin-top:auto;color:#777269;font-size:.72rem;line-height:1.4}.planter-world__link{display:inline-flex;align-items:center;gap:.4rem;color:#8c5c38;font-size:.86rem;font-weight:800;text-decoration:none}.planter-world__link span{transition:transform .2s ease}.planter-world__link:hover span{transform:translateX(3px)}.planter-world__method{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1.5rem;align-items:center;margin-top:1.25rem;padding:1.4rem;background:#292b28;color:#fff}.planter-world__method h3{margin:0;font-size:1.35rem}.planter-world__method p:not(.planter-world__eyebrow){margin:.35rem 0 0;max-width:760px;color:#d8d4c8;line-height:1.55}.planter-world__actions{display:flex;flex-wrap:wrap;gap:.55rem}.planter-world__actions a{display:inline-flex;align-items:center;min-height:44px;padding:0 .9rem;border:1px solid #d6a474;color:#f0c79f;font-size:.78rem;font-weight:800;text-decoration:none}.planter-world__actions a:first-child{background:#d6a474;color:#292b28}@media(max-width:900px){.planter-world__intro{grid-template-columns:1fr;gap:1rem}.planter-world__principles{grid-template-columns:1fr}.planter-world__paths{grid-template-columns:1fr 1fr}.planter-world__card--feature{grid-column:1/-1}.planter-world__method{grid-template-columns:1fr}.planter-world__actions{justify-content:flex-start}}@media(max-width:600px){.planter-world{padding:3rem 0}.planter-world__inner{width:min(100% - 1.1rem,1240px)}.planter-world__intro h2{font-size:clamp(2rem,10vw,3rem)}.planter-world__paths{grid-template-columns:1fr}.planter-world__card--feature{grid-column:auto}.planter-world__card--feature .planter-world__image,.planter-world__image{aspect-ratio:4/3}.planter-world__actions{display:grid}.planter-world__actions a{justify-content:center}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"Pflanzgefäßwelt","settings":[],"presets":[{"name":"Pflanzgefäßwelt"}]}
+{% endschema %}
