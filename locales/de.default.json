@@ -526,7 +526,7 @@
   "social_greens": {
     "eyebrow": "LEAFerservice · Social Greens",
     "title": "Mehr Grün für soziale Orte.",
-    "intro": "Wir planen und realisieren Begrünung für soziale Einrichtungen zum tatsächlichen Material-Einkaufspreis. Unsere eigene Planung und Arbeitszeit berechnen wir nicht.",
+    "intro": "Social Greens bringt passende Pflanzenkonzepte in soziale Einrichtungen – bedarfsgerecht geplant, transparent kalkuliert und gemeinsam umgesetzt.",
     "cta_primary": "Social-Greens-Projekt anfragen",
     "cta_secondary": "Pflanzenwelt entdecken",
     "principles_label": "Kostenprinzipien von Social Greens",
@@ -548,10 +548,10 @@
     "step_1_title": "Ort und Bedarf verstehen",
     "step_1_text": "Wir klären Nutzung, Licht, Platz, Pflegeaufwand und die Menschen, die den Raum täglich nutzen.",
     "step_2_title": "Passendes Projekt zusammenstellen",
-    "step_2_text": "Pflanzen, Gefäße, Substrat, Beleuchtung und weitere Komponenten werden passend zum Projekt gewählt und transparent zum tatsächlichen Einkaufspreis kalkuliert.",
+    "step_2_text": "Wir wählen Pflanzen, Gefäße, Substrat, Beleuchtung und weitere Komponenten passend zu Nutzung, Pflegeaufwand und Budget.",
     "step_3_title": "Gemeinsam umsetzen",
-    "step_3_text": "LEAFerservice übernimmt Planung, Organisation und die vereinbarte praktische Umsetzung ohne Berechnung eigener Arbeitszeit.",
-    "cost_heading": "Nur reale Projektkosten.",
-    "cost_text": "Berechnet werden ausschließlich tatsächlich benötigte Materialien und unvermeidbare externe Kosten wie Lieferung. Erst nach Freigabe des konkreten Konzepts entstehen Kosten; Erstgespräch und Planung bleiben unverbindlich."
+    "step_3_text": "Nach Freigabe koordinieren wir Beschaffung, Eintopfen und den vereinbarten Aufbau vor Ort.",
+    "cost_heading": "Transparenz vor dem Start.",
+    "cost_text": "Vor der Umsetzung erhält die Einrichtung eine klare Projektübersicht einschließlich eventuell notwendiger externer Lieferkosten. Erst nach Freigabe werden Materialien beschafft; Erstgespräch und Planung bleiben unverbindlich."
   }
 }
