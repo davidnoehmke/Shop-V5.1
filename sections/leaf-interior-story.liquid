@@ -778,16 +778,6 @@
         {"@type":"ListItem","position":2,"name":"Ratgeber","item":{{ shop.url | append: "/blogs/ratgeber" | json }}},
         {"@type":"ListItem","position":3,"name":{{ article.title | json }},"item":{{ canonical_url | json }}}
       ]
-    },
-    {
-      "@type":"FAQPage",
-      "@id":{{ canonical_url | append: "#faq" | json }},
-      "mainEntity":[
-        {"@type":"Question","name":"Wie plane ich Pflanzen sinnvoll in einem Raum?","acceptedAnswer":{"@type":"Answer","text":"Beginne mit Standort, Licht und verfügbarem Platz. Danach werden Pflanzenhöhe, Wuchsform, Gefäß, Substrat und zusätzliche Beleuchtung als zusammenhängendes System geplant."}},
-        {"@type":"Question","name":"Welches Substrat eignet sich für ein Pflanzeninterieur?","acceptedAnswer":{"@type":"Answer","text":"Das Substrat richtet sich nach der jeweiligen Pflanze und Bewässerung. Luftführung, Wasserspeicherung und Drainage lassen sich über geeignete Mischungen und Komponenten abstimmen."}},
-        {"@type":"Question","name":"Wie integriere ich Pflanzenlicht unauffällig in die Einrichtung?","acceptedAnswer":{"@type":"Answer","text":"Pflanzenlicht kann als Pendel-, Spot- oder Regallösung in vorhandene Lichtachsen eingebunden werden. Wichtig sind Lichtbedarf, Abstand und Abstrahlwinkel."}},
-        {"@type":"Question","name":"Kann ein Sukkulenten-Terrarium Teil der Raumbegrünung sein?","acceptedAnswer":{"@type":"Answer","text":"Ja. Ein Terrarium ergänzt große Zimmerpflanzen um eine kleinere botanische Ebene und kann als eigenständiger Blickpunkt in das Pflanzeninterieur integriert werden."}}
-      ]
     }
   ]
 }
