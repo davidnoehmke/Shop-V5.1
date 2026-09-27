@@ -1,3 +1,4 @@
+{% unless request.page_type == 'index' %}
 {% comment %}Best-of live sync trigger.{% endcomment %}
 {% liquid
   assign choice_image_alt = section.settings.image.alt | default: section.settings.heading
@@ -25,6 +26,8 @@
     </div>
   </div>
 </section>
+
+{% endunless %}
 
 {% stylesheet %}
   .home-choice { padding-block: var(--space-section); }
