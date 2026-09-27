@@ -74,10 +74,10 @@
       </nav>
     {% endif %}
     <div class="site-header__actions">
-      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search">
+      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search" data-header-search>
         <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'header.search' | t }}</label>
         <input id="HeaderSearch-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search' | t }}" autocomplete="off">
-        <button type="submit" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+        <button type="submit" aria-label="{{ 'header.search' | t }}" data-search-toggle><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
       </form>
       <a class="site-header__account site-header__icon-action" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
       <a class="site-header__cart site-header__icon-action" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
@@ -153,8 +153,8 @@
     .site-header__brand { width: min(100%, max(var(--logo-width), 225px)); }
     .site-header__tm { font-size: 1rem; }
   }
-  @media (max-width: 1240px) { .site-header__search { width: 44px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { border: 0; } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
-  @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
+  @media (max-width: 1240px) { .site-header__search { width: 48px; min-height:48px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { width:48px;height:48px;border: 0; } .site-header__search.is-open { position:absolute; z-index:40; inset-inline:0; top:100%; width:auto; min-height:62px; padding:.55rem max(.7rem,calc((100vw - var(--page-width))/2)); display:grid; grid-template-columns:minmax(0,1fr) 50px; border-block:1px solid var(--border); background:var(--background); box-shadow:0 16px 34px rgba(30,45,37,.12); } .site-header__search.is-open input { display:block; height:48px; padding:0 1rem; border:1px solid var(--border); background:var(--surface); font-size:16px; } .site-header__search.is-open button { width:50px;height:48px;border:1px solid var(--border);border-left:0;background:var(--surface); } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
+  @media (max-width: 520px) { .site-header { padding-top: env(safe-area-inset-top); } .site-header__inner { min-height: 64px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 64px - env(safe-area-inset-top))); padding-bottom:calc(1rem + env(safe-area-inset-bottom)); } }
 {% endstylesheet %}
 
 {% javascript %}
@@ -238,8 +238,52 @@
       window.visualViewport?.addEventListener('resize', setPanelHeight, { signal });
     };
 
+    const initMobileSearch = (header) => {
+      if (header.dataset.mobileSearchReady === 'true') return;
+      const form = header.querySelector('[data-header-search]');
+      const input = form?.querySelector('input[type="search"]');
+      const toggle = form?.querySelector('[data-search-toggle]');
+      if (!form || !input || !toggle) return;
+
+      header.dataset.mobileSearchReady = 'true';
+
+      const closeSearch = () => {
+        form.classList.remove('is-open');
+        input.blur();
+      };
+
+      toggle.addEventListener('click', (event) => {
+        if (window.innerWidth > desktopBreakpoint) return;
+        if (!form.classList.contains('is-open')) {
+          event.preventDefault();
+          header.querySelector('[data-mobile-menu]')?.removeAttribute('open');
+          document.documentElement.classList.remove('site-header-menu-open');
+          form.classList.add('is-open');
+          requestAnimationFrame(() => input.focus());
+          return;
+        }
+        if (!input.value.trim()) {
+          event.preventDefault();
+          closeSearch();
+        }
+      });
+
+      document.addEventListener('pointerdown', (event) => {
+        if (form.classList.contains('is-open') && !form.contains(event.target)) closeSearch();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && form.classList.contains('is-open')) closeSearch();
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > desktopBreakpoint) closeSearch();
+      });
+    };
+
     const initAllMobileMenus = (root = document) => {
-      root.querySelectorAll('[data-site-header]').forEach(initMobileMenu);
+      root.querySelectorAll('[data-site-header]').forEach((header) => {
+        initMobileMenu(header);
+        initMobileSearch(header);
+      });
     };
 
     initAllMobileMenus();
