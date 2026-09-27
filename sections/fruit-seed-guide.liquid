@@ -55,12 +55,6 @@
             endif
             assign product_price = card_product.price_min | money
                 assign product_from_price = 'product.from_price' | t: price: product_price
-                if product_from_price contains 'Translation missing'
-                  if request.locale.iso_code == 'de'
-                    assign product_from_price = 'Ab ' | append: product_price
-                  else
-                    assign product_from_price = 'From ' | append: product_price
-                  endif
                 endif
             assign product_alt = card_product.featured_image.alt | default: card_product.title
           %}
