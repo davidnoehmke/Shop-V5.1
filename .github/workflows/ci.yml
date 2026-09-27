@@ -145,6 +145,52 @@ jobs:
           if failed:
               sys.exit(1)
           PY
+      - name: Validate locale parity and translation safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, re, sys
+
+          def load(path):
+              text = pathlib.Path(path).read_text(encoding='utf-8-sig')
+              text = re.sub(r'^\s*/\*.*?\*/\s*', '', text, count=1, flags=re.S)
+              return json.loads(text)
+
+          def flatten(value, prefix=''):
+              out = {}
+              for key, item in value.items():
+                  path = f'{prefix}.{key}' if prefix else key
+                  if isinstance(item, dict):
+                      out.update(flatten(item, path))
+                  else:
+                      out[path] = item
+              return out
+
+          de = flatten(load('locales/de.default.json'))
+          en = flatten(load('locales/en.json'))
+          missing_en = sorted(set(de) - set(en))
+          if missing_en:
+              print('English locale is missing keys required by the German default locale:', file=sys.stderr)
+              for key in missing_en:
+                  print(f'- {key}', file=sys.stderr)
+              sys.exit(1)
+
+          theme_files = []
+          for root in ('layout', 'sections', 'snippets', 'templates'):
+              theme_files.extend(pathlib.Path(root).rglob('*.liquid'))
+          literal = re.compile(r'Translation missing', re.I)
+          offenders = []
+          for path in theme_files:
+              text = path.read_text(encoding='utf-8')
+              if literal.search(text):
+                  offenders.append(str(path))
+          if offenders:
+              print('Runtime translation fallbacks are forbidden; fix locale keys instead:', file=sys.stderr)
+              for path in offenders:
+                  print(f'- {path}', file=sys.stderr)
+              sys.exit(1)
+          PY
       - name: Validate plain JavaScript syntax without executing storefront code
         run: |
           set -euo pipefail
