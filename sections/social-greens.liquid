@@ -47,13 +47,42 @@
       </ul>
     </div>
     <div class="social-greens__calendar">
-      {% if section.settings.calendly_url != blank %}
-        <a class="social-greens__button social-greens__button--wide" href="{{ section.settings.calendly_url }}" target="_blank" rel="noopener">{{ 'social_greens.book_now' | t }}</a>
-        <p class="social-greens__calendar-note">{{ 'social_greens.calendar_note' | t }}</p>
-      {% else %}
-        <p class="social-greens__calendar-placeholder">{{ 'social_greens.calendar_placeholder' | t }}</p>
-      {% endif %}
+      <h3>{{ 'social_greens.slots_heading' | t }}</h3>
+      <p>{{ 'social_greens.slots_text' | t }}</p>
+      <div class="social-greens__slot-list" aria-label="{{ 'social_greens.slots_label' | t }}">
+        <span>Mo · 15:00</span><span>Mo · 15:20</span><span>Mo · 15:40</span><span>Mo · 16:00</span><span>Mo · 16:20</span>
+        <span>Mo · 16:40</span><span>Mo · 17:00</span><span>Mo · 17:20</span><span>Mo · 17:40</span><span>Mo · 18:00</span>
+      </div>
+      <a class="social-greens__button social-greens__button--wide" href="#social-greens-kontakt">{{ 'social_greens.book_now' | t }}</a>
     </div>
+  </div>
+
+  <div class="social-greens__contact" id="social-greens-kontakt">
+    <div>
+      <p class="social-greens__eyebrow">{{ 'social_greens.contact_eyebrow' | t }}</p>
+      <h2>{{ 'social_greens.contact_heading' | t }}</h2>
+      <p>{{ 'social_greens.contact_text' | t }}</p>
+      <a href="mailto:management@leaferservice.com">management@leaferservice.com</a>
+    </div>
+    {% form 'contact', class: 'social-greens__form' %}
+      {% if form.posted_successfully? %}<p role="status">{{ 'social_greens.contact_success' | t }}</p>{% endif %}
+      {{ form.errors | default_errors }}
+      <input type="hidden" name="contact[topic]" value="Social Greens">
+      <label for="SocialGreensOrg-{{ section.id }}">{{ 'social_greens.form_org' | t }}</label>
+      <input id="SocialGreensOrg-{{ section.id }}" type="text" name="contact[institution]" required>
+      <label for="SocialGreensName-{{ section.id }}">{{ 'social_greens.form_name' | t }}</label>
+      <input id="SocialGreensName-{{ section.id }}" type="text" name="contact[name]" required>
+      <label for="SocialGreensEmail-{{ section.id }}">{{ 'social_greens.form_email' | t }}</label>
+      <input id="SocialGreensEmail-{{ section.id }}" type="email" name="contact[email]" required>
+      <label for="SocialGreensTime-{{ section.id }}">{{ 'social_greens.form_time' | t }}</label>
+      <select id="SocialGreensTime-{{ section.id }}" name="contact[preferred_time]">
+        <option>Montag 15:00</option><option>Montag 15:20</option><option>Montag 15:40</option><option>Montag 16:00</option><option>Montag 16:20</option>
+        <option>Montag 16:40</option><option>Montag 17:00</option><option>Montag 17:20</option><option>Montag 17:40</option><option>Montag 18:00</option>
+      </select>
+      <label for="SocialGreensMessage-{{ section.id }}">{{ 'social_greens.form_message' | t }}</label>
+      <textarea id="SocialGreensMessage-{{ section.id }}" name="contact[body]" rows="5" required></textarea>
+      <button class="social-greens__button" type="submit">{{ 'social_greens.form_submit' | t }}</button>
+    {% endform %}
   </div>
 
   <div class="social-greens__reference">
@@ -91,21 +120,17 @@
 .social-greens__booking ul{padding-left:1.1rem;line-height:1.8}
 .social-greens__calendar{min-height:280px;display:grid;place-content:center;padding:2rem;border:1px solid var(--border);background:var(--background)}
 .social-greens__button--wide{width:100%}
+.social-greens__calendar h3{margin:0;font-size:1.5rem}.social-greens__slot-list{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:1.25rem 0}.social-greens__slot-list span{padding:.7rem;border:1px solid var(--border);text-align:center;font-weight:750}
+.social-greens__contact{display:grid;grid-template-columns:minmax(240px,.65fr) minmax(0,1.35fr);gap:clamp(2rem,6vw,7rem);padding-block:clamp(4rem,8vw,7rem);border-bottom:1px solid var(--border)}.social-greens__contact h2{margin:.3rem 0 1rem;font-size:clamp(2.3rem,5vw,4.8rem);line-height:.95;letter-spacing:-.05em}.social-greens__contact p{color:var(--muted);line-height:1.7}.social-greens__contact a{color:var(--accent);font-weight:800}.social-greens__form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem}.social-greens__form label{align-self:end;font-size:.8rem;font-weight:800}.social-greens__form input,.social-greens__form select,.social-greens__form textarea{width:100%;min-height:48px;padding:.8rem;border:1px solid var(--border);background:var(--background);color:inherit;font:inherit}.social-greens__form textarea,.social-greens__form button,.social-greens__form>p,.social-greens__form>ul{grid-column:1/-1}
 .social-greens__calendar-note,.social-greens__calendar-placeholder{max-width:420px;margin:1rem 0 0;text-align:center;color:var(--muted);line-height:1.6}
 .social-greens__reference{max-width:900px;margin:clamp(2rem,5vw,5rem) auto 0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7}
-@media(max-width:760px){.social-greens__hero,.social-greens__guide,.social-greens__booking{grid-template-columns:1fr}.social-greens h1{font-size:clamp(3rem,16vw,5rem)}.social-greens__principles{grid-template-columns:1fr}.social-greens__principles article+article{border-left:0;border-top:1px solid var(--border)}.social-greens__booking{padding:2rem 1rem}.social-greens__calendar{min-height:220px;padding:1.25rem}}
+@media(max-width:760px){.social-greens__hero,.social-greens__guide,.social-greens__booking{grid-template-columns:1fr}.social-greens h1{font-size:clamp(3rem,16vw,5rem)}.social-greens__principles{grid-template-columns:1fr}.social-greens__principles article+article{border-left:0;border-top:1px solid var(--border)}.social-greens__booking{padding:2rem 1rem}.social-greens__calendar{min-height:220px;padding:1.25rem}.social-greens__contact{grid-template-columns:1fr}.social-greens__form{grid-template-columns:1fr}.social-greens__form textarea,.social-greens__form button{grid-column:auto}.social-greens__slot-list{grid-template-columns:1fr 1fr}}
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Social Greens",
-  "settings": [
-    {
-      "type": "url",
-      "id": "calendly_url",
-      "label": "Calendly Termin-Link"
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Social Greens"
