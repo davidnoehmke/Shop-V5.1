@@ -1,0 +1,140 @@
+<section class="social-greens page-width" aria-labelledby="SocialGreens-{{ section.id }}">
+  <div class="social-greens__hero">
+    <div>
+      <p class="social-greens__eyebrow">{{ 'social_greens.eyebrow' | t }}</p>
+      <h1 id="SocialGreens-{{ section.id }}">{{ 'social_greens.heading' | t }}</h1>
+      <p class="social-greens__lead">{{ 'social_greens.lead' | t }}</p>
+      <div class="social-greens__actions">
+        <a class="social-greens__button" href="#social-greens-termin">{{ 'social_greens.cta' | t }}</a>
+        <a class="social-greens__text-link" href="#social-greens-ablauf">{{ 'social_greens.secondary_cta' | t }}</a>
+      </div>
+    </div>
+    <aside class="social-greens__promise" aria-label="{{ 'social_greens.promise_label' | t }}">
+      <strong>{{ 'social_greens.zero_cost' | t }}</strong>
+      <span>{{ 'social_greens.zero_cost_text' | t }}</span>
+    </aside>
+  </div>
+
+  <div class="social-greens__principles">
+    <article><span>01</span><h2>{{ 'social_greens.quality_heading' | t }}</h2><p>{{ 'social_greens.quality_text' | t }}</p></article>
+    <article><span>02</span><h2>{{ 'social_greens.safe_heading' | t }}</h2><p>{{ 'social_greens.safe_text' | t }}</p></article>
+    <article><span>03</span><h2>{{ 'social_greens.personal_heading' | t }}</h2><p>{{ 'social_greens.personal_text' | t }}</p></article>
+  </div>
+
+  <div class="social-greens__guide" id="social-greens-ablauf">
+    <div class="social-greens__guide-copy">
+      <p class="social-greens__eyebrow">{{ 'social_greens.process_eyebrow' | t }}</p>
+      <h2>{{ 'social_greens.process_heading' | t }}</h2>
+      <p>{{ 'social_greens.process_intro' | t }}</p>
+    </div>
+    <div class="social-greens__steps">
+      <details open><summary><span>1</span>{{ 'social_greens.step_one_heading' | t }}</summary><p>{{ 'social_greens.step_one_text' | t }}</p></details>
+      <details><summary><span>2</span>{{ 'social_greens.step_two_heading' | t }}</summary><p>{{ 'social_greens.step_two_text' | t }}</p></details>
+      <details><summary><span>3</span>{{ 'social_greens.step_three_heading' | t }}</summary><p>{{ 'social_greens.step_three_text' | t }}</p></details>
+      <details><summary><span>4</span>{{ 'social_greens.step_four_heading' | t }}</summary><p>{{ 'social_greens.step_four_text' | t }}</p></details>
+    </div>
+  </div>
+
+  <div class="social-greens__booking" id="social-greens-termin">
+    <div>
+      <p class="social-greens__eyebrow">{{ 'social_greens.booking_eyebrow' | t }}</p>
+      <h2>{{ 'social_greens.booking_heading' | t }}</h2>
+      <p>{{ 'social_greens.booking_text' | t }}</p>
+      <ul>
+        <li>{{ 'social_greens.booking_point_one' | t }}</li>
+        <li>{{ 'social_greens.booking_point_two' | t }}</li>
+        <li>{{ 'social_greens.booking_point_three' | t }}</li>
+      </ul>
+    </div>
+    <div class="social-greens__calendar">
+      <h3>{{ 'social_greens.slots_heading' | t }}</h3>
+      <p>{{ 'social_greens.slots_text' | t }}</p>
+      <div class="social-greens__slot-list" aria-label="{{ 'social_greens.slots_label' | t }}">
+        <span>11:00</span><span>12:00</span><span>13:00</span><span>14:00</span>
+        <span>15:00</span><span>16:00</span><span>17:00</span>
+      </div>
+      <a class="social-greens__button social-greens__button--wide" href="#social-greens-kontakt">{{ 'social_greens.book_now' | t }}</a>
+    </div>
+  </div>
+
+  <div class="social-greens__contact" id="social-greens-kontakt">
+    <div>
+      <p class="social-greens__eyebrow">{{ 'social_greens.contact_eyebrow' | t }}</p>
+      <h2>{{ 'social_greens.contact_heading' | t }}</h2>
+      <p>{{ 'social_greens.contact_text' | t }}</p>
+      <a href="mailto:management@leaferservice.com">management@leaferservice.com</a>
+    </div>
+    {% form 'contact', class: 'social-greens__form' %}
+      {% if form.posted_successfully? %}<p role="status">{{ 'social_greens.contact_success' | t }}</p>{% endif %}
+      {{ form.errors | default_errors }}
+      <input type="hidden" name="contact[topic]" value="Social Greens">
+      <label for="SocialGreensOrg-{{ section.id }}">{{ 'social_greens.form_org' | t }}</label>
+      <input id="SocialGreensOrg-{{ section.id }}" type="text" name="contact[institution]" required>
+      <label for="SocialGreensName-{{ section.id }}">{{ 'social_greens.form_name' | t }}</label>
+      <input id="SocialGreensName-{{ section.id }}" type="text" name="contact[name]" required>
+      <label for="SocialGreensEmail-{{ section.id }}">{{ 'social_greens.form_email' | t }}</label>
+      <input id="SocialGreensEmail-{{ section.id }}" type="email" name="contact[email]" required>
+      <label for="SocialGreensTime-{{ section.id }}">{{ 'social_greens.form_time' | t }}</label>
+      <select id="SocialGreensTime-{{ section.id }}" name="contact[preferred_time]">
+        <option>11:00</option><option>12:00</option><option>13:00</option><option>14:00</option>
+        <option>15:00</option><option>16:00</option><option>17:00</option>
+      </select>
+      <label for="SocialGreensMessage-{{ section.id }}">{{ 'social_greens.form_message' | t }}</label>
+      <textarea id="SocialGreensMessage-{{ section.id }}" name="contact[body]" rows="5" required></textarea>
+      <button class="social-greens__button" type="submit">{{ 'social_greens.form_submit' | t }}</button>
+    {% endform %}
+  </div>
+
+  <div class="social-greens__reference">
+    <p>{{ 'social_greens.reference_text' | t }}</p>
+  </div>
+</section>
+
+{% stylesheet %}
+.social-greens{padding-block:clamp(2rem,5vw,5rem)}
+.social-greens__hero{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.45fr);gap:clamp(2rem,7vw,7rem);align-items:end;padding-block:clamp(2rem,5vw,5rem);border-bottom:1px solid var(--border)}
+.social-greens__eyebrow{margin:0 0 .75rem;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.social-greens h1{max-width:1000px;margin:0;font-size:clamp(3.4rem,8vw,8rem);line-height:.88;letter-spacing:-.065em}
+.social-greens__lead{max-width:760px;margin:1.5rem 0 0;color:var(--muted);font-size:clamp(1.05rem,1.6vw,1.3rem);line-height:1.65}
+.social-greens__actions{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-top:2rem}
+.social-greens__button{min-height:50px;padding:0 1.5rem;display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:var(--background);font-weight:800;text-decoration:none;border:1px solid var(--accent)}
+.social-greens__text-link{min-height:48px;display:inline-flex;align-items:center;color:inherit;font-weight:750;text-underline-offset:.3em}
+.social-greens__promise{padding:1.5rem;border-left:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+.social-greens__promise strong{display:block;font-family:var(--heading-font);font-size:clamp(1.8rem,3vw,2.7rem);letter-spacing:-.04em}
+.social-greens__promise span{display:block;margin-top:.6rem;color:var(--muted);line-height:1.6}
+.social-greens__principles{display:grid;grid-template-columns:repeat(3,1fr);border-bottom:1px solid var(--border)}
+.social-greens__principles article{padding:clamp(1.5rem,3vw,3rem) clamp(1rem,2vw,2rem)}
+.social-greens__principles article+article{border-left:1px solid var(--border)}
+.social-greens__principles span{color:var(--accent);font-weight:800}
+.social-greens__principles h2{margin:.7rem 0;font-size:clamp(1.5rem,2vw,2.2rem)}
+.social-greens__principles p{margin:0;color:var(--muted);line-height:1.65}
+.social-greens__guide{display:grid;grid-template-columns:minmax(250px,.65fr) minmax(0,1.35fr);gap:clamp(2rem,6vw,7rem);padding-block:clamp(4rem,8vw,8rem)}
+.social-greens__guide-copy h2,.social-greens__booking h2{margin:.3rem 0 1rem;font-size:clamp(2.3rem,5vw,4.8rem);line-height:.95;letter-spacing:-.05em}
+.social-greens__guide-copy>p:last-child,.social-greens__booking>div>p{color:var(--muted);line-height:1.7}
+.social-greens__steps{border-top:1px solid var(--border)}
+.social-greens__steps details{border-bottom:1px solid var(--border)}
+.social-greens__steps summary{min-height:76px;display:flex;align-items:center;gap:1rem;font-size:clamp(1.05rem,1.5vw,1.25rem);font-weight:800;cursor:pointer}
+.social-greens__steps summary span{color:var(--accent);font-size:.8rem}
+.social-greens__steps details p{margin:0;padding:0 0 1.5rem 2.1rem;color:var(--muted);line-height:1.7}
+.social-greens__booking{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,.8fr);gap:clamp(2rem,6vw,7rem);padding:clamp(2rem,5vw,5rem);background:color-mix(in srgb,var(--accent) 6%,var(--background));border-block:1px solid var(--border)}
+.social-greens__booking ul{padding-left:1.1rem;line-height:1.8}
+.social-greens__calendar{min-height:280px;display:grid;place-content:center;padding:2rem;border:1px solid var(--border);background:var(--background)}
+.social-greens__button--wide{width:100%}
+.social-greens__calendar h3{margin:0;font-size:1.5rem}.social-greens__slot-list{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:1.25rem 0}.social-greens__slot-list span{padding:.7rem;border:1px solid var(--border);text-align:center;font-weight:750}
+.social-greens__contact{display:grid;grid-template-columns:minmax(240px,.65fr) minmax(0,1.35fr);gap:clamp(2rem,6vw,7rem);padding-block:clamp(4rem,8vw,7rem);border-bottom:1px solid var(--border)}.social-greens__contact h2{margin:.3rem 0 1rem;font-size:clamp(2.3rem,5vw,4.8rem);line-height:.95;letter-spacing:-.05em}.social-greens__contact p{color:var(--muted);line-height:1.7}.social-greens__contact a{color:var(--accent);font-weight:800}.social-greens__form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem}.social-greens__form label{align-self:end;font-size:.8rem;font-weight:800}.social-greens__form input,.social-greens__form select,.social-greens__form textarea{width:100%;min-height:48px;padding:.8rem;border:1px solid var(--border);background:var(--background);color:inherit;font:inherit}.social-greens__form textarea,.social-greens__form button,.social-greens__form>p,.social-greens__form>ul{grid-column:1/-1}
+.social-greens__calendar-note,.social-greens__calendar-placeholder{max-width:420px;margin:1rem 0 0;text-align:center;color:var(--muted);line-height:1.6}
+.social-greens__reference{max-width:900px;margin:clamp(2rem,5vw,5rem) auto 0;text-align:center;color:var(--muted);font-size:.9rem;line-height:1.7}
+@media(max-width:760px){.social-greens__hero,.social-greens__guide,.social-greens__booking{grid-template-columns:1fr}.social-greens h1{font-size:clamp(3rem,16vw,5rem)}.social-greens__principles{grid-template-columns:1fr}.social-greens__principles article+article{border-left:0;border-top:1px solid var(--border)}.social-greens__booking{padding:2rem 1rem}.social-greens__calendar{min-height:220px;padding:1.25rem}.social-greens__contact{grid-template-columns:1fr}.social-greens__form{grid-template-columns:1fr}.social-greens__form textarea,.social-greens__form button{grid-column:auto}.social-greens__slot-list{grid-template-columns:1fr 1fr}}
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Social Greens",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Social Greens"
+    }
+  ]
+}
+{% endschema %}

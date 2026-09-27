@@ -14,6 +14,7 @@
         </summary>
         <nav id="MobileMenu-{{ section.id }}" class="site-header__mobile-panel" data-mobile-menu-panel>
           <ul class="site-header__mobile-list">
+            <li><a class="site-header__mobile-link site-header__social-greens" href="/pages/social-greens">Social Greens</a></li>
             {% for link in section.settings.menu.links %}
               <li>
                 {% if link.links != blank %}
@@ -70,6 +71,7 @@
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
+        <a class="site-header__social-greens" href="/pages/social-greens">Social Greens</a>
         {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
       </nav>
     {% endif %}
@@ -98,6 +100,7 @@
   .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
   .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
   .site-header__desktop a:hover { color: var(--accent); }
+  .site-header__social-greens { color: var(--accent) !important; font-weight: 820 !important; }
   .site-header__actions { justify-self: end; display: flex; align-items: center; gap: .35rem; }
   .site-header__search { width: clamp(170px, 15vw, 250px); min-height: 42px; display: grid; grid-template-columns: 1fr 42px; align-items: center; border: 1px solid var(--border); background: var(--background); }
   .site-header__search input { width: 100%; min-width: 0; height: 40px; padding: 0 .75rem; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: .82rem; }
