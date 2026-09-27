@@ -534,7 +534,7 @@
   "social_greens": {
     "eyebrow": "LEAFerservice · Social Greens",
     "title": "More green for social spaces.",
-    "intro": "We plan and realise planting projects for social organisations at the actual material purchase cost. LEAFerservice does not charge its own planning or labour time.",
+    "intro": "Social Greens brings tailored planting concepts into social organisations — planned around real needs, transparently scoped and implemented together.",
     "cta_primary": "Request a Social Greens project",
     "cta_secondary": "Explore the plant world",
     "principles_label": "Social Greens cost principles",
@@ -556,10 +556,10 @@
     "step_1_title": "Understand the space and its needs",
     "step_1_text": "We assess use, light, available space, care effort and the people who use the space every day.",
     "step_2_title": "Build the right project",
-    "step_2_text": "Plants, planters, substrate, lighting and other components are selected for the project and calculated transparently at the actual purchase cost.",
+    "step_2_text": "We select plants, planters, substrate, lighting and other components to match use, care requirements and budget.",
     "step_3_title": "Implement it together",
-    "step_3_text": "LEAFerservice handles planning, coordination and the agreed practical setup without charging its own labour time.",
-    "cost_heading": "Only real project costs.",
-    "cost_text": "Only materials actually required and unavoidable external costs such as delivery are charged. Costs arise only after the concrete concept has been approved; the initial discussion and planning remain non-binding."
+    "step_3_text": "After approval, we coordinate sourcing, potting and the agreed on-site setup.",
+    "cost_heading": "Transparency before we start.",
+    "cost_text": "Before implementation, the organisation receives a clear project overview including any necessary external delivery costs. Materials are sourced only after approval; the initial discussion and planning remain non-binding."
   }
 }
