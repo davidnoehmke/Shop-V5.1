@@ -553,5 +553,44 @@
     "step_3_text": "Nach Freigabe koordinieren wir Beschaffung, Eintopfen und den vereinbarten Aufbau vor Ort.",
     "cost_heading": "Transparenz vor dem Start.",
     "cost_text": "Vor der Umsetzung erhält die Einrichtung eine klare Projektübersicht einschließlich eventuell notwendiger externer Lieferkosten. Erst nach Freigabe werden Materialien beschafft; Erstgespräch und Planung bleiben unverbindlich."
+  },
+  "labs": {
+    "eyebrow": "LEAFerservice Labs",
+    "heading": "Technologie hinter LEAFerservice",
+    "intro": "LEAFerservice ist nicht nur ein Shop. Die Plattform dient zugleich als reale Entwicklungsumgebung für moderne Commerce-Architektur, Datenanalyse und kontrollierte KI-Automatisierung.",
+    "fallback_status": "Verifizierte öffentliche Systemübersicht",
+    "updated_label": "Automatisch aktualisiert:",
+    "security_title": "Public-safe by design.",
+    "security_text": "Gezeigt werden ausschließlich freigegebene, abstrahierte Informationen. Quellcode, Prompts, Sicherheitsarchitektur, Zugangsdaten, interne Automatisierungslogik, Lieferantenkonditionen und personenbezogene Daten bleiben ausgeschlossen.",
+    "cta_heading": "Remote zusammenarbeiten",
+    "cta_text": "Offen für ausgewählte 100%-Remote-Projekte in E-Commerce, Data/Analytics und AI Automation.",
+    "cta_button": "Business & Consulting",
+    "cards": {
+      "commerce": {
+        "title": "Commerce Architecture",
+        "text": "Zentrale Datenhaltung und kontrollierte Storefront-Projektion für konsistente Commerce-Prozesse.",
+        "fallback_value": "Live",
+        "unit": "strukturierte Commerce-Datensätze"
+      },
+      "analytics": {
+        "title": "Data & Analytics",
+        "text": "Aggregiertes Commerce-Reporting für Entscheidungen, Conversion-Analyse und kontinuierliche Verbesserung.",
+        "fallback_value": "Aktuell",
+        "unit": "Reporting-Tage"
+      },
+      "ai": {
+        "title": "AI Agents & Automation",
+        "text": "Spezialisierte KI-gestützte Workflows mit Validierung und menschlicher Freigabe bei sensiblen Aktionen.",
+        "fallback_value": "Kontrolliert",
+        "multiple_value": "Mehrere kontrollierte Workflows",
+        "single_value": "Kontrollierter Workflow"
+      },
+      "development": {
+        "title": "AI-native Development",
+        "text": "Sprachgestützte, iterative Entwicklung mit automatisierter Validierung und Review-Workflows.",
+        "fallback_value": "Aktiv",
+        "active_value": "Aktiv"
+      }
+    }
   }
 }
