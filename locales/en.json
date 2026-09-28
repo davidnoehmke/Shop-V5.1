@@ -561,5 +561,44 @@
     "step_3_text": "After approval, we coordinate sourcing, potting and the agreed on-site setup.",
     "cost_heading": "Transparency before we start.",
     "cost_text": "Before implementation, the organisation receives a clear project overview including any necessary external delivery costs. Materials are sourced only after approval; the initial discussion and planning remain non-binding."
+  },
+  "labs": {
+    "eyebrow": "LEAFerservice Labs",
+    "heading": "Technology behind LEAFerservice",
+    "intro": "LEAFerservice is more than a storefront. The platform also serves as a live development environment for modern commerce architecture, analytics and controlled AI automation.",
+    "fallback_status": "Verified public system overview",
+    "updated_label": "Automatically updated:",
+    "security_title": "Public-safe by design.",
+    "security_text": "Only approved, abstracted information is shown. Source code, prompts, security architecture, credentials, internal automation logic, supplier terms and personal data remain excluded.",
+    "cta_heading": "Work together remotely",
+    "cta_text": "Available for selected 100% remote projects in e-commerce, data and analytics, and AI automation.",
+    "cta_button": "Business & Consulting",
+    "cards": {
+      "commerce": {
+        "title": "Commerce Architecture",
+        "text": "Centralized data and controlled storefront projection for consistent commerce workflows.",
+        "fallback_value": "Live",
+        "unit": "structured commerce records"
+      },
+      "analytics": {
+        "title": "Data & Analytics",
+        "text": "Aggregated commerce reporting for decision support, conversion analysis and continuous improvement.",
+        "fallback_value": "Current",
+        "unit": "reporting days"
+      },
+      "ai": {
+        "title": "AI Agents & Automation",
+        "text": "Specialized AI-assisted workflows with validation and human approval for sensitive actions.",
+        "fallback_value": "Controlled",
+        "multiple_value": "Multiple controlled workflows",
+        "single_value": "Controlled workflow"
+      },
+      "development": {
+        "title": "AI-native Development",
+        "text": "Voice-assisted, iterative development supported by automated validation and review workflows.",
+        "fallback_value": "Active",
+        "active_value": "Active"
+      }
+    }
   }
 }
