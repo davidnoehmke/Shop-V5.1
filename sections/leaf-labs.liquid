@@ -1,0 +1,37 @@
+<section class="leaf-labs page-width">
+  <header class="leaf-labs__hero">
+    <p class="leaf-labs__eyebrow">LEAFerservice Labs</p>
+    <h1>{{ section.settings.heading | escape }}</h1>
+    <div class="leaf-labs__intro rte">{{ section.settings.intro }}</div>
+  </header>
+  <div class="leaf-labs__grid">
+    {% for block in section.blocks %}
+      <article class="leaf-labs__card" {{ block.shopify_attributes }}>
+        <p class="leaf-labs__status">{{ block.settings.status | escape }}</p>
+        <h2>{{ block.settings.title | escape }}</h2>
+        <p>{{ block.settings.text | escape }}</p>
+      </article>
+    {% endfor %}
+  </div>
+  <aside class="leaf-labs__security">
+    <strong>Public-safe by design.</strong>
+    <span>Selected architecture is shown only at a high level. Proprietary implementation details, security architecture, source code and internal automation logic are intentionally not disclosed.</span>
+  </aside>
+  <div class="leaf-labs__cta">
+    <h2>{{ section.settings.cta_heading | escape }}</h2>
+    <p>{{ section.settings.cta_text | escape }}</p>
+    <a class="button" href="mailto:management@leaferservice.com">Business &amp; Consulting</a>
+  </div>
+</section>
+<style>
+.leaf-labs{padding-top:clamp(3rem,7vw,7rem);padding-bottom:clamp(3rem,7vw,7rem)}
+.leaf-labs__hero{max-width:820px;margin:0 auto 3rem;text-align:center}.leaf-labs__eyebrow{font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
+.leaf-labs__hero h1{font-size:clamp(2.4rem,6vw,5.5rem);line-height:.95;margin:.5rem 0 1.2rem}.leaf-labs__intro{font-size:clamp(1.05rem,2vw,1.3rem);opacity:.82}
+.leaf-labs__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}.leaf-labs__card{border:1px solid rgba(var(--color-foreground),.14);padding:clamp(1.4rem,3vw,2.4rem);min-height:210px}
+.leaf-labs__card h2{font-size:clamp(1.35rem,2vw,1.9rem);margin:.5rem 0}.leaf-labs__status{font-size:.78rem;text-transform:uppercase;letter-spacing:.12em;opacity:.65}
+.leaf-labs__security,.leaf-labs__cta{margin-top:1rem;border:1px solid rgba(var(--color-foreground),.14);padding:clamp(1.4rem,3vw,2.4rem)}.leaf-labs__security{display:grid;gap:.5rem}.leaf-labs__cta{text-align:center;margin-top:3rem}
+@media(max-width:749px){.leaf-labs__grid{grid-template-columns:1fr}}
+</style>
+{% schema %}
+{"name":"LEAF Labs","settings":[{"type":"text","id":"heading","label":"Heading","default":"Technology behind LEAFerservice"},{"type":"richtext","id":"intro","label":"Introduction","default":"<p>LEAFerservice is a live commerce environment for modern data architecture, analytics and controlled AI automation.</p>"},{"type":"text","id":"cta_heading","label":"CTA heading","default":"Remote collaboration"},{"type":"textarea","id":"cta_text","label":"CTA text","default":"Available for selected remote projects in e-commerce, data, analytics and AI automation."}],"blocks":[{"type":"capability","name":"Capability","settings":[{"type":"text","id":"status","label":"Status","default":"Active"},{"type":"text","id":"title","label":"Title","default":"Data & Analytics"},{"type":"textarea","id":"text","label":"Text","default":"Decision-focused analytics and structured commerce data."}]}],"presets":[{"name":"LEAF Labs","blocks":[{"type":"capability"},{"type":"capability"},{"type":"capability"},{"type":"capability"}]}]}
+{% endschema %}
