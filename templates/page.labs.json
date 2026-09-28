@@ -2,52 +2,7 @@
   "sections": {
     "main": {
       "type": "leaf-labs",
-      "blocks": {
-        "commerce": {
-          "type": "capability",
-          "settings": {
-            "status": "Live",
-            "title": "Commerce Architecture",
-            "text": "Commerce workflows with a central data layer and controlled storefront projection."
-          }
-        },
-        "data": {
-          "type": "capability",
-          "settings": {
-            "status": "30 reporting days",
-            "title": "Data & Analytics",
-            "text": "Aggregated commerce reporting designed for decision support and continuous improvement."
-          }
-        },
-        "ai": {
-          "type": "capability",
-          "settings": {
-            "status": "Controlled",
-            "title": "AI Agents & Automation",
-            "text": "Specialized AI-assisted workflows with validation and human approval for sensitive actions."
-          }
-        },
-        "dev": {
-          "type": "capability",
-          "settings": {
-            "status": "Active",
-            "title": "AI-native Development",
-            "text": "Voice-assisted, iterative development supported by automated validation and review workflows."
-          }
-        }
-      },
-      "block_order": [
-        "commerce",
-        "data",
-        "ai",
-        "dev"
-      ],
-      "settings": {
-        "heading": "Technology behind LEAFerservice",
-        "intro": "<p>LEAFerservice is not only a storefront. It is a live development environment connecting commerce, data, analytics and controlled AI automation.</p>",
-        "cta_heading": "Build better commerce systems",
-        "cta_text": "Open to selected 100% remote consulting and implementation projects in e-commerce, data, analytics and AI automation."
-      }
+      "settings": {}
     }
   },
   "order": [
