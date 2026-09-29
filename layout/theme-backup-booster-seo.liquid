@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
-{% include 'booster-seo' %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="{{ settings.accent_color }}">
@@ -55,8 +54,8 @@
       assign seo_page_title_downcase = seo_page_title | downcase
     %}
 
-    {% comment %}<title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>{% endcomment %}
-    {% if seo_page_description != blank %}{% comment %}<meta name="description" content="{{ seo_page_description | escape }}">{% endcomment %}{% endif %}
+    <title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>
+    {% if seo_page_description != blank %}<meta name="description" content="{{ seo_page_description | escape }}">{% endif %}
     {% render 'seo-meta', seo_title: seo_page_title, seo_description: seo_page_description %}
     {% render 'structured-content-seo', seo_title: seo_page_title, seo_description: seo_page_description %}
 
