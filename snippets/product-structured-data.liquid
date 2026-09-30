@@ -17,7 +17,5 @@
     "price": {{ variant.price | divided_by: 100.0 }},
     "availability": "https://schema.org/{% if variant.available %}InStock{% else %}OutOfStock{% endif %}",
     "itemCondition": "https://schema.org/NewCondition"
-  }{% assign product_rating = product.metafields.reviews.rating.value %}{% assign product_rating_count = product.metafields.reviews.rating_count.value %}{% if product_rating != blank and product_rating_count != blank and product_rating_count > 0 %},
-  "aggregateRating": {"@type":"AggregateRating","ratingValue":{{ product_rating.rating }},"bestRating":{{ product_rating.scale_max }},"worstRating":{{ product_rating.scale_min }},"ratingCount":{{ product_rating_count }}}
-  {% endif %}
+  }
 }
