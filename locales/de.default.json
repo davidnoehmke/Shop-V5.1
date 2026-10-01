@@ -337,11 +337,23 @@
       "next": "Weiter",
       "summary_eyebrow": "Dein Setup",
       "summary_heading": "Auswahl bleibt gespeichert",
-      "summary_note": "Die Auswahl wird nur lokal in deinem Browser gespeichert und enthält keine persönlichen Daten.",
+      "summary_note": "Die Auswahl bleibt zunächst lokal in deinem Browser. Erst mit „Projekt speichern“ wird der nicht-personenbezogene Projektstand in Supabase gespeichert.",
       "match_label": "Treffer",
       "view_product": "Produkt prüfen",
       "result_count": "Empfehlungen",
-      "dimmable": "Dimmbar"
+      "dimmable": "Dimmbar",
+      "home_heading": "Finde dein Setup über alle Produktwelten.",
+      "home_intro": "Starte mit der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Die Auswahl bleibt zusammenhängend, auch wenn du später zwischen Produktwelten wechselst.",
+      "world_heading": "In welcher Produktwelt möchtest du starten?",
+      "world_text": "Wähle den Bereich, den du zuerst lösen möchtest. Du kannst später wechseln oder deine Auswahl speichern.",
+      "save_project": "Projekt speichern",
+      "saving_project": "Wird gespeichert …",
+      "saved_project": "Projekt gespeichert. Der Link enthält deinen Projektcode.",
+      "unsaved_project": "Änderungen noch nicht erneut gespeichert.",
+      "save_error": "Projekt konnte nicht gespeichert werden. Deine lokale Auswahl bleibt erhalten.",
+      "restored_project": "Gespeichertes Projekt geladen.",
+      "copy_project_link": "Projektlink kopieren",
+      "copied_project_link": "Projektlink kopiert."
     }
   },
   "recipe": {
