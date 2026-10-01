@@ -549,7 +549,7 @@
   .main-collection__filters button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
   .main-collection__filters button[aria-pressed="true"] .main-collection__filter-icon { border-color: color-mix(in srgb, white, transparent 55%); }
   .main-collection__advanced { margin: 1rem 0; border: 1px solid var(--border); background: var(--background); }
-  .main-collection__advanced > summary { list-style: none; display: grid; grid-template-columns: minmax(120px,.35fr) minmax(0,.65fr); gap: .25rem 1rem; align-items: center; min-height: 72px; padding: .9rem 1rem; cursor: pointer; }
+  .main-collection__advanced > summary { list-style: none; display: grid; grid-template-columns: minmax(120px,.35fr) minmax(0,.65fr) auto; gap: .25rem 1rem; align-items: center; min-height: 72px; padding: .9rem 1rem; cursor: pointer; }
   .main-collection__advanced > summary::-webkit-details-marker { display: none; }
   .main-collection__advanced > summary::after { content: '+'; grid-column: 3; grid-row: 1 / span 2; font-size: 1.3rem; color: var(--accent); }
   .main-collection__advanced[open] > summary::after { content: '−'; }
