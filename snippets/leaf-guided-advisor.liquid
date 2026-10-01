@@ -1,14 +1,22 @@
 {% doc %}
 Renders one shared, mobile-first advisor for collection pages. The advisor derives public decision options from product metafields and keeps specialist configurators separate as advanced tools.
 @param {collection} collection - Current collection.
+@param {string} section_id - Parent collection section id for anchor targets.
 {% enddoc %}
 
 {% liquid
   assign advisor_products = collection.products
   assign advisor_count = collection.products_count
+  assign advisor_has_guidance = false
+  for advisor_product in advisor_products limit: 50
+    if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
+      assign advisor_has_guidance = true
+      break
+    endif
+  endfor
 %}
 
-{% if advisor_count > 0 %}
+{% if advisor_count > 0 and advisor_has_guidance %}
 <leaf-guided-advisor
   id="LeafAdvisor"
   class="leaf-advisor"
@@ -27,7 +35,7 @@ Renders one shared, mobile-first advisor for collection pages. The advisor deriv
       </div>
       <div class="leaf-advisor__head-actions">
         <span class="leaf-advisor__resume" data-resume hidden>{{ 'collection.advisor.resume' | t }}</span>
-        <a href="#CollectionProducts-{{ section.id }}">{{ 'collection.advisor.skip_to_products' | t }}</a>
+        <a href="#CollectionProducts-{{ section_id }}">{{ 'collection.advisor.skip_to_products' | t }}</a>
       </div>
     </header>
 
@@ -69,7 +77,7 @@ Renders one shared, mobile-first advisor for collection pages. The advisor deriv
           </div>
           <p data-result-copy>{{ 'collection.advisor.result_text' | t }}</p>
           <div class="leaf-advisor__results" data-results aria-live="polite"></div>
-          <a class="leaf-advisor__all-products" href="#CollectionProducts-{{ section.id }}">{{ 'collection.advisor.all_products' | t }} <span aria-hidden="true">↓</span></a>
+          <a class="leaf-advisor__all-products" href="#CollectionProducts-{{ section_id }}">{{ 'collection.advisor.all_products' | t }} <span aria-hidden="true">↓</span></a>
         </div>
 
         <div class="leaf-advisor__nav">
