@@ -191,7 +191,10 @@ Renders one shared, mobile-first advisor for collection pages. The advisor deriv
           data-needs="{{ needs_blob | strip | escape }}"
           data-contexts="{{ context_blob | strip | escape }}"
           data-preferences="{{ preference_blob | strip | escape }}"
-          {% if card_image != blank %}data-image="{{ card_image | image_url: width: 480 }}"{% endif %}
+          {% if card_image != blank %}
+            data-image="{{ card_image | image_url: width: 480 }}"
+            data-image-alt="{{ card_image.alt | default: card_product.title | escape }}"
+          {% endif %}
         ></span>
       {% endfor %}
     </div>
@@ -278,6 +281,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         price: node.dataset.price || '',
         priceSort: Number(node.dataset.priceSort || 0),
         image: node.dataset.image || '',
+        imageAlt: node.dataset.imageAlt || node.dataset.title || '',
         need: this.values(node.dataset.needs),
         context: this.values(node.dataset.contexts),
         preference: this.values(node.dataset.preferences)
@@ -467,7 +471,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         if (item.row.image) {
           const image = document.createElement('img');
           image.src = item.row.image;
-          image.alt = '';
+          image.alt = item.row.imageAlt || item.row.title;
           image.loading = 'lazy';
           article.append(image);
         } else {
