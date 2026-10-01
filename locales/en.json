@@ -284,7 +284,13 @@
       "builder_density": "Power / area",
       "builder_cart": "Add setup to cart",
       "builder_added": "The setup was added to the cart.",
-      "builder_error": "The full setup could not be added. Please try again."
+      "builder_error": "The full setup could not be added. Please try again.",
+      "advanced_builder_eyebrow": "Advanced tool",
+      "advanced_builder_title": "Open 3D room planning",
+      "advanced_builder_text": "Optional: plan the room, objects and specific lights to scale.",
+      "advanced_configurator_eyebrow": "Advanced tool",
+      "advanced_configurator_title": "Fine-tune the lighting setup",
+      "advanced_configurator_text": "Optional: compare mounting, light level and budget in more detail."
     },
     "advisor": {
       "eyebrow": "LEAF advisor",
