@@ -151,7 +151,7 @@
 
   {% if warning != blank %}<details class="leaf-knowledge__notice"><summary>{{ 'product.decision.notice' | t }}</summary><div>{% render 'leaf-metafield-value', field: product.metafields.leafer.warning %}</div></details>{% endif %}
 
-  {% if configurator_enabled %}
+  {% if advisor_collection != blank or configurator_enabled or is_lighting %}
     <div class="leaf-knowledge__cta">
       <div><strong>{{ configurator_title }}</strong><span>{{ configurator_text }}</span></div>
       <a class="button" href="{{ advisor_url }}">{{ 'product.decision.advisor_cta' | t }}</a>
