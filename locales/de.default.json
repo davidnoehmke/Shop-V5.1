@@ -296,7 +296,13 @@
       "builder_density": "Leistung / Fläche",
       "builder_cart": "Setup in den Warenkorb",
       "builder_added": "Setup wurde dem Warenkorb hinzugefügt.",
-      "builder_error": "Das Setup konnte nicht vollständig hinzugefügt werden. Bitte erneut versuchen."
+      "builder_error": "Das Setup konnte nicht vollständig hinzugefügt werden. Bitte erneut versuchen.",
+      "advanced_builder_eyebrow": "Profi-Werkzeug",
+      "advanced_builder_title": "3D-Raumplanung öffnen",
+      "advanced_builder_text": "Optional: Raum, Objekte und konkrete Leuchten maßstäblich planen.",
+      "advanced_configurator_eyebrow": "Profi-Werkzeug",
+      "advanced_configurator_title": "Licht-Setup feinplanen",
+      "advanced_configurator_text": "Optional: Montage, Lichtniveau und Budget detaillierter gegeneinander abgleichen."
     },
     "decision": {
       "eyebrow": "Knowledge First",
