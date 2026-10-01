@@ -162,6 +162,18 @@
     "knowledge": {
       "eyebrow": "Wissen in Ebenen",
       "heading": "Begriffe und Materialien verstehen"
+    },
+    "card": {
+      "decision_facts": "Entscheidungsfakten",
+      "view_details": "Produkt verstehen & auswählen"
+    },
+    "decision_summary": {
+      "eyebrow": "Knowledge First",
+      "heading": "Passt dieses Produkt zu deinem Setup?",
+      "function": "Funktion",
+      "fit": "Geeignet für",
+      "spec": "Wichtigste Kenngröße",
+      "note": "Wenn diese Punkte zu deinem Einsatz passen, wähle darunter die passende Variante."
     }
   },
   "product_variant_guide": {
@@ -275,6 +287,16 @@
       "builder_cart": "Setup in den Warenkorb",
       "builder_added": "Setup wurde dem Warenkorb hinzugefügt.",
       "builder_error": "Das Setup konnte nicht vollständig hinzugefügt werden. Bitte erneut versuchen."
+    },
+    "decision": {
+      "eyebrow": "Knowledge First",
+      "heading": "Erst verstehen, dann auswählen.",
+      "use_title": "Einsatz zuerst",
+      "use_text": "Wähle nach Pflanze, Raum oder Aufgabe – nicht nach Produktname.",
+      "data_title": "Relevante Daten",
+      "data_text": "Vergleiche nur die Kenngrößen, die für deinen Einsatz wirklich wichtig sind.",
+      "choose_title": "Produkt prüfen",
+      "choose_text": "Öffne das Produkt, prüfe die Details und wähle anschließend die passende Variante."
     }
   },
   "recipe": {
