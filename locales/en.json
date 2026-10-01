@@ -315,11 +315,23 @@
       "next": "Continue",
       "summary_eyebrow": "Your setup",
       "summary_heading": "Selection stays saved",
-      "summary_note": "The selection is stored only in your browser and contains no personal data.",
+      "summary_note": "Your selection stays local in your browser by default. Only “Save project” stores the non-personal project state in Supabase.",
       "match_label": "matches",
       "view_product": "Review product",
       "result_count": "recommendations",
-      "dimmable": "Dimmable"
+      "dimmable": "Dimmable",
+      "home_heading": "Find your setup across every product world.",
+      "home_intro": "Start with a product world, then narrow the choice by need, context and preference. Your selection stays connected when you move between product worlds.",
+      "world_heading": "Which product world do you want to start with?",
+      "world_text": "Choose the area you want to solve first. You can switch later or save your project.",
+      "save_project": "Save project",
+      "saving_project": "Saving …",
+      "saved_project": "Project saved. The link contains your project code.",
+      "unsaved_project": "Changes have not been saved again yet.",
+      "save_error": "The project could not be saved. Your local selection is still available.",
+      "restored_project": "Saved project loaded.",
+      "copy_project_link": "Copy project link",
+      "copied_project_link": "Project link copied."
     }
   },
   "recipe": {
