@@ -1,0 +1,107 @@
+{% doc %}
+Renders one public product row for the shared LEAF advisor.
+@param {product} card_product - Product to expose as structured matching input.
+@param {string} world_handle - Product-world collection handle.
+@param {string} world_title - Product-world label shown to customers.
+{% enddoc %}
+
+{% liquid
+  assign problem_tags = card_product.metafields.leaf_configurator.problem_tags.value
+  assign growth_goals = card_product.metafields.leaf_configurator.growth_goals.value
+  assign light_use_cases = card_product.metafields.lighting.use_cases.value
+  assign primary_function = card_product.metafields.leafer.primary_function.value
+
+  assign location_types = card_product.metafields.leaf_configurator.location_types.value
+  assign room_types = card_product.metafields.leaf_configurator.room_types.value
+  assign light_conditions = card_product.metafields.leaf_configurator.light_conditions.value
+  assign plant_stages = card_product.metafields.leaf_configurator.plant_stages.value
+  assign suitable_for = card_product.metafields.leafer.suitable_for.value
+
+  assign setup_types = card_product.metafields.leaf_configurator.setup_types.value
+  assign watering_styles = card_product.metafields.leaf_configurator.watering_styles.value
+  assign appearance_preferences = card_product.metafields.leaf_configurator.appearance_preferences.value
+  assign mounting = card_product.metafields.lighting.mounting.value
+  assign dimmable = card_product.metafields.lighting.dimmable.value
+
+  capture needs_blob
+    if problem_tags != blank
+      echo problem_tags | join: '||'
+    endif
+    if growth_goals != blank
+      echo '||'
+      echo growth_goals | join: '||'
+    endif
+    if light_use_cases != blank
+      echo '||'
+      echo light_use_cases | join: '||'
+    endif
+    if primary_function != blank
+      echo '||'
+      echo primary_function
+    endif
+  endcapture
+
+  capture context_blob
+    if location_types != blank
+      echo location_types | join: '||'
+    endif
+    if room_types != blank
+      echo '||'
+      echo room_types | join: '||'
+    endif
+    if light_conditions != blank
+      echo '||'
+      echo light_conditions | join: '||'
+    endif
+    if plant_stages != blank
+      echo '||'
+      echo plant_stages | join: '||'
+    endif
+    if suitable_for != blank
+      echo '||'
+      echo suitable_for | join: '||'
+    endif
+  endcapture
+
+  capture preference_blob
+    if setup_types != blank
+      echo setup_types | join: '||'
+    endif
+    if watering_styles != blank
+      echo '||'
+      echo watering_styles | join: '||'
+    endif
+    if appearance_preferences != blank
+      echo '||'
+      echo appearance_preferences | join: '||'
+    endif
+    if mounting != blank
+      echo '||'
+      echo mounting
+    endif
+    if dimmable == true
+      echo '||'
+      echo 'collection.advisor.dimmable' | t
+    endif
+  endcapture
+
+  assign card_image = card_product.featured_image
+  assign card_price = card_product.price_min | money
+  assign card_price_sort = card_product.price_min | divided_by: 100.0
+%}
+<span
+  data-advisor-product
+  data-title="{{ card_product.title | escape }}"
+  data-url="{{ card_product.url }}"
+  data-price="{{ card_price | escape }}"
+  data-price-sort="{{ card_price_sort }}"
+  data-world="{{ world_handle | escape }}"
+  data-world-label="{{ world_title | escape }}"
+  data-needs="{{ needs_blob | strip | escape }}"
+  data-contexts="{{ context_blob | strip | escape }}"
+  data-preferences="{{ preference_blob | strip | escape }}"
+  {% if card_image != blank %}
+    data-image="{{ card_image | image_url: width: 480 }}"
+    data-image-alt="{{ card_image.alt | default: card_product.title | escape }}"
+  {% endif %}
+></span>
