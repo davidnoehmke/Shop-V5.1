@@ -137,7 +137,17 @@
       "notice": "Hinweis:",
       "configurator_title": "In deiner eigenen Mischung verwenden",
       "configurator_text": "Öffne den LEAFerservice Konfigurator und kombiniere passende Bestandteile.",
-      "configurator_cta": "Zum Konfigurator"
+      "configurator_cta": "Zum Konfigurator",
+      "identity": "Hersteller & Modell",
+      "light_distribution": "Lichtverteilung",
+      "beam_angle": "Abstrahlwinkel",
+      "installation": "Montage & Anschluss",
+      "electrical": "Elektrische Daten",
+      "safety": "Sicherheit",
+      "manual": "Herstelleranleitung öffnen",
+      "advisor_title": "Im LEAF Berater einordnen",
+      "advisor_text": "Nutze denselben Berater wie in den Produktwelten. Deine bisherigen Angaben bleiben erhalten.",
+      "advisor_cta": "LEAF Berater öffnen"
     },
     "media": {
       "label": "Produktbilder"
@@ -297,6 +307,35 @@
       "data_text": "Vergleiche nur die Kenngrößen, die für deinen Einsatz wirklich wichtig sind.",
       "choose_title": "Produkt prüfen",
       "choose_text": "Öffne das Produkt, prüfe die Details und wähle anschließend die passende Variante."
+    },
+    "advisor": {
+      "eyebrow": "LEAF Berater",
+      "heading": "Ein Berater für alle Produktwelten.",
+      "intro": "Die aktuelle Kollektion gibt den Kontext vor. Deine Auswahl bleibt über Produktwelten hinweg erhalten, während Spezialwerkzeuge nur dort auftauchen, wo sie wirklich gebraucht werden.",
+      "resume": "Gespeicherte Auswahl erkannt",
+      "skip_to_products": "Direkt zum Sortiment",
+      "progress_label": "Fortschritt im LEAF Berater",
+      "no_selection": "Noch keine Auswahl",
+      "need_heading": "Was möchtest du erreichen oder lösen?",
+      "need_text": "Wähle den Bedarf, der deinem Projekt am nächsten kommt.",
+      "context_heading": "Wo und in welchem Kontext soll es funktionieren?",
+      "context_text": "Standort, Raum und Pflanzensituation grenzen die sinnvollen Lösungen ein.",
+      "preference_heading": "Was ist dir bei der Umsetzung wichtig?",
+      "preference_text": "Wähle eine Präferenz. Du kannst diesen Schritt auch überspringen.",
+      "result_eyebrow": "Deine Vorauswahl",
+      "result_heading": "Diese Produkte passen am besten zu deinen Angaben.",
+      "result_text": "Die Reihenfolge entsteht aus den strukturierten Produktdaten dieser Kollektion.",
+      "reset": "Auswahl neu starten",
+      "all_products": "Alle Produkte vergleichen",
+      "back": "Zurück",
+      "next": "Weiter",
+      "summary_eyebrow": "Dein Setup",
+      "summary_heading": "Auswahl bleibt gespeichert",
+      "summary_note": "Die Auswahl wird nur lokal in deinem Browser gespeichert und enthält keine persönlichen Daten.",
+      "match_label": "Treffer",
+      "view_product": "Produkt prüfen",
+      "result_count": "Empfehlungen",
+      "dimmable": "Dimmbar"
     }
   },
   "recipe": {
