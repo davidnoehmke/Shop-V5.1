@@ -93,6 +93,8 @@
     </div>
   </header>
 
+  {% render 'leaf-guided-advisor', collection: collection %}
+
   {% if collection.handle == 'interieur-solutions' %}
     <interieur-room-builder
       class="interieur-room-builder"
