@@ -11,27 +11,39 @@
   assign configurator_role = product.metafields.leaf_configurator.role.value
   assign plant_groups = product.metafields.leaf_configurator.plant_groups.value
   assign volume_liters = product.metafields.leaf_configurator.volume_liters.value
+  assign manufacturer = product.metafields.lighting.manufacturer.value
+  assign model = product.metafields.lighting.model.value
   assign rated_power = product.metafields.lighting.rated_power_w.value
   assign spectrum = product.metafields.lighting.spectrum.value
   assign cct = product.metafields.lighting.cct_k.value
+  assign beam_angle = product.metafields.lighting.beam_angle.value
+  assign ppfd = product.metafields.lighting.ppfd_reference.value
   assign coverage = product.metafields.lighting.coverage_guidance.value
   assign distance = product.metafields.lighting.recommended_distance.value
+  assign mounting = product.metafields.lighting.mounting.value
+  assign ip_rating = product.metafields.lighting.ip_rating.value
+  assign voltage = product.metafields.lighting.voltage.value
+  assign socket_connector = product.metafields.lighting.socket_connector.value
   assign use_cases = product.metafields.lighting.use_cases.value
   assign safety = product.metafields.lighting.safety_notes.value
+  assign manual_url = product.metafields.lighting.manual_url.value
   assign is_lighting = false
   if product.metafields.lighting.manufacturer.value != blank or configurator_role == 'plant_light_recommendation' or configurator_role == 'aquascape_light_configurator' or configurator_role == 'plant_station'
     assign is_lighting = true
   endif
-  assign configurator_path = 'pages/individuelles-substrat'
-  assign configurator_title = 'Produkt passend konfigurieren'
-  assign configurator_text = 'Öffne die passende Auswahlhilfe und vergleiche Produkte im System.'
-  if is_lighting
-    assign configurator_path = 'pages/pflanzenlicht-konfigurator'
-    assign configurator_title = 'Pflanzenlicht passend auswählen'
-    assign configurator_text = 'Vergleiche Einsatz, Leistung und Preis direkt mit den hinterlegten Lichtdaten.'
+  assign advisor_collection = collection
+  if advisor_collection == blank and product.collections.first != blank
+    assign advisor_collection = product.collections.first
   endif
+  if advisor_collection != blank
+    assign advisor_url = advisor_collection.url | append: '#LeafAdvisor'
+  else
+    assign advisor_url = routes.collections_url | append: '/all#LeafAdvisor'
+  endif
+  assign configurator_title = 'product.decision.advisor_title' | t
+  assign configurator_text = 'product.decision.advisor_text' | t
   assign has_content = false
-  if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or rated_power != blank or spectrum != blank or cct != blank or coverage != blank or distance != blank or use_cases != blank or safety != blank
+  if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or manufacturer != blank or model != blank or rated_power != blank or spectrum != blank or cct != blank or beam_angle != blank or ppfd != blank or coverage != blank or distance != blank or mounting != blank or ip_rating != blank or voltage != blank or socket_connector != blank or use_cases != blank or safety != blank or manual_url != blank
     assign has_content = true
   endif
 %}
@@ -49,6 +61,12 @@
 
   <div class="leaf-knowledge__clusters">
     {% if is_lighting %}
+      {% if manufacturer != blank or model != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◇</span><span>{{ 'product.decision.identity' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if manufacturer != blank %}{{ manufacturer | escape }}{% endif %}{% if model != blank %}<br>{{ model | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
       {% if rated_power != blank %}
         <details class="leaf-knowledge__tile">
           <summary><span class="leaf-knowledge__icon" aria-hidden="true">↯</span><span>Leistung</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
@@ -67,16 +85,34 @@
           <div class="leaf-knowledge__value">{% if coverage != blank %}{{ coverage | escape }}{% endif %}{% if distance != blank %}<br>{{ distance | escape }}{% endif %}</div>
         </details>
       {% endif %}
+      {% if beam_angle != blank or ppfd != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">↔</span><span>{{ 'product.decision.light_distribution' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if beam_angle != blank %}{{ 'product.decision.beam_angle' | t }}: {{ beam_angle | escape }}{% endif %}{% if ppfd != blank %}<br>{{ ppfd | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if mounting != blank or socket_connector != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌂</span><span>{{ 'product.decision.installation' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if mounting != blank %}{{ mounting | escape }}{% endif %}{% if socket_connector != blank %}<br>{{ socket_connector | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
+      {% if ip_rating != blank or voltage != blank %}
+        <details class="leaf-knowledge__tile">
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">□</span><span>{{ 'product.decision.electrical' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if voltage != blank %}{{ voltage | escape }}{% endif %}{% if ip_rating != blank %}<br>{{ ip_rating | escape }}{% endif %}</div>
+        </details>
+      {% endif %}
       {% if use_cases != blank or plant_groups != blank %}
         <details class="leaf-knowledge__tile">
           <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌁</span><span>Einsatz</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
           <div class="leaf-knowledge__value">{% if use_cases != blank %}{% render 'leaf-metafield-value', field: product.metafields.lighting.use_cases %}{% endif %}{% if plant_groups != blank %}<br>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}{% endif %}</div>
         </details>
       {% endif %}
-      {% if safety != blank %}
+      {% if safety != blank or manual_url != blank %}
         <details class="leaf-knowledge__tile">
-          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◇</span><span>Sicherheit</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
-          <div class="leaf-knowledge__value">{{ safety | escape | newline_to_br }}</div>
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">◇</span><span>{{ 'product.decision.safety' | t }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <div class="leaf-knowledge__value">{% if safety != blank %}{{ safety | escape | newline_to_br }}{% endif %}{% if manual_url != blank %}<br><a href="{{ manual_url }}" rel="noopener">{{ 'product.decision.manual' | t }}</a>{% endif %}</div>
         </details>
       {% endif %}
     {% else %}
@@ -118,7 +154,7 @@
   {% if configurator_enabled %}
     <div class="leaf-knowledge__cta">
       <div><strong>{{ configurator_title }}</strong><span>{{ configurator_text }}</span></div>
-      <a class="button" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}{{ configurator_path }}">Konfigurator öffnen</a>
+      <a class="button" href="{{ advisor_url }}">{{ 'product.decision.advisor_cta' | t }}</a>
     </div>
   {% endif %}
 </section>
