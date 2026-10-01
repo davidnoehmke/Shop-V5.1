@@ -58,7 +58,12 @@ async function rest(path: string, init: RequestInit = {}) {
 
 Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin") ?? "";
-  if (!originAllowed(origin)) return json(origin, 403, { error: "origin_not_allowed" });
+  if (req.method === "POST" && !allowedOrigins.has(origin)) {
+    return json(origin, 403, { error: "origin_not_allowed" });
+  }
+  if (req.method !== "POST" && !originAllowed(origin)) {
+    return json(origin, 403, { error: "origin_not_allowed" });
+  }
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: responseHeaders(origin) });
   if (!supabaseUrl || !serviceRole) return json(origin, 503, { error: "service_unavailable" });
 
@@ -109,7 +114,11 @@ Deno.serve(async (req: Request) => {
 
       let body: Record<string, unknown>;
       try {
-        body = await req.json();
+        const rawBody = await req.text();
+        if (new TextEncoder().encode(rawBody).byteLength > MAX_BODY_BYTES) {
+          return json(origin, 413, { error: "payload_too_large" });
+        }
+        body = JSON.parse(rawBody);
       } catch {
         return json(origin, 400, { error: "invalid_json" });
       }
