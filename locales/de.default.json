@@ -353,7 +353,9 @@
       "save_error": "Projekt konnte nicht gespeichert werden. Deine lokale Auswahl bleibt erhalten.",
       "restored_project": "Gespeichertes Projekt geladen.",
       "copy_project_link": "Projektlink kopieren",
-      "copied_project_link": "Projektlink kopiert."
+      "copied_project_link": "Projektlink kopiert.",
+      "loading": "Auswahl wird geladen …",
+      "unavailable": "Der Berater ist vorübergehend nicht verfügbar. Du kannst das Sortiment direkt ansehen."
     }
   },
   "recipe": {
