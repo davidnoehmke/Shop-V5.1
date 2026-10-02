@@ -70,7 +70,36 @@
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
-        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></a>{% endfor %}
+        <ul class="site-header__desktop-list">
+          {% for link in section.settings.menu.links %}
+            <li>
+              {% if link.links != blank %}
+                <details class="site-header__desktop-disclosure" data-desktop-menu>
+                  <summary>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title | escape }}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+                  <div class="site-header__desktop-panel">
+                    <a class="site-header__desktop-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }} <span aria-hidden="true">→</span></a>
+                    <ul>
+                      {% for child_link in link.links %}
+                        <li>
+                          <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title | escape }}</a>
+                          {% if child_link.links != blank %}
+                            <ul class="site-header__desktop-nested">
+                              {% for grandchild_link in child_link.links %}
+                                <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title | escape }}</a></li>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </details>
+              {% else %}
+                <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title | escape }}</span></a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
       </nav>
     {% endif %}
     <div class="site-header__actions">
@@ -140,26 +169,67 @@
   .site-header__mobile-panel [aria-current="page"] { color: var(--accent); }
   html.site-header-menu-open, html.site-header-menu-open body { overflow: hidden; overscroll-behavior: none; }
   html.site-header-menu-open body { padding-inline-end: var(--site-header-scrollbar-width, 0px); }
-  @media (min-width: 1200px) {
-    .site-header__inner { min-height: 88px; grid-template-columns: minmax(230px, .72fr) minmax(0, 1.65fr) minmax(290px, .72fr); gap: clamp(1.25rem, 2vw, 2.75rem); }
-    .site-header__brand { width: min(100%, max(var(--logo-width), 210px)); }
-    .site-header__tm { margin-top: .08rem; margin-left: -.24rem; font-size: .94rem; }
-    .site-header__desktop { gap: clamp(1rem, 1.55vw, 1.9rem); }
-    .site-header__desktop a { font-size: .88rem; }
-    .site-header__actions > a { min-height: 46px; padding-inline: .8rem; }
-  }
-  @media (min-width: 1500px) {
-    .site-header__inner { min-height: 92px; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.65fr) minmax(320px, .85fr); }
-    .site-header__brand { width: min(100%, max(var(--logo-width), 225px)); }
-    .site-header__tm { font-size: 1rem; }
+  .site-header__desktop-list, .site-header__desktop-panel ul { list-style: none; margin: 0; padding: 0; }
+  .site-header__desktop-list { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem 1.25rem; width: 100%; }
+  .site-header__desktop-list > li { min-width: 0; }
+  .site-header__desktop-disclosure > summary { display: flex; align-items: center; gap: .42rem; min-height: 48px; cursor: pointer; list-style: none; font-size: .88rem; font-weight: 680; }
+  .site-header__desktop-disclosure > summary::-webkit-details-marker { display: none; }
+  .site-header__desktop-disclosure .site-header__chevron { width: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .site-header__desktop-disclosure[open] > summary .site-header__chevron { transform: rotate(180deg); }
+  .site-header__desktop-panel { position: absolute; z-index: 35; top: 100%; inset-inline: 0; max-height: 65dvh; overflow-y: auto; overscroll-behavior: contain; padding: 1rem; border: 1px solid var(--border); background: var(--background); box-shadow: var(--shadow-soft); white-space: normal; }
+  .site-header .site-header__desktop-panel a { display: flex; min-height: 48px; padding: .65rem; font-size: .95rem; overflow-wrap: anywhere; }
+  .site-header__desktop-panel a::after { display: none; }
+  .site-header__desktop-overview { justify-content: space-between; border-bottom: 1px solid var(--border); color: var(--accent); }
+  .site-header__desktop-nested { padding-inline-start: 1rem !important; }
+  .site-header__desktop a:focus-visible, .site-header__desktop summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .site-header__desktop [aria-current="page"], .site-header__desktop summary:hover { color: var(--accent); }
+  @media (min-width: 1241px) {
+    .site-header .site-header__inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand actions" "nav nav"; gap: 0 2rem; padding-top: .65rem; }
+    .site-header__brand { grid-area: brand; width: max-content; max-width: 100%; white-space: nowrap; min-height: 48px; }
+    .site-header__actions { grid-area: actions; }
+    .site-header__desktop { position: relative; grid-area: nav; min-width: 0; display: block; border-top: 1px solid var(--border); margin-top: .5rem; padding-bottom: .25rem; white-space: normal; }
+    .site-header .site-header__desktop-list > li > a { min-height: 48px; font-size: .88rem; }
   }
   @media (max-width: 1240px) { .site-header__search { width: 48px; min-height:48px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { width:48px;height:48px;border: 0; } .site-header__search.is-open { position:absolute; z-index:40; inset-inline:0; top:100%; width:auto; min-height:62px; padding:.55rem max(.7rem,calc((100vw - var(--page-width))/2)); display:grid; grid-template-columns:minmax(0,1fr) 50px; border-block:1px solid var(--border); background:var(--background); box-shadow:0 16px 34px rgba(30,45,37,.12); } .site-header__search.is-open input { display:block; height:48px; padding:0 1rem; border:1px solid var(--border); background:var(--surface); font-size:16px; } .site-header__search.is-open button { width:50px;height:48px;border:1px solid var(--border);border-left:0;background:var(--surface); } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
-  @media (max-width: 520px) { .site-header { padding-top: env(safe-area-inset-top); } .site-header__inner { min-height: 64px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 64px - env(safe-area-inset-top))); padding-bottom:calc(1rem + env(safe-area-inset-bottom)); } }
+  @media (max-width: 520px) { .site-header { padding-top: env(safe-area-inset-top); } .site-header__inner { min-height: 64px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__wordmark { font-size: 1.15rem; white-space: nowrap; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 64px - env(safe-area-inset-top))); padding-bottom:calc(1rem + env(safe-area-inset-bottom)); } }
 {% endstylesheet %}
 
 {% javascript %}
   (() => {
     const desktopBreakpoint = 1240;
+
+    const initDesktopMenu = (header) => {
+      if (header.desktopMenuController) return;
+      const nav = header.querySelector('.site-header__desktop');
+      if (!nav) return;
+      const controller = new AbortController();
+      header.desktopMenuController = controller;
+      const { signal } = controller;
+      const menus = [...nav.querySelectorAll('[data-desktop-menu]')];
+      const closeMenus = (except) => menus.forEach((menu) => {
+        if (menu !== except) menu.open = false;
+      });
+      menus.forEach((menu) => menu.addEventListener('toggle', () => {
+        if (menu.open) closeMenus(menu);
+      }, { signal }));
+      document.addEventListener('pointerdown', (event) => {
+        if (!nav.contains(event.target)) closeMenus();
+      }, { signal });
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const openMenu = menus.find((menu) => menu.open);
+        if (openMenu) {
+          closeMenus();
+          openMenu.querySelector('summary').focus();
+        }
+      }, { signal });
+      nav.addEventListener('focusout', (event) => {
+        if (!nav.contains(event.relatedTarget)) closeMenus();
+      }, { signal });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= desktopBreakpoint) closeMenus();
+      }, { signal });
+    };
 
     const initMobileMenu = (header) => {
       if (header.dataset.mobileMenuReady === 'true') return;
@@ -281,6 +351,7 @@
 
     const initAllMobileMenus = (root = document) => {
       root.querySelectorAll('[data-site-header]').forEach((header) => {
+        initDesktopMenu(header);
         initMobileMenu(header);
         initMobileSearch(header);
       });
@@ -292,6 +363,7 @@
       const header = event.target.querySelector('[data-site-header]');
       if (!header) return;
       header.mobileMenuController?.abort();
+      header.desktopMenuController?.abort();
       document.documentElement.classList.remove('site-header-menu-open');
       document.documentElement.style.removeProperty('--site-header-scrollbar-width');
     });
@@ -308,3 +380,4 @@
   ]
 }
 {% endschema %}
+
