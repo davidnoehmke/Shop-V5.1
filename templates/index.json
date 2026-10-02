@@ -11,7 +11,7 @@
         "primary_label": "LEAF Berater starten",
         "primary_link": "#LeafAdvisor",
         "secondary_label": "Produktwelten ansehen",
-        "secondary_link": "#HomeJourney-home_collection_journey",
+        "secondary_link": "#HomeProductWorlds",
         "brand_logo": "shopify://shop_images/leaferservice-brand-logo.png",
         "show_brand_logo": true,
         "brand_logo_width": 250
