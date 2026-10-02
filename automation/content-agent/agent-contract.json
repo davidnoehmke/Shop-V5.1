@@ -91,10 +91,12 @@
         "no_liquid_error",
         "shared_advisor_visible_on_homepage",
         "shared_advisor_visible_on_collection",
-        "global_shop_assistant_present"
+        "global_shop_assistant_present",
+        "global_shop_assistant_returns_answer"
       ],
-      "artifact": "immutable_git_tag",
-      "tag_pattern": "freeze/stable-<commit_sha_12>"
+      "artifact": "immutable_verified_git_tag_plus_moving_best_verified_branch",
+      "tag_pattern": "freeze/verified-<commit_sha_12>",
+      "best_pointer": "freeze/best-verified"
     }
   }
 }
