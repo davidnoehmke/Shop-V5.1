@@ -26,7 +26,6 @@
         ".site-header__brand {background: transparent;}"
       ],
       "settings": {
-        "logo": "shopify://shop_images/leaferservice-brand-logo.png",
         "logo_width": 120,
         "menu": "main-menu"
       }
