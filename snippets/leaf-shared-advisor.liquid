@@ -1,5 +1,5 @@
 {% doc %}
-Renders the shared, mobile-first LEAF advisor for one collection or for the homepage across product worlds. Public matching inputs come only from storefront metafields; specialist configurators remain advanced tools.
+Renders the shared LEAF advisor. Supabase supplies all options, selection validation and recommendations; storefront metafields provide public product inputs only.
 @param {collection} [collection] - Current collection in collection mode.
 @param {string} section_id - Parent section id for anchor targets.
 @param [world_blocks] - Homepage collection blocks used as product worlds.
@@ -8,47 +8,23 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
 
 {% liquid
   assign advisor_home_mode = false
-  if home_mode and world_blocks != blank
+  if home_mode
     assign advisor_home_mode = true
   endif
 
   assign advisor_products = collection.products
-  assign advisor_count = collection.products_count | default: 0
   assign advisor_collection_handle = collection.handle
-  assign advisor_has_guidance = false
 
   if advisor_home_mode
-    assign advisor_count = 0
     assign advisor_collection_handle = ''
-    for world_block in world_blocks
-      assign world_collection = world_block.settings.collection
-      if world_collection != blank
-        assign advisor_count = advisor_count | plus: world_collection.products_count
-        if advisor_has_guidance == false
-          for advisor_product in world_collection.products limit: 40
-            if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
-              assign advisor_has_guidance = true
-              break
-            endif
-          endfor
-        endif
-      endif
-    endfor
     assign advisor_skip_href = '#HomeJourneyGrid-' | append: section_id
     assign advisor_all_href = routes.collections_url | append: '/all'
   else
-    for advisor_product in advisor_products limit: 50
-      if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
-        assign advisor_has_guidance = true
-        break
-      endif
-    endfor
     assign advisor_skip_href = '#CollectionProducts-' | append: section_id
     assign advisor_all_href = advisor_skip_href
   endif
 %}
 
-{% if advisor_count > 0 and advisor_has_guidance %}
 <leaf-guided-advisor
   id="LeafAdvisor"
   class="leaf-advisor"
@@ -651,4 +627,3 @@ if (!customElements.get('leaf-guided-advisor')) {
   });
 }
 {% endjavascript %}
-{% endif %}

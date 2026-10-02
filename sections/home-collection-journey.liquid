@@ -12,7 +12,7 @@
 <section class="home-journey" id="HomeJourney-{{ section.id }}" data-home-journey data-result-prefix="{{ section.settings.result_prefix | escape }}" data-result-suffix="{{ section.settings.result_suffix | escape }}" aria-labelledby="HomeJourneyHeading-{{ section.id }}">
   <div class="page-width">
     {% if request.page_type == 'index' %}
-      {% render 'leaf-shared-advisor', world_blocks: section.blocks, section_id: section.id, home_mode: true %}
+      {% render 'leaf-shared-advisor', section_id: section.id, home_mode: true, world_blocks: section.blocks %}
     {% endif %}
 
     <header class="home-journey__header" data-leaf-reveal{% if request.page_type == 'index' %} id="HomeProductWorlds"{% endif %}>
