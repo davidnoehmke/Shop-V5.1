@@ -11,6 +11,14 @@
   "type": "footer",
   "name": "Footer group",
   "sections": {
+    "b2b_eu": {
+      "type": "leaf-b2b-prefooter",
+      "settings": {
+        "image": "shopify://shop_images/98154BE7-8D71-4BDE-8E7E-DE1C7F267A6E.jpg",
+        "b2b_link": "/pages/kooperationen-pflanzenprojekte",
+        "shipping_link": "/pages/versand"
+      }
+    },
     "newsletter": {
       "type": "newsletter-services",
       "blocks": {
@@ -54,5 +62,5 @@
       }
     }
   },
-  "order": ["newsletter", "footer"]
+  "order": ["b2b_eu", "newsletter", "footer"]
 }
