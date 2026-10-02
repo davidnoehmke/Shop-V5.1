@@ -55,6 +55,10 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
   data-storage-key="leaf-guided-advisor-v2"
   data-home-mode="{% if advisor_home_mode %}true{% else %}false{% endif %}"
   data-collection="{{ advisor_collection_handle | escape }}"
+  data-advisor-endpoint="https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/advisor-recommendations"
+  data-advisor-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicWltY3dheGN5ZGVncWxra2d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzOTk3NDYsImV4cCI6MjEwNDk3NTc0Nn0.z9fj7XSNnX2RmWdMQabx2-n8Oq7VemnWb6Fa03ySxHQ"
+  data-loading-label="{{ 'collection.advisor.loading' | t | escape }}"
+  data-unavailable-label="{{ 'collection.advisor.unavailable' | t | escape }}"
   data-project-endpoint="https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/configurator-project"
   data-project-param="leaf_project"
   data-match-label="{{ 'collection.advisor.match_label' | t | escape }}"
@@ -91,6 +95,7 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
       </div>
     </header>
 
+    <p data-service-status role="status" aria-live="polite"></p>
     <div class="leaf-advisor__progress" aria-label="{{ 'collection.advisor.progress_label' | t }}">
       <div class="leaf-advisor__progress-copy">
         <strong data-progress-text></strong>
@@ -264,11 +269,11 @@ if (!customElements.get('leaf-guided-advisor')) {
         priceSort: Number(node.dataset.priceSort || 0),
         image: node.dataset.image || '',
         imageAlt: node.dataset.imageAlt || node.dataset.title || '',
-        world: this.values(node.dataset.world),
+        world: node.dataset.world || '',
         worldLabel: node.dataset.worldLabel || node.dataset.world || '',
-        need: this.values(node.dataset.needs),
-        context: this.values(node.dataset.contexts),
-        preference: this.values(node.dataset.preferences)
+        need: node.dataset.needs || '',
+        context: node.dataset.contexts || '',
+        preference: node.dataset.preferences || ''
       }));
       this.state = {
         world: this.homeMode ? '' : (this.dataset.collection || ''),
@@ -276,57 +281,70 @@ if (!customElements.get('leaf-guided-advisor')) {
         context: '',
         preference: ''
       };
-      this.groupOrder = this.homeMode ? ['world', 'need', 'context', 'preference'] : ['need', 'context', 'preference'];
+      this.groupOrder = [];
       this.optionSets = {};
-      this.groupOrder.forEach((group) => this.buildOptions(group, this.rows));
-      this.restoreLocal();
-      this.recomputeSteps();
-      if (!this.steps.length) return;
+      this.steps = [];
+      this.remoteResults = [];
       this.index = 0;
+      this.restoreLocal();
       this.bind();
       await this.restoreRemote();
-      this.update();
-    }
-
-    values(raw) {
-      return String(raw || '').split('||').map((value) => value.trim()).filter(Boolean);
-    }
-
-    key(value) {
-      return String(value || '').trim().toLocaleLowerCase();
+      await this.refreshAdvisor();
     }
 
     isProjectCode(value) {
       return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
     }
 
-    rowsForWorld() {
-      if (!this.homeMode || !this.state.world) return this.rows;
-      const worldKey = this.key(this.state.world);
-      return this.rows.filter((row) => row.world.some((value) => this.key(value) === worldKey));
+    async refreshAdvisor() {
+      const requestId = (this.requestId || 0) + 1;
+      this.requestId = requestId;
+      this.requestController?.abort();
+      const controller = new AbortController();
+      this.requestController = controller;
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      const activeStep = this.pendingStep || this.steps[this.index];
+      this.pendingStep = '';
+      const status = this.querySelector('[data-service-status]');
+      if (status) status.textContent = this.dataset.loadingLabel || '';
+      this.pending = true;
+      this.querySelectorAll('[data-next], [data-back], [data-option-group]').forEach(button => { button.disabled = true; });
+      try {
+        const response = await fetch(this.dataset.advisorEndpoint, {
+          method: 'POST', credentials: 'omit', signal: controller.signal,
+          headers: { 'content-type': 'application/json', apikey: this.dataset.advisorKey, authorization: 'Bearer ' + this.dataset.advisorKey },
+          body: JSON.stringify({ rows: this.rows, selected: this.state, homeMode: this.homeMode, collection: this.dataset.collection || '' })
+        });
+        if (!response.ok) throw new Error('advisor_unavailable');
+        const payload = await response.json();
+        if (requestId !== this.requestId) return;
+        if (!Array.isArray(payload.steps) || !Array.isArray(payload.results)) throw new Error('invalid_advisor_response');
+        this.state = payload.selected;
+        this.optionSets = payload.options;
+        this.groupOrder = payload.groupOrder;
+        this.steps = payload.steps;
+        this.remoteResults = payload.results;
+        this.selectionCount = payload.selectionCount;
+        this.index = Math.max(0, this.steps.indexOf(activeStep));
+        Object.entries(this.optionSets).forEach(([group, options]) => this.buildOptions(group, options));
+        this.saveLocal();
+        if (status) status.textContent = '';
+        this.update();
+      } catch {
+        if (requestId !== this.requestId) return;
+        this.remoteResults = [];
+        this.renderResults();
+        if (status) status.textContent = this.dataset.unavailableLabel || '';
+      } finally {
+        clearTimeout(timeout);
+        if (requestId === this.requestId) {
+          this.pending = false;
+          this.querySelectorAll('[data-next], [data-back], [data-option-group]').forEach(button => { button.disabled = false; });
+        }
+      }
     }
 
-    buildOptions(group, rows) {
-      const counts = new Map();
-      rows.forEach((row) => {
-        const values = Array.isArray(row[group]) ? row[group] : [];
-        values.forEach((value) => {
-          const normalized = this.key(value);
-          if (!normalized) return;
-          const current = counts.get(normalized) || {
-            value,
-            label: group === 'world' ? (row.worldLabel || value) : value,
-            count: 0
-          };
-          current.count += 1;
-          counts.set(normalized, current);
-        });
-      });
-      const limit = group === 'world' ? 8 : 10;
-      const options = Array.from(counts.values())
-        .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label))
-        .slice(0, limit);
-      this.optionSets[group] = options;
+    buildOptions(group, options) {
       const host = this.querySelector('[data-options="' + group + '"]');
       if (!host) return;
       host.replaceChildren();
@@ -342,39 +360,24 @@ if (!customElements.get('leaf-guided-advisor')) {
       });
     }
 
-    rebuildDependentOptions(clearInvalid = true) {
-      const rows = this.rowsForWorld();
-      ['need', 'context', 'preference'].forEach((group) => {
-        if (!this.groupOrder.includes(group)) return;
-        this.buildOptions(group, rows);
-        const valid = this.optionSets[group]?.some((item) => this.key(item.value) === this.key(this.state[group]));
-        if (clearInvalid && this.state[group] && !valid) this.state[group] = '';
-      });
-      this.recomputeSteps();
-    }
-
-    recomputeSteps() {
-      this.steps = this.groupOrder.filter((group) => this.optionSets[group]?.length).concat('result');
-      if (this.index >= this.steps.length) this.index = Math.max(0, this.steps.length - 1);
-    }
-
     displayValue(group, value) {
-      const item = this.optionSets[group]?.find((option) => this.key(option.value) === this.key(value));
+      const item = this.optionSets[group]?.find((option) => option.value === value);
       return item?.label || value;
     }
 
     bind() {
-      this.addEventListener('click', (event) => {
+      this.addEventListener('click', async (event) => {
         const option = event.target.closest('[data-option-group]');
         if (option) {
           const group = option.dataset.optionGroup;
           const value = option.dataset.optionValue || '';
           this.state[group] = this.state[group] === value ? '' : value;
-          if (group === 'world') this.rebuildDependentOptions(true);
+
           this.saveLocal();
           this.markRemoteDirty();
           this.updateOptions();
           this.updateSummary();
+          await this.refreshAdvisor();
           return;
         }
 
@@ -397,11 +400,11 @@ if (!customElements.get('leaf-guided-advisor')) {
             context: '',
             preference: ''
           };
-          if (this.homeMode) this.rebuildDependentOptions(false);
+
           this.index = 0;
           this.saveLocal();
           this.markRemoteDirty();
-          this.update();
+          await this.refreshAdvisor();
           return;
         }
 
@@ -427,26 +430,17 @@ if (!customElements.get('leaf-guided-advisor')) {
 
     applySelection(selected) {
       const input = selected && typeof selected === 'object' ? selected : {};
-      if (this.homeMode && input.world) {
-        const validWorld = this.optionSets.world?.some((item) => this.key(item.value) === this.key(input.world));
-        if (validWorld) {
-          this.state.world = input.world;
-          this.rebuildDependentOptions(false);
-        }
-      }
-      ['need', 'context', 'preference'].forEach((group) => {
-        const valid = this.optionSets[group]?.some((item) => this.key(item.value) === this.key(input[group]));
-        if (valid) this.state[group] = input[group];
+      ['world', 'need', 'context', 'preference'].forEach(group => {
+        this.state[group] = typeof input[group] === 'string' ? input[group] : '';
       });
-      if (!this.homeMode) this.state.world = this.dataset.collection || this.state.world || '';
     }
 
     restoreLocal() {
       const stored = this.readStored();
       this.applySelection(stored.selected || {});
       if (this.isProjectCode(stored.projectCode)) this.projectCode = stored.projectCode;
-      if (this.homeMode && this.state.world) this.rebuildDependentOptions(true);
-      if (this.groupOrder.some((group) => this.state[group])) this.showResume();
+
+      if (Object.values(this.state).some(Boolean)) this.showResume();
     }
 
     async restoreRemote() {
@@ -469,10 +463,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         const payload = await response.json();
         this.projectCode = payload.code || code;
         this.applySelection(payload.selected || {});
-        this.recomputeSteps();
-        const requestedStep = String(payload.step || '');
-        const nextIndex = this.steps.indexOf(requestedStep);
-        if (nextIndex >= 0) this.index = nextIndex;
+        this.pendingStep = String(payload.step || '');
         this.saveLocal();
         this.showResume();
         this.showProjectControls();
@@ -569,7 +560,7 @@ if (!customElements.get('leaf-guided-advisor')) {
     updateOptions() {
       this.querySelectorAll('[data-option-group]').forEach((button) => {
         const group = button.dataset.optionGroup;
-        button.setAttribute('aria-pressed', String(this.key(this.state[group]) === this.key(button.dataset.optionValue)));
+        button.setAttribute('aria-pressed', String(this.state[group] === button.dataset.optionValue));
       });
     }
 
@@ -616,37 +607,8 @@ if (!customElements.get('leaf-guided-advisor')) {
     }
 
     renderResults() {
-      const selected = this.groupOrder.filter((group) => this.state[group]).map((group) => ({
-        group,
-        value: this.state[group],
-        key: this.key(this.state[group])
-      }));
-      const worldKey = this.homeMode ? this.key(this.state.world) : '';
-
-      const ranked = this.rows
-        .filter((row) => !worldKey || row.world.some((value) => this.key(value) === worldKey))
-        .map((row) => {
-          let score = 0;
-          let matched = 0;
-          selected.forEach((selection) => {
-            const values = Array.isArray(row[selection.group]) ? row[selection.group].map((value) => this.key(value)) : [];
-            if (!values.includes(selection.key)) return;
-            matched += 1;
-            score += selection.group === 'world' ? 8 : selection.group === 'need' ? 5 : selection.group === 'context' ? 3 : 2;
-          });
-          return { row, score, matched };
-        })
-        .sort((a, b) => b.score - a.score || a.row.priceSort - b.row.priceSort);
-
-      const unique = [];
-      const seenUrls = new Set();
-      for (const item of ranked) {
-        if (seenUrls.has(item.row.url)) continue;
-        if (selected.length && item.matched === 0) continue;
-        seenUrls.add(item.row.url);
-        unique.push(item);
-        if (unique.length === 3) break;
-      }
+      const unique = this.remoteResults || [];
+      const selectionCount = this.selectionCount || 0;
 
       const host = this.querySelector('[data-results]');
       const copy = this.querySelector('[data-result-copy]');
@@ -675,7 +637,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         const title = document.createElement('strong');
         title.textContent = item.row.title;
         const meta = document.createElement('span');
-        const match = selected.length ? String(item.matched) + '/' + String(selected.length) + ' ' + (this.dataset.matchLabel || '') : '';
+        const match = selectionCount ? String(item.matched) + '/' + String(selectionCount) + ' ' + (this.dataset.matchLabel || '') : '';
         meta.textContent = [match, item.row.price].filter(Boolean).join(' · ');
         copyNode.append(title, meta);
 

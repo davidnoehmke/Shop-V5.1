@@ -331,7 +331,9 @@
       "save_error": "The project could not be saved. Your local selection is still available.",
       "restored_project": "Saved project loaded.",
       "copy_project_link": "Copy project link",
-      "copied_project_link": "Project link copied."
+      "copied_project_link": "Project link copied.",
+      "loading": "Loading your selection …",
+      "unavailable": "The advisor is temporarily unavailable. You can browse the products directly."
     }
   },
   "recipe": {
