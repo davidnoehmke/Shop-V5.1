@@ -16,6 +16,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-locale="{{ request.locale.iso_code | escape }}"
   data-path="{{ request.path | escape }}"
   data-error="{{ 'shop_assistant.error' | t | escape }}"
+  data-user-label="{{ 'shop_assistant.user_name' | t | escape }}"
+  data-assistant-label="{{ 'shop_assistant.assistant_name' | t | escape }}"
   data-thinking="{{ 'shop_assistant.thinking' | t | escape }}"
 >
   <button
@@ -356,7 +358,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         const wrapper = document.createElement('div');
         wrapper.className = 'leaf-shop-assistant__message' + (role === 'user' ? ' leaf-shop-assistant__message--user' : '');
         const label = document.createElement('strong');
-        label.textContent = role === 'user' ? 'Du' : 'LEAF';
+        label.textContent = role === 'user' ? (this.dataset.userLabel || '') : (this.dataset.assistantLabel || '');
         const body = document.createElement('p');
         body.textContent = text;
         wrapper.append(label, body);
