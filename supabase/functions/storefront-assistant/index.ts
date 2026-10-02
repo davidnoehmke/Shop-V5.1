@@ -114,6 +114,43 @@ async function contextFor(message: string) {
   return { products, knowledge };
 }
 
+
+function fallbackAnswer(context: any, locale: string) {
+  const knowledge = Array.isArray(context?.knowledge) ? context.knowledge : [];
+  const products = Array.isArray(context?.products) ? context.products : [];
+
+  if (knowledge.length) {
+    const top = knowledge[0];
+    const answer = clean(top?.answer, 1400);
+    if (answer) return answer;
+  }
+
+  if (products.length) {
+    const top = products[0];
+    const title = clean(top?.canonical_title, 180);
+    const intro = clean(top?.intro, 600);
+    const primaryFunction = clean(top?.primary_function, 240);
+    if (locale === "en") {
+      const parts = [
+        title ? `In the approved LEAFerservice product knowledge I found “${title}”.` : "",
+        intro || primaryFunction,
+        "For a concrete product selection based on plant, location and routine, use the LEAF Advisor."
+      ].filter(Boolean);
+      return parts.join(" ");
+    }
+    const parts = [
+      title ? `Im freigegebenen LEAFerservice-Produktwissen finde ich dazu „${title}“.` : "",
+      intro || primaryFunction,
+      "Für eine konkrete Produktauswahl nach Pflanze, Standort und Routine nutze den LEAF Berater."
+    ].filter(Boolean);
+    return parts.join(" ");
+  }
+
+  return locale === "en"
+    ? "I do not yet have an approved LEAFerservice answer for this question. Please use the LEAF Advisor or open the relevant product world."
+    : "Dazu liegt mir noch keine freigegebene LEAFerservice-Antwort vor. Nutze bitte den LEAF Berater oder öffne die passende Produktwelt.";
+}
+
 function outputText(payload: any) {
   if (typeof payload?.output_text === "string") return payload.output_text.trim();
   const parts: string[] = [];
@@ -155,11 +192,10 @@ Deno.serve(async (req: Request) => {
   if (!allowedOrigins.has(origin)) return json(origin, 403, { error: "origin_not_allowed" });
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(origin) });
   if (req.method !== "POST") return json(origin, 405, { error: "method_not_allowed" });
-  if (!supabaseUrl || !serviceRole || !openaiKey) {
+  if (!supabaseUrl || !serviceRole) {
     console.error("storefront-assistant runtime config missing", {
       supabaseUrl: Boolean(supabaseUrl),
-      serviceRole: Boolean(serviceRole),
-      openaiKey: Boolean(openaiKey)
+      serviceRole: Boolean(serviceRole)
     });
     return json(origin, 503, { error: "service_unavailable" });
   }
@@ -186,6 +222,16 @@ Deno.serve(async (req: Request) => {
       : [];
 
     const context = await contextFor(message);
+
+    if (!openaiKey) {
+      const answer = fallbackAnswer(context, locale);
+      const links = context.products.slice(0, 3).map((product: any) => ({
+        label: clean(product.canonical_title, 120),
+        href: `/products/${clean(product.handle, 120)}`
+      })).filter((link: any) => link.label && /^\/products\/[a-z0-9-]+$/i.test(link.href));
+      return json(origin, 200, { answer, links, mode: "approved_context" });
+    }
+
     const contextJson = JSON.stringify(context).slice(0, 18_000);
     const language = locale === "en" ? "English" : "German";
     const instructions = [
