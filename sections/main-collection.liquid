@@ -93,7 +93,7 @@
     </div>
   </header>
 
-  {% render 'leaf-shared-advisor', collection: collection, section_id: section.id %}
+  {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
   {% if collection.handle == 'interieur-solutions' %}
     <details class="main-collection__advanced">
