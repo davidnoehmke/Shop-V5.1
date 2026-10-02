@@ -71,7 +71,7 @@ Nach einem erfolgreichen `LEAF CI`-Push auf `main` prüft `.github/workflows/fre
 die reale Storefront nach der nativen Shopify-GitHub-Synchronisierung. Nur wenn Startseite
 und Referenz-Collection ohne Liquid-Fehler laufen, der gemeinsame LEAF Berater sichtbar ist
 und der globale Shop-Assistent ausgeliefert wird, wird der Commit als unveränderlicher
-`freeze/stable-<sha>`-Tag eingefroren. Ein grüner CI-Lauf allein reicht nicht als Freeze.
+`freeze/verified-<sha>`-Tag eingefroren. Ein grüner CI-Lauf allein reicht nicht als Freeze. Zusätzlich muss der globale Shop-Assistent eine echte Antwort liefern. Der zuletzt vollständig verifizierte Stand wird außerdem über den beweglichen Branch `freeze/best-verified` markiert.
 
 ## Entwicklung
 

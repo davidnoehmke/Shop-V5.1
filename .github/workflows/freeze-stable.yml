@@ -45,7 +45,7 @@ jobs:
           ok=0
           for attempt in $(seq 1 12); do
             probe="${VERIFIED_SHA}-${attempt}"
-            if curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/?freeze_probe=${probe}" -o /tmp/home.html               && curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/collections/interieur-solutions?freeze_probe=${probe}" -o /tmp/collection.html               && ! grep -Fq 'Liquid error' /tmp/home.html               && ! grep -Fq 'Liquid error' /tmp/collection.html               && grep -Fq '<leaf-guided-advisor' /tmp/home.html               && grep -Fq '<leaf-guided-advisor' /tmp/collection.html               && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html; then
+            if curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/?freeze_probe=${probe}" -o /tmp/home.html               && curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/collections/interieur-solutions?freeze_probe=${probe}" -o /tmp/collection.html               && ! grep -Fq 'Liquid error' /tmp/home.html               && ! grep -Fq 'Liquid error' /tmp/collection.html               && grep -Fq '<leaf-guided-advisor' /tmp/home.html               && grep -Fq '<leaf-guided-advisor' /tmp/collection.html               && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html               && curl -fsSL -X POST                 -H 'Origin: https://leaferservice.com'                 -H 'Content-Type: application/json'                 --data '{"message":"Was ist LEAFerservice?","locale":"de","path":"/"}'                 'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant'                 | jq -e '.answer | type == "string" and length > 20' >/dev/null; then
               ok=1
               break
             fi
@@ -60,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           short="$(printf '%s' "$VERIFIED_SHA" | cut -c1-12)"
-          tag="freeze/stable-${short}"
+          tag="freeze/verified-${short}"
           if git ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null 2>&1; then
             echo "Stable tag already exists: ${tag}"
             exit 0
@@ -69,3 +69,4 @@ jobs:
           git config user.email "actions@users.noreply.github.com"
           git tag -a "$tag" "$VERIFIED_SHA" -m "CI-green and live-smoke-verified storefront: $VERIFIED_SHA"
           git push origin "refs/tags/$tag"
+          git push --force origin "$VERIFIED_SHA:refs/heads/freeze/best-verified"
