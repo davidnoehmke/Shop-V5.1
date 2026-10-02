@@ -1,0 +1,8 @@
+[functions.advisor-recommendations]
+verify_jwt = true
+
+[functions.configurator-project]
+verify_jwt = false
+
+[functions.storefront-assistant]
+verify_jwt = false

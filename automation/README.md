@@ -37,3 +37,13 @@ bereitet standardmäßig nur Produkt- und Blog-Kandidaten vor. SEO-/UX-Änderung
 nur on-demand zulässig, wenn ein verifizierter Fehler, ein belastbares Signal aus
 Search Console/Analytics, eine zwingende technische/rechtliche Anforderung oder eine
 explizite Owner-Freigabe vorliegt.
+
+
+## Verifizierter Beststand
+
+`.github/workflows/freeze-stable.yml` läuft erst nach einem erfolgreichen `LEAF CI`-Push auf
+`main`. Der Workflow wartet auf die native Shopify-Synchronisierung und prüft die reale
+Storefront auf Liquid-Fehler sowie die zentralen Berater-/Assistent-Invarianten. Nur ein
+bestandener Live-Smoke-Test erzeugt einen unveränderlichen `freeze/stable-<sha>`-Tag.
+Damit bleibt jeder bestätigte Beststand reproduzierbar, ohne einen fehlerhaften Merge
+automatisch als stabil zu deklarieren.

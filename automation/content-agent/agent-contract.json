@@ -83,6 +83,18 @@
       "explicit_owner_approval"
     ],
     "change_strategy": "smallest_safe_change",
-    "require_post_change_verification": true
+    "require_post_change_verification": true,
+    "automatic_snapshot": {
+      "trigger": "successful_LEAF_CI_push_on_main",
+      "live_verification": true,
+      "required_live_invariants": [
+        "no_liquid_error",
+        "shared_advisor_visible_on_homepage",
+        "shared_advisor_visible_on_collection",
+        "global_shop_assistant_present"
+      ],
+      "artifact": "immutable_git_tag",
+      "tag_pattern": "freeze/stable-<commit_sha_12>"
+    }
   }
 }

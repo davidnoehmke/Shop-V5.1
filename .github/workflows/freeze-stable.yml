@@ -1,0 +1,71 @@
+name: Freeze verified storefront
+
+on:
+  workflow_run:
+    workflows: ["LEAF CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: leaf-freeze-main
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Require current main
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          current="$(git rev-parse origin/main)"
+          test "$current" = "$VERIFIED_SHA"
+
+      - name: Verify live storefront after native Shopify sync
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          ok=0
+          for attempt in $(seq 1 12); do
+            probe="${VERIFIED_SHA}-${attempt}"
+            if curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/?freeze_probe=${probe}" -o /tmp/home.html               && curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/collections/interieur-solutions?freeze_probe=${probe}" -o /tmp/collection.html               && ! grep -Fq 'Liquid error' /tmp/home.html               && ! grep -Fq 'Liquid error' /tmp/collection.html               && grep -Fq '<leaf-guided-advisor' /tmp/home.html               && grep -Fq '<leaf-guided-advisor' /tmp/collection.html               && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          test "$ok" -eq 1
+
+      - name: Freeze immutable stable tag
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          short="$(printf '%s' "$VERIFIED_SHA" | cut -c1-12)"
+          tag="freeze/stable-${short}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "Stable tag already exists: ${tag}"
+            exit 0
+          fi
+          git config user.name "LEAF Freeze Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git tag -a "$tag" "$VERIFIED_SHA" -m "CI-green and live-smoke-verified storefront: $VERIFIED_SHA"
+          git push origin "refs/tags/$tag"

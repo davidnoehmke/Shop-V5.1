@@ -67,6 +67,12 @@ Ausnahmen sind nur zulässig, wenn mindestens einer dieser Punkte erfüllt ist:
 
 Jede Ausnahme folgt weiterhin: Ist-Zustand prüfen -> kleinste sichere Änderung -> CI/QA -> Live-Verifikation.
 
+Nach einem erfolgreichen `LEAF CI`-Push auf `main` prüft `.github/workflows/freeze-stable.yml`
+die reale Storefront nach der nativen Shopify-GitHub-Synchronisierung. Nur wenn Startseite
+und Referenz-Collection ohne Liquid-Fehler laufen, der gemeinsame LEAF Berater sichtbar ist
+und der globale Shop-Assistent ausgeliefert wird, wird der Commit als unveränderlicher
+`freeze/stable-<sha>`-Tag eingefroren. Ein grüner CI-Lauf allein reicht nicht als Freeze.
+
 ## Entwicklung
 
 ```bash
