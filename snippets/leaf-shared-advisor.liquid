@@ -1,0 +1,654 @@
+{% doc %}
+Renders the shared, mobile-first LEAF advisor for one collection or for the homepage across product worlds. Public matching inputs come only from storefront metafields; specialist configurators remain advanced tools.
+@param {collection} [collection] - Current collection in collection mode.
+@param {string} section_id - Parent section id for anchor targets.
+@param [world_blocks] - Homepage collection blocks used as product worlds.
+@param {boolean} [home_mode] - Enables product-world selection across the supplied blocks.
+{% enddoc %}
+
+{% liquid
+  assign advisor_home_mode = false
+  if home_mode and world_blocks != blank
+    assign advisor_home_mode = true
+  endif
+
+  assign advisor_products = collection.products
+  assign advisor_count = collection.products_count | default: 0
+  assign advisor_collection_handle = collection.handle
+  assign advisor_has_guidance = false
+
+  if advisor_home_mode
+    assign advisor_count = 0
+    assign advisor_collection_handle = ''
+    for world_block in world_blocks
+      assign world_collection = world_block.settings.collection
+      if world_collection != blank
+        assign advisor_count = advisor_count | plus: world_collection.products_count
+        if advisor_has_guidance == false
+          for advisor_product in world_collection.products limit: 40
+            if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
+              assign advisor_has_guidance = true
+              break
+            endif
+          endfor
+        endif
+      endif
+    endfor
+    assign advisor_skip_href = '#HomeJourneyGrid-' | append: section_id
+    assign advisor_all_href = routes.collections_url | append: '/all'
+  else
+    for advisor_product in advisor_products limit: 50
+      if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
+        assign advisor_has_guidance = true
+        break
+      endif
+    endfor
+    assign advisor_skip_href = '#CollectionProducts-' | append: section_id
+    assign advisor_all_href = advisor_skip_href
+  endif
+%}
+
+{% if advisor_count > 0 and advisor_has_guidance %}
+<leaf-guided-advisor
+  id="LeafAdvisor"
+  class="leaf-advisor"
+  data-storage-key="leaf-guided-advisor-v2"
+  data-home-mode="{% if advisor_home_mode %}true{% else %}false{% endif %}"
+  data-collection="{{ advisor_collection_handle | escape }}"
+  data-advisor-endpoint="https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/advisor-recommendations"
+  data-advisor-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZicWltY3dheGN5ZGVncWxra2d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzOTk3NDYsImV4cCI6MjEwNDk3NTc0Nn0.z9fj7XSNnX2RmWdMQabx2-n8Oq7VemnWb6Fa03ySxHQ"
+  data-loading-label="{{ 'collection.advisor.loading' | t | escape }}"
+  data-unavailable-label="{{ 'collection.advisor.unavailable' | t | escape }}"
+  data-project-endpoint="https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/configurator-project"
+  data-project-param="leaf_project"
+  data-match-label="{{ 'collection.advisor.match_label' | t | escape }}"
+  data-view-label="{{ 'collection.advisor.view_product' | t | escape }}"
+  data-result-count-label="{{ 'collection.advisor.result_count' | t | escape }}"
+  data-save-label="{{ 'collection.advisor.save_project' | t | escape }}"
+  data-saving-label="{{ 'collection.advisor.saving_project' | t | escape }}"
+  data-saved-label="{{ 'collection.advisor.saved_project' | t | escape }}"
+  data-unsaved-label="{{ 'collection.advisor.unsaved_project' | t | escape }}"
+  data-save-error-label="{{ 'collection.advisor.save_error' | t | escape }}"
+  data-restored-label="{{ 'collection.advisor.restored_project' | t | escape }}"
+  data-copied-label="{{ 'collection.advisor.copied_project_link' | t | escape }}"
+>
+  <section class="leaf-advisor__shell" aria-labelledby="LeafAdvisorHeading">
+    <header class="leaf-advisor__head">
+      <div>
+        <p class="leaf-advisor__eyebrow">{{ 'collection.advisor.eyebrow' | t }}</p>
+        {% if advisor_home_mode %}
+          <h2 id="LeafAdvisorHeading">{{ 'collection.advisor.home_heading' | t }}</h2>
+          <p>{{ 'collection.advisor.home_intro' | t }}</p>
+        {% else %}
+          <h2 id="LeafAdvisorHeading">{{ 'collection.advisor.heading' | t }}</h2>
+          <p>{{ 'collection.advisor.intro' | t }}</p>
+        {% endif %}
+      </div>
+      <div class="leaf-advisor__head-actions">
+        <span class="leaf-advisor__resume" data-resume hidden>{{ 'collection.advisor.resume' | t }}</span>
+        <div class="leaf-advisor__project-actions">
+          <button type="button" data-save-project>{{ 'collection.advisor.save_project' | t }}</button>
+          <button type="button" data-copy-project-link hidden>{{ 'collection.advisor.copy_project_link' | t }}</button>
+          <span data-project-status aria-live="polite"></span>
+        </div>
+        <a href="{{ advisor_skip_href }}">{{ 'collection.advisor.skip_to_products' | t }}</a>
+      </div>
+    </header>
+
+    <p data-service-status role="status" aria-live="polite"></p>
+    <div class="leaf-advisor__progress" aria-label="{{ 'collection.advisor.progress_label' | t }}">
+      <div class="leaf-advisor__progress-copy">
+        <strong data-progress-text></strong>
+        <span data-selection-summary>{{ 'collection.advisor.no_selection' | t }}</span>
+      </div>
+      <div class="leaf-advisor__progress-track" aria-hidden="true"><span data-progress-bar></span></div>
+    </div>
+
+    <div class="leaf-advisor__layout">
+      <div class="leaf-advisor__flow">
+        {% if advisor_home_mode %}
+          <fieldset class="leaf-advisor__step" data-step="world">
+            <legend>{{ 'collection.advisor.world_heading' | t }}</legend>
+            <p>{{ 'collection.advisor.world_text' | t }}</p>
+            <div class="leaf-advisor__options" data-options="world"></div>
+          </fieldset>
+        {% endif %}
+
+        <fieldset class="leaf-advisor__step" data-step="need"{% if advisor_home_mode %} hidden{% endif %}>
+          <legend>{{ 'collection.advisor.need_heading' | t }}</legend>
+          <p>{{ 'collection.advisor.need_text' | t }}</p>
+          <div class="leaf-advisor__options" data-options="need"></div>
+        </fieldset>
+
+        <fieldset class="leaf-advisor__step" data-step="context" hidden>
+          <legend>{{ 'collection.advisor.context_heading' | t }}</legend>
+          <p>{{ 'collection.advisor.context_text' | t }}</p>
+          <div class="leaf-advisor__options" data-options="context"></div>
+        </fieldset>
+
+        <fieldset class="leaf-advisor__step" data-step="preference" hidden>
+          <legend>{{ 'collection.advisor.preference_heading' | t }}</legend>
+          <p>{{ 'collection.advisor.preference_text' | t }}</p>
+          <div class="leaf-advisor__options" data-options="preference"></div>
+        </fieldset>
+
+        <div class="leaf-advisor__step leaf-advisor__step--result" data-step="result" hidden>
+          <div class="leaf-advisor__result-head">
+            <div>
+              <p class="leaf-advisor__eyebrow">{{ 'collection.advisor.result_eyebrow' | t }}</p>
+              <h3>{{ 'collection.advisor.result_heading' | t }}</h3>
+            </div>
+            <button type="button" data-reset>{{ 'collection.advisor.reset' | t }}</button>
+          </div>
+          <p data-result-copy>{{ 'collection.advisor.result_text' | t }}</p>
+          <div class="leaf-advisor__results" data-results aria-live="polite"></div>
+          <a class="leaf-advisor__all-products" href="{{ advisor_all_href }}">{{ 'collection.advisor.all_products' | t }} <span aria-hidden="true">↓</span></a>
+        </div>
+
+        <div class="leaf-advisor__nav">
+          <button type="button" class="leaf-advisor__back" data-back>{{ 'collection.advisor.back' | t }}</button>
+          <button type="button" class="leaf-advisor__next" data-next>{{ 'collection.advisor.next' | t }}</button>
+        </div>
+      </div>
+
+      <aside class="leaf-advisor__summary" aria-live="polite">
+        <p class="leaf-advisor__eyebrow">{{ 'collection.advisor.summary_eyebrow' | t }}</p>
+        <h3>{{ 'collection.advisor.summary_heading' | t }}</h3>
+        <div class="leaf-advisor__summary-list" data-summary-list>
+          <span>{{ 'collection.advisor.no_selection' | t }}</span>
+        </div>
+        <p>{{ 'collection.advisor.summary_note' | t }}</p>
+      </aside>
+    </div>
+
+    <div data-product-source hidden>
+      {% if advisor_home_mode %}
+        {% for world_block in world_blocks %}
+          {% assign world_collection = world_block.settings.collection %}
+          {% if world_collection != blank %}
+            {% for card_product in world_collection.products limit: 50 %}
+              {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: world_collection.handle, world_title: world_collection.title %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% for card_product in advisor_products limit: 50 %}
+          {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: collection.handle, world_title: collection.title %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  </section>
+</leaf-guided-advisor>
+
+{% stylesheet %}
+.leaf-advisor{display:block;margin-block:clamp(1.5rem,4vw,3.5rem);scroll-margin-top:96px}
+.leaf-advisor__shell{border:1px solid var(--border);background:var(--background)}
+.leaf-advisor__head{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(210px,.55fr);gap:1.5rem;align-items:end;padding:clamp(1rem,2.5vw,1.5rem);border-bottom:1px solid var(--border)}
+.leaf-advisor__head h2{margin:.2rem 0 0;max-width:18ch;font-size:clamp(1.7rem,3vw,2.7rem);line-height:1;letter-spacing:-.04em}
+.leaf-advisor__head p:not(.leaf-advisor__eyebrow){max-width:64ch;margin:.7rem 0 0;color:var(--muted);line-height:1.55}
+.leaf-advisor__eyebrow{margin:0;color:var(--accent);font-size:.68rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.leaf-advisor__head-actions{display:flex;flex-direction:column;align-items:flex-end;gap:.55rem;font-size:.76rem}
+.leaf-advisor__head-actions a{color:var(--text);font-weight:800;text-underline-offset:3px}
+.leaf-advisor__resume{padding:.35rem .5rem;border:1px solid var(--accent);color:var(--accent);font-weight:800}
+.leaf-advisor__project-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:.4rem;align-items:center}
+.leaf-advisor__project-actions button{min-height:40px;padding:.45rem .65rem;border:1px solid var(--border);background:var(--background);color:var(--text);font:inherit;font-size:.72rem;font-weight:800;cursor:pointer}
+.leaf-advisor__project-actions button:first-child{border-color:var(--text);background:var(--text);color:var(--background)}
+.leaf-advisor__project-actions button:disabled{opacity:.55;cursor:wait}
+.leaf-advisor__project-actions span{flex-basis:100%;min-height:1em;color:var(--muted);font-size:.68rem;text-align:right}
+.leaf-advisor__progress{padding:.75rem clamp(1rem,2.5vw,1.5rem);border-bottom:1px solid var(--border);background:var(--surface)}
+.leaf-advisor__progress-copy{display:flex;justify-content:space-between;gap:1rem;align-items:center;font-size:.72rem}
+.leaf-advisor__progress-copy span{color:var(--muted);text-align:right}
+.leaf-advisor__progress-track{height:3px;margin-top:.55rem;background:var(--border);overflow:hidden}
+.leaf-advisor__progress-track span{display:block;height:100%;width:25%;background:var(--accent);transition:width .2s ease}
+.leaf-advisor__layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr)}
+.leaf-advisor__flow{min-width:0;padding:clamp(1rem,2.5vw,1.5rem)}
+.leaf-advisor__step{min-width:0;margin:0;padding:0;border:0}
+.leaf-advisor__step[hidden]{display:none}
+.leaf-advisor__step legend,.leaf-advisor__step--result h3{margin:0;font-size:clamp(1.35rem,2.4vw,2rem);font-weight:850;line-height:1.05}
+.leaf-advisor__step>p{max-width:58ch;margin:.55rem 0 1rem;color:var(--muted);line-height:1.5}
+.leaf-advisor__options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+.leaf-advisor__option{min-height:54px;padding:.7rem .8rem;border:1px solid var(--border);background:var(--background);color:var(--text);text-align:left;font:inherit;font-size:.78rem;font-weight:750;cursor:pointer}
+.leaf-advisor__option[aria-pressed="true"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--background));box-shadow:inset 3px 0 0 var(--accent)}
+.leaf-advisor__nav{display:flex;justify-content:space-between;gap:.65rem;margin-top:1.2rem;padding-top:1rem;border-top:1px solid var(--border)}
+.leaf-advisor__nav button{min-height:50px;min-width:120px;padding:.65rem .9rem;border:1px solid var(--text);font:inherit;font-size:.78rem;font-weight:850;cursor:pointer}
+.leaf-advisor__back{background:transparent;color:var(--text)}
+.leaf-advisor__next{margin-left:auto;background:var(--text);color:var(--background)}
+.leaf-advisor__summary{padding:clamp(1rem,2.5vw,1.5rem);border-left:1px solid var(--border);background:var(--surface)}
+.leaf-advisor__summary h3{margin:.3rem 0 .9rem;font-size:1.15rem}
+.leaf-advisor__summary-list{display:flex;flex-wrap:wrap;gap:.4rem}
+.leaf-advisor__summary-list span{display:inline-flex;padding:.4rem .55rem;border:1px solid var(--border);background:var(--background);font-size:.7rem}
+.leaf-advisor__summary>p:last-child{margin:1rem 0 0;color:var(--muted);font-size:.72rem;line-height:1.5}
+.leaf-advisor__result-head{display:flex;justify-content:space-between;gap:1rem;align-items:start}
+.leaf-advisor__result-head button{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.leaf-advisor__results{display:grid;gap:.65rem;margin-top:1rem}
+.leaf-advisor__result-card{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:.8rem;align-items:center;padding:.7rem;border:1px solid var(--border);background:var(--surface)}
+.leaf-advisor__result-card img{width:76px;height:76px;object-fit:contain;background:var(--background)}
+.leaf-advisor__result-card strong,.leaf-advisor__result-card span{display:block}
+.leaf-advisor__result-card strong{font-size:.84rem;line-height:1.3}
+.leaf-advisor__result-card span{margin-top:.2rem;color:var(--muted);font-size:.7rem}
+.leaf-advisor__result-card a{min-height:44px;display:inline-flex;align-items:center;padding:.55rem .7rem;border:1px solid var(--text);color:var(--text);font-size:.72rem;font-weight:850;text-decoration:none}
+.leaf-advisor__all-products{display:inline-flex;margin-top:1rem;font-size:.78rem;font-weight:850;color:var(--text)}
+@media(max-width:820px){
+  .leaf-advisor__head{grid-template-columns:1fr;align-items:start}
+  .leaf-advisor__head-actions{align-items:flex-start}
+  .leaf-advisor__project-actions{justify-content:flex-start}
+  .leaf-advisor__project-actions span{text-align:left}
+  .leaf-advisor__layout{grid-template-columns:1fr}
+  .leaf-advisor__summary{border-left:0;border-top:1px solid var(--border)}
+}
+@media(max-width:749px){
+  .leaf-advisor{margin-inline:calc(var(--page-padding,1rem) * -1)}
+  .leaf-advisor__shell{border-inline:0}
+  .leaf-advisor__head{padding:1rem}
+  .leaf-advisor__head h2{font-size:clamp(1.7rem,8vw,2.3rem)}
+  .leaf-advisor__progress{position:sticky;top:0;z-index:6;padding:.7rem 1rem}
+  .leaf-advisor__flow{padding:1rem 1rem 0}
+  .leaf-advisor__options{grid-template-columns:1fr}
+  .leaf-advisor__option{min-height:56px;font-size:.8rem}
+  .leaf-advisor__summary{display:none}
+  .leaf-advisor__nav{position:sticky;bottom:0;z-index:5;margin-inline:-1rem;padding: .75rem 1rem max(.75rem,env(safe-area-inset-bottom));background:color-mix(in srgb,var(--background) 94%,transparent);backdrop-filter:blur(12px)}
+  .leaf-advisor__nav button{min-height:54px;flex:1}
+  .leaf-advisor__result-card{grid-template-columns:64px minmax(0,1fr);align-items:start}
+  .leaf-advisor__result-card img{width:64px;height:64px}
+  .leaf-advisor__result-card a{grid-column:1/-1;justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){.leaf-advisor__progress-track span{transition:none}}
+{% endstylesheet %}
+
+{% javascript %}
+if (!customElements.get('leaf-guided-advisor')) {
+  customElements.define('leaf-guided-advisor', class extends HTMLElement {
+    async connectedCallback() {
+      if (this.dataset.ready) return;
+      this.dataset.ready = 'true';
+      this.homeMode = this.dataset.homeMode === 'true';
+      this.rows = Array.from(this.querySelectorAll('[data-advisor-product]')).map((node) => ({
+        title: node.dataset.title || '',
+        url: node.dataset.url || '',
+        price: node.dataset.price || '',
+        priceSort: Number(node.dataset.priceSort || 0),
+        image: node.dataset.image || '',
+        imageAlt: node.dataset.imageAlt || node.dataset.title || '',
+        world: node.dataset.world || '',
+        worldLabel: node.dataset.worldLabel || node.dataset.world || '',
+        need: node.dataset.needs || '',
+        context: node.dataset.contexts || '',
+        preference: node.dataset.preferences || ''
+      }));
+      this.state = {
+        world: this.homeMode ? '' : (this.dataset.collection || ''),
+        need: '',
+        context: '',
+        preference: ''
+      };
+      this.groupOrder = [];
+      this.optionSets = {};
+      this.steps = [];
+      this.remoteResults = [];
+      this.index = 0;
+      this.restoreLocal();
+      this.bind();
+      await this.restoreRemote();
+      await this.refreshAdvisor();
+    }
+
+    isProjectCode(value) {
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
+    }
+
+    async refreshAdvisor() {
+      const requestId = (this.requestId || 0) + 1;
+      this.requestId = requestId;
+      this.requestController?.abort();
+      const controller = new AbortController();
+      this.requestController = controller;
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      const activeStep = this.pendingStep || this.steps[this.index];
+      this.pendingStep = '';
+      const status = this.querySelector('[data-service-status]');
+      if (status) status.textContent = this.dataset.loadingLabel || '';
+      this.pending = true;
+      this.querySelectorAll('[data-next], [data-back], [data-option-group]').forEach(button => { button.disabled = true; });
+      try {
+        const response = await fetch(this.dataset.advisorEndpoint, {
+          method: 'POST', credentials: 'omit', signal: controller.signal,
+          headers: { 'content-type': 'application/json', apikey: this.dataset.advisorKey, authorization: 'Bearer ' + this.dataset.advisorKey },
+          body: JSON.stringify({ rows: this.rows, selected: this.state, homeMode: this.homeMode, collection: this.dataset.collection || '' })
+        });
+        if (!response.ok) throw new Error('advisor_unavailable');
+        const payload = await response.json();
+        if (requestId !== this.requestId) return;
+        if (!Array.isArray(payload.steps) || !Array.isArray(payload.results)) throw new Error('invalid_advisor_response');
+        this.state = payload.selected;
+        this.optionSets = payload.options;
+        this.groupOrder = payload.groupOrder;
+        this.steps = payload.steps;
+        this.remoteResults = payload.results;
+        this.selectionCount = payload.selectionCount;
+        this.index = Math.max(0, this.steps.indexOf(activeStep));
+        Object.entries(this.optionSets).forEach(([group, options]) => this.buildOptions(group, options));
+        this.saveLocal();
+        if (status) status.textContent = '';
+        this.update();
+      } catch {
+        if (requestId !== this.requestId) return;
+        this.remoteResults = [];
+        this.renderResults();
+        if (status) status.textContent = this.dataset.unavailableLabel || '';
+      } finally {
+        clearTimeout(timeout);
+        if (requestId === this.requestId) {
+          this.pending = false;
+          this.querySelectorAll('[data-next], [data-back], [data-option-group]').forEach(button => { button.disabled = false; });
+        }
+      }
+    }
+
+    buildOptions(group, options) {
+      const host = this.querySelector('[data-options="' + group + '"]');
+      if (!host) return;
+      host.replaceChildren();
+      options.forEach((item) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'leaf-advisor__option';
+        button.dataset.optionGroup = group;
+        button.dataset.optionValue = item.value;
+        button.setAttribute('aria-pressed', 'false');
+        button.textContent = item.label;
+        host.append(button);
+      });
+    }
+
+    displayValue(group, value) {
+      const item = this.optionSets[group]?.find((option) => option.value === value);
+      return item?.label || value;
+    }
+
+    bind() {
+      this.addEventListener('click', async (event) => {
+        const option = event.target.closest('[data-option-group]');
+        if (option) {
+          const group = option.dataset.optionGroup;
+          const value = option.dataset.optionValue || '';
+          this.state[group] = this.state[group] === value ? '' : value;
+
+          this.saveLocal();
+          this.markRemoteDirty();
+          this.updateOptions();
+          this.updateSummary();
+          await this.refreshAdvisor();
+          return;
+        }
+
+        if (event.target.closest('[data-next]')) {
+          if (this.index < this.steps.length - 1) this.index += 1;
+          this.update();
+          return;
+        }
+
+        if (event.target.closest('[data-back]')) {
+          if (this.index > 0) this.index -= 1;
+          this.update();
+          return;
+        }
+
+        if (event.target.closest('[data-reset]')) {
+          this.state = {
+            world: this.homeMode ? '' : (this.dataset.collection || ''),
+            need: '',
+            context: '',
+            preference: ''
+          };
+
+          this.index = 0;
+          this.saveLocal();
+          this.markRemoteDirty();
+          await this.refreshAdvisor();
+          return;
+        }
+
+        const saveButton = event.target.closest('[data-save-project]');
+        if (saveButton) {
+          this.saveRemote(saveButton);
+          return;
+        }
+
+        if (event.target.closest('[data-copy-project-link]')) {
+          this.copyProjectLink();
+        }
+      });
+    }
+
+    readStored() {
+      try {
+        return JSON.parse(localStorage.getItem(this.dataset.storageKey) || '{}') || {};
+      } catch {
+        return {};
+      }
+    }
+
+    applySelection(selected) {
+      const input = selected && typeof selected === 'object' ? selected : {};
+      ['world', 'need', 'context', 'preference'].forEach(group => {
+        this.state[group] = typeof input[group] === 'string' ? input[group] : '';
+      });
+    }
+
+    restoreLocal() {
+      const stored = this.readStored();
+      this.applySelection(stored.selected || {});
+      if (this.isProjectCode(stored.projectCode)) this.projectCode = stored.projectCode;
+
+      if (Object.values(this.state).some(Boolean)) this.showResume();
+    }
+
+    async restoreRemote() {
+      const endpoint = this.dataset.projectEndpoint;
+      if (!endpoint) return;
+      let urlCode = '';
+      try {
+        urlCode = new URL(window.location.href).searchParams.get(this.dataset.projectParam || 'leaf_project') || '';
+      } catch {}
+      const code = this.isProjectCode(urlCode) ? urlCode : (this.isProjectCode(this.projectCode) ? this.projectCode : '');
+      if (!code) return;
+
+      try {
+        const response = await fetch(endpoint + '?code=' + encodeURIComponent(code), {
+          method: 'GET',
+          headers: { accept: 'application/json' },
+          credentials: 'omit'
+        });
+        if (!response.ok) return;
+        const payload = await response.json();
+        this.projectCode = payload.code || code;
+        this.applySelection(payload.selected || {});
+        this.pendingStep = String(payload.step || '');
+        this.saveLocal();
+        this.showResume();
+        this.showProjectControls();
+        this.setProjectStatus(this.dataset.restoredLabel || '');
+      } catch {}
+    }
+
+    saveLocal() {
+      try {
+        localStorage.setItem(this.dataset.storageKey, JSON.stringify({
+          selected: this.state,
+          collection: this.state.world || this.dataset.collection || '',
+          projectCode: this.projectCode || '',
+          updatedAt: Date.now()
+        }));
+      } catch {}
+    }
+
+    async saveRemote(button) {
+      const endpoint = this.dataset.projectEndpoint;
+      if (!endpoint || typeof crypto?.randomUUID !== 'function') {
+        this.setProjectStatus(this.dataset.saveErrorLabel || '');
+        return;
+      }
+
+      const originalLabel = button.textContent;
+      button.disabled = true;
+      button.textContent = this.dataset.savingLabel || originalLabel;
+      try {
+        const code = this.isProjectCode(this.projectCode) ? this.projectCode : crypto.randomUUID();
+        const activeStep = this.steps[this.index] || (this.homeMode ? 'world' : 'need');
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          credentials: 'omit',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            resume_code: code,
+            selected: this.state,
+            collection: this.state.world || this.dataset.collection || '',
+            step: activeStep
+          })
+        });
+        if (!response.ok) throw new Error('save_failed');
+        const payload = await response.json();
+        this.projectCode = payload.code || code;
+        this.saveLocal();
+
+        const url = new URL(window.location.href);
+        url.searchParams.set(this.dataset.projectParam || 'leaf_project', this.projectCode);
+        history.replaceState(null, '', url.toString());
+
+        this.showResume();
+        this.showProjectControls();
+        this.setProjectStatus(this.dataset.savedLabel || '');
+      } catch {
+        this.setProjectStatus(this.dataset.saveErrorLabel || '');
+      } finally {
+        button.disabled = false;
+        button.textContent = this.dataset.saveLabel || originalLabel;
+      }
+    }
+
+    async copyProjectLink() {
+      if (!this.isProjectCode(this.projectCode)) return;
+      const url = new URL(window.location.href);
+      url.searchParams.set(this.dataset.projectParam || 'leaf_project', this.projectCode);
+      try {
+        await navigator.clipboard.writeText(url.toString());
+        this.setProjectStatus(this.dataset.copiedLabel || '');
+      } catch {
+        this.setProjectStatus(url.toString());
+      }
+    }
+
+    showResume() {
+      const resume = this.querySelector('[data-resume]');
+      if (resume) resume.hidden = false;
+    }
+
+    showProjectControls() {
+      const copy = this.querySelector('[data-copy-project-link]');
+      if (copy) copy.hidden = !this.isProjectCode(this.projectCode);
+    }
+
+    setProjectStatus(value) {
+      const status = this.querySelector('[data-project-status]');
+      if (status) status.textContent = value || '';
+    }
+
+    markRemoteDirty() {
+      if (this.isProjectCode(this.projectCode)) this.setProjectStatus(this.dataset.unsavedLabel || '');
+    }
+
+    updateOptions() {
+      this.querySelectorAll('[data-option-group]').forEach((button) => {
+        const group = button.dataset.optionGroup;
+        button.setAttribute('aria-pressed', String(this.state[group] === button.dataset.optionValue));
+      });
+    }
+
+    updateSummary() {
+      const selected = this.groupOrder
+        .filter((group) => this.state[group])
+        .map((group) => this.displayValue(group, this.state[group]));
+      const progressSummary = this.querySelector('[data-selection-summary]');
+      if (progressSummary) progressSummary.textContent = selected.length ? selected.join(' · ') : '—';
+
+      const host = this.querySelector('[data-summary-list]');
+      if (!host) return;
+      host.replaceChildren();
+      if (!selected.length) {
+        const empty = document.createElement('span');
+        empty.textContent = '—';
+        host.append(empty);
+        return;
+      }
+      selected.forEach((value) => {
+        const chip = document.createElement('span');
+        chip.textContent = value;
+        host.append(chip);
+      });
+    }
+
+    update() {
+      const active = this.steps[this.index];
+      this.querySelectorAll('[data-step]').forEach((node) => {
+        node.hidden = node.dataset.step !== active;
+      });
+      const back = this.querySelector('[data-back]');
+      const next = this.querySelector('[data-next]');
+      if (back) back.hidden = this.index === 0 || active === 'result';
+      if (next) next.hidden = active === 'result';
+      const progressText = this.querySelector('[data-progress-text]');
+      if (progressText) progressText.textContent = String(this.index + 1) + '/' + String(this.steps.length);
+      const bar = this.querySelector('[data-progress-bar]');
+      if (bar) bar.style.width = (((this.index + 1) / this.steps.length) * 100) + '%';
+      this.updateOptions();
+      this.updateSummary();
+      this.showProjectControls();
+      if (active === 'result') this.renderResults();
+    }
+
+    renderResults() {
+      const unique = this.remoteResults || [];
+      const selectionCount = this.selectionCount || 0;
+
+      const host = this.querySelector('[data-results]');
+      const copy = this.querySelector('[data-result-copy]');
+      if (!host) return;
+      host.replaceChildren();
+
+      if (copy) copy.textContent = String(unique.length) + ' ' + (this.dataset.resultCountLabel || '');
+
+      unique.forEach((item) => {
+        const article = document.createElement('article');
+        article.className = 'leaf-advisor__result-card';
+
+        if (item.row.image) {
+          const image = document.createElement('img');
+          image.src = item.row.image;
+          image.alt = item.row.imageAlt || item.row.title;
+          image.loading = 'lazy';
+          article.append(image);
+        } else {
+          const spacer = document.createElement('span');
+          spacer.setAttribute('aria-hidden', 'true');
+          article.append(spacer);
+        }
+
+        const copyNode = document.createElement('div');
+        const title = document.createElement('strong');
+        title.textContent = item.row.title;
+        const meta = document.createElement('span');
+        const match = selectionCount ? String(item.matched) + '/' + String(selectionCount) + ' ' + (this.dataset.matchLabel || '') : '';
+        meta.textContent = [match, item.row.price].filter(Boolean).join(' · ');
+        copyNode.append(title, meta);
+
+        const link = document.createElement('a');
+        link.href = item.row.url;
+        link.textContent = this.dataset.viewLabel || '';
+        article.append(copyNode, link);
+        host.append(article);
+      });
+    }
+  });
+}
+{% endjavascript %}
+{% endif %}

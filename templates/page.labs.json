@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "leaf-labs",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

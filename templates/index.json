@@ -5,13 +5,13 @@
       "settings": {
         "image": "shopify://shop_images/tongranulat-lifestyle_2181111f-4416-4ebc-8dfd-7954152b8d85.png",
         "overlay": 75,
-        "eyebrow": "Pflanzenversorgung, die zusammenpasst",
-        "heading": "Pflanzenpflege beginnt im Wurzelraum.",
-        "text": "<p>Finde Substrat, Gefäß, Licht und Pflege als abgestimmtes System für deine Pflanze und deinen Raum.</p>",
-        "primary_label": "Substratwelt entdecken",
-        "primary_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
-        "secondary_label": "Interieur Solutions",
-        "secondary_link": "shopify://collections/interieur-solutions",
+        "eyebrow": "LEAF Berater · alle Produktwelten",
+        "heading": "Finde das Setup, das zu Pflanze, Raum und Routine passt.",
+        "text": "<p>Beantworte wenige Fragen und erhalte eine nachvollziehbare Vorauswahl aus Substrat, Gefäß, Licht, Anzucht, Pflege und Sets.</p>",
+        "primary_label": "LEAF Berater starten",
+        "primary_link": "#LeafAdvisor",
+        "secondary_label": "Produktwelten ansehen",
+        "secondary_link": "#HomeProductWorlds",
         "brand_logo": "shopify://shop_images/leaferservice-brand-logo.png",
         "show_brand_logo": true,
         "brand_logo_width": 250
@@ -286,7 +286,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/98154BE7-8D71-4BDE-8E7E-DE1C7F267A6E.jpg",
-            "alt_text": "",
+            "alt_text": "LEAFerservice Pflanzenprojekt – echte Anwendung aus dem eigenen Bildarchiv",
             "link": ""
           }
         },
@@ -294,7 +294,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/IMG_0717.jpg",
-            "alt_text": "",
+            "alt_text": "Zimmerpflanze im LEAFerservice Setup – Gefäß und Standort in der Praxis",
             "link": ""
           }
         },
@@ -302,7 +302,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/7168J-ylbOS_99c2dfdf-820a-4b9d-9460-09a2151f471e.jpg",
-            "alt_text": "",
+            "alt_text": "LEAFerservice Pflanzenwelt – eigene Pflanze im Wohnraum",
             "link": ""
           }
         },
@@ -310,7 +310,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/IMG_0722.jpg",
-            "alt_text": "",
+            "alt_text": "Pflanzenpflege bei LEAFerservice – reales Setup aus der Praxis",
             "link": ""
           }
         },
@@ -318,7 +318,7 @@
           "type": "image",
           "settings": {
             "image": "shopify://shop_images/LEAFers_Bl_hton_die_perfekte_Drainage.jpg",
-            "alt_text": "",
+            "alt_text": "Blähton und Pflanzenpflege – LEAFerservice Praxisbild",
             "link": ""
           }
         }
@@ -442,3 +442,4 @@
     "shop_videos"
   ]
 }
+

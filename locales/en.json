@@ -137,7 +137,17 @@
       "notice": "Note:",
       "configurator_title": "Use in your own mix",
       "configurator_text": "Open the LEAFerservice configurator and combine suitable components.",
-      "configurator_cta": "Open configurator"
+      "configurator_cta": "Open configurator",
+      "identity": "Manufacturer & model",
+      "light_distribution": "Light distribution",
+      "beam_angle": "Beam angle",
+      "installation": "Mounting & connection",
+      "electrical": "Electrical data",
+      "safety": "Safety",
+      "manual": "Open manufacturer page",
+      "advisor_title": "Place it in the LEAF advisor",
+      "advisor_text": "Use the same advisor as across the product worlds. Your previous selections remain available.",
+      "advisor_cta": "Open LEAF advisor"
     },
     "media": {
       "label": "Product images"
@@ -274,7 +284,56 @@
       "builder_density": "Power / area",
       "builder_cart": "Add setup to cart",
       "builder_added": "The setup was added to the cart.",
-      "builder_error": "The full setup could not be added. Please try again."
+      "builder_error": "The full setup could not be added. Please try again.",
+      "advanced_builder_eyebrow": "Advanced tool",
+      "advanced_builder_title": "Open 3D room planning",
+      "advanced_builder_text": "Optional: plan the room, objects and specific lights to scale.",
+      "advanced_configurator_eyebrow": "Advanced tool",
+      "advanced_configurator_title": "Fine-tune the lighting setup",
+      "advanced_configurator_text": "Optional: compare mounting, light level and budget in more detail."
+    },
+    "advisor": {
+      "eyebrow": "LEAF advisor",
+      "heading": "One advisor across every product world.",
+      "intro": "The current collection provides context. Your selections persist across product worlds, while specialist tools only appear where they add real value.",
+      "resume": "Saved selection found",
+      "skip_to_products": "Go straight to products",
+      "progress_label": "LEAF advisor progress",
+      "no_selection": "No selection yet",
+      "need_heading": "What do you want to achieve or solve?",
+      "need_text": "Choose the need that comes closest to your project.",
+      "context_heading": "Where and in what context should it work?",
+      "context_text": "Location, room and plant context narrow down sensible solutions.",
+      "preference_heading": "What matters to you in the implementation?",
+      "preference_text": "Choose a preference or skip this step.",
+      "result_eyebrow": "Your shortlist",
+      "result_heading": "These products best match your input.",
+      "result_text": "Ranking is derived from the structured product data in this collection.",
+      "reset": "Start over",
+      "all_products": "Compare all products",
+      "back": "Back",
+      "next": "Continue",
+      "summary_eyebrow": "Your setup",
+      "summary_heading": "Selection stays saved",
+      "summary_note": "Your selection stays local in your browser by default. Only “Save project” stores the non-personal project state in Supabase.",
+      "match_label": "matches",
+      "view_product": "Review product",
+      "result_count": "recommendations",
+      "dimmable": "Dimmable",
+      "home_heading": "Find your setup across every product world.",
+      "home_intro": "Start with a product world, then narrow the choice by need, context and preference. Your selection stays connected when you move between product worlds.",
+      "world_heading": "Which product world do you want to start with?",
+      "world_text": "Choose the area you want to solve first. You can switch later or save your project.",
+      "save_project": "Save project",
+      "saving_project": "Saving …",
+      "saved_project": "Project saved. The link contains your project code.",
+      "unsaved_project": "Changes have not been saved again yet.",
+      "save_error": "The project could not be saved. Your local selection is still available.",
+      "restored_project": "Saved project loaded.",
+      "copy_project_link": "Copy project link",
+      "copied_project_link": "Project link copied.",
+      "loading": "Loading your selection …",
+      "unavailable": "The advisor is temporarily unavailable. You can browse the products directly."
     }
   },
   "recipe": {
@@ -561,5 +620,44 @@
     "step_3_text": "After approval, we coordinate sourcing, potting and the agreed on-site setup.",
     "cost_heading": "Transparency before we start.",
     "cost_text": "Before implementation, the organisation receives a clear project overview including any necessary external delivery costs. Materials are sourced only after approval; the initial discussion and planning remain non-binding."
+  },
+  "labs": {
+    "eyebrow": "LEAFerservice Labs",
+    "heading": "Technology behind LEAFerservice",
+    "intro": "LEAFerservice is more than a storefront. The platform also serves as a live development environment for modern commerce architecture, analytics and controlled AI automation.",
+    "fallback_status": "Verified public system overview",
+    "updated_label": "Automatically updated:",
+    "security_title": "Public-safe by design.",
+    "security_text": "Only approved, abstracted information is shown. Source code, prompts, security architecture, credentials, internal automation logic, supplier terms and personal data remain excluded.",
+    "cta_heading": "Work together remotely",
+    "cta_text": "Available for selected 100% remote projects in e-commerce, data and analytics, and AI automation.",
+    "cta_button": "Business & Consulting",
+    "cards": {
+      "commerce": {
+        "title": "Commerce Architecture",
+        "text": "Centralized data and controlled storefront projection for consistent commerce workflows.",
+        "fallback_value": "Live",
+        "unit": "structured commerce records"
+      },
+      "analytics": {
+        "title": "Data & Analytics",
+        "text": "Aggregated commerce reporting for decision support, conversion analysis and continuous improvement.",
+        "fallback_value": "Current",
+        "unit": "reporting days"
+      },
+      "ai": {
+        "title": "AI Agents & Automation",
+        "text": "Specialized AI-assisted workflows with validation and human approval for sensitive actions.",
+        "fallback_value": "Controlled",
+        "multiple_value": "Multiple controlled workflows",
+        "single_value": "Controlled workflow"
+      },
+      "development": {
+        "title": "AI-native Development",
+        "text": "Voice-assisted, iterative development supported by automated validation and review workflows.",
+        "fallback_value": "Active",
+        "active_value": "Active"
+      }
+    }
   }
 }

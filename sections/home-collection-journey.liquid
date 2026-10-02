@@ -4,14 +4,18 @@
   assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
 
   if request.page_type == 'index'
-    assign section_heading = 'Finde deinen Projektbereich'
-    assign section_intro = '<p>Wähle zuerst den Bereich, den du lösen möchtest. Produkte, Wissen und Konfiguratoren bleiben danach miteinander verknüpft.</p>'
+    assign section_heading = 'Oder direkt in eine Produktwelt einsteigen'
+    assign section_intro = '<p>Wenn du schon weißt, wonach du suchst, kannst du den Berater überspringen und direkt in Substrat, Interieur, Anzucht, Gefäße, Pflege oder Sets einsteigen.</p>'
   endif
 %}
 
 <section class="home-journey" id="HomeJourney-{{ section.id }}" data-home-journey data-result-prefix="{{ section.settings.result_prefix | escape }}" data-result-suffix="{{ section.settings.result_suffix | escape }}" aria-labelledby="HomeJourneyHeading-{{ section.id }}">
   <div class="page-width">
-    <header class="home-journey__header" data-leaf-reveal>
+    {% if request.page_type == 'index' %}
+      {% render 'leaf-shared-advisor', world_blocks: section.blocks, section_id: section.id, home_mode: true %}
+    {% endif %}
+
+    <header class="home-journey__header" data-leaf-reveal{% if request.page_type == 'index' %} id="HomeProductWorlds"{% endif %}>
       <div>
         {% if section.settings.eyebrow != blank %}<p class="home-journey__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
         {% if section_heading != blank %}<h2 id="HomeJourneyHeading-{{ section.id }}">{{ section_heading | escape }}</h2>{% endif %}

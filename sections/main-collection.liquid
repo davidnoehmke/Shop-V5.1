@@ -93,7 +93,16 @@
     </div>
   </header>
 
+  {% render 'leaf-shared-advisor', collection: collection, section_id: section.id %}
+
   {% if collection.handle == 'interieur-solutions' %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_builder_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_builder_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_builder_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
     <interieur-room-builder
       class="interieur-room-builder"
       data-cart-add-url="{{ routes.cart_add_url | append: '.js' }}"
@@ -243,9 +252,18 @@
         </div>
       </section>
     </interieur-room-builder>
+      </div>
+    </details>
   {% endif %}
 
   {% if collection.handle == 'interieur-solutions' %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_configurator_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_configurator_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_configurator_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
     <interieur-solutions-configurator
     class="interieur-configurator"
     data-result-one="{{ 'collection.interieur.result_one' | t | escape }}"
@@ -388,6 +406,8 @@
       </div>
     </section>
   </interieur-solutions-configurator>
+      </div>
+    </details>
   {% endif %}
 
   <div{% if collection.handle == 'interieur-solutions' %} id="InterieurCatalog"{% endif %} class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
@@ -432,6 +452,30 @@
     {% endif %}
 
     <div class="main-collection__results">
+      <section class="main-collection__decision" aria-labelledby="CollectionDecisionHeading-{{ section.id }}">
+        <div class="main-collection__decision-head">
+          <p>{{ 'collection.decision.eyebrow' | t }}</p>
+          <h2 id="CollectionDecisionHeading-{{ section.id }}">{{ 'collection.decision.heading' | t }}</h2>
+        </div>
+        <div class="main-collection__decision-steps">
+          <div>
+            <span aria-hidden="true">01</span>
+            <strong>{{ 'collection.decision.use_title' | t }}</strong>
+            <p>{{ 'collection.decision.use_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">02</span>
+            <strong>{{ 'collection.decision.data_title' | t }}</strong>
+            <p>{{ 'collection.decision.data_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">03</span>
+            <strong>{{ 'collection.decision.choose_title' | t }}</strong>
+            <p>{{ 'collection.decision.choose_text' | t }}</p>
+          </div>
+        </div>
+      </section>
+
       <div class="main-collection__tools">
         {% if has_type_filters %}
           <div class="main-collection__active-context" data-filter-context aria-live="polite">
@@ -504,7 +548,26 @@
   .main-collection__filter-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__filters button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
   .main-collection__filters button[aria-pressed="true"] .main-collection__filter-icon { border-color: color-mix(in srgb, white, transparent 55%); }
+  .main-collection__advanced { margin: 1rem 0; border: 1px solid var(--border); background: var(--background); }
+  .main-collection__advanced > summary { list-style: none; display: grid; grid-template-columns: minmax(120px,.35fr) minmax(0,.65fr) auto; gap: .25rem 1rem; align-items: center; min-height: 72px; padding: .9rem 1rem; cursor: pointer; }
+  .main-collection__advanced > summary::-webkit-details-marker { display: none; }
+  .main-collection__advanced > summary::after { content: '+'; grid-column: 3; grid-row: 1 / span 2; font-size: 1.3rem; color: var(--accent); }
+  .main-collection__advanced[open] > summary::after { content: '−'; }
+  .main-collection__advanced > summary span { color: var(--accent); font-size: .66rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .main-collection__advanced > summary strong { font-size: .88rem; }
+  .main-collection__advanced > summary small { grid-column: 2; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .main-collection__advanced-body { border-top: 1px solid var(--border); }
+  .main-collection__advanced-body > * { margin-top: 0; }
   .main-collection__results { min-width: 0; }
+  .main-collection__decision { margin-bottom: 1.2rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface), var(--background) 35%); }
+  .main-collection__decision-head { display: grid; grid-template-columns: minmax(150px,.45fr) minmax(0,1.55fr); gap: 1rem; align-items: end; padding: 1rem 1.1rem .9rem; border-bottom: 1px solid var(--border); }
+  .main-collection__decision-head p { margin: 0; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-collection__decision-head h2 { margin: 0; font-size: clamp(1.35rem, 2.2vw, 1.9rem); line-height: 1.05; letter-spacing: -.03em; }
+  .main-collection__decision-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; background: var(--border); }
+  .main-collection__decision-steps > div { min-width: 0; min-height: 118px; display: grid; grid-template-columns: 34px minmax(0,1fr); align-content: center; gap: .25rem .65rem; padding: .9rem 1rem; background: var(--background); }
+  .main-collection__decision-steps > div > span { grid-row: 1 / span 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .65rem; font-weight: 850; }
+  .main-collection__decision-steps strong { font-size: .78rem; }
+  .main-collection__decision-steps p { margin: 0; color: var(--muted); font-size: .72rem; line-height: 1.45; }
   .main-collection__tools { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1.2rem; padding-block: .8rem; border-block: 1px solid var(--border); }
   .main-collection__sort { display: flex; align-items: center; gap: .7rem; margin-left: auto; }
   .main-collection__sort label { font-size: .75rem; font-weight: 800; }
@@ -532,6 +595,12 @@
     .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 900px) {
+    .main-collection__advanced > summary { grid-template-columns: 1fr auto; gap: .2rem .7rem; }
+    .main-collection__advanced > summary span, .main-collection__advanced > summary strong, .main-collection__advanced > summary small { grid-column: 1; }
+    .main-collection__advanced > summary::after { grid-column: 2; grid-row: 1 / span 3; }
+    .main-collection__decision-head { grid-template-columns: 1fr; gap: .35rem; }
+    .main-collection__decision-steps { grid-template-columns: 1fr; }
+    .main-collection__decision-steps > div { min-height: 0; }
     .main-collection__hero { grid-template-columns: 1fr; }
     .main-collection__hero-copy { padding-bottom: 0; }
     .main-collection__hero-media { aspect-ratio: 16 / 9; max-height: 280px; }
