@@ -1,7 +1,20 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
-const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+function readSecretKey() {
+  const raw = Deno.env.get("SUPABASE_SECRET_KEYS") ?? "";
+  if (raw) {
+    try {
+      const keys = JSON.parse(raw);
+      if (typeof keys?.default === "string" && keys.default) return keys.default;
+    } catch {
+      console.error("storefront-assistant could not parse SUPABASE_SECRET_KEYS");
+    }
+  }
+  return Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+}
+
+const serviceRole = readSecretKey();
 const openaiKey = Deno.env.get("OPENAI_API_KEY") ?? "";
 const model = Deno.env.get("OPENAI_MODEL") || "gpt-5.6-luna";
 const allowedOrigins = new Set(["https://leaferservice.com", "https://www.leaferservice.com"]);
@@ -59,8 +72,7 @@ function scoreText(parts: unknown[], needles: string[]) {
 async function rest(path: string) {
   const response = await fetch(`${supabaseUrl}/rest/v1/${path}`, {
     headers: {
-      apikey: serviceRole,
-      authorization: `Bearer ${serviceRole}`
+      apikey: serviceRole
     }
   });
   if (!response.ok) throw new Error("context_fetch_failed");
@@ -143,7 +155,14 @@ Deno.serve(async (req: Request) => {
   if (!allowedOrigins.has(origin)) return json(origin, 403, { error: "origin_not_allowed" });
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(origin) });
   if (req.method !== "POST") return json(origin, 405, { error: "method_not_allowed" });
-  if (!supabaseUrl || !serviceRole || !openaiKey) return json(origin, 503, { error: "service_unavailable" });
+  if (!supabaseUrl || !serviceRole || !openaiKey) {
+    console.error("storefront-assistant runtime config missing", {
+      supabaseUrl: Boolean(supabaseUrl),
+      serviceRole: Boolean(serviceRole),
+      openaiKey: Boolean(openaiKey)
+    });
+    return json(origin, 503, { error: "service_unavailable" });
+  }
   if (!(await rateAllowed(req))) return json(origin, 429, { error: "rate_limited" });
 
   const declared = Number(req.headers.get("content-length") || 0);
