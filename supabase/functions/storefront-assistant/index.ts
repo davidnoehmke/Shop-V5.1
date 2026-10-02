@@ -119,12 +119,6 @@ function fallbackAnswer(context: any, locale: string) {
   const knowledge = Array.isArray(context?.knowledge) ? context.knowledge : [];
   const products = Array.isArray(context?.products) ? context.products : [];
 
-  if (knowledge.length) {
-    const top = knowledge[0];
-    const answer = clean(top?.answer, 1400);
-    if (answer) return answer;
-  }
-
   if (products.length) {
     const top = products[0];
     const title = clean(top?.canonical_title, 180);
@@ -144,6 +138,12 @@ function fallbackAnswer(context: any, locale: string) {
       "Für eine konkrete Produktauswahl nach Pflanze, Standort und Routine nutze den LEAF Berater."
     ].filter(Boolean);
     return parts.join(" ");
+  }
+
+  if (knowledge.length) {
+    const top = knowledge[0];
+    const answer = clean(top?.answer, 1400);
+    if (answer) return answer;
   }
 
   return locale === "en"
