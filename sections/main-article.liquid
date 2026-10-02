@@ -63,7 +63,7 @@
 
   {% if article.image != blank %}
     <figure class="main-article__hero page-width">
-      {{ article.image | image_url: width: 2200 | image_tag: widths: '750, 1100, 1500, 1800, 2200', sizes: '(min-width: 1400px) 1320px, calc(100vw - 2rem)', loading: 'eager', fetchpriority: 'high', alt: article_alt }}
+      {{ article.image | image_url: width: 2200 | image_tag: widths: '750, 1100, 1500, 1800, 2200', sizes: '(min-width: 1280px) 1240px, calc(100vw - 2rem)', loading: 'eager', fetchpriority: 'high', alt: article_alt }}
     </figure>
   {% endif %}
 

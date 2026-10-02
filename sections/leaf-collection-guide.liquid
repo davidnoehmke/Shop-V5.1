@@ -1,10 +1,10 @@
 {% liquid
-  assign collection_intro = collection.metafields.leafer.intro.value
   assign collection_faq = collection.metafields.leafer.faq.value
   assign collection_keywords = collection.metafields.leafer.keywords.value
   assign collection_guide = collection.metafields.leafer.guide.value
+  assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   assign has_guide = false
-  if collection_intro != blank or collection_guide != blank or collection_faq != blank or collection_keywords != blank
+  if collection_guide != blank or collection_faq != blank or collection_keywords != blank or knowledge_atoms != blank
     assign has_guide = true
   endif
 %}
@@ -18,18 +18,26 @@
         </span>
         <p>{{ 'collection.guide.eyebrow' | t }}</p>
         <h2 id="LeafCollectionGuideHeading-{{ section.id }}">{{ 'collection.guide.heading' | t: collection: collection.title }}</h2>
-        {% if collection_intro != blank %}<div class="rte">{{ collection_intro | escape | newline_to_br }}</div>{% endif %}
       </header>
 
       <div class="leaf-collection-guide__content">
         {% if collection_guide != blank %}
-          <article class="leaf-collection-guide__panel">
-            <div class="leaf-collection-guide__panel-heading">
+          <details class="leaf-collection-guide__panel">
+            <summary class="leaf-collection-guide__panel-heading">
               <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20h14M7 17V9l5-4 5 4v8M10 17v-5h4v5"/></svg></span>
               <strong>{% if request.locale.iso_code == 'de' %}Praxiswissen{% else %}Practical guidance{% endif %}</strong>
-            </div>
+              <span class="leaf-collection-guide__plus" aria-hidden="true">+</span>
+            </summary>
             <div class="leaf-collection-guide__body rte">{{ collection_guide | escape | newline_to_br }}</div>
-          </article>
+          </details>
+        {% endif %}
+
+        {% if knowledge_atoms != blank %}
+          <div class="leaf-collection-guide__knowledge">
+            <p class="leaf-collection-guide__knowledge-eyebrow">{{ 'collection.guide.atoms_eyebrow' | t }}</p>
+            <h3>{{ 'collection.guide.atoms_heading' | t }}</h3>
+            {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'long', limit: 12 %}
+          </div>
         {% endif %}
 
         {% if collection_keywords != blank %}
@@ -53,7 +61,7 @@
                     <span>{{ item.question | escape }}</span>
                     <span class="leaf-collection-guide__plus" aria-hidden="true">+</span>
                   </summary>
-                  <div class="rte">{{ item.answer.value | escape | newline_to_br }}</div>
+                  <div class="rte">{{ item.answer | escape | newline_to_br }}</div>
                 </details>
               {% endif %}
             {% endfor %}
@@ -75,12 +83,20 @@
   .leaf-collection-guide h2 { margin: 0; max-width: 14ch; font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: .98; letter-spacing: -.045em; }
   .leaf-collection-guide__intro .rte { margin-top: 1rem; color: var(--muted); line-height: 1.65; }
   .leaf-collection-guide__content { display: grid; gap: 1rem; }
-  .leaf-collection-guide__panel, .leaf-collection-guide__faq { border: 1px solid var(--border); background: var(--surface); padding: clamp(1.1rem, 2vw, 1.6rem); }
+  .leaf-collection-guide__panel, .leaf-collection-guide__knowledge, .leaf-collection-guide__faq { border: 1px solid var(--border); background: var(--surface); padding: clamp(1.1rem, 2vw, 1.6rem); }
+  .leaf-collection-guide__knowledge-eyebrow { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .leaf-collection-guide__knowledge h3 { margin: 0 0 1rem; font-size: clamp(1.35rem, 2.2vw, 1.9rem); }
+  .leaf-collection-guide__knowledge .leaf-atoms { margin: 0; }
   .leaf-collection-guide__panel-heading, .leaf-collection-guide__faq-heading { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
+  .leaf-collection-guide__panel > summary { min-height: 58px; margin: 0; cursor: pointer; list-style: none; }
+  .leaf-collection-guide__panel > summary::-webkit-details-marker { display: none; }
+  .leaf-collection-guide__panel > summary::marker { content: ''; }
+  .leaf-collection-guide__panel > summary .leaf-collection-guide__plus { margin-left: auto; }
+  .leaf-collection-guide__panel[open] > summary .leaf-collection-guide__plus { transform: rotate(45deg); background: var(--accent); color: #fff; }
   .leaf-collection-guide__panel-heading > span, .leaf-collection-guide__faq-heading > span { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); }
   .leaf-collection-guide__panel-heading svg, .leaf-collection-guide__faq-heading svg { width: 19px; }
   .leaf-collection-guide__panel-heading strong { font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; }
-  .leaf-collection-guide__body { color: var(--muted); line-height: 1.7; }
+  .leaf-collection-guide__body { max-width: 78ch; padding-top: .35rem; color: var(--muted); line-height: 1.72; }
   .leaf-collection-guide__topics { display: flex; flex-wrap: wrap; gap: .5rem; }
   .leaf-collection-guide__topics span { min-height: 38px; display: inline-flex; align-items: center; gap: .45rem; padding: .45rem .65rem; border: 1px solid var(--border); background: var(--background); font-size: .76rem; font-weight: 750; }
   .leaf-collection-guide__topics svg { width: 16px; color: var(--accent); }

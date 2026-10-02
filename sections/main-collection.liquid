@@ -1,6 +1,7 @@
 {% liquid
   assign sort_by = collection.sort_by | default: collection.default_sort_by
   assign hero_intro = collection.metafields.leafer.intro.value | strip_html | strip
+  assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   if hero_intro == blank
     assign hero_intro = collection.description | strip_html | strip | truncatewords: 38
   endif
@@ -13,6 +14,10 @@
   endif
 
   assign product_types = collection.products | map: 'type' | compact | uniq | sort_natural
+  assign has_type_filters = false
+  if section.settings.show_type_filters and product_types.size > 1
+    assign has_type_filters = true
+  endif
 
   if request.locale.iso_code == 'de'
     assign hero_eyebrow = 'Kollektion'
@@ -21,6 +26,7 @@
     assign curated_label = 'Kuratiertes Sortiment'
     assign compare_label = 'Direkt vergleichen'
     assign knowledge_label = 'Wissen & Anwendung'
+    assign landscape_label = 'Produktlandschaft'
   else
     assign hero_eyebrow = 'Collection'
     assign discover_label = 'Explore products'
@@ -28,6 +34,7 @@
     assign curated_label = 'Curated assortment'
     assign compare_label = 'Compare directly'
     assign knowledge_label = 'Knowledge & use'
+    assign landscape_label = 'Product landscape'
   endif
 %}
 
@@ -42,10 +49,15 @@
       </p>
       <h1>{{ collection.title | escape }}</h1>
       {% if hero_intro != blank %}<p class="main-collection__intro">{{ hero_intro | escape }}</p>{% endif %}
+      {% if knowledge_atoms != blank %}
+        <div class="main-collection__knowledge">
+          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'chips', limit: 4 %}
+        </div>
+      {% endif %}
 
       <div class="main-collection__actions">
         <a class="main-collection__primary-action" href="#CollectionProducts-{{ section.id }}">{{ discover_label }} <span aria-hidden="true">↓</span></a>
-        {% if section.settings.show_type_filters and product_types.size > 1 %}
+        {% if has_type_filters %}
           <a class="main-collection__secondary-action" href="#CollectionFilters-{{ section.id }}">{{ filter_label }} <span aria-hidden="true">→</span></a>
         {% endif %}
       </div>
@@ -81,52 +93,417 @@
     </div>
   </header>
 
-  <div class="main-collection__tools" id="CollectionFilters-{{ section.id }}">
-    {% if section.settings.show_type_filters and product_types.size > 1 %}
-      <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
-        <button type="button" class="main-collection__filter" data-product-filter="all" aria-pressed="true">
-          <span class="main-collection__filter-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
-          </span>
-          <span>{{ 'collection.all' | t }}</span>
-        </button>
-        {% for product_type in product_types %}
-          {% assign product_type_downcase = product_type | downcase %}
-          <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" aria-pressed="false">
-            <span class="main-collection__filter-icon" aria-hidden="true">
-              {% if product_type_downcase contains 'licht' or product_type_downcase contains 'led' or product_type_downcase contains 'lamp' %}
-                <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
-              {% elsif product_type_downcase contains 'substrat' or product_type_downcase contains 'mix' %}
-                <svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg>
-              {% elsif product_type_downcase contains 'topf' or product_type_downcase contains 'gefäß' or product_type_downcase contains 'gefass' %}
-                <svg viewBox="0 0 24 24"><path d="M7 8h10l-1 12H8L7 8ZM5 5h14v3H5z"/></svg>
-              {% elsif product_type_downcase contains 'pflanz' %}
-                <svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
-              {% else %}
-                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 10h8M8 14h5"/></svg>
-              {% endif %}
-            </span>
-            <span>{{ product_type | escape }}</span>
-          </button>
-        {% endfor %}
+  {% render 'leaf-guided-advisor', collection: collection, section_id: section.id %}
+
+  {% if collection.handle == 'interieur-solutions' %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_builder_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_builder_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_builder_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
+    <interieur-room-builder
+      class="interieur-room-builder"
+      data-cart-add-url="{{ routes.cart_add_url | append: '.js' }}"
+      data-cart-url="{{ routes.cart_url }}"
+      data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+      data-added-label="{{ 'collection.interieur.builder_added' | t | escape }}"
+      data-error-label="{{ 'collection.interieur.builder_error' | t | escape }}"
+    >
+      <section class="interieur-room-builder__section" aria-labelledby="InterieurRoomBuilderHeading">
+        <header class="interieur-room-builder__head">
+          <div>
+            <p class="interieur-room-builder__eyebrow">{{ 'collection.interieur.builder_eyebrow' | t }}</p>
+            <h2 id="InterieurRoomBuilderHeading">{{ 'collection.interieur.builder_heading' | t }}</h2>
+            <p>{{ 'collection.interieur.builder_intro' | t }}</p>
+          </div>
+          <div class="interieur-room-builder__steps" aria-label="{{ 'collection.interieur.builder_steps_label' | t }}">
+            <span>01 · {{ 'collection.interieur.builder_step_room' | t }}</span>
+            <span>02 · {{ 'collection.interieur.builder_step_place' | t }}</span>
+            <span>03 · {{ 'collection.interieur.builder_step_setup' | t }}</span>
+          </div>
+        </header>
+
+        <div class="interieur-room-builder__desktop">
+          <div class="interieur-room-builder__toolbar">
+            <div class="interieur-room-builder__room">
+              <strong>{{ 'collection.interieur.builder_room' | t }}</strong>
+              <label>
+                <span>{{ 'collection.interieur.builder_width' | t }}</span>
+                <input type="number" min="2" max="12" step="0.1" value="4.2" data-room-width>
+              </label>
+              <label>
+                <span>{{ 'collection.interieur.builder_depth' | t }}</span>
+                <input type="number" min="2" max="12" step="0.1" value="3.2" data-room-depth>
+              </label>
+              <label>
+                <span>{{ 'collection.interieur.builder_height' | t }}</span>
+                <input type="number" min="2" max="5" step="0.1" value="2.5" data-room-height>
+              </label>
+            </div>
+
+            <div class="interieur-room-builder__library">
+              <strong>{{ 'collection.interieur.builder_elements' | t }}</strong>
+              <div class="interieur-room-builder__primitive-actions">
+                <button type="button" data-add-primitive="plant">{{ 'collection.interieur.builder_plant' | t }}</button>
+                <button type="button" data-add-primitive="shelf">{{ 'collection.interieur.builder_shelf' | t }}</button>
+                <button type="button" data-add-primitive="window">{{ 'collection.interieur.builder_window' | t }}</button>
+              </div>
+            </div>
+
+            <div class="interieur-room-builder__products">
+              <strong>{{ 'collection.interieur.builder_products' | t }}</strong>
+              <label class="visually-hidden" for="InterieurBuilderProduct-{{ section.id }}">{{ 'collection.interieur.builder_product_select' | t }}</label>
+              <select id="InterieurBuilderProduct-{{ section.id }}" data-builder-product-select>
+                {% for product in collection.products limit: 50 %}
+                  {% liquid
+                    assign builder_variant = product.selected_or_first_available_variant
+                    assign builder_watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+                    assign builder_mounting = product.metafields.lighting.mounting.value
+                    assign builder_tags = product.tags | join: ' '
+                    capture builder_search
+                      echo product.title
+                      echo ' '
+                      echo product.type
+                      echo ' '
+                      echo builder_mounting
+                      echo ' '
+                      echo builder_tags
+                    endcapture
+                    assign builder_search = builder_search | strip_newlines | downcase | strip
+                  %}
+                  {% if builder_variant != blank %}
+                    <option
+                      value="{{ builder_variant.id }}"
+                      data-title="{{ product.title | escape }}"
+                      data-price="{{ builder_variant.price }}"
+                      data-watts="{{ builder_watts }}"
+                      data-search="{{ builder_search | escape }}"
+                      data-url="{{ product.url }}"
+                      {% if product.featured_image != blank %}data-image="{{ product.featured_image | image_url: width: 320 }}"{% endif %}
+                    >
+                      {{ product.title | escape }} · {{ builder_variant.price | money }}
+                    </option>
+                  {% endif %}
+                {% endfor %}
+              </select>
+              <button type="button" class="interieur-room-builder__add-product" data-add-product>
+                {{ 'collection.interieur.builder_add_product' | t }}
+              </button>
+            </div>
+          </div>
+
+          <div class="interieur-room-builder__viewport" data-builder-viewport>
+            <canvas
+              class="interieur-room-builder__canvas"
+              data-room-canvas
+              width="1600"
+              height="900"
+              aria-label="{{ 'collection.interieur.builder_canvas_label' | t }}"
+            ></canvas>
+            <div class="interieur-room-builder__hint">{{ 'collection.interieur.builder_hint' | t }}</div>
+            <div class="interieur-room-builder__selection" data-selection hidden>
+              <strong data-selection-title></strong>
+              <span data-selection-meta></span>
+            </div>
+          </div>
+
+          <div class="interieur-room-builder__controls">
+            <div class="interieur-room-builder__camera" role="group" aria-label="{{ 'collection.interieur.builder_camera' | t }}">
+              <button type="button" data-camera="-15" aria-label="{{ 'collection.interieur.builder_camera_left' | t }}">↶</button>
+              <button type="button" data-camera="15" aria-label="{{ 'collection.interieur.builder_camera_right' | t }}">↷</button>
+            </div>
+
+            <div class="interieur-room-builder__object-actions" role="group" aria-label="{{ 'collection.interieur.builder_object_actions' | t }}">
+              <button type="button" data-object-rotate="-15">{{ 'collection.interieur.builder_rotate_left' | t }}</button>
+              <button type="button" data-object-rotate="15">{{ 'collection.interieur.builder_rotate_right' | t }}</button>
+              <button type="button" data-duplicate>{{ 'collection.interieur.builder_duplicate' | t }}</button>
+              <button type="button" data-delete>{{ 'collection.interieur.builder_delete' | t }}</button>
+            </div>
+
+            <button type="button" class="interieur-room-builder__reset" data-builder-reset>
+              {{ 'collection.interieur.builder_reset' | t }}
+            </button>
+          </div>
+
+          <div class="interieur-room-builder__summary">
+            <div>
+              <span>{{ 'collection.interieur.builder_objects' | t }}</span>
+              <strong data-summary-count>0</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_price' | t }}</span>
+              <strong data-summary-price>—</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_power' | t }}</span>
+              <strong data-summary-watts>0 W</strong>
+            </div>
+            <div>
+              <span>{{ 'collection.interieur.builder_density' | t }}</span>
+              <strong data-summary-density>0 W/m²</strong>
+            </div>
+            <button type="button" class="interieur-room-builder__cart" data-add-setup disabled>
+              {{ 'collection.interieur.builder_cart' | t }}
+            </button>
+            <p class="interieur-room-builder__status" data-builder-status aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+    </interieur-room-builder>
       </div>
+    </details>
+  {% endif %}
+
+  {% if collection.handle == 'interieur-solutions' %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_configurator_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_configurator_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_configurator_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
+    <interieur-solutions-configurator
+    class="interieur-configurator"
+    data-result-one="{{ 'collection.interieur.result_one' | t | escape }}"
+    data-result-many="{{ 'collection.interieur.result_many' | t | escape }}"
+    data-no-result="{{ 'collection.interieur.no_result' | t | escape }}"
+    data-budget-relaxed="{{ 'collection.interieur.budget_relaxed' | t | escape }}"
+    data-profile-copy="{{ 'collection.interieur.result_copy' | t | escape }}"
+  >
+    <section class="interieur-configurator__section" aria-labelledby="InterieurConfiguratorHeading">
+      <header class="interieur-configurator__head">
+        <div>
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.eyebrow' | t }}</p>
+          <h2 id="InterieurConfiguratorHeading">{{ 'collection.interieur.heading' | t }}</h2>
+          <p class="interieur-configurator__intro">{{ 'collection.interieur.intro' | t }}</p>
+        </div>
+        <div class="interieur-configurator__progress" aria-hidden="true">
+          <span>{{ 'collection.interieur.steps.room' | t }}</span>
+          <span>{{ 'collection.interieur.steps.project' | t }}</span>
+          <span>{{ 'collection.interieur.steps.mount' | t }}</span>
+          <span>{{ 'collection.interieur.steps.light' | t }}</span>
+          <span>{{ 'collection.interieur.steps.budget' | t }}</span>
+        </div>
+      </header>
+
+      <div class="interieur-configurator__workspace">
+        <form class="interieur-configurator__form" data-config-form>
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.room' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="room" value="living" checked><span data-option-label>{{ 'collection.interieur.room.living' | t }}</span></label>
+              <label><input type="radio" name="room" value="office"><span data-option-label>{{ 'collection.interieur.room.office' | t }}</span></label>
+              <label><input type="radio" name="room" value="kitchen"><span data-option-label>{{ 'collection.interieur.room.kitchen' | t }}</span></label>
+              <label><input type="radio" name="room" value="plantroom"><span data-option-label>{{ 'collection.interieur.room.plantroom' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.project' | t }}</legend>
+            <div class="interieur-configurator__options interieur-configurator__options--wide">
+              <label><input type="radio" name="project" value="single" checked><span data-option-label>{{ 'collection.interieur.project.single' | t }}</span></label>
+              <label><input type="radio" name="project" value="shelf"><span data-option-label>{{ 'collection.interieur.project.shelf' | t }}</span></label>
+              <label><input type="radio" name="project" value="pendant"><span data-option-label>{{ 'collection.interieur.project.pendant' | t }}</span></label>
+              <label><input type="radio" name="project" value="station"><span data-option-label>{{ 'collection.interieur.project.station' | t }}</span></label>
+              <label><input type="radio" name="project" value="habitat"><span data-option-label>{{ 'collection.interieur.project.habitat' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.mount' | t }}</legend>
+            <div class="interieur-configurator__options interieur-configurator__options--wide">
+              <label><input type="radio" name="mount" value="open" checked><span data-option-label>{{ 'collection.interieur.mount.open' | t }}</span></label>
+              <label><input type="radio" name="mount" value="e27"><span data-option-label>{{ 'collection.interieur.mount.e27' | t }}</span></label>
+              <label><input type="radio" name="mount" value="shelf"><span data-option-label>{{ 'collection.interieur.mount.shelf' | t }}</span></label>
+              <label><input type="radio" name="mount" value="pendant"><span data-option-label>{{ 'collection.interieur.mount.pendant' | t }}</span></label>
+              <label><input type="radio" name="mount" value="floor"><span data-option-label>{{ 'collection.interieur.mount.floor' | t }}</span></label>
+              <label><input type="radio" name="mount" value="system"><span data-option-label>{{ 'collection.interieur.mount.system' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.light' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="light" value="supplement" checked><span data-option-label>{{ 'collection.interieur.light.supplement' | t }}</span></label>
+              <label><input type="radio" name="light" value="balanced"><span data-option-label>{{ 'collection.interieur.light.balanced' | t }}</span></label>
+              <label><input type="radio" name="light" value="intensive"><span data-option-label>{{ 'collection.interieur.light.intensive' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>{{ 'collection.interieur.steps.budget' | t }}</legend>
+            <div class="interieur-configurator__options">
+              <label><input type="radio" name="budget" value="75"><span data-option-label>{{ 'collection.interieur.budget.under_75' | t }}</span></label>
+              <label><input type="radio" name="budget" value="150" checked><span data-option-label>{{ 'collection.interieur.budget.under_150' | t }}</span></label>
+              <label><input type="radio" name="budget" value="300"><span data-option-label>{{ 'collection.interieur.budget.under_300' | t }}</span></label>
+              <label><input type="radio" name="budget" value="500"><span data-option-label>{{ 'collection.interieur.budget.under_500' | t }}</span></label>
+              <label><input type="radio" name="budget" value="open"><span data-option-label>{{ 'collection.interieur.budget.open' | t }}</span></label>
+            </div>
+          </fieldset>
+
+          <button type="button" class="interieur-configurator__reset" data-reset>
+            {{ 'collection.interieur.reset' | t }}
+          </button>
+        </form>
+
+        <aside class="interieur-configurator__profile" aria-live="polite">
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.result_eyebrow' | t }}</p>
+          <h3 data-profile-title>{{ 'collection.interieur.result_default' | t }}</h3>
+          <p data-profile-copy>{{ 'collection.interieur.result_copy' | t }}</p>
+          <div class="interieur-configurator__chips" data-profile-chips></div>
+          <strong class="interieur-configurator__count" data-result-count></strong>
+          <span class="interieur-configurator__budget-note" data-budget-note hidden></span>
+          <a class="interieur-configurator__all-link" href="#InterieurCatalog">
+            {{ 'collection.interieur.all_products' | t }} <span aria-hidden="true">↓</span>
+          </a>
+        </aside>
+      </div>
+
+      <div class="interieur-configurator__recommendations">
+        <header>
+          <p class="interieur-configurator__eyebrow">{{ 'collection.interieur.recommendations_eyebrow' | t }}</p>
+          <h3>{{ 'collection.interieur.recommendations' | t }}</h3>
+          <p>{{ 'collection.interieur.recommendations_intro' | t }}</p>
+        </header>
+
+        <div class="interieur-configurator__grid" data-recommendations>
+          {% for product in collection.products limit: 50 %}
+            {% liquid
+              assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+              assign mounting = product.metafields.lighting.mounting.value
+              assign role = product.metafields.leaf_configurator.role.value
+              assign price_value = product.price_min | divided_by: 100.0
+              assign tags_text = product.tags | join: ' '
+              capture search_blob
+                echo product.title
+                echo ' '
+                echo product.type
+                echo ' '
+                echo product.vendor
+                echo ' '
+                echo tags_text
+                echo ' '
+                echo mounting
+                echo ' '
+                echo role
+              endcapture
+              assign search_blob = search_blob | strip_newlines | downcase | strip
+            %}
+            <div
+              class="interieur-configurator__product"
+              data-solution-card
+              data-search="{{ search_blob | escape }}"
+              data-price="{{ price_value }}"
+              data-watts="{{ watts }}"
+              {% if forloop.index > 4 %}hidden{% endif %}
+            >
+              {% render 'product-card', product: product, compact: true, interactive_facts: true %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  </interieur-solutions-configurator>
+      </div>
+    </details>
+  {% endif %}
+
+  <div{% if collection.handle == 'interieur-solutions' %} id="InterieurCatalog"{% endif %} class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
+    {% if has_type_filters %}
+      <aside class="main-collection__sidebar" id="CollectionFilters-{{ section.id }}">
+        {% if section.settings.brand_logo != blank %}
+          <a class="main-collection__sidebar-brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+            {{ section.settings.brand_logo | image_url: width: 360 | image_tag: widths: '120,180,240,360', sizes: '160px', loading: 'lazy', alt: shop.name }}
+          </a>
+        {% endif %}
+        <div class="main-collection__filter-landscape">
+          <p class="main-collection__landscape-label">{{ landscape_label }}</p>
+          <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
+            <button type="button" class="main-collection__filter" data-product-filter="all" data-filter-label="{{ 'collection.all' | t | escape }}" aria-pressed="true">
+              <span class="main-collection__filter-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+              </span>
+              <span>{{ 'collection.all' | t }}</span>
+            </button>
+            {% for product_type in product_types %}
+              {% assign product_type_downcase = product_type | downcase %}
+              <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" data-filter-label="{{ product_type | escape }}" aria-pressed="false">
+                <span class="main-collection__filter-icon" aria-hidden="true">
+                  {% if product_type_downcase contains 'licht' or product_type_downcase contains 'led' or product_type_downcase contains 'lamp' %}
+                    <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
+                  {% elsif product_type_downcase contains 'substrat' or product_type_downcase contains 'mix' %}
+                    <svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg>
+                  {% elsif product_type_downcase contains 'topf' or product_type_downcase contains 'gefäß' or product_type_downcase contains 'gefass' %}
+                    <svg viewBox="0 0 24 24"><path d="M7 8h10l-1 12H8L7 8ZM5 5h14v3H5z"/></svg>
+                  {% elsif product_type_downcase contains 'pflanz' %}
+                    <svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
+                  {% else %}
+                    <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 10h8M8 14h5"/></svg>
+                  {% endif %}
+                </span>
+                <span>{{ product_type | escape }}</span>
+              </button>
+            {% endfor %}
+          </div>
+        </div>
+      </aside>
     {% endif %}
 
-    <form class="main-collection__sort" action="{{ collection.url }}" method="get">
-      <label for="SortBy-{{ section.id }}">{{ 'collection.sort_by' | t }}</label>
-      <select id="SortBy-{{ section.id }}" name="sort_by" data-sort-select>
-        {% for option in collection.sort_options %}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{% endfor %}
-      </select>
-      <noscript><button type="submit">{{ 'collection.apply' | t }}</button></noscript>
-    </form>
-  </div>
+    <div class="main-collection__results">
+      <section class="main-collection__decision" aria-labelledby="CollectionDecisionHeading-{{ section.id }}">
+        <div class="main-collection__decision-head">
+          <p>{{ 'collection.decision.eyebrow' | t }}</p>
+          <h2 id="CollectionDecisionHeading-{{ section.id }}">{{ 'collection.decision.heading' | t }}</h2>
+        </div>
+        <div class="main-collection__decision-steps">
+          <div>
+            <span aria-hidden="true">01</span>
+            <strong>{{ 'collection.decision.use_title' | t }}</strong>
+            <p>{{ 'collection.decision.use_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">02</span>
+            <strong>{{ 'collection.decision.data_title' | t }}</strong>
+            <p>{{ 'collection.decision.data_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">03</span>
+            <strong>{{ 'collection.decision.choose_title' | t }}</strong>
+            <p>{{ 'collection.decision.choose_text' | t }}</p>
+          </div>
+        </div>
+      </section>
 
-  {% paginate collection.products by 12 %}
-    <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
-      {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product %}</div>{% endfor %}
+      <div class="main-collection__tools">
+        {% if has_type_filters %}
+          <div class="main-collection__active-context" data-filter-context aria-live="polite">
+            <span class="main-collection__context-icon" data-filter-context-icon aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+            </span>
+            <strong data-filter-context-label>{{ 'collection.all' | t }}</strong>
+            <span class="main-collection__context-count" data-filter-context-count>{{ collection.products_count }}</span>
+          </div>
+        {% endif %}
+
+        <form class="main-collection__sort" action="{{ collection.url }}" method="get">
+          <label for="SortBy-{{ section.id }}">{{ 'collection.sort_by' | t }}</label>
+          <select id="SortBy-{{ section.id }}" name="sort_by" data-sort-select>
+            {% for option in collection.sort_options %}<option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name }}</option>{% endfor %}
+          </select>
+          <noscript><button type="submit">{{ 'collection.apply' | t }}</button></noscript>
+        </form>
+      </div>
+
+      {% paginate collection.products by 48 %}
+        <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
+          {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
+        </div>
+        {% if paginate.pages > 1 %}<nav class="main-collection__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
+      {% endpaginate %}
     </div>
-    {% if paginate.pages > 1 %}<nav class="main-collection__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
-  {% endpaginate %}
+  </div>
 </section>
 
 {% stylesheet %}
@@ -138,6 +515,8 @@
   .main-collection__eyebrow-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection h1 { max-width: 14ch; margin: 0; font-size: clamp(3rem, 5.4vw, 5.6rem); line-height: .94; letter-spacing: -.065em; overflow-wrap: anywhere; }
   .main-collection__intro { max-width: 62ch; margin: 1.25rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.35vw, 1.15rem); line-height: 1.65; }
+  .main-collection__knowledge { max-width: 760px; margin-top: 1.25rem; }
+  .main-collection__knowledge .leaf-atoms { margin: 0; }
   .main-collection__actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.7rem; }
   .main-collection__primary-action, .main-collection__secondary-action { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .7rem; padding: .7rem 1rem; border: 1px solid var(--text); text-decoration: none; font-size: .82rem; font-weight: 850; transition: transform .2s ease, background .2s ease, color .2s ease; }
   .main-collection__primary-action { background: var(--text); color: var(--background); }
@@ -156,46 +535,143 @@
   .main-collection__media-note { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .75rem .9rem; border: 1px solid color-mix(in srgb, white, transparent 45%); background: color-mix(in srgb, var(--background), transparent 10%); backdrop-filter: blur(12px); }
   .main-collection__media-note span { color: var(--muted); font-size: .72rem; }
   .main-collection__media-note strong { font-size: .78rem; text-align: right; }
-  .main-collection__tools { scroll-margin-top: 110px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: center; margin-bottom: 1.5rem; padding-block: 1rem; border-block: 1px solid var(--border); }
-  .main-collection__filters { display: flex; gap: .5rem; overflow-x: auto; padding-bottom: .2rem; }
-  .main-collection__filter { min-height: 44px; flex: 0 0 auto; display: inline-flex; align-items: center; gap: .55rem; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .55rem .75rem; font-size: .75rem; }
+  .main-collection__catalog { min-width: 0; }
+  .main-collection__catalog--filtered { display: grid; grid-template-columns: minmax(210px, 240px) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 2.75rem); align-items: start; }
+  .main-collection__sidebar { scroll-margin-top: 110px; position: sticky; top: 96px; min-width: 0; padding-right: 1.2rem; border-right: 1px solid var(--border); }
+  .main-collection__sidebar-brand { width: min(100%, 160px); display: inline-flex; margin: 0 0 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+  .main-collection__sidebar-brand img { display: block; width: 100%; height: auto; }
+  .main-collection__filter-landscape { min-width: 0; }
+  .main-collection__landscape-label { margin: 0 0 .65rem; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-collection__filters { display: grid; grid-template-columns: 1fr; gap: .45rem; }
+  .main-collection__filter { min-height: 54px; display: inline-flex; align-items: center; justify-content: flex-start; gap: .65rem; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .6rem .72rem; font-size: .75rem; text-align: left; }
   .main-collection__filter-icon { width: 25px; height: 25px; display: grid; place-items: center; border-right: 1px solid var(--border); padding-right: .45rem; }
   .main-collection__filter-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__filters button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
   .main-collection__filters button[aria-pressed="true"] .main-collection__filter-icon { border-color: color-mix(in srgb, white, transparent 55%); }
-  .main-collection__sort { display: flex; align-items: center; gap: .7rem; }
+  .main-collection__advanced { margin: 1rem 0; border: 1px solid var(--border); background: var(--background); }
+  .main-collection__advanced > summary { list-style: none; display: grid; grid-template-columns: minmax(120px,.35fr) minmax(0,.65fr) auto; gap: .25rem 1rem; align-items: center; min-height: 72px; padding: .9rem 1rem; cursor: pointer; }
+  .main-collection__advanced > summary::-webkit-details-marker { display: none; }
+  .main-collection__advanced > summary::after { content: '+'; grid-column: 3; grid-row: 1 / span 2; font-size: 1.3rem; color: var(--accent); }
+  .main-collection__advanced[open] > summary::after { content: '−'; }
+  .main-collection__advanced > summary span { color: var(--accent); font-size: .66rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .main-collection__advanced > summary strong { font-size: .88rem; }
+  .main-collection__advanced > summary small { grid-column: 2; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .main-collection__advanced-body { border-top: 1px solid var(--border); }
+  .main-collection__advanced-body > * { margin-top: 0; }
+  .main-collection__results { min-width: 0; }
+  .main-collection__decision { margin-bottom: 1.2rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface), var(--background) 35%); }
+  .main-collection__decision-head { display: grid; grid-template-columns: minmax(150px,.45fr) minmax(0,1.55fr); gap: 1rem; align-items: end; padding: 1rem 1.1rem .9rem; border-bottom: 1px solid var(--border); }
+  .main-collection__decision-head p { margin: 0; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-collection__decision-head h2 { margin: 0; font-size: clamp(1.35rem, 2.2vw, 1.9rem); line-height: 1.05; letter-spacing: -.03em; }
+  .main-collection__decision-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; background: var(--border); }
+  .main-collection__decision-steps > div { min-width: 0; min-height: 118px; display: grid; grid-template-columns: 34px minmax(0,1fr); align-content: center; gap: .25rem .65rem; padding: .9rem 1rem; background: var(--background); }
+  .main-collection__decision-steps > div > span { grid-row: 1 / span 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .65rem; font-weight: 850; }
+  .main-collection__decision-steps strong { font-size: .78rem; }
+  .main-collection__decision-steps p { margin: 0; color: var(--muted); font-size: .72rem; line-height: 1.45; }
+  .main-collection__tools { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1.2rem; padding-block: .8rem; border-block: 1px solid var(--border); }
+  .main-collection__sort { display: flex; align-items: center; gap: .7rem; margin-left: auto; }
   .main-collection__sort label { font-size: .75rem; font-weight: 800; }
   .main-collection__sort select { min-height: 44px; min-width: 220px; border: 1px solid var(--border); border-radius: 0; background: var(--background); padding: .6rem 2.2rem .6rem .8rem; }
+  .main-collection__active-context { min-height: 44px; display: grid; grid-template-columns: 30px minmax(0,1fr) auto; gap: .6rem; align-items: center; min-width: min(100%, 320px); padding: .45rem .6rem; border: 1px solid var(--border); background: var(--surface); }
+  .main-collection__context-icon { width: 28px; height: 28px; display: grid; place-items: center; color: var(--accent); }
+  .main-collection__context-icon svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .main-collection__active-context strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; }
+  .main-collection__context-count { min-width: 30px; height: 28px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .7rem; font-weight: 850; }
   .main-collection__grid { scroll-margin-top: 110px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; }
+  .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .main-collection__grid > div[hidden] { display: none; }
   .main-collection__pagination { display: flex; justify-content: center; padding-top: 3rem; }
   .main-collection__pagination .page, .main-collection__pagination .next, .main-collection__pagination .prev { padding: .5rem; }
   @media (max-width: 1050px) {
     .main-collection__hero { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .main-collection__signals { grid-template-columns: 1fr; }
-    .main-collection__tools { grid-template-columns: 1fr; }
+    .main-collection__catalog--filtered { grid-template-columns: 1fr; gap: 1rem; }
+    .main-collection__sidebar { position: static; top: auto; padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--border); }
+    .main-collection__sidebar-brand { display: none; }
+    .main-collection__filters { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(150px, 30vw); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding-bottom: .25rem; }
+    .main-collection__filter { scroll-snap-align: start; }
+    .main-collection__tools { flex-wrap: wrap; }
     .main-collection__sort { justify-content: flex-end; }
+    .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 900px) {
+    .main-collection__advanced > summary { grid-template-columns: 1fr auto; gap: .2rem .7rem; }
+    .main-collection__advanced > summary span, .main-collection__advanced > summary strong, .main-collection__advanced > summary small { grid-column: 1; }
+    .main-collection__advanced > summary::after { grid-column: 2; grid-row: 1 / span 3; }
+    .main-collection__decision-head { grid-template-columns: 1fr; gap: .35rem; }
+    .main-collection__decision-steps { grid-template-columns: 1fr; }
+    .main-collection__decision-steps > div { min-height: 0; }
     .main-collection__hero { grid-template-columns: 1fr; }
     .main-collection__hero-copy { padding-bottom: 0; }
-    .main-collection__hero-media { aspect-ratio: 16 / 10; max-height: none; }
+    .main-collection__hero-media { aspect-ratio: 16 / 9; max-height: 280px; }
     .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
-    .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.7rem; }
   }
   @media (max-width: 620px) {
-    .main-collection { padding-top: .8rem; }
+    .main-collection { padding-top: .6rem; }
+    .main-collection__sidebar { position: sticky; z-index: 12; top: 64px; margin-inline: -.55rem; padding: .55rem .55rem .65rem; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 2%); backdrop-filter: blur(12px); }
+    .main-collection__filters { scrollbar-width:none; }
+    .main-collection__filters::-webkit-scrollbar { display:none; }
     .main-collection h1 { font-size: clamp(2.6rem, 13vw, 4.2rem); line-height: .94; }
     .main-collection__intro { font-size: .95rem; }
     .main-collection__signals { display: none; }
-    .main-collection__hero-media { aspect-ratio: 16 / 10; }
+    .main-collection__hero-media { aspect-ratio: 2 / 1; max-height: 190px; }
     .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
     .main-collection__media-note { left: .6rem; right: .6rem; bottom: .6rem; }
-    .main-collection__sort { justify-content: stretch; }
+    .main-collection__tools { align-items: stretch; }
+    .main-collection__active-context { width: 100%; min-width: 0; }
+    .main-collection__sort { width: 100%; justify-content: stretch; margin-left: 0; }
     .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .main-collection__filters { grid-auto-columns: minmax(148px, 58vw); scroll-padding-inline:.2rem; }
+    .main-collection__filter { min-height: 50px; padding-inline:.8rem; }
     .main-collection__sort select { width: 100%; min-width: 0; }
-    .main-collection__grid { gap: .55rem; }
+    .main-collection__catalog--filtered .main-collection__grid, .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
   }
+
+  .interieur-room-builder { display: none; }
+  @media (min-width: 1100px) {
+    .interieur-room-builder { display: block; margin-block: clamp(3rem, 6vw, 6rem); }
+    .interieur-room-builder__section { border-block: 1px solid var(--border); padding-block: clamp(3rem, 5vw, 5rem); }
+    .interieur-room-builder__head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; margin-bottom: 1.5rem; }
+    .interieur-room-builder__eyebrow { margin: 0 0 .6rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .interieur-room-builder__head h2 { max-width: 11ch; margin: 0; font-size: clamp(2.8rem, 5vw, 5.5rem); line-height: .94; letter-spacing: -.055em; }
+    .interieur-room-builder__head p:not(.interieur-room-builder__eyebrow) { max-width: 68ch; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
+    .interieur-room-builder__steps { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .5rem; }
+    .interieur-room-builder__steps span { min-height: 64px; display: flex; align-items: flex-end; border-top: 3px solid var(--accent); padding: .65rem .4rem; color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+    .interieur-room-builder__desktop { display: grid; gap: .85rem; }
+    .interieur-room-builder__toolbar { display: grid; grid-template-columns: 1.05fr .85fr 1.6fr; gap: .75rem; }
+    .interieur-room-builder__toolbar > div { min-width: 0; border: 1px solid var(--border); background: var(--surface); padding: .85rem; }
+    .interieur-room-builder__toolbar strong { display: block; margin-bottom: .7rem; font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+    .interieur-room-builder__room { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .45rem; }
+    .interieur-room-builder__room > strong { grid-column: 1 / -1; }
+    .interieur-room-builder__room label { display: grid; gap: .25rem; color: var(--muted); font-size: .68rem; font-weight: 750; }
+    .interieur-room-builder__room input, .interieur-room-builder__products select { width: 100%; min-height: 42px; border: 1px solid var(--border); border-radius: 0; background: var(--background); padding: .45rem .55rem; }
+    .interieur-room-builder__primitive-actions { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .4rem; }
+    .interieur-room-builder__primitive-actions button, .interieur-room-builder__controls button { min-height: 42px; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .45rem .65rem; box-shadow: none; font-size: .72rem; }
+    .interieur-room-builder__primitive-actions button:hover, .interieur-room-builder__controls button:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 92%); transform: none; box-shadow: none; }
+    .interieur-room-builder__products { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .45rem; }
+    .interieur-room-builder__products strong { grid-column: 1 / -1; }
+    .interieur-room-builder__add-product { min-height: 42px; border-radius: 0; padding-inline: 1rem; white-space: nowrap; }
+    .interieur-room-builder__viewport { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; border: 1px solid var(--border); background: linear-gradient(145deg, color-mix(in srgb, var(--surface), #fff 20%), color-mix(in srgb, var(--background), var(--accent) 4%)); }
+    .interieur-room-builder__canvas { display: block; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+    .interieur-room-builder__canvas:active { cursor: grabbing; }
+    .interieur-room-builder__hint { position: absolute; left: .75rem; bottom: .75rem; max-width: 38ch; padding: .45rem .6rem; background: color-mix(in srgb, var(--background), transparent 8%); border: 1px solid var(--border); color: var(--muted); font-size: .68rem; pointer-events: none; }
+    .interieur-room-builder__selection { position: absolute; top: .75rem; right: .75rem; max-width: min(320px, 32%); padding: .6rem .7rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 4%); pointer-events: none; }
+    .interieur-room-builder__selection strong, .interieur-room-builder__selection span { display: block; }
+    .interieur-room-builder__selection strong { font-size: .8rem; }
+    .interieur-room-builder__selection span { margin-top: .18rem; color: var(--muted); font-size: .68rem; }
+    .interieur-room-builder__controls { display: grid; grid-template-columns: auto 1fr auto; gap: .65rem; align-items: center; }
+    .interieur-room-builder__camera, .interieur-room-builder__object-actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .interieur-room-builder__reset { justify-self: end; }
+    .interieur-room-builder__summary { display: grid; grid-template-columns: repeat(4, minmax(0, .65fr)) minmax(180px, 1fr); gap: 1px; border: 1px solid var(--border); background: var(--border); }
+    .interieur-room-builder__summary > div { min-height: 76px; display: flex; flex-direction: column; justify-content: center; background: var(--surface); padding: .75rem; }
+    .interieur-room-builder__summary span { color: var(--muted); font-size: .67rem; font-weight: 750; letter-spacing: .05em; text-transform: uppercase; }
+    .interieur-room-builder__summary strong { margin-top: .2rem; font-size: 1.05rem; }
+    .interieur-room-builder__cart { min-height: 76px; border: 0; border-radius: 0; }
+    .interieur-room-builder__cart:disabled { cursor: not-allowed; opacity: .45; transform: none; box-shadow: none; }
+    .interieur-room-builder__status { grid-column: 1 / -1; margin: 0; background: var(--surface); padding: .45rem .7rem; color: var(--muted); font-size: .72rem; }
+  }
+
 {% endstylesheet %}
 
 {% javascript %}
@@ -203,20 +679,861 @@
     select.addEventListener('change', () => select.form.requestSubmit());
   });
 
-  document.querySelectorAll('.main-collection__filters').forEach((filters) => {
+  document.querySelectorAll('.main-collection').forEach((collectionSection) => {
+    const filters = collectionSection.querySelector('.main-collection__filters');
+    if (!filters) return;
+    const context = collectionSection.querySelector('[data-filter-context]');
+    const contextIcon = context?.querySelector('[data-filter-context-icon]');
+    const contextLabel = context?.querySelector('[data-filter-context-label]');
+    const contextCount = context?.querySelector('[data-filter-context-count]');
+
+    const syncFilter = (button) => {
+      const selected = button.dataset.productFilter;
+      const cards = [...collectionSection.querySelectorAll('[data-product-type]')];
+      cards.forEach((card) => {
+        card.hidden = selected !== 'all' && card.dataset.productType !== selected;
+      });
+      const visible = cards.filter((card) => !card.hidden).length;
+      if (contextLabel) contextLabel.textContent = button.dataset.filterLabel || button.textContent.trim();
+      if (contextCount) contextCount.textContent = String(visible);
+      const sourceIcon = button.querySelector('.main-collection__filter-icon');
+      if (contextIcon && sourceIcon) contextIcon.innerHTML = sourceIcon.innerHTML;
+    };
+
     filters.addEventListener('click', (event) => {
       const button = event.target.closest('[data-product-filter]');
       if (!button) return;
-      const collectionSection = filters.closest('.main-collection');
       filters.querySelectorAll('button').forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-      const selected = button.dataset.productFilter;
-      collectionSection.querySelectorAll('[data-product-type]').forEach((card) => {
-        card.hidden = selected !== 'all' && card.dataset.productType !== selected;
-      });
+      syncFilter(button);
     });
+
+    const initial = filters.querySelector('[aria-pressed="true"]');
+    if (initial) syncFilter(initial);
   });
+
+
+  class InterieurSolutionsConfigurator extends HTMLElement {
+        connectedCallback() {
+          if (this.dataset.ready === 'true') return;
+          this.dataset.ready = 'true';
+  
+          this.form = this.querySelector('[data-config-form]');
+          this.cards = [...this.querySelectorAll('[data-solution-card]')];
+          this.profileTitle = this.querySelector('[data-profile-title]');
+          this.profileCopy = this.querySelector('[data-profile-copy]');
+          this.profileChips = this.querySelector('[data-profile-chips]');
+          this.resultCount = this.querySelector('[data-result-count]');
+          this.budgetNote = this.querySelector('[data-budget-note]');
+          this.results = this.querySelector('[data-recommendations]');
+  
+          this.form?.addEventListener('input', () => this.update());
+          this.querySelector('[data-reset]')?.addEventListener('click', () => this.reset());
+  
+          this.update();
+        }
+  
+        value(name) {
+          return this.form?.querySelector(`input[name="${name}"]:checked`)?.value || '';
+        }
+  
+        label(name) {
+          return this.form?.querySelector(`input[name="${name}"]:checked`)?.closest('label')?.querySelector('[data-option-label]')?.textContent?.trim() || '';
+        }
+  
+        includes(text, terms) {
+          return terms.some((term) => text.includes(term));
+        }
+  
+        score(card, state) {
+          const text = (card.dataset.search || '').toLocaleLowerCase('de-DE');
+          const watts = Number(card.dataset.watts || 0);
+          let score = 0;
+  
+          const projectTerms = {
+            single: ['e27', 'par30', 'par38', 'teleskop', 'willow', 'vita', 'pflanzenlampe', 'pflanzenleuchte'],
+            shelf: ['regal', 'grove', 'aurora', 'bar', 'tube', 'cx91', 'cx83'],
+            pendant: ['pendel', 'pendant', 'wand', 'luna', 'aspect', 'stello'],
+            station: ['pflanzenregal', 'gewächshaus', 'station', 'growzelt', 'vivosun', 'barrina', 'cx91', 'cx83'],
+            habitat: ['terrarium', 'aquascap', 'wasserpflanz', 'daytime', 'sera', 'repmac']
+          };
+          if (this.includes(text, projectTerms[state.project] || [])) score += state.project === 'habitat' ? 8 : 6;
+  
+          const roomTerms = {
+            living: ['soltech', 'mother', 'premium', 'wohn', 'willow', 'aspect', 'vita', 'grove'],
+            office: ['mother', 'soltech', 'regal', 'stand', 'plantspectrum', 'grove'],
+            kitchen: ['e27', 'bloom', '7w', '10w', '15w', 'kräuter', 'teleskop'],
+            plantroom: ['sansi', 'barrina', 'vivosun', '60w', 'grow', 'station', 'gewächshaus']
+          };
+          if (this.includes(text, roomTerms[state.room] || [])) score += 4;
+  
+          const mountTerms = {
+            e27: ['e27', 'par30', 'par38', 'bulb', 'leuchtmittel'],
+            shelf: ['regal', 'grove', 'aurora', 'bar', 'tube'],
+            pendant: ['pendel', 'pendant', 'wand', 'luna', 'aspect'],
+            floor: ['stand', 'standfuß', 'floor', 'willow', 'stello', 'alta', 'teleskop'],
+            system: ['station', 'gewächshaus', 'terrarium', 'zelt', 'regal']
+          };
+          if (state.mount !== 'open' && this.includes(text, mountTerms[state.mount] || [])) score += 5;
+  
+          if (state.light === 'supplement') {
+            if (watts > 0 && watts <= 15) score += 4;
+            if (this.includes(text, ['7w', '10w', '15w', 'e27', 'teleskop'])) score += 2;
+          }
+          if (state.light === 'balanced') {
+            if (watts >= 10 && watts <= 35) score += 4;
+            if (this.includes(text, ['20w', '24w', '25w', '32'])) score += 2;
+          }
+          if (state.light === 'intensive') {
+            if (watts >= 25) score += 5;
+            if (this.includes(text, ['36w', '60w', 'station', 'gewächshaus', 'plantspectrum32'])) score += 3;
+          }
+  
+          if (state.project === 'habitat' && this.includes(text, ['terrarium', 'aquascap', 'wasserpflanz'])) score += 4;
+          if (state.project === 'station' && this.includes(text, ['regal', 'station', 'gewächshaus'])) score += 4;
+          if (state.room === 'living' && this.includes(text, ['growzelt', 'vivosun'])) score -= 4;
+  
+          return score;
+        }
+  
+        update() {
+          if (!this.form || !this.cards.length) return;
+  
+          const state = {
+            room: this.value('room'),
+            project: this.value('project'),
+            mount: this.value('mount'),
+            light: this.value('light'),
+            budget: this.value('budget')
+          };
+          const budget = state.budget === 'open' ? Infinity : Number(state.budget || 150);
+  
+          const ranked = this.cards
+            .map((card) => ({
+              card,
+              score: this.score(card, state),
+              price: Number(card.dataset.price || 0)
+            }))
+            .sort((a, b) => b.score - a.score || a.price - b.price);
+  
+          let eligible = ranked.filter((item) => item.price <= budget && item.score > 0);
+          let relaxed = false;
+  
+          if (eligible.length === 0) {
+            eligible = ranked.filter((item) => item.score > 0);
+            relaxed = true;
+          }
+          if (eligible.length === 0) eligible = ranked;
+  
+          const top = eligible.slice(0, 4);
+          const selected = new Set(top.map((item) => item.card));
+  
+          this.cards.forEach((card) => {
+            card.hidden = !selected.has(card);
+          });
+          top.forEach((item) => this.results?.append(item.card));
+  
+          const projectLabel = this.label('project');
+          const roomLabel = this.label('room');
+          if (this.profileTitle) this.profileTitle.textContent = [projectLabel, roomLabel].filter(Boolean).join(' · ');
+          if (this.profileCopy) this.profileCopy.textContent = this.dataset.profileCopy || '';
+  
+          if (this.profileChips) {
+            this.profileChips.replaceChildren();
+            ['mount', 'light', 'budget'].forEach((name) => {
+              const text = this.label(name);
+              if (!text) return;
+              const chip = document.createElement('span');
+              chip.textContent = text;
+              this.profileChips.append(chip);
+            });
+          }
+  
+          if (this.resultCount) {
+            this.resultCount.textContent = top.length === 1
+              ? (this.dataset.resultOne || '1')
+              : `${top.length} ${this.dataset.resultMany || ''}`.trim();
+          }
+  
+          if (this.budgetNote) {
+            this.budgetNote.hidden = !relaxed;
+            this.budgetNote.textContent = relaxed ? (this.dataset.budgetRelaxed || '') : '';
+          }
+        }
+  
+        reset() {
+          if (!this.form) return;
+          this.form.reset();
+          this.update();
+        }
+      }
+  
+      if (!customElements.get('interieur-solutions-configurator')) {
+        customElements.define('interieur-solutions-configurator', InterieurSolutionsConfigurator);
+      }
+
+  class InterieurRoomBuilder extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready === 'true') return;
+      if (!window.matchMedia('(min-width: 1100px)').matches) return;
+      this.dataset.ready = 'true';
+      this.canvas = this.querySelector('[data-room-canvas]');
+      if (!this.canvas) return;
+      this.ctx = this.canvas.getContext('2d');
+      this.room = {
+        width: Number(this.querySelector('[data-room-width]')?.value || 4.2),
+        depth: Number(this.querySelector('[data-room-depth]')?.value || 3.2),
+        height: Number(this.querySelector('[data-room-height]')?.value || 2.5)
+      };
+      this.camera = -35;
+      this.objects = [];
+      this.selectedId = null;
+      this.drag = null;
+      this.objectId = 0;
+      this.productImages = new Map();
+      this.currency = this.dataset.currency || 'EUR';
+      this.locale = document.documentElement.lang || 'de-DE';
+
+      this.bind();
+      this.restore();
+      if (!this.objects.length) {
+        this.addPrimitive('plant', -0.75, 0.2);
+        this.addPrimitive('plant', 0.55, 0.55);
+      }
+      this.resizeObserver = new ResizeObserver(() => this.resize());
+      this.resizeObserver.observe(this.canvas);
+      this.resize();
+      this.updateSummary();
+    }
+
+    disconnectedCallback() {
+      this.resizeObserver?.disconnect();
+    }
+
+    bind() {
+      ['width', 'depth', 'height'].forEach((key) => {
+        this.querySelector(`[data-room-${key}]`)?.addEventListener('input', (event) => {
+          const limits = key === 'height' ? [2, 5] : [2, 12];
+          this.room[key] = this.clamp(Number(event.target.value || limits[0]), limits[0], limits[1]);
+          this.clampObjects();
+          this.save();
+          this.draw();
+          this.updateSummary();
+        });
+      });
+
+      this.querySelectorAll('[data-add-primitive]').forEach((button) => {
+        button.addEventListener('click', () => this.addPrimitive(button.dataset.addPrimitive));
+      });
+      this.querySelector('[data-add-product]')?.addEventListener('click', () => this.addProduct());
+      this.querySelectorAll('[data-camera]').forEach((button) => {
+        button.addEventListener('click', () => {
+          this.camera += Number(button.dataset.camera || 0);
+          this.draw();
+          this.save();
+        });
+      });
+      this.querySelectorAll('[data-object-rotate]').forEach((button) => {
+        button.addEventListener('click', () => this.rotateSelected(Number(button.dataset.objectRotate || 0)));
+      });
+      this.querySelector('[data-delete]')?.addEventListener('click', () => this.deleteSelected());
+      this.querySelector('[data-duplicate]')?.addEventListener('click', () => this.duplicateSelected());
+      this.querySelector('[data-builder-reset]')?.addEventListener('click', () => this.reset());
+      this.querySelector('[data-add-setup]')?.addEventListener('click', () => this.addSetupToCart());
+
+      this.canvas.addEventListener('pointerdown', (event) => this.pointerDown(event));
+      this.canvas.addEventListener('pointermove', (event) => this.pointerMove(event));
+      this.canvas.addEventListener('pointerup', () => this.pointerUp());
+      this.canvas.addEventListener('pointercancel', () => this.pointerUp());
+    }
+
+    resize() {
+      const rect = this.canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(rect.width * ratio));
+      const height = Math.max(1, Math.round(rect.height * ratio));
+      if (this.canvas.width !== width || this.canvas.height !== height) {
+        this.canvas.width = width;
+        this.canvas.height = height;
+      }
+      this.draw();
+    }
+
+    addPrimitive(kind, x = 0, z = 0) {
+      const presets = {
+        plant: {title: 'Plant', width: .52, depth: .52, height: 1.05, color: '#55784e'},
+        shelf: {title: 'Shelf', width: 1.2, depth: .38, height: 1.8, color: '#8a7257'},
+        window: {title: 'Window', width: 1.4, depth: .12, height: 1.25, color: '#b8d5da'}
+      };
+      const preset = presets[kind];
+      if (!preset) return;
+      const obj = {
+        id: ++this.objectId,
+        kind,
+        title: this.querySelector(`[data-add-primitive="${kind}"]`)?.textContent?.trim() || preset.title,
+        x,
+        z,
+        rotation: 0,
+        width: preset.width,
+        depth: preset.depth,
+        height: preset.height,
+        color: preset.color,
+        variantId: null,
+        price: 0,
+        watts: 0,
+        url: ''
+      };
+      this.objects.push(obj);
+      this.selectedId = obj.id;
+      this.clampObject(obj);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    addProduct() {
+      const select = this.querySelector('[data-builder-product-select]');
+      const option = select?.selectedOptions?.[0];
+      if (!option?.value) return;
+      const search = (option.dataset.search || '').toLowerCase();
+      const kind = this.productKind(search);
+      const preset = this.productPreset(kind);
+      const obj = {
+        id: ++this.objectId,
+        kind,
+        title: option.dataset.title || option.textContent.trim(),
+        x: 0,
+        z: 0,
+        rotation: 0,
+        width: preset.width,
+        depth: preset.depth,
+        height: preset.height,
+        color: preset.color,
+        variantId: option.value,
+        price: Number(option.dataset.price || 0),
+        watts: Number(option.dataset.watts || 0),
+        url: option.dataset.url || '',
+        image: option.dataset.image || ''
+      };
+      this.objects.push(obj);
+      this.selectedId = obj.id;
+      this.preloadImage(obj.image);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    productKind(search) {
+      if (/terrarium|gewächshaus|growzelt|pflanzenregal|station/.test(search)) return 'system';
+      if (/regal|grove|bar|tube|unterbau/.test(search)) return 'shelf-light';
+      if (/pendel|pendant|wand|aspect|luna/.test(search)) return 'pendant';
+      if (/stand|willow|stello|alta|teleskop/.test(search)) return 'floor-light';
+      if (/aquascap|wasserpflanz|sera|daytime/.test(search)) return 'habitat';
+      return 'light';
+    }
+
+    productPreset(kind) {
+      const presets = {
+        system: {width: 1.25, depth: .72, height: 1.75, color: '#6f7f72'},
+        'shelf-light': {width: 1.15, depth: .38, height: 1.55, color: '#78936e'},
+        pendant: {width: .45, depth: .45, height: 2.0, color: '#b9a76f'},
+        'floor-light': {width: .52, depth: .52, height: 1.85, color: '#9d916f'},
+        habitat: {width: 1.0, depth: .55, height: 1.0, color: '#587d83'},
+        light: {width: .42, depth: .42, height: 1.65, color: '#a39d73'}
+      };
+      return presets[kind] || presets.light;
+    }
+
+    preloadImage(url) {
+      if (!url || this.productImages.has(url)) return;
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => this.draw();
+      img.src = url;
+      this.productImages.set(url, img);
+    }
+
+    clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    clampObject(obj) {
+      const halfW = this.room.width / 2;
+      const halfD = this.room.depth / 2;
+      obj.x = this.clamp(obj.x, -halfW + .15, halfW - .15);
+      obj.z = this.clamp(obj.z, -halfD + .15, halfD - .15);
+    }
+
+    clampObjects() {
+      this.objects.forEach((obj) => this.clampObject(obj));
+    }
+
+    metrics() {
+      const w = this.canvas.width;
+      const h = this.canvas.height;
+      const scale = Math.min(w / (this.room.width + this.room.depth + 2), h / (this.room.depth + this.room.height + 2)) * 1.35;
+      return {w, h, scale, ox: w * .5, oy: h * .69};
+    }
+
+    project(x, y, z) {
+      const {scale, ox, oy} = this.metrics();
+      const a = this.camera * Math.PI / 180;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      const xr = x * c - z * s;
+      const zr = x * s + z * c;
+      return {
+        x: ox + xr * scale,
+        y: oy + zr * scale * .48 - y * scale * .88
+      };
+    }
+
+    localPoint(obj, x, z) {
+      const angle = obj.rotation * Math.PI / 180;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      return {
+        x: obj.x + x * c - z * s,
+        z: obj.z + x * s + z * c
+      };
+    }
+
+    roomFloorPoints() {
+      const hw = this.room.width / 2;
+      const hd = this.room.depth / 2;
+      return [
+        this.project(-hw, 0, -hd),
+        this.project(hw, 0, -hd),
+        this.project(hw, 0, hd),
+        this.project(-hw, 0, hd)
+      ];
+    }
+
+    polygon(points, fill, stroke = null, width = 1) {
+      const ctx = this.ctx;
+      ctx.beginPath();
+      points.forEach((p, index) => index ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y));
+      ctx.closePath();
+      if (fill) {
+        ctx.fillStyle = fill;
+        ctx.fill();
+      }
+      if (stroke) {
+        ctx.lineWidth = width;
+        ctx.strokeStyle = stroke;
+        ctx.stroke();
+      }
+    }
+
+    drawRoom() {
+      const ctx = this.ctx;
+      const floor = this.roomFloorPoints();
+      this.polygon(floor, '#f2f2ec', '#819087', Math.max(1, this.canvas.width / 1400));
+
+      const grid = .5;
+      const hw = this.room.width / 2;
+      const hd = this.room.depth / 2;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(67, 91, 77, .13)';
+      ctx.lineWidth = Math.max(1, this.canvas.width / 1800);
+      for (let x = -hw; x <= hw + .001; x += grid) {
+        const a = this.project(x, 0, -hd);
+        const b = this.project(x, 0, hd);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      for (let z = -hd; z <= hd + .001; z += grid) {
+        const a = this.project(-hw, 0, z);
+        const b = this.project(hw, 0, z);
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      ctx.restore();
+
+      const backLeft = this.project(-hw, 0, -hd);
+      const backRight = this.project(hw, 0, -hd);
+      const backLeftTop = this.project(-hw, this.room.height, -hd);
+      const backRightTop = this.project(hw, this.room.height, -hd);
+      this.polygon([backLeft, backRight, backRightTop, backLeftTop], 'rgba(232,236,228,.75)', 'rgba(92,112,100,.25)');
+
+      const sideBottom = this.project(-hw, 0, hd);
+      const sideTop = this.project(-hw, this.room.height, hd);
+      this.polygon([backLeft, sideBottom, sideTop, backLeftTop], 'rgba(224,231,222,.62)', 'rgba(92,112,100,.2)');
+
+      ctx.fillStyle = 'rgba(42,61,51,.68)';
+      ctx.font = `${Math.max(12, this.canvas.width / 95)}px system-ui, sans-serif`;
+      ctx.fillText(`${this.room.width.toFixed(1)} m × ${this.room.depth.toFixed(1)} m × ${this.room.height.toFixed(1)} m`, floor[3].x + 10, floor[3].y + 24);
+    }
+
+    drawPrism(obj, fill = obj.color) {
+      const hw = obj.width / 2;
+      const hd = obj.depth / 2;
+      const baseLocal = [[-hw,-hd],[hw,-hd],[hw,hd],[-hw,hd]];
+      const base = baseLocal.map(([x,z]) => {
+        const p = this.localPoint(obj,x,z);
+        return this.project(p.x,0,p.z);
+      });
+      const top = baseLocal.map(([x,z]) => {
+        const p = this.localPoint(obj,x,z);
+        return this.project(p.x,obj.height,p.z);
+      });
+      this.polygon([base[1],base[2],top[2],top[1]], this.shade(fill,-14));
+      this.polygon([base[2],base[3],top[3],top[2]], this.shade(fill,-24));
+      this.polygon(top, fill, 'rgba(30,45,37,.24)');
+      return this.project(obj.x,obj.height,obj.z);
+    }
+
+    shade(hex, amount) {
+      const raw = hex.replace('#','');
+      if (raw.length !== 6) return hex;
+      const num = parseInt(raw,16);
+      const r = this.clamp((num >> 16) + amount,0,255);
+      const g = this.clamp(((num >> 8) & 255) + amount,0,255);
+      const b = this.clamp((num & 255) + amount,0,255);
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    drawPlant(obj) {
+      const pot = {...obj, width: obj.width * .55, depth: obj.depth * .55, height: .32, color: '#8b6f55'};
+      const top = this.drawPrism(pot, pot.color);
+      const ctx = this.ctx;
+      const stemTop = this.project(obj.x, obj.height * .78, obj.z);
+      ctx.strokeStyle = '#4c7047';
+      ctx.lineWidth = Math.max(2, this.canvas.width / 600);
+      ctx.beginPath(); ctx.moveTo(top.x, top.y); ctx.lineTo(stemTop.x, stemTop.y); ctx.stroke();
+      const size = Math.max(10, this.metrics().scale * .23);
+      [['#557b4f',0,0],['#6d8f60',-.55,-.15],['#486c46',.55,-.05],['#73986b',0,.48]].forEach(([color,dx,dy]) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.ellipse(stemTop.x + Number(dx)*size, stemTop.y + Number(dy)*size, size*.52, size*.32, -.45, 0, Math.PI*2);
+        ctx.fill();
+      });
+      return stemTop;
+    }
+
+    drawLight(obj) {
+      const ctx = this.ctx;
+      const base = {...obj, width: .34, depth: .34, height: .08, color: '#77756a'};
+      this.drawPrism(base, base.color);
+      const bottom = this.project(obj.x,.08,obj.z);
+      const top = this.project(obj.x,obj.height,obj.z);
+      ctx.strokeStyle = '#68685f';
+      ctx.lineWidth = Math.max(2,this.canvas.width/700);
+      ctx.beginPath(); ctx.moveTo(bottom.x,bottom.y); ctx.lineTo(top.x,top.y); ctx.stroke();
+      const lamp = this.project(obj.x,obj.height-.08,obj.z);
+      const coneFloor = this.project(obj.x,0,obj.z);
+      const radius = Math.max(18, this.metrics().scale * (.36 + Math.min(obj.watts,60)/180));
+      ctx.save();
+      ctx.fillStyle = 'rgba(238, 212, 112, .11)';
+      ctx.beginPath();
+      ctx.moveTo(lamp.x,lamp.y);
+      ctx.lineTo(coneFloor.x-radius,coneFloor.y);
+      ctx.lineTo(coneFloor.x+radius,coneFloor.y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = '#c7b96f';
+      ctx.beginPath(); ctx.arc(lamp.x,lamp.y,Math.max(6,this.metrics().scale*.08),0,Math.PI*2); ctx.fill();
+      return lamp;
+    }
+
+    drawWindow(obj) {
+      const p = this.project(obj.x,obj.height*.6,obj.z);
+      const ctx = this.ctx;
+      const scale = this.metrics().scale;
+      const w = obj.width * scale * .45;
+      const h = obj.height * scale * .42;
+      ctx.fillStyle = 'rgba(164, 205, 214, .54)';
+      ctx.fillRect(p.x-w/2,p.y-h,w,h);
+      ctx.strokeStyle = 'rgba(73,112,120,.7)';
+      ctx.strokeRect(p.x-w/2,p.y-h,w,h);
+      ctx.beginPath(); ctx.moveTo(p.x,p.y-h);ctx.lineTo(p.x,p.y);ctx.moveTo(p.x-w/2,p.y-h/2);ctx.lineTo(p.x+w/2,p.y-h/2);ctx.stroke();
+      return p;
+    }
+
+    drawObject(obj) {
+      let anchor;
+      if (obj.kind === 'plant') anchor = this.drawPlant(obj);
+      else if (obj.kind === 'window') anchor = this.drawWindow(obj);
+      else if (['light','floor-light','pendant','shelf-light'].includes(obj.kind)) anchor = this.drawLight(obj);
+      else anchor = this.drawPrism(obj);
+
+      obj.screen = {x: anchor.x, y: anchor.y};
+      if (obj.image) {
+        this.preloadImage(obj.image);
+        const img = this.productImages.get(obj.image);
+        if (img?.complete) {
+          const size = Math.max(24, Math.min(46, this.canvas.width / 28));
+          this.ctx.save();
+          this.ctx.globalAlpha = .94;
+          this.ctx.fillStyle = '#fff';
+          this.ctx.fillRect(anchor.x-size/2,anchor.y-size-12,size,size);
+          try { this.ctx.drawImage(img,anchor.x-size/2+2,anchor.y-size-10,size-4,size-4); } catch {}
+          this.ctx.restore();
+        }
+      }
+
+      if (obj.id === this.selectedId) {
+        const radius = Math.max(18,this.metrics().scale*.24);
+        const floor = this.project(obj.x,0,obj.z);
+        this.ctx.strokeStyle = '#315c3d';
+        this.ctx.lineWidth = Math.max(2,this.canvas.width/700);
+        this.ctx.setLineDash([7,5]);
+        this.ctx.beginPath(); this.ctx.arc(floor.x,floor.y,radius,0,Math.PI*2); this.ctx.stroke();
+        this.ctx.setLineDash([]);
+      }
+
+      this.ctx.fillStyle = 'rgba(31,49,39,.88)';
+      this.ctx.font = `600 ${Math.max(10,this.canvas.width/125)}px system-ui, sans-serif`;
+      const label = obj.title.length > 28 ? `${obj.title.slice(0,27)}…` : obj.title;
+      this.ctx.fillText(label, anchor.x + 8, anchor.y - 4);
+    }
+
+    draw() {
+      if (!this.ctx) return;
+      const ctx = this.ctx;
+      ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+      const gradient = ctx.createLinearGradient(0,0,0,this.canvas.height);
+      gradient.addColorStop(0,'#f6f7f3');
+      gradient.addColorStop(1,'#e8eee7');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
+      this.drawRoom();
+
+      const sorted = [...this.objects].sort((a,b) => {
+        const pa = this.project(a.x,0,a.z);
+        const pb = this.project(b.x,0,b.z);
+        return pa.y - pb.y;
+      });
+      sorted.forEach((obj) => this.drawObject(obj));
+      this.updateSelection();
+    }
+
+    pointerPosition(event) {
+      const rect = this.canvas.getBoundingClientRect();
+      return {
+        x: (event.clientX - rect.left) * (this.canvas.width / rect.width),
+        y: (event.clientY - rect.top) * (this.canvas.height / rect.height)
+      };
+    }
+
+    hitTest(point) {
+      let best = null;
+      let bestDistance = Infinity;
+      this.objects.forEach((obj) => {
+        const p = obj.screen || this.project(obj.x,obj.height,obj.z);
+        const distance = Math.hypot(point.x-p.x,point.y-p.y);
+        const threshold = Math.max(28,this.metrics().scale*.35);
+        if (distance < threshold && distance < bestDistance) {
+          best = obj;
+          bestDistance = distance;
+        }
+      });
+      return best;
+    }
+
+    pointerDown(event) {
+      const point = this.pointerPosition(event);
+      const obj = this.hitTest(point);
+      if (!obj) {
+        this.selectedId = null;
+        this.draw();
+        return;
+      }
+      this.selectedId = obj.id;
+      this.drag = {last: point, id: obj.id};
+      this.canvas.setPointerCapture?.(event.pointerId);
+      this.draw();
+    }
+
+    pointerMove(event) {
+      if (!this.drag) return;
+      const obj = this.objects.find((item) => item.id === this.drag.id);
+      if (!obj) return;
+      const point = this.pointerPosition(event);
+      const dx = point.x - this.drag.last.x;
+      const dy = point.y - this.drag.last.y;
+      const {scale} = this.metrics();
+      const a = this.camera * Math.PI / 180;
+      const c = Math.cos(a);
+      const s = Math.sin(a);
+      const dxr = dx / scale;
+      const dzr = dy / (scale * .48);
+      obj.x += dxr * c + dzr * s;
+      obj.z += -dxr * s + dzr * c;
+      this.clampObject(obj);
+      this.drag.last = point;
+      this.draw();
+      this.updateSummary();
+    }
+
+    pointerUp() {
+      if (this.drag) this.save();
+      this.drag = null;
+    }
+
+    selected() {
+      return this.objects.find((obj) => obj.id === this.selectedId) || null;
+    }
+
+    rotateSelected(delta) {
+      const obj = this.selected();
+      if (!obj) return;
+      obj.rotation = (obj.rotation + delta + 360) % 360;
+      this.save();
+      this.draw();
+    }
+
+    deleteSelected() {
+      if (!this.selectedId) return;
+      this.objects = this.objects.filter((obj) => obj.id !== this.selectedId);
+      this.selectedId = null;
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    duplicateSelected() {
+      const obj = this.selected();
+      if (!obj) return;
+      const copy = {...obj, id: ++this.objectId, x: obj.x + .25, z: obj.z + .25};
+      delete copy.screen;
+      this.clampObject(copy);
+      this.objects.push(copy);
+      this.selectedId = copy.id;
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+
+    updateSelection() {
+      const panel = this.querySelector('[data-selection]');
+      const obj = this.selected();
+      if (!panel) return;
+      panel.hidden = !obj;
+      if (!obj) return;
+      const title = panel.querySelector('[data-selection-title]');
+      const meta = panel.querySelector('[data-selection-meta]');
+      if (title) title.textContent = obj.title;
+      if (meta) {
+        const parts = [`${obj.x.toFixed(1)} × ${obj.z.toFixed(1)} m`, `${obj.rotation}°`];
+        if (obj.watts) parts.push(`${obj.watts} W`);
+        meta.textContent = parts.join(' · ');
+      }
+    }
+
+    formatMoney(cents) {
+      try {
+        return new Intl.NumberFormat(this.locale,{style:'currency',currency:this.currency}).format(cents/100);
+      } catch {
+        return `${(cents/100).toFixed(2)} €`;
+      }
+    }
+
+    updateSummary() {
+      const productObjects = this.objects.filter((obj) => obj.variantId);
+      const total = productObjects.reduce((sum,obj) => sum + Number(obj.price || 0),0);
+      const watts = productObjects.reduce((sum,obj) => sum + Number(obj.watts || 0),0);
+      const area = Math.max(.1,this.room.width*this.room.depth);
+      const count = this.querySelector('[data-summary-count]');
+      const price = this.querySelector('[data-summary-price]');
+      const power = this.querySelector('[data-summary-watts]');
+      const density = this.querySelector('[data-summary-density]');
+      const cart = this.querySelector('[data-add-setup]');
+      if (count) count.textContent = String(this.objects.length);
+      if (price) price.textContent = productObjects.length ? this.formatMoney(total) : '—';
+      if (power) power.textContent = `${Math.round(watts)} W`;
+      if (density) density.textContent = `${(watts/area).toFixed(1)} W/m²`;
+      if (cart) cart.disabled = productObjects.length === 0;
+    }
+
+    async addSetupToCart() {
+      const button = this.querySelector('[data-add-setup]');
+      const status = this.querySelector('[data-builder-status]');
+      const products = this.objects.filter((obj) => obj.variantId);
+      if (!products.length || !button) return;
+      const grouped = new Map();
+      products.forEach((obj) => grouped.set(obj.variantId,(grouped.get(obj.variantId)||0)+1));
+      const items = [...grouped.entries()].map(([id,quantity]) => ({id,quantity}));
+      button.disabled = true;
+      if (status) status.textContent = '';
+      try {
+        const response = await fetch(this.dataset.cartAddUrl || '/cart/add.js',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Accept':'application/json'},
+          body:JSON.stringify({items})
+        });
+        if (!response.ok) throw new Error('cart');
+        if (status) status.textContent = this.dataset.addedLabel || '';
+        window.setTimeout(() => {
+          window.location.href = this.dataset.cartUrl || '/cart';
+        },500);
+      } catch {
+        if (status) status.textContent = this.dataset.errorLabel || '';
+        button.disabled = false;
+      }
+    }
+
+    save() {
+      try {
+        localStorage.setItem('leafer-interieur-room-v1',JSON.stringify({
+          room:this.room,
+          camera:this.camera,
+          objects:this.objects.map(({screen,...obj}) => obj),
+          objectId:this.objectId
+        }));
+      } catch {}
+    }
+
+    restore() {
+      try {
+        const raw = localStorage.getItem('leafer-interieur-room-v1');
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (saved?.room) {
+          this.room = {...this.room,...saved.room};
+          ['width','depth','height'].forEach((key) => {
+            const input = this.querySelector(`[data-room-${key}]`);
+            if (input) input.value = this.room[key];
+          });
+        }
+        if (Number.isFinite(saved?.camera)) this.camera = saved.camera;
+        if (Array.isArray(saved?.objects)) {
+          this.objects = saved.objects.slice(0,40);
+          this.objects.forEach((obj) => this.preloadImage(obj.image));
+        }
+        if (Number.isFinite(saved?.objectId)) this.objectId = saved.objectId;
+      } catch {}
+    }
+
+    reset() {
+      try { localStorage.removeItem('leafer-interieur-room-v1'); } catch {}
+      this.room = {width:4.2,depth:3.2,height:2.5};
+      this.camera = -35;
+      this.objects = [];
+      this.selectedId = null;
+      this.objectId = 0;
+      ['width','depth','height'].forEach((key) => {
+        const input = this.querySelector(`[data-room-${key}]`);
+        if (input) input.value = this.room[key];
+      });
+      this.addPrimitive('plant',-.75,.2);
+      this.addPrimitive('plant',.55,.55);
+      this.save();
+      this.draw();
+      this.updateSummary();
+    }
+  }
+
+  if (!customElements.get('interieur-room-builder')) {
+    customElements.define('interieur-room-builder',InterieurRoomBuilder);
+  }
+
 {% endjavascript %}
 
 {% schema %}
-{ "name": "t:sections.main_collection.name", "settings": [{ "type": "checkbox", "id": "show_type_filters", "label": "Produkttyp-Filter anzeigen", "default": true }] }
+{
+  "name": "t:sections.main_collection.name",
+  "settings": [
+    { "type": "checkbox", "id": "show_type_filters", "label": "Produkttyp-Filter anzeigen", "default": true },
+    { "type": "image_picker", "id": "brand_logo", "label": "t:sections.header.logo" }
+  ]
+}
 {% endschema %}

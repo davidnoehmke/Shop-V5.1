@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Zum Inhalt springen",
@@ -128,7 +119,7 @@
     },
     "trust": {
       "label": "Vorteile beim Kauf",
-      "shipping": "Deutschlandweit kostenloser Versand",
+      "shipping": "Versandkosten werden im Checkout angezeigt",
       "payment": "Sichere Zahlung über Shopify",
       "support": "Persönliche Hilfe bei Fragen"
     },
@@ -146,7 +137,17 @@
       "notice": "Hinweis:",
       "configurator_title": "In deiner eigenen Mischung verwenden",
       "configurator_text": "Öffne den LEAFerservice Konfigurator und kombiniere passende Bestandteile.",
-      "configurator_cta": "Zum Konfigurator"
+      "configurator_cta": "Zum Konfigurator",
+      "identity": "Hersteller & Modell",
+      "light_distribution": "Lichtverteilung",
+      "beam_angle": "Abstrahlwinkel",
+      "installation": "Montage & Anschluss",
+      "electrical": "Elektrische Daten",
+      "safety": "Sicherheit",
+      "manual": "Herstellerseite öffnen",
+      "advisor_title": "Im LEAF Berater einordnen",
+      "advisor_text": "Nutze denselben Berater wie in den Produktwelten. Deine bisherigen Angaben bleiben erhalten.",
+      "advisor_cta": "LEAF Berater öffnen"
     },
     "media": {
       "label": "Produktbilder"
@@ -167,6 +168,22 @@
       "from_percent": "ab %{percent} %",
       "note": "Fachlicher Hinweis",
       "cta": "Im Profi-Konfigurator verwenden"
+    },
+    "knowledge": {
+      "eyebrow": "Wissen in Ebenen",
+      "heading": "Begriffe und Materialien verstehen"
+    },
+    "card": {
+      "decision_facts": "Entscheidungsfakten",
+      "view_details": "Produkt verstehen & auswählen"
+    },
+    "decision_summary": {
+      "eyebrow": "Knowledge First",
+      "heading": "Passt dieses Produkt zu deinem Setup?",
+      "function": "Funktion",
+      "fit": "Geeignet für",
+      "spec": "Wichtigste Kenngröße",
+      "note": "Wenn diese Punkte zu deinem Einsatz passen, wähle darunter die passende Variante."
     }
   },
   "product_variant_guide": {
@@ -184,7 +201,159 @@
     "guide": {
       "eyebrow": "Kaufberatung & Wissen",
       "heading": "{{ collection }} richtig auswählen",
-      "topics": "Themen dieser Kollektion"
+      "topics": "Themen dieser Kollektion",
+      "atoms_eyebrow": "Kurz bis ausführlich",
+      "atoms_heading": "Begriffe in dieser Produktwelt"
+    },
+    "interieur": {
+      "eyebrow": "Interieur Solutions Konfigurator",
+      "heading": "Plane Pflanzenlicht als Teil des Raums.",
+      "intro": "Wähle Raum, Projekt, Montage, Lichtniveau und Budget. Der Konfigurator ordnet die Produkte dieser Kollektion nach Passung und führt dich von der Idee zur konkreten Lösung.",
+      "steps": {
+        "room": "Raum",
+        "project": "Projekt",
+        "mount": "Montage",
+        "light": "Lichtbedarf",
+        "budget": "Budget"
+      },
+      "room": {
+        "living": "Wohnraum",
+        "office": "Büro",
+        "kitchen": "Küche",
+        "plantroom": "Pflanzenzimmer"
+      },
+      "project": {
+        "single": "Einzelpflanze",
+        "shelf": "Regal & Sideboard",
+        "pendant": "Pendel & Wand",
+        "station": "Pflanzenstation",
+        "habitat": "Terrarium & Aquascape"
+      },
+      "mount": {
+        "open": "Noch offen",
+        "e27": "E27-Leuchte",
+        "shelf": "Regal / Unterbau",
+        "pendant": "Pendel / Wand",
+        "floor": "Standlösung",
+        "system": "Komplettsystem"
+      },
+      "light": {
+        "supplement": "Ergänzungslicht",
+        "balanced": "Ganzjährig ausgewogen",
+        "intensive": "Hoher Lichtbedarf"
+      },
+      "budget": {
+        "under_75": "Bis 75 €",
+        "under_150": "Bis 150 €",
+        "under_300": "Bis 300 €",
+        "under_500": "Bis 500 €",
+        "open": "Budget offen"
+      },
+      "reset": "Auswahl zurücksetzen",
+      "result_eyebrow": "Dein Raumprofil",
+      "result_default": "Interieur-Profil",
+      "result_copy": "Die Auswahl wird mit Produkttyp, Montage, Leistung, Einsatzbereich und Preis der vorhandenen Interieur-Solutions-Produkte abgeglichen.",
+      "result_one": "1 passende Empfehlung",
+      "result_many": "passende Empfehlungen",
+      "no_result": "Keine direkte Übereinstimmung",
+      "budget_relaxed": "Für diese Kombination liegt kein direkter Treffer im gewählten Budget. Deshalb werden die passendsten Systeme unabhängig vom Budget gezeigt.",
+      "all_products": "Gesamtes Sortiment vergleichen",
+      "recommendations_eyebrow": "Dynamische Vorauswahl",
+      "recommendations": "Passende Lösungen für dein Projekt",
+      "recommendations_intro": "Die Reihenfolge entsteht aus deinen Angaben. Details zu Lichtleistung, Montage, Varianten und Einsatz findest du anschließend direkt auf der Produktseite.",
+      "builder_eyebrow": "3D Interieur Builder",
+      "builder_heading": "Plane deine Pflanzenwelt im Raum.",
+      "builder_intro": "Baue deinen Raum maßstäblich auf, platziere Pflanzen, Regale und echte Produkte frei in der 16:9-Ansicht und erhalte direkt Preis, Leistung und Setup-Summe.",
+      "builder_steps_label": "Schritte des 3D-Builders",
+      "builder_step_room": "Raum definieren",
+      "builder_step_place": "Elemente platzieren",
+      "builder_step_setup": "Setup auswerten",
+      "builder_room": "Raummaße",
+      "builder_width": "Breite (m)",
+      "builder_depth": "Tiefe (m)",
+      "builder_height": "Höhe (m)",
+      "builder_elements": "Raumelemente",
+      "builder_plant": "Pflanze",
+      "builder_shelf": "Regal",
+      "builder_window": "Fenster",
+      "builder_products": "Interieur-Produkte",
+      "builder_product_select": "Produkt für den Raum auswählen",
+      "builder_add_product": "Im Raum platzieren",
+      "builder_canvas_label": "Interaktive 3D-Raumplanung für Interieur Solutions",
+      "builder_hint": "Objekt anklicken und ziehen. Auswahl anschließend drehen, duplizieren oder entfernen.",
+      "builder_camera": "Kamera",
+      "builder_camera_left": "Kamera nach links drehen",
+      "builder_camera_right": "Kamera nach rechts drehen",
+      "builder_object_actions": "Ausgewähltes Objekt bearbeiten",
+      "builder_rotate_left": "−15° drehen",
+      "builder_rotate_right": "+15° drehen",
+      "builder_duplicate": "Duplizieren",
+      "builder_delete": "Entfernen",
+      "builder_reset": "Raum zurücksetzen",
+      "builder_objects": "Elemente",
+      "builder_price": "Produktwert",
+      "builder_power": "Lichtleistung",
+      "builder_density": "Leistung / Fläche",
+      "builder_cart": "Setup in den Warenkorb",
+      "builder_added": "Setup wurde dem Warenkorb hinzugefügt.",
+      "builder_error": "Das Setup konnte nicht vollständig hinzugefügt werden. Bitte erneut versuchen.",
+      "advanced_builder_eyebrow": "Profi-Werkzeug",
+      "advanced_builder_title": "3D-Raumplanung öffnen",
+      "advanced_builder_text": "Optional: Raum, Objekte und konkrete Leuchten maßstäblich planen.",
+      "advanced_configurator_eyebrow": "Profi-Werkzeug",
+      "advanced_configurator_title": "Licht-Setup feinplanen",
+      "advanced_configurator_text": "Optional: Montage, Lichtniveau und Budget detaillierter gegeneinander abgleichen."
+    },
+    "decision": {
+      "eyebrow": "Knowledge First",
+      "heading": "Erst verstehen, dann auswählen.",
+      "use_title": "Einsatz zuerst",
+      "use_text": "Wähle nach Pflanze, Raum oder Aufgabe – nicht nach Produktname.",
+      "data_title": "Relevante Daten",
+      "data_text": "Vergleiche nur die Kenngrößen, die für deinen Einsatz wirklich wichtig sind.",
+      "choose_title": "Produkt prüfen",
+      "choose_text": "Öffne das Produkt, prüfe die Details und wähle anschließend die passende Variante."
+    },
+    "advisor": {
+      "eyebrow": "LEAF Berater",
+      "heading": "Ein Berater für alle Produktwelten.",
+      "intro": "Die aktuelle Kollektion gibt den Kontext vor. Deine Auswahl bleibt über Produktwelten hinweg erhalten, während Spezialwerkzeuge nur dort auftauchen, wo sie wirklich gebraucht werden.",
+      "resume": "Gespeicherte Auswahl erkannt",
+      "skip_to_products": "Direkt zum Sortiment",
+      "progress_label": "Fortschritt im LEAF Berater",
+      "no_selection": "Noch keine Auswahl",
+      "need_heading": "Was möchtest du erreichen oder lösen?",
+      "need_text": "Wähle den Bedarf, der deinem Projekt am nächsten kommt.",
+      "context_heading": "Wo und in welchem Kontext soll es funktionieren?",
+      "context_text": "Standort, Raum und Pflanzensituation grenzen die sinnvollen Lösungen ein.",
+      "preference_heading": "Was ist dir bei der Umsetzung wichtig?",
+      "preference_text": "Wähle eine Präferenz. Du kannst diesen Schritt auch überspringen.",
+      "result_eyebrow": "Deine Vorauswahl",
+      "result_heading": "Diese Produkte passen am besten zu deinen Angaben.",
+      "result_text": "Die Reihenfolge entsteht aus den strukturierten Produktdaten dieser Kollektion.",
+      "reset": "Auswahl neu starten",
+      "all_products": "Alle Produkte vergleichen",
+      "back": "Zurück",
+      "next": "Weiter",
+      "summary_eyebrow": "Dein Setup",
+      "summary_heading": "Auswahl bleibt gespeichert",
+      "summary_note": "Die Auswahl bleibt zunächst lokal in deinem Browser. Erst mit „Projekt speichern“ wird der nicht-personenbezogene Projektstand in Supabase gespeichert.",
+      "match_label": "Treffer",
+      "view_product": "Produkt prüfen",
+      "result_count": "Empfehlungen",
+      "dimmable": "Dimmbar",
+      "home_heading": "Finde dein Setup über alle Produktwelten.",
+      "home_intro": "Starte mit der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Die Auswahl bleibt zusammenhängend, auch wenn du später zwischen Produktwelten wechselst.",
+      "world_heading": "In welcher Produktwelt möchtest du starten?",
+      "world_text": "Wähle den Bereich, den du zuerst lösen möchtest. Du kannst später wechseln oder deine Auswahl speichern.",
+      "save_project": "Projekt speichern",
+      "saving_project": "Wird gespeichert …",
+      "saved_project": "Projekt gespeichert. Der Link enthält deinen Projektcode.",
+      "unsaved_project": "Änderungen noch nicht erneut gespeichert.",
+      "save_error": "Projekt konnte nicht gespeichert werden. Deine lokale Auswahl bleibt erhalten.",
+      "restored_project": "Gespeichertes Projekt geladen.",
+      "copy_project_link": "Projektlink kopieren",
+      "copied_project_link": "Projektlink kopiert."
     }
   },
   "recipe": {
@@ -270,11 +439,16 @@
     "copyright": "© {{ year }} {{ shop }}"
   },
   "brand_story": {
-    "eyebrow": "LEAFerservice Prinzip",
-    "heading": "Pflanzenpflege wird leichter, wenn jedes Material eine klare Aufgabe erfüllt",
-    "text_one": "Ein gutes Pflanzsubstrat ist kein universeller Stoff, sondern ein abgestimmter Wurzelraum. Grobe Bestandteile schaffen Luft, mineralische Komponenten stabilisieren die Struktur, organische Anteile puffern Feuchtigkeit und ausgewählte Zusätze beeinflussen Wasser- und Nährstoffführung. Deshalb zeigt LEAFerservice nicht nur Produkte, sondern auch ihre Funktion und – bei Spezialmischungen – das konkrete Mischverhältnis.",
-    "text_two": "Unser Sortiment verbindet fertige Mischungen mit einzeln verfügbaren Komponenten. So kannst du bewährte Rezepturen nutzen, sie an Standort und Gießverhalten anpassen oder mit dem Substrat-Konfigurator einen eigenen Mix planen. Ergänzt wird das System durch Pflanzgefäße, Anzuchttechnik und Zubehör, das zum jeweiligen Einsatz passt.",
-    "link": "Alle LEAFerservice Produkte entdecken"
+    "eyebrow": "Persönlich hinter LEAFerservice",
+    "heading": "Ein Shop mit einer klaren Person dahinter.",
+    "text_one": "LEAFerservice ist kein anonymer Marktplatz. Ich entwickle Sortiment, Inhalte, Konfiguratoren und die technische Plattform selbst und verbinde dabei praktische Pflanzenerfahrung mit nachvollziehbaren Produktinformationen.",
+    "text_two": "Mein Ziel ist, dass du nicht einfach irgendein Produkt kaufst, sondern verstehst, warum Substrat, Gefäß, Licht und Pflege zusammenpassen. Wenn etwas unklar ist, gibt es deshalb auch persönliche Hilfe statt nur automatisierter Produktseiten.",
+    "role": "Inhaber · Founder & CEO",
+    "proof_label": "Vertrauen und Verantwortung",
+    "proof_one": "Persönlich verantwortetes Sortiment",
+    "proof_two": "Eigene Pflanzenpraxis & Dokumentation",
+    "proof_three": "Direkter Kontakt bei Fragen",
+    "link": "Mehr über LEAFerservice"
   },
   "collection_seo": {
     "eyebrow": "LEAFerservice Sortimentwissen",
@@ -289,13 +463,13 @@
       "answer_two": "Ja. Beginne mit einer klaren Funktion pro Bestandteil und stelle die Volumenanteile auf insgesamt 100 Prozent ein. Der LEAFer Substrat-Konfigurator hilft beim Planen; Änderungen sollten schrittweise und passend zur Pflanze erfolgen."
     },
     "houseplants": {
-          "heading": "Zimmerpflanzen passend zu Wurzelraum, Standort und Pflege auswählen",
-          "lead": "Monstera, Philodendron, Alocasia und weitere Zimmerpflanzen unterscheiden sich bei Lichtbedarf, Wurzelstruktur und Feuchtigkeit. Die Auswahl sollte deshalb Pflanze, Gefäß und Substrat gemeinsam betrachten.",
-          "body": "Bei Zimmerpflanzen entscheidet nicht nur die Art, sondern das gesamte System aus Wurzelraum, Substrat, Topf und Standort. Aroiden profitieren häufig von luftigen, strukturstabilen Mischungen; kompaktere Grünpflanzen benötigen teils gleichmäßigere Feuchtigkeit. Nutze die Produkt- und Ratgeberinformationen, um Pflanze, Substrat und Gefäß funktional aufeinander abzustimmen.",
-          "question_one": "Welches Substrat passt zu tropischen Zimmerpflanzen?",
-          "answer_one": "Für viele Monstera-, Philodendron- und Alocasia-Arten ist ein luftiges, grob strukturiertes Substrat sinnvoll. Entscheidend bleiben Topfgröße, Licht und Gießroutine.",
-          "question_two": "Wie wähle ich das passende Gefäß?",
-          "answer_two": "Wähle das Gefäß nach dem vorhandenen Wurzelballen und dem Wasserhaushalt. Zu große Töpfe trocknen langsamer; gute Drainage und ein passendes Substrat bleiben wichtig."
+      "heading": "Zimmerpflanzen passend zu Wurzelraum, Standort und Pflege auswählen",
+      "lead": "Monstera, Philodendron, Alocasia und weitere Zimmerpflanzen unterscheiden sich bei Lichtbedarf, Wurzelstruktur und Feuchtigkeit. Die Auswahl sollte deshalb Pflanze, Gefäß und Substrat gemeinsam betrachten.",
+      "body": "Bei Zimmerpflanzen entscheidet nicht nur die Art, sondern das gesamte System aus Wurzelraum, Substrat, Topf und Standort. Aroiden profitieren häufig von luftigen, strukturstabilen Mischungen; kompaktere Grünpflanzen benötigen teils gleichmäßigere Feuchtigkeit. Nutze die Produkt- und Ratgeberinformationen, um Pflanze, Substrat und Gefäß funktional aufeinander abzustimmen.",
+      "question_one": "Welches Substrat passt zu tropischen Zimmerpflanzen?",
+      "answer_one": "Für viele Monstera-, Philodendron- und Alocasia-Arten ist ein luftiges, grob strukturiertes Substrat sinnvoll. Entscheidend bleiben Topfgröße, Licht und Gießroutine.",
+      "question_two": "Wie wähle ich das passende Gefäß?",
+      "answer_two": "Wähle das Gefäß nach dem vorhandenen Wurzelballen und dem Wasserhaushalt. Zu große Töpfe trocknen langsamer; gute Drainage und ein passendes Substrat bleiben wichtig."
     },
     "planters": {
       "heading": "Pflanzgefäße, Stofftöpfe und Bewässerungssysteme passend zum Wurzelraum",
@@ -403,6 +577,99 @@
       "system_text": "Substrat, Topf, Rankhilfe und Licht werden nur kombiniert, wenn es fachlich passt.",
       "choice_title": "Du behältst die Kontrolle",
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
+    }
+  },
+  "plant_world": {
+    "eyebrow": "Aus meiner Pflanzenwelt",
+    "fact_light": "Licht",
+    "fact_water": "Wasser",
+    "fact_humidity": "Luftfeuchte",
+    "fact_substrate": "Substrat",
+    "fact_practice": "Praxisfokus",
+    "primary_link": "Passendes Setup ansehen",
+    "practice_eyebrow": "Nicht aus dem Lehrbuch",
+    "practice_heading": "Was ich bei dieser Pflanze tatsächlich beobachte",
+    "experience_label": "Meine Erfahrung",
+    "care_label": "Pflege kompakt",
+    "substrate_label": "Wurzelraum & Substrat",
+    "light_label": "Licht",
+    "gallery_eyebrow": "Eigene Dokumentation",
+    "gallery_heading": "So sieht die Entwicklung bei mir aus",
+    "gallery_intro": "Keine Stockfotos. Die Bilder stammen aus meiner eigenen Pflanzenhaltung.",
+    "products_eyebrow": "Passend zum Thema",
+    "products_heading": "Produkte, die zu diesem Setup passen",
+    "products_intro": "Ausgewählt nach Funktion und Einsatzbereich – nicht als pauschales Muss.",
+    "longform_eyebrow": "Einordnung",
+    "longform_heading": "Was ich daraus für den Alltag ableite"
+  },
+  "social_greens": {
+    "eyebrow": "LEAFerservice · Social Greens",
+    "title": "Mehr Grün für soziale Orte.",
+    "intro": "Social Greens bringt passende Pflanzenkonzepte in soziale Einrichtungen – bedarfsgerecht geplant, transparent kalkuliert und gemeinsam umgesetzt.",
+    "cta_primary": "Social-Greens-Projekt anfragen",
+    "cta_secondary": "Pflanzenwelt entdecken",
+    "principles_label": "Kostenprinzipien von Social Greens",
+    "ek_value": "Zum tatsächlichen EK",
+    "ek_label": "Pflanzen, Gefäße, Substrat, Licht und weiteres Material",
+    "work_value": "0 € Arbeitszeit",
+    "work_label": "Planung, Organisation, Eintopfen und Aufbau durch LEAFerservice",
+    "margin_value": "0 % Marge",
+    "margin_label": "Kein Gewinnaufschlag innerhalb eines Social-Greens-Projekts",
+    "audience_eyebrow": "Wo Social Greens wirkt",
+    "audience_heading": "Für Orte, die Gemeinschaft tragen.",
+    "audience_intro": "Der Bereich richtet sich an soziale Einrichtungen und gemeinschaftlich genutzte Räume. Umfang und Auswahl werden jeweils am konkreten Ort geplant.",
+    "audience_kitas": "Kitas & Bildung",
+    "audience_care": "Pflege & Senioren",
+    "audience_inclusion": "Inklusion & Teilhabe",
+    "audience_community": "Gemeinschaftsräume",
+    "process_eyebrow": "Einfacher Ablauf",
+    "process_heading": "Vom Bedarf zum grünen Ort.",
+    "step_1_title": "Ort und Bedarf verstehen",
+    "step_1_text": "Wir klären Nutzung, Licht, Platz, Pflegeaufwand und die Menschen, die den Raum täglich nutzen.",
+    "step_2_title": "Passendes Projekt zusammenstellen",
+    "step_2_text": "Wir wählen Pflanzen, Gefäße, Substrat, Beleuchtung und weitere Komponenten passend zu Nutzung, Pflegeaufwand und Budget.",
+    "step_3_title": "Gemeinsam umsetzen",
+    "step_3_text": "Nach Freigabe koordinieren wir Beschaffung, Eintopfen und den vereinbarten Aufbau vor Ort.",
+    "cost_heading": "Transparenz vor dem Start.",
+    "cost_text": "Vor der Umsetzung erhält die Einrichtung eine klare Projektübersicht einschließlich eventuell notwendiger externer Lieferkosten. Erst nach Freigabe werden Materialien beschafft; Erstgespräch und Planung bleiben unverbindlich."
+  },
+  "labs": {
+    "eyebrow": "LEAFerservice Labs",
+    "heading": "Technologie hinter LEAFerservice",
+    "intro": "LEAFerservice ist nicht nur ein Shop. Die Plattform dient zugleich als reale Entwicklungsumgebung für moderne Commerce-Architektur, Datenanalyse und kontrollierte KI-Automatisierung.",
+    "fallback_status": "Verifizierte öffentliche Systemübersicht",
+    "updated_label": "Automatisch aktualisiert:",
+    "security_title": "Public-safe by design.",
+    "security_text": "Gezeigt werden ausschließlich freigegebene, abstrahierte Informationen. Quellcode, Prompts, Sicherheitsarchitektur, Zugangsdaten, interne Automatisierungslogik, Lieferantenkonditionen und personenbezogene Daten bleiben ausgeschlossen.",
+    "cta_heading": "Remote zusammenarbeiten",
+    "cta_text": "Offen für ausgewählte 100%-Remote-Projekte in E-Commerce, Data/Analytics und AI Automation.",
+    "cta_button": "Business & Consulting",
+    "cards": {
+      "commerce": {
+        "title": "Commerce Architecture",
+        "text": "Zentrale Datenhaltung und kontrollierte Storefront-Projektion für konsistente Commerce-Prozesse.",
+        "fallback_value": "Live",
+        "unit": "strukturierte Commerce-Datensätze"
+      },
+      "analytics": {
+        "title": "Data & Analytics",
+        "text": "Aggregiertes Commerce-Reporting für Entscheidungen, Conversion-Analyse und kontinuierliche Verbesserung.",
+        "fallback_value": "Aktuell",
+        "unit": "Reporting-Tage"
+      },
+      "ai": {
+        "title": "AI Agents & Automation",
+        "text": "Spezialisierte KI-gestützte Workflows mit Validierung und menschlicher Freigabe bei sensiblen Aktionen.",
+        "fallback_value": "Kontrolliert",
+        "multiple_value": "Mehrere kontrollierte Workflows",
+        "single_value": "Kontrollierter Workflow"
+      },
+      "development": {
+        "title": "AI-native Development",
+        "text": "Sprachgestützte, iterative Entwicklung mit automatisierter Validierung und Review-Workflows.",
+        "fallback_value": "Aktiv",
+        "active_value": "Aktiv"
+      }
     }
   }
 }

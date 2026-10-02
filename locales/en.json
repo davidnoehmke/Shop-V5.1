@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -128,7 +119,7 @@
     },
     "trust": {
       "label": "Purchase benefits",
-      "shipping": "Free shipping within Germany",
+      "shipping": "Shipping costs are shown at checkout",
       "payment": "Secure payment via Shopify",
       "support": "Personal help when needed"
     },
@@ -146,7 +137,17 @@
       "notice": "Note:",
       "configurator_title": "Use in your own mix",
       "configurator_text": "Open the LEAFerservice configurator and combine suitable components.",
-      "configurator_cta": "Open configurator"
+      "configurator_cta": "Open configurator",
+      "identity": "Manufacturer & model",
+      "light_distribution": "Light distribution",
+      "beam_angle": "Beam angle",
+      "installation": "Mounting & connection",
+      "electrical": "Electrical data",
+      "safety": "Safety",
+      "manual": "Open manufacturer page",
+      "advisor_title": "Place it in the LEAF advisor",
+      "advisor_text": "Use the same advisor as across the product worlds. Your previous selections remain available.",
+      "advisor_cta": "Open LEAF advisor"
     },
     "media": {
       "label": "Product images"
@@ -167,6 +168,10 @@
       "from_percent": "from %{percent}%",
       "note": "Technical note",
       "cta": "Use in the pro configurator"
+    },
+    "knowledge": {
+      "eyebrow": "Knowledge in layers",
+      "heading": "Understand materials and concepts"
     }
   },
   "product_variant_guide": {
@@ -184,7 +189,149 @@
     "guide": {
       "eyebrow": "Buying guide & knowledge",
       "heading": "How to choose {{ collection }}",
-      "topics": "Collection topics"
+      "topics": "Collection topics",
+      "atoms_eyebrow": "From brief to detailed",
+      "atoms_heading": "Concepts in this product world"
+    },
+    "interieur": {
+      "eyebrow": "Interieur Solutions configurator",
+      "heading": "Plan plant lighting as part of the room.",
+      "intro": "Choose the room, project, mounting style, light level and budget. The configurator ranks products from this collection by fit and turns the idea into a concrete solution.",
+      "steps": {
+        "room": "Room",
+        "project": "Project",
+        "mount": "Mounting",
+        "light": "Light need",
+        "budget": "Budget"
+      },
+      "room": {
+        "living": "Living space",
+        "office": "Office",
+        "kitchen": "Kitchen",
+        "plantroom": "Plant room"
+      },
+      "project": {
+        "single": "Single plant",
+        "shelf": "Shelf & sideboard",
+        "pendant": "Pendant & wall",
+        "station": "Plant station",
+        "habitat": "Terrarium & aquascape"
+      },
+      "mount": {
+        "open": "Still open",
+        "e27": "E27 fixture",
+        "shelf": "Shelf / under-cabinet",
+        "pendant": "Pendant / wall",
+        "floor": "Floor solution",
+        "system": "Complete system"
+      },
+      "light": {
+        "supplement": "Supplemental light",
+        "balanced": "Balanced year-round",
+        "intensive": "High light demand"
+      },
+      "budget": {
+        "under_75": "Up to €75",
+        "under_150": "Up to €150",
+        "under_300": "Up to €300",
+        "under_500": "Up to €500",
+        "open": "Open budget"
+      },
+      "reset": "Reset selection",
+      "result_eyebrow": "Your room profile",
+      "result_default": "Interieur profile",
+      "result_copy": "Your choices are matched against product type, mounting, power, use case and price across the current Interieur Solutions range.",
+      "result_one": "1 matching recommendation",
+      "result_many": "matching recommendations",
+      "no_result": "No direct match",
+      "budget_relaxed": "There is no direct match for this setup inside the selected budget, so the closest systems are shown regardless of price.",
+      "all_products": "Compare the full range",
+      "recommendations_eyebrow": "Dynamic shortlist",
+      "recommendations": "Solutions matched to your project",
+      "recommendations_intro": "The order is based on your selections. Product pages then provide the detailed light output, mounting, variants and intended use.",
+      "builder_eyebrow": "3D Interieur Builder",
+      "builder_heading": "Plan your plant world inside the room.",
+      "builder_intro": "Build the room to scale, freely place plants, shelves and real products in the 16:9 view, and see price, power and setup totals instantly.",
+      "builder_steps_label": "3D builder steps",
+      "builder_step_room": "Define the room",
+      "builder_step_place": "Place elements",
+      "builder_step_setup": "Evaluate setup",
+      "builder_room": "Room dimensions",
+      "builder_width": "Width (m)",
+      "builder_depth": "Depth (m)",
+      "builder_height": "Height (m)",
+      "builder_elements": "Room elements",
+      "builder_plant": "Plant",
+      "builder_shelf": "Shelf",
+      "builder_window": "Window",
+      "builder_products": "Interieur products",
+      "builder_product_select": "Select a product for the room",
+      "builder_add_product": "Place in room",
+      "builder_canvas_label": "Interactive 3D room planner for Interieur Solutions",
+      "builder_hint": "Select and drag an object. Then rotate, duplicate or remove the selection.",
+      "builder_camera": "Camera",
+      "builder_camera_left": "Rotate camera left",
+      "builder_camera_right": "Rotate camera right",
+      "builder_object_actions": "Edit selected object",
+      "builder_rotate_left": "Rotate −15°",
+      "builder_rotate_right": "Rotate +15°",
+      "builder_duplicate": "Duplicate",
+      "builder_delete": "Remove",
+      "builder_reset": "Reset room",
+      "builder_objects": "Elements",
+      "builder_price": "Product value",
+      "builder_power": "Lighting power",
+      "builder_density": "Power / area",
+      "builder_cart": "Add setup to cart",
+      "builder_added": "The setup was added to the cart.",
+      "builder_error": "The full setup could not be added. Please try again.",
+      "advanced_builder_eyebrow": "Advanced tool",
+      "advanced_builder_title": "Open 3D room planning",
+      "advanced_builder_text": "Optional: plan the room, objects and specific lights to scale.",
+      "advanced_configurator_eyebrow": "Advanced tool",
+      "advanced_configurator_title": "Fine-tune the lighting setup",
+      "advanced_configurator_text": "Optional: compare mounting, light level and budget in more detail."
+    },
+    "advisor": {
+      "eyebrow": "LEAF advisor",
+      "heading": "One advisor across every product world.",
+      "intro": "The current collection provides context. Your selections persist across product worlds, while specialist tools only appear where they add real value.",
+      "resume": "Saved selection found",
+      "skip_to_products": "Go straight to products",
+      "progress_label": "LEAF advisor progress",
+      "no_selection": "No selection yet",
+      "need_heading": "What do you want to achieve or solve?",
+      "need_text": "Choose the need that comes closest to your project.",
+      "context_heading": "Where and in what context should it work?",
+      "context_text": "Location, room and plant context narrow down sensible solutions.",
+      "preference_heading": "What matters to you in the implementation?",
+      "preference_text": "Choose a preference or skip this step.",
+      "result_eyebrow": "Your shortlist",
+      "result_heading": "These products best match your input.",
+      "result_text": "Ranking is derived from the structured product data in this collection.",
+      "reset": "Start over",
+      "all_products": "Compare all products",
+      "back": "Back",
+      "next": "Continue",
+      "summary_eyebrow": "Your setup",
+      "summary_heading": "Selection stays saved",
+      "summary_note": "Your selection stays local in your browser by default. Only “Save project” stores the non-personal project state in Supabase.",
+      "match_label": "matches",
+      "view_product": "Review product",
+      "result_count": "recommendations",
+      "dimmable": "Dimmable",
+      "home_heading": "Find your setup across every product world.",
+      "home_intro": "Start with a product world, then narrow the choice by need, context and preference. Your selection stays connected when you move between product worlds.",
+      "world_heading": "Which product world do you want to start with?",
+      "world_text": "Choose the area you want to solve first. You can switch later or save your project.",
+      "save_project": "Save project",
+      "saving_project": "Saving …",
+      "saved_project": "Project saved. The link contains your project code.",
+      "unsaved_project": "Changes have not been saved again yet.",
+      "save_error": "The project could not be saved. Your local selection is still available.",
+      "restored_project": "Saved project loaded.",
+      "copy_project_link": "Copy project link",
+      "copied_project_link": "Project link copied."
     }
   },
   "recipe": {
@@ -270,11 +417,16 @@
     "copyright": "© {{ year }} {{ shop }}"
   },
   "brand_story": {
-    "eyebrow": "The LEAFerservice principle",
-    "heading": "Plant care gets easier when every material has a clear purpose",
-    "text_one": "A good substrate is not universal soil but a balanced root environment. Coarse ingredients create air, mineral components preserve structure and organic shares buffer moisture. LEAFerservice therefore explains both the purpose of each ingredient and the exact ratio of specialist mixes.",
-    "text_two": "Finished mixes sit alongside individual components, allowing you to follow a proven recipe or adapt it to the plant, location and watering routine. Planters, propagation tools and accessories complete the same practical system.",
-    "link": "Explore all LEAFerservice products"
+    "eyebrow": "Personally behind LEAFerservice",
+    "heading": "A shop with a real person behind it.",
+    "text_one": "LEAFerservice is not an anonymous marketplace. I develop the assortment, content, configurators and technical platform myself, combining hands-on plant experience with transparent product information.",
+    "text_two": "My goal is not simply to sell another product, but to make clear why substrate, planter, light and care belong together. When something is unclear, personal help remains available alongside the digital tools.",
+    "role": "Owner · Founder & CEO",
+    "proof_label": "Trust and responsibility",
+    "proof_one": "Personally curated assortment",
+    "proof_two": "Own plant practice & documentation",
+    "proof_three": "Direct contact for questions",
+    "link": "More about LEAFerservice"
   },
   "collection_seo": {
     "eyebrow": "LEAFerservice collection knowledge",
@@ -289,13 +441,13 @@
       "answer_two": "Yes. Give every ingredient a purpose and make sure all volume shares add up to 100 percent. The substrate configurator helps you plan the ratio."
     },
     "houseplants": {
-          "heading": "Choose houseplants by root zone, location and care needs",
-          "lead": "Monstera, Philodendron, Alocasia and other houseplants differ in light needs, root structure and moisture requirements. Choose the plant, container and substrate as one system.",
-          "body": "For houseplants, the full system matters: roots, substrate, pot and location. Many aroids benefit from airy, structurally stable mixes, while other foliage plants may prefer more even moisture. Use the product and guide content to match plant, substrate and container by function.",
-          "question_one": "Which substrate suits tropical houseplants?",
-          "answer_one": "Many Monstera, Philodendron and Alocasia species benefit from an airy, coarse mix. Pot size, light and watering habits still determine the final balance.",
-          "question_two": "How should I choose the right container?",
-          "answer_two": "Choose the container around the existing root ball and water balance. Oversized pots dry more slowly, so drainage and substrate structure remain important."
+      "heading": "Choose houseplants by root zone, location and care needs",
+      "lead": "Monstera, Philodendron, Alocasia and other houseplants differ in light needs, root structure and moisture requirements. Choose the plant, container and substrate as one system.",
+      "body": "For houseplants, the full system matters: roots, substrate, pot and location. Many aroids benefit from airy, structurally stable mixes, while other foliage plants may prefer more even moisture. Use the product and guide content to match plant, substrate and container by function.",
+      "question_one": "Which substrate suits tropical houseplants?",
+      "answer_one": "Many Monstera, Philodendron and Alocasia species benefit from an airy, coarse mix. Pot size, light and watering habits still determine the final balance.",
+      "question_two": "How should I choose the right container?",
+      "answer_two": "Choose the container around the existing root ball and water balance. Oversized pots dry more slowly, so drainage and substrate structure remain important."
     },
     "planters": {
       "heading": "Planters, fabric pots and watering systems matched to the root zone",
@@ -411,6 +563,99 @@
       "system_text": "Substrate, pot, support and lighting are combined only when they fit the project.",
       "choice_title": "You stay in control",
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
+    }
+  },
+  "plant_world": {
+    "eyebrow": "From my plant collection",
+    "fact_light": "Light",
+    "fact_water": "Water",
+    "fact_humidity": "Humidity",
+    "fact_substrate": "Substrate",
+    "fact_practice": "Practice focus",
+    "primary_link": "View the matching setup",
+    "practice_eyebrow": "Not from a textbook",
+    "practice_heading": "What I actually observe with this plant",
+    "experience_label": "My experience",
+    "care_label": "Care at a glance",
+    "substrate_label": "Root zone & substrate",
+    "light_label": "Light",
+    "gallery_eyebrow": "My own documentation",
+    "gallery_heading": "How this plant is developing here",
+    "gallery_intro": "No stock photos. These images are from my own plants.",
+    "products_eyebrow": "Related to this setup",
+    "products_heading": "Products that fit this setup",
+    "products_intro": "Selected by function and use case, not as mandatory purchases.",
+    "longform_eyebrow": "Context",
+    "longform_heading": "What I take from this for everyday care"
+  },
+  "social_greens": {
+    "eyebrow": "LEAFerservice · Social Greens",
+    "title": "More green for social spaces.",
+    "intro": "Social Greens brings tailored planting concepts into social organisations — planned around real needs, transparently scoped and implemented together.",
+    "cta_primary": "Request a Social Greens project",
+    "cta_secondary": "Explore the plant world",
+    "principles_label": "Social Greens cost principles",
+    "ek_value": "At actual purchase cost",
+    "ek_label": "Plants, planters, substrate, lighting and other materials",
+    "work_value": "€0 labour",
+    "work_label": "Planning, coordination, potting and setup by LEAFerservice",
+    "margin_value": "0% margin",
+    "margin_label": "No profit markup within a Social Greens project",
+    "audience_eyebrow": "Where Social Greens works",
+    "audience_heading": "For places built around community.",
+    "audience_intro": "The programme is intended for social organisations and shared community spaces. Scope and selection are planned for each location.",
+    "audience_kitas": "Childcare & education",
+    "audience_care": "Care & senior living",
+    "audience_inclusion": "Inclusion & participation",
+    "audience_community": "Community spaces",
+    "process_eyebrow": "Simple process",
+    "process_heading": "From need to a greener place.",
+    "step_1_title": "Understand the space and its needs",
+    "step_1_text": "We assess use, light, available space, care effort and the people who use the space every day.",
+    "step_2_title": "Build the right project",
+    "step_2_text": "We select plants, planters, substrate, lighting and other components to match use, care requirements and budget.",
+    "step_3_title": "Implement it together",
+    "step_3_text": "After approval, we coordinate sourcing, potting and the agreed on-site setup.",
+    "cost_heading": "Transparency before we start.",
+    "cost_text": "Before implementation, the organisation receives a clear project overview including any necessary external delivery costs. Materials are sourced only after approval; the initial discussion and planning remain non-binding."
+  },
+  "labs": {
+    "eyebrow": "LEAFerservice Labs",
+    "heading": "Technology behind LEAFerservice",
+    "intro": "LEAFerservice is more than a storefront. The platform also serves as a live development environment for modern commerce architecture, analytics and controlled AI automation.",
+    "fallback_status": "Verified public system overview",
+    "updated_label": "Automatically updated:",
+    "security_title": "Public-safe by design.",
+    "security_text": "Only approved, abstracted information is shown. Source code, prompts, security architecture, credentials, internal automation logic, supplier terms and personal data remain excluded.",
+    "cta_heading": "Work together remotely",
+    "cta_text": "Available for selected 100% remote projects in e-commerce, data and analytics, and AI automation.",
+    "cta_button": "Business & Consulting",
+    "cards": {
+      "commerce": {
+        "title": "Commerce Architecture",
+        "text": "Centralized data and controlled storefront projection for consistent commerce workflows.",
+        "fallback_value": "Live",
+        "unit": "structured commerce records"
+      },
+      "analytics": {
+        "title": "Data & Analytics",
+        "text": "Aggregated commerce reporting for decision support, conversion analysis and continuous improvement.",
+        "fallback_value": "Current",
+        "unit": "reporting days"
+      },
+      "ai": {
+        "title": "AI Agents & Automation",
+        "text": "Specialized AI-assisted workflows with validation and human approval for sensitive actions.",
+        "fallback_value": "Controlled",
+        "multiple_value": "Multiple controlled workflows",
+        "single_value": "Controlled workflow"
+      },
+      "development": {
+        "title": "AI-native Development",
+        "text": "Voice-assisted, iterative development supported by automated validation and review workflows.",
+        "fallback_value": "Active",
+        "active_value": "Active"
+      }
     }
   }
 }

@@ -47,8 +47,8 @@
           "type": "benefit",
           "settings": {
             "icon": "small_batches",
-            "heading": "Kostenloser Versand",
-            "text": "Deutschlandweit ohne Versandkosten."
+            "heading": "Versand & Lieferung",
+            "text": "Versandkosten und verfügbare Optionen werden vor Abschluss der Bestellung angezeigt."
           }
         },
         "knowledge": {

@@ -1,4 +1,8 @@
 {% liquid
+  assign has_dynamic_collection_content = false
+  if collection.metafields.leafer.intro.value != blank or collection.metafields.leafer.guide.value != blank or collection.metafields.leafer.faq.value != blank or collection.metafields.leafer.knowledge_atoms.value != blank
+    assign has_dynamic_collection_content = true
+  endif
   assign seo_group = 'default'
   if collection.handle contains 'substrat' or collection.title contains 'Substrat'
     assign seo_group = 'substrates'
@@ -21,6 +25,7 @@
   assign question_two_key = 'collection_seo.' | append: seo_group | append: '.question_two'
   assign answer_two_key = 'collection_seo.' | append: seo_group | append: '.answer_two'
 %}
+{% unless has_dynamic_collection_content %}
 <section class="collection-seo-copy page-width" aria-labelledby="CollectionSeo-{{ section.id }}">
   <div class="collection-seo-copy__body">
     <p class="collection-seo-copy__eyebrow">{{ 'collection_seo.eyebrow' | t }}</p>
@@ -34,6 +39,7 @@
     <details><summary>{{ question_two_key | t }}</summary><p>{{ answer_two_key | t }}</p></details>
   </div>
 </section>
+{% endunless %}
 
 {% stylesheet %}
   .collection-seo-copy { margin-block: var(--space-section); padding-block: clamp(2.5rem, 6vw, 6rem); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(300px, .8fr); gap: clamp(2rem, 7vw, 8rem); border-top: 1px solid var(--border); }

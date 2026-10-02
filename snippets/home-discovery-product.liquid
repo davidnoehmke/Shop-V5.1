@@ -1,5 +1,5 @@
 {% if product != blank %}
-  {% assign copy = product.metafields.leafer.intro.value | default: product.description | strip_html | truncate: 190 %}
+  {% assign copy = product.metafields.leafer.intro.value | default: product.description | strip_html | strip | truncatewords: 18 %}
   {% assign function = product.metafields.leafer.primary_function.value | default: product.metafields.leafer.subtitle.value | default: 'Ausgewählte Lösung' %}
   {% assign card_image = product.featured_image %}
   {% if card_image == blank and product.media.first.preview_image != blank %}

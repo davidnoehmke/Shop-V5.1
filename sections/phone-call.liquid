@@ -1,3 +1,4 @@
+{% unless request.page_type == 'index' %}
 {% liquid
   if request.locale.iso_code == 'de'
     assign eyebrow = section.settings.eyebrow | default: 'Persönliche Hilfe'
@@ -66,6 +67,8 @@
     {% endform %}
   </details>
 </section>
+
+{% endunless %}
 
 {% stylesheet %}
   .phone-call { display:grid; grid-template-columns:auto minmax(0,1fr) minmax(250px,.55fr); gap:1.2rem; align-items:start; margin-block:clamp(1.5rem,4vw,3rem); padding:clamp(1.2rem,3vw,2rem); border:1px solid color-mix(in srgb,var(--accent),transparent 70%); border-radius:var(--radius); background:color-mix(in srgb,var(--accent),var(--background) 88%); }
