@@ -193,6 +193,29 @@
       "fit": "Geeignet für",
       "spec": "Wichtigste Kenngröße",
       "note": "Wenn diese Punkte zu deinem Einsatz passen, wähle darunter die passende Variante."
+    },
+    "ingredient_info": {
+      "eyebrow": "Bestandteile verstehen",
+      "heading": "Was steckt drin – und wofür ist es da?",
+      "intro": "Tippe auf das i. Am Desktop reicht auch Hover oder Fokus. Du siehst Funktion, Nutzen und den passenden Einzelbestandteil.",
+      "open": "Information zum Bestandteil öffnen",
+      "function": "Funktion im Substrat",
+      "more": "Bestandteil ansehen"
+    },
+    "pathways": {
+      "label": "Passende nächste Schritte",
+      "eyebrow": "Weiterdenken statt blind weiterklicken",
+      "heading": "Von diesem Produkt zur passenden Lösung",
+      "intro": "Vertiefe nur den nächsten sinnvollen Schritt: Projekt planen, Produktwelt vergleichen oder Wissen nachlesen.",
+      "planner": "Im LEAF Planer einordnen",
+      "planner_text": "Pflanze, Raum, Licht und Pflege gemeinsam betrachten.",
+      "collection_text": "Ähnliche Produkte innerhalb derselben Produktwelt vergleichen.",
+      "ingredients": "Substratbestandteile verstehen",
+      "ingredients_text": "Funktionen von Bims, Perlite, Rinde, Lava und weiteren Komponenten nachlesen.",
+      "mix": "Eigene Mischung planen",
+      "mix_text": "Grundrezeptur verstehen und bei Bedarf im Profi-Modus fein abstimmen.",
+      "knowledge": "LEAFers nice2know",
+      "knowledge_text": "Praxiswissen, Hintergründe und häufige Pflanzenfragen vertiefen."
     }
   },
   "product_variant_guide": {
@@ -536,7 +559,15 @@
   },
   "page_404": {
     "title": "Seite nicht gefunden",
-    "text": "Diese Seite ist verschwunden oder wurde verschoben."
+    "text": "Der Link ist veraltet oder der Inhalt wurde verschoben. Nutze Suche, LEAF Planer oder eine der zentralen Produktwelten – ohne Sackgasse.",
+    "search_label": "Im Shop suchen",
+    "search_placeholder": "Produkt, Pflanze oder Thema suchen",
+    "search_button": "Suchen",
+    "planner": "LEAF Planer starten",
+    "substrate": "Substrat & Wurzelraum",
+    "plants": "Zimmerpflanzen",
+    "interieur": "Interieur & Pflanzenlicht",
+    "knowledge": "Wissen & Ratgeber"
   },
   "pagefly": {
     "products": {
@@ -594,6 +625,21 @@
       "system_text": "Substrat, Topf, Rankhilfe und Licht werden nur kombiniert, wenn es fachlich passt.",
       "choice_title": "Du behältst die Kontrolle",
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
+    },
+    "solution": {
+      "eyebrow": "LEAF Planer · ein zentraler Einstieg",
+      "heading": "Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.",
+      "text": "Sag uns, was du erreichen möchtest. LEAF verbindet Pflanze, Wurzelraum, Gefäß, Licht, Standort und Pflege – und zeigt dir nur die nächsten sinnvollen Optionen.",
+      "primary": "Lösung finden",
+      "secondary": "Produktwelten direkt öffnen"
+    },
+    "knowledge_links": {
+      "label": "Direkt weiterlernen",
+      "substrate": "Substratbestandteile verstehen",
+      "monstera": "Monstera-Substrat richtig einordnen",
+      "anthurium": "Anthurium-Wurzelraum verstehen",
+      "interieur": "Pflanzenlicht & Interieur planen",
+      "blog": "Alle Ratgeber ansehen"
     }
   },
   "plant_world": {
@@ -711,7 +757,13 @@
     "send": "Senden",
     "privacy": "Deine Frage wird zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
-    "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Berater oder das Sortiment."
+    "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Berater oder das Sortiment.",
+    "voice": "Spracheingabe starten",
+    "voice_stop": "Aufnahme stoppen",
+    "voice_listening": "Ich höre zu …",
+    "speak": "Antwort vorlesen"
   },
-  "interior_guide": {"read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"}
+  "interior_guide": {
+    "read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"
+  }
 }
