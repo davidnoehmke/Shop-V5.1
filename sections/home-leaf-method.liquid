@@ -9,6 +9,7 @@
     assign method_text = '<p>Direkt kaufen, selbst konfigurieren oder ein komplettes Pflanzprojekt planen – ohne denselben Entscheidungsweg mehrfach durchlaufen zu müssen.</p>'
   endif
 %}
+{% unless request.page_type == 'index' %}
 <section class="leaf-method page-width" aria-labelledby="LeafMethodHeading-{{ section.id }}">
   <header class="leaf-method__head">
     <p class="leaf-method__eyebrow">{{ method_eyebrow | escape }}</p>
@@ -29,6 +30,8 @@
     {% endfor %}
   </div>
 </section>
+
+{% endunless %}
 
 {% stylesheet %}
   .leaf-method { margin-block: var(--space-section); padding-block: clamp(2.5rem,6vw,5.5rem); border-block: 1px solid var(--border); }
