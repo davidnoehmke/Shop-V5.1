@@ -1,0 +1,38 @@
+{% doc %}
+Renders contextual internal links that move from knowledge to comparison and selection.
+@param {product} product - Current Shopify product.
+@param {array} ingredient_info - Optional structured ingredient information.
+{% enddoc %}
+
+<nav class="leaf-product-pathways" aria-label="{{ 'product.pathways.label' | t }}">
+  <header>
+    <p>{{ 'product.pathways.eyebrow' | t }}</p>
+    <h3>{{ 'product.pathways.heading' | t }}</h3>
+    <span>{{ 'product.pathways.intro' | t }}</span>
+  </header>
+  <div class="leaf-product-pathways__links">
+    <a href="/#LeafAdvisor"><strong>{{ 'product.pathways.planner' | t }}</strong><span>{{ 'product.pathways.planner_text' | t }}</span></a>
+    {% for product_collection in product.collections limit: 3 %}
+      {% unless product_collection.handle == 'all' %}
+        <a href="{{ product_collection.url }}"><strong>{{ product_collection.title | escape }}</strong><span>{{ 'product.pathways.collection_text' | t }}</span></a>
+      {% endunless %}
+    {% endfor %}
+    {% if ingredient_info != blank %}
+      <a href="/pages/leafers-substratbestandteile"><strong>{{ 'product.pathways.ingredients' | t }}</strong><span>{{ 'product.pathways.ingredients_text' | t }}</span></a>
+      <a href="/pages/individuelles-substrat"><strong>{{ 'product.pathways.mix' | t }}</strong><span>{{ 'product.pathways.mix_text' | t }}</span></a>
+    {% endif %}
+    <a href="/blogs/leafers-nice2know-blog"><strong>{{ 'product.pathways.knowledge' | t }}</strong><span>{{ 'product.pathways.knowledge_text' | t }}</span></a>
+  </div>
+</nav>
+
+<style>
+  .leaf-product-pathways { margin-top: clamp(2.4rem, 8vw, 4.5rem); padding-top: 1.4rem; border-top: 1px solid var(--border); }
+  .leaf-product-pathways header { max-width: 760px; }
+  .leaf-product-pathways header > p { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .leaf-product-pathways header > span { display: block; max-width: 68ch; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+  .leaf-product-pathways__links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: .65rem; margin-top: 1rem; }
+  .leaf-product-pathways__links a { min-height: 82px; display: flex; flex-direction: column; justify-content: center; gap: .2rem; padding: .8rem .9rem; border: 1px solid var(--border); background: var(--background); color: var(--text); text-decoration: none; }
+  .leaf-product-pathways__links a:hover, .leaf-product-pathways__links a:focus-visible { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 95%); }
+  .leaf-product-pathways__links strong { font-size: .82rem; }
+  .leaf-product-pathways__links span { color: var(--muted); font-size: .72rem; line-height: 1.45; }
+</style>
