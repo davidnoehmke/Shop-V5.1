@@ -28,6 +28,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   <button
     class="leaf-shop-assistant__trigger"
     type="button"
+    aria-label="{{ 'shop_assistant.open' | t | escape }}"
     aria-controls="LeafShopAssistantPanel"
     aria-expanded="false"
     data-assistant-open
@@ -40,15 +41,15 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         <circle cx="43" cy="31" r="2.2"/>
       </svg>
     </span>
-    <span class="leaf-shop-assistant__label">{{ 'shop_assistant.open' | t }}</span>
+    <span class="leaf-shop-assistant__label" aria-hidden="true">{{ 'shop_assistant.open' | t }}</span>
   </button>
 
-  <dialog class="leaf-shop-assistant__dialog" id="LeafShopAssistantPanel" data-assistant-dialog>
+  <dialog class="leaf-shop-assistant__dialog" id="LeafShopAssistantPanel" aria-labelledby="LeafShopAssistantHeading" data-assistant-dialog>
     <div class="leaf-shop-assistant__panel">
       <header class="leaf-shop-assistant__header">
         <div>
           <p class="leaf-shop-assistant__eyebrow">{{ 'shop_assistant.eyebrow' | t }}</p>
-          <h2>{{ 'shop_assistant.heading' | t }}</h2>
+          <h2 id="LeafShopAssistantHeading">{{ 'shop_assistant.heading' | t }}</h2>
         </div>
         <button class="leaf-shop-assistant__close" type="button" data-assistant-close aria-label="{{ 'shop_assistant.close' | t }}">
           <span aria-hidden="true">×</span>
@@ -94,34 +95,45 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   .leaf-shop-assistant__trigger {
     position: fixed;
     z-index: 70;
-    left: 0;
+    right: max(1rem, env(safe-area-inset-right));
     top: 50%;
-    min-height: 58px;
-    padding: .5rem .75rem .5rem .45rem;
-    gap: .55rem;
-    border: 1px solid color-mix(in srgb, var(--accent), #000 12%);
-    border-left: 0;
-    border-radius: 0;
-    background: color-mix(in srgb, var(--background), #fff 8%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 64px;
+    min-height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
     color: var(--text);
-    box-shadow: 0 12px 34px color-mix(in srgb, var(--text), transparent 84%);
+    box-shadow: none;
     transform: translateY(-50%);
+    transition: transform .2s ease;
+    -webkit-tap-highlight-color: transparent;
   }
   .leaf-shop-assistant__trigger:hover {
-    background: var(--surface);
+    background: transparent;
     color: var(--text);
     transform: translateY(calc(-50% - 2px));
   }
+  .leaf-shop-assistant__trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .leaf-shop-assistant__trigger[aria-expanded="true"] { visibility: hidden; pointer-events: none; }
   .leaf-shop-assistant__leaf {
-    width: 42px;
-    height: 46px;
-    flex: 0 0 42px;
+    width: 48px;
+    height: 54px;
+    flex: 0 0 48px;
     display: grid;
     place-items: center;
   }
   .leaf-shop-assistant__leaf svg {
-    width: 42px;
-    height: 46px;
+    width: 48px;
+    height: 54px;
+    filter: drop-shadow(0 2px 1px rgb(255 255 255 / .35)) drop-shadow(0 5px 4px rgb(18 46 28 / .28));
     fill: var(--accent);
     stroke: color-mix(in srgb, var(--background), #fff 60%);
     stroke-width: 1.7;
@@ -133,26 +145,46 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     stroke: none;
   }
   .leaf-shop-assistant__label {
-    max-width: 8rem;
-    font-size: .78rem;
-    font-weight: 800;
-    line-height: 1.15;
+    position: absolute;
+    right: calc(100% + .25rem);
+    width: max-content;
+    max-width: min(11rem, calc(100vw - 6rem));
+    padding: .65rem .85rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--background);
+    box-shadow: 0 5px 18px rgb(18 46 28 / .12);
+    font-size: .85rem;
+    font-weight: 750;
+    line-height: 1.2;
     text-align: left;
+    opacity: 0;
+    transform: translateX(12px);
+    clip-path: inset(0 0 0 100%);
+    pointer-events: none;
+    transition: opacity .35s ease, transform .45s ease, clip-path .45s ease;
+  }
+  .leaf-shop-assistant.is-introducing .leaf-shop-assistant__label {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
   }
   .leaf-shop-assistant__dialog {
     position: fixed;
     z-index: 69;
-    inset: 50% auto auto 82px;
-    width: min(390px, calc(100vw - 110px));
-    max-height: min(720px, calc(100vh - 2rem));
+    inset: 50% max(1rem, env(safe-area-inset-right)) auto auto;
+    width: min(410px, calc(100vw - 2rem));
+    max-height: min(720px, calc(100dvh - 2rem));
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     border: 1px solid var(--border);
-    border-radius: 0;
+    border-radius: 18px;
     background: var(--background);
     color: var(--text);
-    box-shadow: 0 22px 70px color-mix(in srgb, var(--text), transparent 78%);
+    box-shadow: 0 4px 14px rgb(18 46 28 / .10), 0 20px 60px rgb(18 46 28 / .20);
     transform: translateY(-50%);
   }
   .leaf-shop-assistant__dialog::backdrop { background: transparent; }
@@ -179,8 +211,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   }
   .leaf-shop-assistant__header h2 {
     margin: 0;
-    font-size: 1.25rem;
-    line-height: 1.1;
+    font-size: 1.15rem;
+    line-height: 1.25;
   }
   .leaf-shop-assistant__close {
     width: 42px;
@@ -225,6 +257,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   }
   .leaf-shop-assistant__message {
     max-width: 88%;
+    border-radius: 12px;
     padding: .7rem .8rem;
     border: 1px solid var(--border);
     background: var(--surface);
@@ -269,13 +302,13 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   .leaf-shop-assistant__composer { position: relative; }
   .leaf-shop-assistant__form textarea {
     width: 100%;
-    padding-right: 3.5rem;
     resize: vertical;
     min-height: 74px;
     max-height: 150px;
-    padding: .7rem;
+    padding: .7rem 3.5rem .7rem .7rem;
     border: 1px solid var(--border);
-    border-radius: 0;
+    border-radius: 10px;
+    font-size: 1rem;
     background: var(--surface);
     color: var(--text);
   }
@@ -322,24 +355,26 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
   @media (max-width: 700px) {
     .leaf-shop-assistant__trigger {
-      left: .75rem;
+      right: max(.75rem, env(safe-area-inset-right));
       top: auto;
       bottom: max(.75rem, env(safe-area-inset-bottom));
-      width: 58px;
-      min-height: 58px;
-      padding: .3rem;
-      border-left: 1px solid color-mix(in srgb, var(--accent), #000 12%);
       transform: none;
     }
     .leaf-shop-assistant__trigger:hover { transform: translateY(-2px); }
-    .leaf-shop-assistant__label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     .leaf-shop-assistant__dialog {
-      inset: auto .75rem calc(4.9rem + env(safe-area-inset-bottom)) .75rem;
+      inset: auto .75rem max(.75rem, env(safe-area-inset-bottom)) .75rem;
       width: auto;
-      max-height: min(76vh, 680px);
+      max-height: min(85dvh, 680px);
       transform: none;
     }
-    .leaf-shop-assistant__panel { grid-template-rows: auto auto auto minmax(100px, 1fr) auto auto; }
+    .leaf-shop-assistant__panel { grid-template-rows: auto auto auto minmax(60px, 1fr) auto auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .leaf-shop-assistant__trigger, .leaf-shop-assistant__label { transition: none; }
+    .leaf-shop-assistant__trigger:hover { transform: translateY(-50%); }
+  }
+  @media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+    .leaf-shop-assistant__trigger:hover { transform: none; }
   }
 {% endstylesheet %}
 
@@ -359,6 +394,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.endpoint = this.dataset.endpoint || '';
         this.storageKey = this.dataset.storageKey || 'leafer-assistant-session-v1';
         this.history = this.restoreHistory();
+        this.introduce();
 
         this.trigger?.addEventListener('click', () => this.open());
         this.closeButton?.addEventListener('click', () => this.close());
@@ -375,6 +411,21 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.addEventListener('keydown', (event) => {
           if (event.key === 'Escape' && this.dialog?.open) this.close();
         });
+      }
+
+      disconnectedCallback() {
+        window.clearTimeout(this.introTimer);
+        this.recognition?.abort();
+      }
+
+      introduce() {
+        const key = 'leaf-assistant-introduced-v1';
+        try {
+          if (sessionStorage.getItem(key)) return;
+          sessionStorage.setItem(key, '1');
+        } catch {}
+        this.classList.add('is-introducing');
+        this.introTimer = window.setTimeout(() => this.classList.remove('is-introducing'), 2600);
       }
 
       restoreHistory() {
@@ -442,6 +493,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       }
 
       open() {
+        window.clearTimeout(this.introTimer);
+        this.classList.remove('is-introducing');
         if (!this.dialog?.open) this.dialog?.show();
         this.trigger?.setAttribute('aria-expanded', 'true');
         window.setTimeout(() => this.input?.focus(), 20);
