@@ -25,7 +25,7 @@ Renders contextual internal links that move from knowledge to comparison and sel
   </div>
 </nav>
 
-<style>
+{% stylesheet %}
   .leaf-product-pathways { margin-top: clamp(2.4rem, 8vw, 4.5rem); padding-top: 1.4rem; border-top: 1px solid var(--border); }
   .leaf-product-pathways header { max-width: 760px; }
   .leaf-product-pathways header > p { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
@@ -35,4 +35,4 @@ Renders contextual internal links that move from knowledge to comparison and sel
   .leaf-product-pathways__links a:hover, .leaf-product-pathways__links a:focus-visible { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 95%); }
   .leaf-product-pathways__links strong { font-size: .82rem; }
   .leaf-product-pathways__links span { color: var(--muted); font-size: .72rem; line-height: 1.45; }
-</style>
+{% endstylesheet %}
