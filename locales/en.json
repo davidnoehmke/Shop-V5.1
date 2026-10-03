@@ -692,5 +692,6 @@
     "privacy": "Your question is processed to provide an answer but is not stored as a customer profile.",
     "thinking": "Checking the LEAF knowledge base …",
     "error": "I cannot answer right now. Please use the LEAF Advisor or browse the range instead."
-  }
+  },
+  "interior_guide": {"read": "Plan your green corner: lighting, pots, growing media and plants explained"}
 }
