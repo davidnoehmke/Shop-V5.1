@@ -355,12 +355,12 @@
       "choose_text": "Öffne das Produkt, prüfe die Details und wähle anschließend die passende Variante."
     },
     "advisor": {
-      "eyebrow": "LEAF Berater",
-      "heading": "Ein Berater für alle Produktwelten.",
+      "eyebrow": "LEAF Planer",
+      "heading": "Ein Planer für alle Produktwelten.",
       "intro": "Die aktuelle Kollektion gibt den Kontext vor. Deine Auswahl bleibt über Produktwelten hinweg erhalten, während Spezialwerkzeuge nur dort auftauchen, wo sie wirklich gebraucht werden.",
       "resume": "Gespeicherte Auswahl erkannt",
       "skip_to_products": "Direkt zum Sortiment",
-      "progress_label": "Fortschritt im LEAF Berater",
+      "progress_label": "Fortschritt im LEAF Planer",
       "no_selection": "Noch keine Auswahl",
       "need_heading": "Was möchtest du erreichen oder lösen?",
       "need_text": "Wähle den Bedarf, der deinem Projekt am nächsten kommt.",
@@ -382,8 +382,8 @@
       "view_product": "Produkt prüfen",
       "result_count": "Empfehlungen",
       "dimmable": "Dimmbar",
-      "home_heading": "Finde dein Setup über alle Produktwelten.",
-      "home_intro": "Starte mit der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Die Auswahl bleibt zusammenhängend, auch wenn du später zwischen Produktwelten wechselst.",
+      "home_heading": "Plane dein Pflanzenprojekt über alle Produktwelten.",
+      "home_intro": "Starte mit dem Ziel oder der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Spezialwerkzeuge öffnen sich erst dann, wenn sie deinem Projekt wirklich helfen.",
       "world_heading": "In welcher Produktwelt möchtest du starten?",
       "world_text": "Wähle den Bereich, den du zuerst lösen möchtest. Du kannst später wechseln oder deine Auswahl speichern.",
       "save_project": "Projekt speichern",
@@ -638,7 +638,9 @@
       "heading": "Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.",
       "text": "Sag uns, was du erreichen möchtest. LEAF verbindet Pflanze, Wurzelraum, Gefäß, Licht, Standort und Pflege – und zeigt dir nur die nächsten sinnvollen Optionen.",
       "primary": "Lösung finden",
-      "secondary": "Produktwelten direkt öffnen"
+      "secondary": "Produktwelten direkt öffnen",
+      "world_heading": "Oder direkt in eine Produktwelt",
+      "world_intro": "Der LEAF Planer ist der zentrale Lösungsweg. Wenn du dein Ziel bereits kennst, kannst du direkt zu Zimmerpflanzen, Substrat, Interieur, Gefäßen, Anzucht, Pflege oder Sets wechseln."
     },
     "knowledge_links": {
       "label": "Direkt weiterlernen",
@@ -760,7 +762,7 @@
     "welcome": "Frag mich direkt zu Substrat, Pflanzenlicht, Gefäßen oder Produkten im Shop.",
     "input_label": "Deine Frage",
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
-    "advisor": "LEAF Berater starten",
+    "advisor": "LEAF Planer öffnen",
     "send": "Senden",
     "privacy": "Deine Frage wird zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
