@@ -19,6 +19,11 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-user-label="{{ 'shop_assistant.user_name' | t | escape }}"
   data-assistant-label="{{ 'shop_assistant.assistant_name' | t | escape }}"
   data-thinking="{{ 'shop_assistant.thinking' | t | escape }}"
+  data-voice-label="{{ 'shop_assistant.voice' | t | escape }}"
+  data-voice-stop-label="{{ 'shop_assistant.voice_stop' | t | escape }}"
+  data-voice-listening-label="{{ 'shop_assistant.voice_listening' | t | escape }}"
+  data-speak-label="{{ 'shop_assistant.speak' | t | escape }}"
+  data-storage-key="leafer-assistant-session-v1"
 >
   <button
     class="leaf-shop-assistant__trigger"
@@ -67,7 +72,13 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
       <form class="leaf-shop-assistant__form" data-assistant-form>
         <label for="LeafShopAssistantInput">{{ 'shop_assistant.input_label' | t }}</label>
-        <textarea id="LeafShopAssistantInput" rows="2" maxlength="1200" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+        <div class="leaf-shop-assistant__composer">
+          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1200" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+          <button class="leaf-shop-assistant__voice" type="button" data-assistant-voice hidden aria-label="{{ 'shop_assistant.voice' | t | escape }}" title="{{ 'shop_assistant.voice' | t | escape }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
+          </button>
+        </div>
+        <p class="leaf-shop-assistant__voice-status" data-assistant-voice-status aria-live="polite"></p>
         <div class="leaf-shop-assistant__form-actions">
           <a href="{{ assistant_advisor_href }}" class="leaf-shop-assistant__advisor">{{ 'shop_assistant.advisor' | t }}</a>
           <button type="submit" data-assistant-submit>{{ 'shop_assistant.send' | t }}</button>
@@ -255,8 +266,10 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     font-size: .72rem;
     font-weight: 800;
   }
+  .leaf-shop-assistant__composer { position: relative; }
   .leaf-shop-assistant__form textarea {
     width: 100%;
+    padding-right: 3.5rem;
     resize: vertical;
     min-height: 74px;
     max-height: 150px;
@@ -266,6 +279,24 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     background: var(--surface);
     color: var(--text);
   }
+  .leaf-shop-assistant__voice {
+    position: absolute;
+    right: .45rem;
+    bottom: .45rem;
+    width: 42px;
+    min-height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--text);
+  }
+  .leaf-shop-assistant__voice[hidden] { display: none; }
+  .leaf-shop-assistant__voice.is-listening { border-color: var(--accent); color: var(--accent); }
+  .leaf-shop-assistant__voice svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .leaf-shop-assistant__voice-status { min-height: 1em; margin: -.15rem 0 0; color: var(--muted); font-size: .68rem; }
+  .leaf-shop-assistant__speak { margin-top: .5rem; padding: .25rem .45rem; border: 1px solid var(--border); background: transparent; color: var(--accent); font-size: .68rem; font-weight: 760; }
   .leaf-shop-assistant__form-actions {
     display: flex;
     align-items: center;
@@ -323,12 +354,17 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.input = this.querySelector('[data-assistant-input]');
         this.submit = this.querySelector('[data-assistant-submit]');
         this.log = this.querySelector('[data-assistant-log]');
+        this.voiceButton = this.querySelector('[data-assistant-voice]');
+        this.voiceStatus = this.querySelector('[data-assistant-voice-status]');
         this.endpoint = this.dataset.endpoint || '';
-        this.history = [];
+        this.storageKey = this.dataset.storageKey || 'leafer-assistant-session-v1';
+        this.history = this.restoreHistory();
 
         this.trigger?.addEventListener('click', () => this.open());
         this.closeButton?.addEventListener('click', () => this.close());
         this.form?.addEventListener('submit', (event) => this.send(event));
+        this.setupVoice();
+        this.restoreVisibleHistory();
         this.querySelectorAll('[data-assistant-suggestion]').forEach((button) => {
           button.addEventListener('click', () => {
             if (!this.input) return;
@@ -339,6 +375,70 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.addEventListener('keydown', (event) => {
           if (event.key === 'Escape' && this.dialog?.open) this.close();
         });
+      }
+
+      restoreHistory() {
+        try {
+          const parsed = JSON.parse(sessionStorage.getItem(this.storageKey) || '[]');
+          return Array.isArray(parsed)
+            ? parsed.filter((item) => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string').slice(-8)
+            : [];
+        } catch {
+          return [];
+        }
+      }
+
+      saveHistory() {
+        try {
+          sessionStorage.setItem(this.storageKey, JSON.stringify(this.history.slice(-8)));
+        } catch {}
+      }
+
+      restoreVisibleHistory() {
+        if (!this.history.length) return;
+        this.history.slice(-4).forEach((item) => this.appendMessage(item.role, item.content, [], false));
+      }
+
+      setupVoice() {
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition || !this.voiceButton) return;
+        this.voiceButton.hidden = false;
+        this.recognition = new Recognition();
+        this.recognition.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        this.recognition.interimResults = false;
+        this.recognition.continuous = false;
+        this.voiceButton.addEventListener('click', () => {
+          if (this.voiceButton.classList.contains('is-listening')) {
+            this.recognition.stop();
+            return;
+          }
+          try { this.recognition.start(); } catch {}
+        });
+        this.recognition.addEventListener('start', () => {
+          this.voiceButton.classList.add('is-listening');
+          this.voiceButton.setAttribute('aria-label', this.dataset.voiceStopLabel || '');
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
+        });
+        this.recognition.addEventListener('end', () => {
+          this.voiceButton.classList.remove('is-listening');
+          this.voiceButton.setAttribute('aria-label', this.dataset.voiceLabel || '');
+          if (this.voiceStatus) this.voiceStatus.textContent = '';
+        });
+        this.recognition.addEventListener('result', (event) => {
+          const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+          if (transcript && this.input) {
+            this.input.value = transcript;
+            this.input.focus();
+          }
+        });
+      }
+
+      speak(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        window.speechSynthesis.speak(utterance);
       }
 
       open() {
@@ -353,7 +453,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.trigger?.focus();
       }
 
-      appendMessage(role, text, links = []) {
+      appendMessage(role, text, links = [], allowSpeech = true) {
         if (!this.log) return;
         const wrapper = document.createElement('div');
         wrapper.className = 'leaf-shop-assistant__message' + (role === 'user' ? ' leaf-shop-assistant__message--user' : '');
@@ -376,6 +476,15 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           if (list.childElementCount) wrapper.append(list);
         }
 
+        if (role === 'assistant' && allowSpeech && 'speechSynthesis' in window) {
+          const speak = document.createElement('button');
+          speak.type = 'button';
+          speak.className = 'leaf-shop-assistant__speak';
+          speak.textContent = this.dataset.speakLabel || '';
+          speak.addEventListener('click', () => this.speak(text));
+          wrapper.append(speak);
+        }
+
         this.log.append(wrapper);
         this.log.scrollTop = this.log.scrollHeight;
       }
@@ -388,6 +497,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         const priorHistory = this.history.slice(-6);
         this.appendMessage('user', message);
         this.history.push({ role: 'user', content: message });
+        this.saveHistory();
         this.input.value = '';
         this.submit.disabled = true;
         this.input.disabled = true;
@@ -416,6 +526,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           if (!response.ok || typeof payload.answer !== 'string') throw new Error('assistant_unavailable');
           this.appendMessage('assistant', payload.answer, payload.links);
           this.history.push({ role: 'assistant', content: payload.answer });
+          this.saveHistory();
         } catch {
           thinking.remove();
           this.appendMessage('assistant', this.dataset.error || '');

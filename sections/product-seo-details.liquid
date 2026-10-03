@@ -3,6 +3,7 @@
   assign intro = product.metafields.leafer.intro.value
   assign custom_use_case = product.metafields.custom.use_case.value
   assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
+  assign ingredient_info = product.metafields.leafer.ingredient_info.value
   assign notice_field = product.metafields.leaferservice.hinweis
   if notice_field.value == blank
     assign notice_field = product.metafields.leafer.warning
@@ -48,7 +49,13 @@
         assign fact = product.metafields.leafer.difficulty
       endif
     -%}
-    {%- if fact.value != blank or fact.type == 'boolean' -%}
+    {%- liquid
+      assign show_fact = false
+      if fact.value != blank or fact.type == 'boolean'
+        assign show_fact = true
+      endif
+    -%}
+    {%- if show_fact -%}
       {%- liquid
         assign fact_icon = 'info'
         if field_namespace == 'lighting'
@@ -94,6 +101,9 @@
       {% if show_intro %}<p class="product-seo-details__intro">{{ intro | escape | newline_to_br }}</p>{% endif %}
     </header>
     {% if facts_markup != blank %}<div class="product-seo-details__facts"><h3>{{ facts_heading }}</h3><dl>{{ facts_markup }}</dl></div>{% endif %}
+    {% if ingredient_info != blank %}
+      {% render 'leaf-ingredient-info', items: ingredient_info %}
+    {% endif %}
     {% if knowledge_atoms != blank %}
       <div class="product-seo-details__knowledge">
         <p class="product-seo-details__eyebrow">{{ 'product.knowledge.eyebrow' | t }}</p>
@@ -118,6 +128,7 @@
         <div class="product-seo-details__faq-list">{{ faq_markup }}</div>
       </div>
     {% endif %}
+    {% render 'leaf-product-pathways', product: product, ingredient_info: ingredient_info %}
   </section>
 {% endif %}
 

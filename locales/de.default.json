@@ -193,6 +193,29 @@
       "fit": "Geeignet für",
       "spec": "Wichtigste Kenngröße",
       "note": "Wenn diese Punkte zu deinem Einsatz passen, wähle darunter die passende Variante."
+    },
+    "ingredient_info": {
+      "eyebrow": "Bestandteile verstehen",
+      "heading": "Was steckt drin – und wofür ist es da?",
+      "intro": "Tippe auf das i. Am Desktop reicht auch Hover oder Fokus. Du siehst Funktion, Nutzen und den passenden Einzelbestandteil.",
+      "open": "Information zum Bestandteil öffnen",
+      "function": "Funktion im Substrat",
+      "more": "Bestandteil ansehen"
+    },
+    "pathways": {
+      "label": "Passende nächste Schritte",
+      "eyebrow": "Weiterdenken statt blind weiterklicken",
+      "heading": "Von diesem Produkt zur passenden Lösung",
+      "intro": "Vertiefe nur den nächsten sinnvollen Schritt: Projekt planen, Produktwelt vergleichen oder Wissen nachlesen.",
+      "planner": "Im LEAF Planer einordnen",
+      "planner_text": "Pflanze, Raum, Licht und Pflege gemeinsam betrachten.",
+      "collection_text": "Ähnliche Produkte innerhalb derselben Produktwelt vergleichen.",
+      "ingredients": "Substratbestandteile verstehen",
+      "ingredients_text": "Funktionen von Bims, Perlite, Rinde, Lava und weiteren Komponenten nachlesen.",
+      "mix": "Eigene Mischung planen",
+      "mix_text": "Grundrezeptur verstehen und bei Bedarf im Profi-Modus fein abstimmen.",
+      "knowledge": "LEAFers nice2know",
+      "knowledge_text": "Praxiswissen, Hintergründe und häufige Pflanzenfragen vertiefen."
     }
   },
   "product_variant_guide": {
@@ -213,7 +236,14 @@
       "topics": "Themen dieser Kollektion",
       "atoms_eyebrow": "Kurz bis ausführlich",
       "atoms_heading": "Begriffe in dieser Produktwelt",
-      "care_heading": "Pflege & Anwendung"
+      "care_heading": "Pflege & Anwendung",
+      "paths_label": "Passende nächste Schritte",
+      "planner_link": "Im LEAF Planer einordnen",
+      "knowledge_link": "Ratgeber & Praxiswissen",
+      "plants_link": "Passende Zimmerpflanzen",
+      "substrate_link": "Substrat & Wurzelraum",
+      "interieur_link": "Interieur & Pflanzenlicht",
+      "planters_link": "Passende Pflanzgefäße"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions Konfigurator",
@@ -325,12 +355,12 @@
       "choose_text": "Öffne das Produkt, prüfe die Details und wähle anschließend die passende Variante."
     },
     "advisor": {
-      "eyebrow": "LEAF Berater",
-      "heading": "Ein Berater für alle Produktwelten.",
+      "eyebrow": "LEAF Planer",
+      "heading": "Ein Planer für alle Produktwelten.",
       "intro": "Die aktuelle Kollektion gibt den Kontext vor. Deine Auswahl bleibt über Produktwelten hinweg erhalten, während Spezialwerkzeuge nur dort auftauchen, wo sie wirklich gebraucht werden.",
       "resume": "Gespeicherte Auswahl erkannt",
       "skip_to_products": "Direkt zum Sortiment",
-      "progress_label": "Fortschritt im LEAF Berater",
+      "progress_label": "Fortschritt im LEAF Planer",
       "no_selection": "Noch keine Auswahl",
       "need_heading": "Was möchtest du erreichen oder lösen?",
       "need_text": "Wähle den Bedarf, der deinem Projekt am nächsten kommt.",
@@ -352,8 +382,8 @@
       "view_product": "Produkt prüfen",
       "result_count": "Empfehlungen",
       "dimmable": "Dimmbar",
-      "home_heading": "Finde dein Setup über alle Produktwelten.",
-      "home_intro": "Starte mit der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Die Auswahl bleibt zusammenhängend, auch wenn du später zwischen Produktwelten wechselst.",
+      "home_heading": "Plane dein Pflanzenprojekt über alle Produktwelten.",
+      "home_intro": "Starte mit dem Ziel oder der Produktwelt und grenze danach Bedarf, Kontext und Präferenz ein. Spezialwerkzeuge öffnen sich erst dann, wenn sie deinem Projekt wirklich helfen.",
       "world_heading": "In welcher Produktwelt möchtest du starten?",
       "world_text": "Wähle den Bereich, den du zuerst lösen möchtest. Du kannst später wechseln oder deine Auswahl speichern.",
       "save_project": "Projekt speichern",
@@ -536,7 +566,15 @@
   },
   "page_404": {
     "title": "Seite nicht gefunden",
-    "text": "Diese Seite ist verschwunden oder wurde verschoben."
+    "text": "Der Link ist veraltet oder der Inhalt wurde verschoben. Nutze Suche, LEAF Planer oder eine der zentralen Produktwelten – ohne Sackgasse.",
+    "search_label": "Im Shop suchen",
+    "search_placeholder": "Produkt, Pflanze oder Thema suchen",
+    "search_button": "Suchen",
+    "planner": "LEAF Planer starten",
+    "substrate": "Substrat & Wurzelraum",
+    "plants": "Zimmerpflanzen",
+    "interieur": "Interieur & Pflanzenlicht",
+    "knowledge": "Wissen & Ratgeber"
   },
   "pagefly": {
     "products": {
@@ -594,6 +632,23 @@
       "system_text": "Substrat, Topf, Rankhilfe und Licht werden nur kombiniert, wenn es fachlich passt.",
       "choice_title": "Du behältst die Kontrolle",
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
+    },
+    "solution": {
+      "eyebrow": "LEAF Planer · ein zentraler Einstieg",
+      "heading": "Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.",
+      "text": "Sag uns, was du erreichen möchtest. LEAF verbindet Pflanze, Wurzelraum, Gefäß, Licht, Standort und Pflege – und zeigt dir nur die nächsten sinnvollen Optionen.",
+      "primary": "Lösung finden",
+      "secondary": "Produktwelten direkt öffnen",
+      "world_heading": "Oder direkt in eine Produktwelt",
+      "world_intro": "Der LEAF Planer ist der zentrale Lösungsweg. Wenn du dein Ziel bereits kennst, kannst du direkt zu Zimmerpflanzen, Substrat, Interieur, Gefäßen, Anzucht, Pflege oder Sets wechseln."
+    },
+    "knowledge_links": {
+      "label": "Direkt weiterlernen",
+      "substrate": "Substratbestandteile verstehen",
+      "monstera": "Monstera-Substrat richtig einordnen",
+      "anthurium": "Anthurium-Wurzelraum verstehen",
+      "interieur": "Pflanzenlicht & Interieur planen",
+      "blog": "Alle Ratgeber ansehen"
     }
   },
   "plant_world": {
@@ -707,11 +762,17 @@
     "welcome": "Frag mich direkt zu Substrat, Pflanzenlicht, Gefäßen oder Produkten im Shop.",
     "input_label": "Deine Frage",
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
-    "advisor": "LEAF Berater starten",
+    "advisor": "LEAF Planer öffnen",
     "send": "Senden",
     "privacy": "Deine Frage wird zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
-    "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Berater oder das Sortiment."
+    "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Berater oder das Sortiment.",
+    "voice": "Spracheingabe starten",
+    "voice_stop": "Aufnahme stoppen",
+    "voice_listening": "Ich höre zu …",
+    "speak": "Antwort vorlesen"
   },
-  "interior_guide": {"read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"}
+  "interior_guide": {
+    "read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"
+  }
 }

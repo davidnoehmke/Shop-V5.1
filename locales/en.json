@@ -181,6 +181,29 @@
     "knowledge": {
       "eyebrow": "Knowledge in layers",
       "heading": "Understand materials and concepts"
+    },
+    "ingredient_info": {
+      "eyebrow": "Understand the ingredients",
+      "heading": "What is inside – and what does it do?",
+      "intro": "Tap the i icon. On desktop, hover or focus also works. See the role, benefits and the matching individual component.",
+      "open": "Open ingredient information",
+      "function": "Role in the substrate",
+      "more": "View component"
+    },
+    "pathways": {
+      "label": "Useful next steps",
+      "eyebrow": "Continue with context",
+      "heading": "From this product to the right solution",
+      "intro": "Choose only the next useful step: plan the project, compare the product world or deepen your knowledge.",
+      "planner": "Place it in the LEAF Planner",
+      "planner_text": "Consider plant, room, light and care together.",
+      "collection_text": "Compare related products within the same product world.",
+      "ingredients": "Understand substrate ingredients",
+      "ingredients_text": "Learn what pumice, perlite, bark, lava and other components do.",
+      "mix": "Plan your own mix",
+      "mix_text": "Understand the base recipe and fine-tune it in advanced mode when needed.",
+      "knowledge": "LEAFers nice2know",
+      "knowledge_text": "Explore practical knowledge, background information and common plant questions."
     }
   },
   "product_variant_guide": {
@@ -201,7 +224,14 @@
       "topics": "Collection topics",
       "atoms_eyebrow": "From brief to detailed",
       "atoms_heading": "Concepts in this product world",
-      "care_heading": "Care & application"
+      "care_heading": "Care & application",
+      "paths_label": "Useful next steps",
+      "planner_link": "Place it in the LEAF Planner",
+      "knowledge_link": "Guides & practical knowledge",
+      "plants_link": "Matching houseplants",
+      "substrate_link": "Substrate & root zone",
+      "interieur_link": "Interieur & plant lighting",
+      "planters_link": "Matching planters"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions configurator",
@@ -303,12 +333,12 @@
       "advanced_configurator_text": "Optional: compare mounting, light level and budget in more detail."
     },
     "advisor": {
-      "eyebrow": "LEAF advisor",
-      "heading": "One advisor across every product world.",
+      "eyebrow": "LEAF Planner",
+      "heading": "One planner across every product world.",
       "intro": "The current collection provides context. Your selections persist across product worlds, while specialist tools only appear where they add real value.",
       "resume": "Saved selection found",
       "skip_to_products": "Go straight to products",
-      "progress_label": "LEAF advisor progress",
+      "progress_label": "LEAF Planner progress",
       "no_selection": "No selection yet",
       "need_heading": "What do you want to achieve or solve?",
       "need_text": "Choose the need that comes closest to your project.",
@@ -330,8 +360,8 @@
       "view_product": "Review product",
       "result_count": "recommendations",
       "dimmable": "Dimmable",
-      "home_heading": "Find your setup across every product world.",
-      "home_intro": "Start with a product world, then narrow the choice by need, context and preference. Your selection stays connected when you move between product worlds.",
+      "home_heading": "Plan your plant project across every product world.",
+      "home_intro": "Start with your goal or product world, then narrow the choice by need, context and preference. Specialist tools only open when they genuinely help your project.",
       "world_heading": "Which product world do you want to start with?",
       "world_text": "Choose the area you want to solve first. You can switch later or save your project.",
       "save_project": "Save project",
@@ -514,7 +544,15 @@
   },
   "page_404": {
     "title": "Page not found",
-    "text": "This page has disappeared or moved."
+    "text": "This link is outdated or the content has moved. Use search, the LEAF Planner or one of the main product worlds instead of a dead end.",
+    "search_label": "Search the store",
+    "search_placeholder": "Search products, plants or topics",
+    "search_button": "Search",
+    "planner": "Start LEAF Planner",
+    "substrate": "Substrate & root zone",
+    "plants": "Houseplants",
+    "interieur": "Interieur & plant lighting",
+    "knowledge": "Knowledge & guides"
   },
   "pagefly": {
     "products": {
@@ -580,6 +618,23 @@
       "system_text": "Substrate, pot, support and lighting are combined only when they fit the project.",
       "choice_title": "You stay in control",
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
+    },
+    "solution": {
+      "eyebrow": "LEAF Planner · one central entry point",
+      "heading": "One plant project. One path to the right solution.",
+      "text": "Tell us what you want to achieve. LEAF connects the plant, root zone, container, light, location and care routine – then shows only the next useful options.",
+      "primary": "Find a solution",
+      "secondary": "Open product worlds",
+      "world_heading": "Or open a product world directly",
+      "world_intro": "The LEAF Planner is the central solution path. If you already know your goal, go directly to houseplants, substrate, interiors, planters, propagation, care or bundles."
+    },
+    "knowledge_links": {
+      "label": "Keep learning",
+      "substrate": "Understand substrate ingredients",
+      "monstera": "Choose Monstera substrate",
+      "anthurium": "Understand Anthurium root zones",
+      "interieur": "Plan plant lighting & interiors",
+      "blog": "View all guides"
     }
   },
   "plant_world": {
@@ -693,11 +748,17 @@
     "welcome": "Ask me directly about substrate, plant lighting, planters or products in the shop.",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
-    "advisor": "Start LEAF Advisor",
+    "advisor": "Open LEAF Planner",
     "send": "Send",
     "privacy": "Your question is processed to provide an answer but is not stored as a customer profile.",
     "thinking": "Checking the LEAF knowledge base …",
-    "error": "I cannot answer right now. Please use the LEAF Advisor or browse the range instead."
+    "error": "I cannot answer right now. Please use the LEAF Advisor or browse the range instead.",
+    "voice": "Start voice input",
+    "voice_stop": "Stop recording",
+    "voice_listening": "Listening …",
+    "speak": "Read answer aloud"
   },
-  "interior_guide": {"read": "Plan your green corner: lighting, pots, growing media and plants explained"}
+  "interior_guide": {
+    "read": "Plan your green corner: lighting, pots, growing media and plants explained"
+  }
 }
