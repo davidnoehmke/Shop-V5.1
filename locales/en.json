@@ -769,7 +769,7 @@
     "send": "Send",
     "privacy": "Your question is processed to provide an answer but is not stored as a customer profile.",
     "thinking": "Checking the LEAF knowledge base …",
-    "error": "I cannot answer right now. Please use the LEAF Advisor or browse the range instead.",
+    "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice input",
     "voice_stop": "Stop recording",
     "voice_listening": "Listening …",
