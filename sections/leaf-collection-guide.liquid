@@ -97,6 +97,9 @@
       </div>
     </div>
   </section>
+  {% if collection_faq != blank %}
+    {% render 'collection-faq-structured-data', collection: collection %}
+  {% endif %}
 {% endif %}
 
 {% stylesheet %}
