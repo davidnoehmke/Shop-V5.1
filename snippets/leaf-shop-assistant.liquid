@@ -398,7 +398,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
         this.trigger?.addEventListener('click', () => this.open());
         this.closeButton?.addEventListener('click', () => this.close());
-        this.form?.addEventListener('submit', (event) => this.send(event));
+        this.form?.addEventListener('submit', (event) => this.send(event, false));
         this.setupVoice();
         this.restoreVisibleHistory();
         this.querySelectorAll('[data-assistant-suggestion]').forEach((button) => {
@@ -415,7 +415,9 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
       disconnectedCallback() {
         window.clearTimeout(this.introTimer);
+        window.clearTimeout(this.voiceStatusTimer);
         this.recognition?.abort();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
 
       introduce() {
@@ -453,33 +455,93 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       setupVoice() {
         const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!Recognition || !this.voiceButton) return;
+
         this.voiceButton.hidden = false;
+        this.voiceButton.setAttribute('aria-pressed', 'false');
         this.recognition = new Recognition();
         this.recognition.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
-        this.recognition.interimResults = false;
+        this.recognition.interimResults = true;
         this.recognition.continuous = false;
+        this.recognition.maxAlternatives = 1;
+
+        const resetVoiceButton = () => {
+          this.voiceButton.classList.remove('is-listening');
+          this.voiceButton.setAttribute('aria-label', this.dataset.voiceLabel || '');
+          this.voiceButton.setAttribute('title', this.dataset.voiceLabel || '');
+          this.voiceButton.setAttribute('aria-pressed', 'false');
+        };
+
         this.voiceButton.addEventListener('click', () => {
           if (this.voiceButton.classList.contains('is-listening')) {
             this.recognition.stop();
             return;
           }
-          try { this.recognition.start(); } catch {}
+
+          if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+          window.clearTimeout(this.voiceStatusTimer);
+          try {
+            this.recognition.start();
+          } catch {
+            resetVoiceButton();
+            if (this.voiceStatus) {
+              this.voiceStatus.textContent = this.dataset.error || '';
+              this.voiceStatusTimer = window.setTimeout(() => {
+                if (this.voiceStatus) this.voiceStatus.textContent = '';
+              }, 3500);
+            }
+          }
         });
+
         this.recognition.addEventListener('start', () => {
           this.voiceButton.classList.add('is-listening');
           this.voiceButton.setAttribute('aria-label', this.dataset.voiceStopLabel || '');
+          this.voiceButton.setAttribute('title', this.dataset.voiceStopLabel || '');
+          this.voiceButton.setAttribute('aria-pressed', 'true');
           if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
         });
+
         this.recognition.addEventListener('end', () => {
-          this.voiceButton.classList.remove('is-listening');
-          this.voiceButton.setAttribute('aria-label', this.dataset.voiceLabel || '');
-          if (this.voiceStatus) this.voiceStatus.textContent = '';
+          resetVoiceButton();
+          if (this.voiceStatus && !this.voiceSending) this.voiceStatus.textContent = '';
         });
+
+        this.recognition.addEventListener('error', () => {
+          resetVoiceButton();
+          if (this.voiceStatus) {
+            this.voiceStatus.textContent = this.dataset.error || '';
+            window.clearTimeout(this.voiceStatusTimer);
+            this.voiceStatusTimer = window.setTimeout(() => {
+              if (this.voiceStatus) this.voiceStatus.textContent = '';
+            }, 3500);
+          }
+        });
+
         this.recognition.addEventListener('result', (event) => {
-          const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+          let finalTranscript = '';
+          let interimTranscript = '';
+
+          for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
+            const result = event.results[index];
+            const transcript = result?.[0]?.transcript?.trim();
+            if (!transcript) continue;
+            if (result.isFinal) {
+              finalTranscript += (finalTranscript ? ' ' : '') + transcript;
+            } else {
+              interimTranscript += (interimTranscript ? ' ' : '') + transcript;
+            }
+          }
+
+          const transcript = (finalTranscript || interimTranscript).trim();
           if (transcript && this.input) {
             this.input.value = transcript;
-            this.input.focus();
+          }
+
+          if (finalTranscript && !this.voiceSending) {
+            this.voiceSending = true;
+            this.send(null, true).finally(() => {
+              this.voiceSending = false;
+              if (this.voiceStatus) this.voiceStatus.textContent = '';
+            });
           }
         });
       }
@@ -501,6 +563,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       }
 
       close() {
+        this.recognition?.abort();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         if (this.dialog?.open) this.dialog.close();
         this.trigger?.setAttribute('aria-expanded', 'false');
         this.trigger?.focus();
@@ -542,8 +606,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.log.scrollTop = this.log.scrollHeight;
       }
 
-      async send(event) {
-        event.preventDefault();
+      async send(event, speakResponse = false) {
+        event?.preventDefault();
         const message = this.input?.value.trim() || '';
         if (!message || !this.endpoint || this.submit?.disabled) return;
 
@@ -578,6 +642,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           thinking.remove();
           if (!response.ok || typeof payload.answer !== 'string') throw new Error('assistant_unavailable');
           this.appendMessage('assistant', payload.answer, payload.links);
+          if (speakResponse) this.speak(payload.answer);
           this.history.push({ role: 'assistant', content: payload.answer });
           this.saveHistory();
         } catch {
