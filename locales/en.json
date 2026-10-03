@@ -200,7 +200,8 @@
       "heading": "How to choose {{ collection }}",
       "topics": "Collection topics",
       "atoms_eyebrow": "From brief to detailed",
-      "atoms_heading": "Concepts in this product world"
+      "atoms_heading": "Concepts in this product world",
+      "care_heading": "Care & application"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions configurator",
