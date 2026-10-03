@@ -1,0 +1,93 @@
+name: Live storefront verification
+
+on:
+  workflow_run:
+    workflows: ["LEAF CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leaf-live-storefront-verification
+  cancel-in-progress: true
+
+jobs:
+  verify-live:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - name: Wait for Shopify native sync and verify live storefront
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          base='https://leaferservice.com'
+          critical_routes=(
+            '/'
+            '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'
+            '/collections/interieur-solutions'
+            '/collections/zimmerpflanzen-1'
+            '/collections/anzucht-aussaat'
+            '/collections/pflanzgefasse'
+            '/collections/pflanzenpflege-werkzeuge'
+            '/blogs/leafers-nice2know-blog'
+            '/pages/individuelles-substrat'
+            '/products/leafer-alocasia-mix'
+          )
+
+          ok=0
+          for attempt in $(seq 1 24); do
+            probe="${VERIFIED_SHA}-${attempt}"
+            if curl -fsSL -H 'Cache-Control: no-cache' "${base}/?release_probe=${probe}" -o /tmp/home.html; then
+              route_ok=1
+              for route in "${critical_routes[@]}"; do
+                if ! curl -fsSL -o /dev/null -H 'Cache-Control: no-cache' "${base}${route}?release_probe=${probe}"; then
+                  route_ok=0
+                  break
+                fi
+              done
+
+              if [ "$route_ok" -eq 1 ]                 && ! grep -Fq 'Liquid error' /tmp/home.html                 && ! grep -Fq 'Translation missing' /tmp/home.html                 && grep -Fq 'Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.' /tmp/home.html                 && grep -Fq '<leaf-guided-advisor' /tmp/home.html                 && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html; then
+                curl -fsSL -H 'Cache-Control: no-cache' "${base}/products/leafer-alocasia-mix?release_probe=${probe}" -o /tmp/product.html
+                status_404=$(curl -sSL -o /tmp/404.html -w '%{http_code}' "${base}/this-page-must-not-exist-${probe}")
+
+                if grep -Fq 'leaf-ingredient-info' /tmp/product.html                   && grep -Fq 'Bestandteile verstehen' /tmp/product.html                   && [ "$status_404" = '404' ]                   && grep -Fq 'LEAF Planer' /tmp/404.html; then
+                  response=$(curl -fsSL -X POST                     -H 'Origin: https://leaferservice.com'                     -H 'Content-Type: application/json'                     --data '{"message":"Was macht Bims im Substrat?","locale":"de","path":"/"}'                     'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant')
+                  if echo "$response" | jq -e '.answer | type == "string" and length > 20' >/dev/null; then
+                    ok=1
+                    break
+                  fi
+                fi
+              fi
+            fi
+            sleep 10
+          done
+
+          if [ "$ok" -ne 1 ]; then
+            echo 'Live storefront did not converge to the verified main release within the allowed sync window.' >&2
+            exit 1
+          fi
+
+      - name: Verify legacy redirects remain canonical
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://leaferservice.com'
+
+          final=$(curl -sSL -o /dev/null -w '%{url_effective}' "${base}/pages/ratgeber")
+          case "$final" in
+            "${base}/blogs/leafers-nice2know-blog"*) ;;
+            *) echo "Unexpected /pages/ratgeber target: $final" >&2; exit 1 ;;
+          esac
+
+          final=$(curl -sSL -o /dev/null -w '%{url_effective}' "${base}/pages/pflanzeninterieur-konfigurator")
+          case "$final" in
+            "${base}/collections/interieur-solutions"*) ;;
+            *) echo "Unexpected Pflanzeninterieur redirect target: $final" >&2; exit 1 ;;
+          esac

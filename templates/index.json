@@ -189,7 +189,7 @@
       "settings": {
         "eyebrow": "Direkter Einstieg",
         "heading": "Oder direkt in eine Produktwelt",
-        "intro": "<p>Der LEAF Berater ist der zentrale Weg. Wenn du dein Ziel bereits kennst, kannst du direkt in die passende Produktwelt wechseln.</p>",
+        "intro": "<p>Der LEAF Planer ist der zentrale Weg. Wenn du dein Ziel bereits kennst, kannst du direkt in die passende Produktwelt wechseln.</p>",
         "filter_label": "Sortiment filtern",
         "filter_all": "Alles",
         "filter_substrate": "Substrat & Wurzelraum",
@@ -225,7 +225,7 @@
           "settings": {
             "topic": "substrate",
             "question": "Welches Substrat passt zu Monstera, Alocasia oder Philodendron?",
-            "answer": "<p>Aroiden profitieren häufig von einer luftigen, strukturstabilen Mischung mit guter Drainage. Entscheidend sind zusätzlich Topf, Wurzelzustand, Standort und Gießroutine. Der LEAF Berater verbindet diese Angaben mit passenden Mischungen und Bestandteilen.</p>"
+            "answer": "<p>Aroiden profitieren häufig von einer luftigen, strukturstabilen Mischung mit guter Drainage. Entscheidend sind zusätzlich Topf, Wurzelzustand, Standort und Gießroutine. Der LEAF Planer verbindet diese Angaben mit passenden Mischungen und Bestandteilen.</p>"
           }
         },
         "lowlight": {
@@ -249,7 +249,7 @@
           "settings": {
             "topic": "plants",
             "question": "Kann LEAF eine Komplettlösung aus Pflanze, Gefäß, Substrat und Licht empfehlen?",
-            "answer": "<p>Ja. Starte über den LEAF Berater mit Raum, Ziel und Pflanzenbedarf. Du erhältst eine nachvollziehbare Vorauswahl und kannst anschließend einzelne Produkte oder passende Komplettlösungen vergleichen.</p>"
+            "answer": "<p>Ja. Starte über den LEAF Planer mit Raum, Ziel und Pflanzenbedarf. Du erhältst eine nachvollziehbare Vorauswahl und kannst anschließend einzelne Produkte oder passende Komplettlösungen vergleichen.</p>"
           }
         },
         "pro": {
@@ -257,7 +257,7 @@
           "settings": {
             "topic": "application",
             "question": "Wann brauche ich den Profi-Konfigurator?",
-            "answer": "<p>Nur wenn du Komponenten oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte reicht der zentrale LEAF Berater; Spezialwerkzeuge öffnen sich erst als vertiefender Schritt.</p>"
+            "answer": "<p>Nur wenn du Komponenten oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte reicht der zentrale LEAF Planer; Spezialwerkzeuge öffnen sich erst als vertiefender Schritt.</p>"
           }
         },
         "availability": {
@@ -281,73 +281,6 @@
         "heading": "Fragen, mit denen Pflanzenprojekte wirklich starten",
         "text": "<p>Kurze Antworten auf typische Suchfragen – und ein direkter Übergang zur passenden Lösung statt zu einem weiteren separaten Konfigurator.</p>"
       }
-    },
-    "shop_videos": {
-      "type": "apps",
-      "blocks": {
-        "space_before": {
-          "type": "shopify://apps/section-store/blocks/block-space-divide/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "height": 24,
-            "background_color": "rgba(0,0,0,0)",
-            "show_line": true,
-            "line_style": "solid",
-            "line_width": 25,
-            "line_thickness": 1,
-            "line_roundness": 0,
-            "line_color": "#e0e0e0",
-            "custom_css": ""
-          }
-        },
-        "video_carousel": {
-          "type": "shopify://apps/section-store/blocks/block-video-carousel/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "video_1": "shopify://files/videos/47551-451623797.mp4",
-            "video_2": "shopify://files/videos/instagram-video_34ae078c-ab95-4320-9d44-48b3b3ed5d95.mp4",
-            "video_4": "shopify://files/videos/254112.mp4",
-            "slider_style": "none",
-            "modal_style": "side",
-            "video_autoplay": "false",
-            "play_button_position": "none",
-            "play_button_size": "small",
-            "item_border_style": "none",
-            "item_border_width": 1,
-            "item_border_color": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            "item_border_radius": 0,
-            "item_padding": 0,
-            "grid_items": "3",
-            "thumbnail_shape": "rectangle",
-            "block_border_style": "none",
-            "block_border_width": 1,
-            "block_border_color": "#d7d7d7",
-            "block_border_radius": 0,
-            "block_bg_color": "",
-            "block_padding_vertical": 8,
-            "block_padding_horizontal": 0,
-            "custom_css": ""
-          }
-        },
-        "space_after": {
-          "type": "shopify://apps/section-store/blocks/block-space-divide/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "height": 42,
-            "background_color": "rgba(0,0,0,0)",
-            "show_line": true,
-            "line_style": "solid",
-            "line_width": 70,
-            "line_thickness": 1,
-            "line_roundness": 0,
-            "line_color": "#e0e0e0",
-            "custom_css": ""
-          }
-        }
-      },
-      "block_order": [
-        "space_before",
-        "video_carousel",
-        "space_after"
-      ],
-      "settings": {}
     },
     "community": {
       "type": "community-gallery",
@@ -436,7 +369,6 @@
     "faq",
     "community",
     "brand_story",
-    "phone_call",
-    "shop_videos"
+    "phone_call"
   ]
 }

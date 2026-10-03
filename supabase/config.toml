@@ -6,3 +6,6 @@ verify_jwt = false
 
 [functions.storefront-assistant]
 verify_jwt = false
+
+[functions.leaf-control-api]
+verify_jwt = false
