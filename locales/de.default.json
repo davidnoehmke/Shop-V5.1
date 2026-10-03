@@ -236,7 +236,14 @@
       "topics": "Themen dieser Kollektion",
       "atoms_eyebrow": "Kurz bis ausführlich",
       "atoms_heading": "Begriffe in dieser Produktwelt",
-      "care_heading": "Pflege & Anwendung"
+      "care_heading": "Pflege & Anwendung",
+      "paths_label": "Passende nächste Schritte",
+      "planner_link": "Im LEAF Planer einordnen",
+      "knowledge_link": "Ratgeber & Praxiswissen",
+      "plants_link": "Passende Zimmerpflanzen",
+      "substrate_link": "Substrat & Wurzelraum",
+      "interieur_link": "Interieur & Pflanzenlicht",
+      "planters_link": "Passende Pflanzgefäße"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions Konfigurator",
