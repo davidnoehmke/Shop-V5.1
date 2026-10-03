@@ -1,51 +1,102 @@
 (() => {
-  const body = document.body;
-  if (!body || !body.classList.contains('template-index')) return;
+  const main = document.getElementById('MainContent');
+  if (!main) return;
 
-  // Keep motion deliberate: homepage videos wait for an explicit user action.
-  document.querySelectorAll('#MainContent video[autoplay]').forEach((video) => {
-    video.removeAttribute('autoplay');
-    video.autoplay = false;
-    video.pause();
-  });
+  if (document.body?.classList.contains('template-index')) {
+    main.querySelectorAll('video[autoplay]').forEach((video) => {
+      video.removeAttribute('autoplay');
+      video.autoplay = false;
+      video.pause();
+    });
+  }
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const sectionWrappers = document.querySelectorAll('#MainContent > .shopify-section');
+  const observed = new WeakSet();
+  let revealObserver;
 
-  sectionWrappers.forEach((wrapper) => {
-    if (!wrapper.querySelector('[data-leaf-reveal]')) {
-      wrapper.setAttribute('data-leaf-reveal', '');
+  const revealNow = (element) => {
+    element.classList.add('is-visible');
+  };
+
+  const register = (element) => {
+    if (!(element instanceof HTMLElement) || observed.has(element)) return;
+    observed.add(element);
+
+    if (reduceMotion || !revealObserver) {
+      revealNow(element);
+      return;
     }
-  });
 
-  const revealItems = [...document.querySelectorAll('[data-leaf-reveal]')];
+    const rect = element.getBoundingClientRect();
+    const visibleThreshold = window.innerHeight * 0.9;
+
+    if (rect.top <= visibleThreshold || rect.bottom <= 0) {
+      revealNow(element);
+      return;
+    }
+
+    revealObserver.observe(element);
+  };
+
+  const discover = (root = main) => {
+    if (root === main || root instanceof HTMLElement) {
+      main.querySelectorAll(':scope > .shopify-section').forEach((section) => {
+        if (!section.querySelector('[data-leaf-reveal]')) {
+          section.setAttribute('data-leaf-reveal', '');
+        }
+      });
+    }
+
+    if (root instanceof HTMLElement && root.matches('[data-leaf-reveal]')) {
+      register(root);
+    }
+
+    if (root.querySelectorAll) {
+      root.querySelectorAll('[data-leaf-reveal]').forEach(register);
+    }
+  };
 
   if (reduceMotion || !('IntersectionObserver' in window)) {
-    revealItems.forEach((item) => item.classList.add('is-visible'));
+    discover();
+    new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) discover(node);
+        });
+      });
+    }).observe(main, { childList: true, subtree: true });
     return;
   }
 
   document.documentElement.classList.add('leaf-motion-ready');
 
-  const revealObserver = new IntersectionObserver((entries, observer) => {
+  revealObserver = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      entry.target.classList.add('is-visible');
+      revealNow(entry.target);
       observer.unobserve(entry.target);
     });
   }, {
-    rootMargin: '0px 0px -10% 0px',
-    threshold: 0.08
+    rootMargin: '0px 0px -6% 0px',
+    threshold: 0.05
   });
 
-  requestAnimationFrame(() => {
-    revealItems.forEach((item) => revealObserver.observe(item));
+  discover();
+
+  const dynamicObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement)) return;
+        discover(node);
+      });
+    });
   });
 
-  // Keep all homepage content accessible if a browser skips observer callbacks
-  // during restored scroll positions or very fast programmatic navigation.
-  window.setTimeout(() => {
-    revealItems.forEach((item) => item.classList.add('is-visible'));
-    revealObserver.disconnect();
-  }, 3500);
+  dynamicObserver.observe(main, { childList: true, subtree: true });
+
+  document.addEventListener('shopify:section:load', (event) => {
+    if (event.target instanceof HTMLElement && main.contains(event.target)) {
+      discover(event.target);
+    }
+  });
 })();
