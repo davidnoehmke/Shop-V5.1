@@ -54,9 +54,6 @@
       if fact.value != blank or fact.type == 'boolean'
         assign show_fact = true
       endif
-      if field_key == 'ingredients' and ingredient_info != blank
-        assign show_fact = false
-      endif
     -%}
     {%- if show_fact -%}
       {%- liquid
