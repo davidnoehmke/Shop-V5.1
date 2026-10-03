@@ -21,6 +21,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-thinking="{{ 'shop_assistant.thinking' | t | escape }}"
   data-voice-label="{{ 'shop_assistant.voice' | t | escape }}"
   data-voice-stop-label="{{ 'shop_assistant.voice_stop' | t | escape }}"
+  data-voice-listening-label="{{ 'shop_assistant.voice_listening' | t | escape }}"
   data-speak-label="{{ 'shop_assistant.speak' | t | escape }}"
   data-storage-key="leafer-assistant-session-v1"
 >
@@ -416,7 +417,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.recognition.addEventListener('start', () => {
           this.voiceButton.classList.add('is-listening');
           this.voiceButton.setAttribute('aria-label', this.dataset.voiceStopLabel || '');
-          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceLabel || '';
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
         });
         this.recognition.addEventListener('end', () => {
           this.voiceButton.classList.remove('is-listening');
