@@ -706,5 +706,6 @@
     "privacy": "Deine Frage wird zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
     "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Berater oder das Sortiment."
-  }
+  },
+  "interior_guide": {"read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"}
 }
