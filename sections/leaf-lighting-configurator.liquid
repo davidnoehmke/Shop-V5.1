@@ -153,7 +153,8 @@
 .leaf-lighting__empty{padding:3rem 0;border-block:1px solid var(--border);display:grid;gap:.35rem}.leaf-lighting__empty[hidden]{display:none}
 @media(max-width:900px){.leaf-lighting__grid{grid-template-columns:repeat(2,minmax(0,1fr))}.leaf-lighting__hero{grid-template-columns:1fr}.leaf-lighting__controls{grid-template-columns:1fr}}
 @media(max-width:620px){.leaf-lighting__grid{grid-template-columns:1fr}.leaf-lighting h1{font-size: clamp(1.8rem, 3.2vw, 2.75rem)}.leaf-lighting__meter{grid-template-columns:repeat(2,1fr)}}
-{% endstylesheet %}
+
+@media(max-width:749px){.leaf-lighting__grid{grid-template-columns:1fr}.leaf-lighting__media{width:min(64vw,240px);margin-inline:auto;aspect-ratio:1/1}.leaf-lighting__card{padding-top:.8rem}}{% endstylesheet %}
 
 {% schema %}
 {
@@ -174,4 +175,4 @@
 }
 {% endschema %}
 
-{% stylesheet %}@media(max-width:749px){.leaf-lighting__grid{grid-template-columns:1fr}.leaf-lighting__media{width:min(64vw,240px);margin-inline:auto;aspect-ratio:1/1}.leaf-lighting__card{padding-top:.8rem}}{% endstylesheet %}
+
