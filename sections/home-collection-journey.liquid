@@ -12,8 +12,12 @@
   assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
 
   if request.page_type == 'index'
-    assign section_heading = 'Oder direkt in eine Produktwelt einsteigen'
-    assign section_intro = '<p>Der LEAF Berater ist der zentrale Lösungsweg. Wenn du dein Ziel bereits kennst, kannst du direkt in Substrat, Interieur, Zimmerpflanzen, Anzucht, Gefäße, Pflege oder Sets einsteigen.</p>'
+    assign section_heading = 'home.solution.world_heading' | t
+    capture section_intro
+      echo '<p>'
+      echo 'home.solution.world_intro' | t
+      echo '</p>'
+    endcapture
   endif
 %}
 
