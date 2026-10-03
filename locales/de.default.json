@@ -154,9 +154,9 @@
       "electrical": "Elektrische Daten",
       "safety": "Sicherheit",
       "manual": "Herstellerseite öffnen",
-      "advisor_title": "Im LEAF Berater einordnen",
-      "advisor_text": "Nutze denselben Berater wie in den Produktwelten. Deine bisherigen Angaben bleiben erhalten.",
-      "advisor_cta": "LEAF Berater öffnen"
+      "advisor_title": "Im LEAF Planer einordnen",
+      "advisor_text": "Nutze denselben Planer wie in den Produktwelten. Deine bisherigen Angaben bleiben erhalten.",
+      "advisor_cta": "LEAF Planer öffnen"
     },
     "media": {
       "label": "Produktbilder"
@@ -649,6 +649,23 @@
       "anthurium": "Anthurium-Wurzelraum verstehen",
       "interieur": "Pflanzenlicht & Interieur planen",
       "blog": "Alle Ratgeber ansehen"
+    },
+    "longtail_faq": {
+      "eyebrow": "Typische Fragen vor der Auswahl",
+      "heading": "Pflanze, Substrat, Licht und Gefäß zusammen denken",
+      "intro": "Antworten auf häufige Suchfragen – kurz genug für den Einstieg und mit direktem Übergang zum LEAF Planer oder zur passenden Produktwelt.",
+      "q1": "Welches Substrat passt zu Monstera, Alocasia oder Philodendron?",
+      "a1": "Aroiden profitieren häufig von einer luftigen, strukturstabilen Mischung mit guter Drainage. Entscheidend sind zusätzlich Wurzelzustand, Gefäß, Standort und Gießroutine. Der LEAF Planer verbindet diese Angaben mit passenden Mischungen und Bestandteilen.",
+      "q2": "Welche Zimmerpflanzen eignen sich für Räume mit wenig Licht?",
+      "a2": "Wenig Licht ist kein einheitlicher Standort. Prüfe zuerst Fensterabstand und Tageslichtdauer und wähle eine tolerantere Pflanze. Reicht das natürliche Licht dauerhaft nicht aus, kann passendes Pflanzenlicht sinnvoller sein als mehr zu gießen.",
+      "q3": "Welche Pflanzenlampe brauche ich für Zimmerpflanzen?",
+      "a3": "Entscheidend sind Pflanzenbedarf, beleuchtete Fläche, Abstand und Montage. Vergleiche dokumentierte Lichtleistung, Abstrahlung und Herstellerabstand gemeinsam statt nur die Wattzahl.",
+      "q4": "Wie kombiniere ich Zimmerpflanze, Pflanzgefäß und Substrat richtig?",
+      "a4": "Wurzelballen, Gefäßvolumen, Ablauf oder Bewässerungssystem und Substratstruktur müssen zusammenpassen. Ein größeres Gefäß allein löst kein Standort- oder Gießproblem.",
+      "q5": "Kann LEAF eine Komplettlösung aus Pflanze, Gefäß, Substrat und Licht planen?",
+      "a5": "Ja. Starte im LEAF Planer mit Ziel, Raum und Pflanzenbedarf. Die Vorauswahl führt anschließend zu passenden Produktwelten, Einzelprodukten und – sofern vorhanden – abgestimmten Sets.",
+      "q6": "Wann brauche ich einen Profi-Konfigurator?",
+      "a6": "Nur wenn du Anteile oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte ist der zentrale LEAF Planer der einfachere Start; Spezialwerkzeuge bleiben als optionaler Vertiefungsschritt erhalten."
     }
   },
   "plant_world": {

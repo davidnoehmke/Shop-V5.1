@@ -154,9 +154,9 @@
       "electrical": "Electrical data",
       "safety": "Safety",
       "manual": "Open manufacturer page",
-      "advisor_title": "Place it in the LEAF advisor",
-      "advisor_text": "Use the same advisor as across the product worlds. Your previous selections remain available.",
-      "advisor_cta": "Open LEAF advisor"
+      "advisor_title": "Place it in the LEAF Planner",
+      "advisor_text": "Use the same planner as across the product worlds. Your previous selections stay connected.",
+      "advisor_cta": "Open LEAF Planner"
     },
     "media": {
       "label": "Product images"
@@ -635,6 +635,23 @@
       "anthurium": "Understand Anthurium root zones",
       "interieur": "Plan plant lighting & interiors",
       "blog": "View all guides"
+    },
+    "longtail_faq": {
+      "eyebrow": "Common questions before choosing",
+      "heading": "Think about plant, substrate, light and planter as one system",
+      "intro": "Answers to common search questions – concise enough to start, with a direct path into the LEAF Planner or the relevant product world.",
+      "q1": "Which substrate suits Monstera, Alocasia or Philodendron?",
+      "a1": "Aroids often benefit from an airy, structurally stable mix with good drainage. Root condition, container, location and watering routine still matter. The LEAF Planner combines these inputs with suitable mixes and components.",
+      "q2": "Which houseplants work in lower-light rooms?",
+      "a2": "Low light is not one uniform condition. Check window distance and daylight duration first and choose a more tolerant plant. If natural light stays insufficient, suitable plant lighting can make more sense than watering more.",
+      "q3": "Which grow light do I need for houseplants?",
+      "a3": "Plant needs, illuminated area, distance and mounting matter. Compare documented light output, beam spread and manufacturer distance together rather than looking at wattage alone.",
+      "q4": "How do I combine a houseplant, planter and substrate correctly?",
+      "a4": "Root ball, container volume, drainage or watering system and substrate structure need to work together. A larger pot alone does not solve a location or watering problem.",
+      "q5": "Can LEAF plan a complete solution with plant, planter, substrate and light?",
+      "a5": "Yes. Start in the LEAF Planner with your goal, room and plant needs. The shortlist then leads into relevant product worlds, individual products and coordinated sets where available.",
+      "q6": "When do I need an advanced configurator?",
+      "a6": "Only when you intentionally want to fine-tune proportions or technical parameters yourself. For most projects the central LEAF Planner is the simpler starting point; specialist tools remain optional deeper steps."
     }
   },
   "plant_world": {
