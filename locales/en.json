@@ -224,7 +224,14 @@
       "topics": "Collection topics",
       "atoms_eyebrow": "From brief to detailed",
       "atoms_heading": "Concepts in this product world",
-      "care_heading": "Care & application"
+      "care_heading": "Care & application",
+      "paths_label": "Useful next steps",
+      "planner_link": "Place it in the LEAF Planner",
+      "knowledge_link": "Guides & practical knowledge",
+      "plants_link": "Matching houseplants",
+      "substrate_link": "Substrate & root zone",
+      "interieur_link": "Interieur & plant lighting",
+      "planters_link": "Matching planters"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions configurator",
