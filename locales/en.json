@@ -393,6 +393,11 @@
       "result_empty": "Choose project parameters",
       "result_empty_text": "After selection, the matching recipe, technical characteristics and useful additions are shown.",
       "adjust": "Adjust mix in pro configurator"
+    },
+    "advanced": {
+      "eyebrow": "Advanced mode",
+      "heading": "Fine-tune the mix yourself",
+      "intro": "Adjust up to five components within the stored technical limits – open only when you intentionally want to build your own mix."
     }
   },
   "search": {

@@ -42,6 +42,20 @@ jobs:
           VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
+          critical_routes=(
+            "/"
+            "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+            "/collections/interieur-solutions"
+            "/collections/zimmerpflanzen-1"
+            "/collections/starter-sets-mehrerer-arten"
+            "/collections/anzucht-aussaat"
+            "/collections/pflanzgefasse"
+            "/collections/pflanzenpflege-werkzeuge"
+            "/pages/individuelles-substrat"
+          )
+          for route in "${critical_routes[@]}"; do
+            curl -fsSL -o /dev/null -H 'Cache-Control: no-cache' "https://leaferservice.com${route}?route_probe=${VERIFIED_SHA}"
+          done
           ok=0
           for attempt in $(seq 1 12); do
             probe="${VERIFIED_SHA}-${attempt}"
