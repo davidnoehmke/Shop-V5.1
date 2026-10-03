@@ -79,6 +79,21 @@
             {% endfor %}
           </div>
         {% endif %}
+
+        <nav class="leaf-collection-guide__paths" aria-label="{{ 'collection.guide.paths_label' | t | escape }}">
+          <a href="/#LeafAdvisor">{{ 'collection.guide.planner_link' | t }}</a>
+          {% if collection.handle contains 'substrat' %}
+            <a href="/collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="/collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+          {% elsif collection.handle == 'interieur-solutions' %}
+            <a href="/collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="/collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+          {% elsif collection.handle == 'zimmerpflanzen-1' %}
+            <a href="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'collection.guide.substrate_link' | t }}</a>
+            <a href="/collections/interieur-solutions">{{ 'collection.guide.interieur_link' | t }}</a>
+          {% endif %}
+          <a href="/blogs/leafers-nice2know-blog">{{ 'collection.guide.knowledge_link' | t }}</a>
+        </nav>
       </div>
     </div>
   </section>
@@ -120,6 +135,9 @@
   .leaf-collection-guide__plus { width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--border); transition: transform .2s ease, background .2s ease; }
   .leaf-collection-guide__faq details[open] .leaf-collection-guide__plus { transform: rotate(45deg); background: var(--accent); color: #fff; }
   .leaf-collection-guide__faq .rte { max-width: 70ch; padding: 0 2.5rem 1rem 0; color: var(--muted); line-height: 1.65; }
+  .leaf-collection-guide__paths { display: flex; flex-wrap: wrap; gap: .5rem; padding-top: .35rem; }
+  .leaf-collection-guide__paths a { min-height: 38px; display: inline-flex; align-items: center; padding: .45rem .65rem; border: 1px solid var(--border); background: var(--background); color: var(--text); font-size: .75rem; font-weight: 760; text-decoration: none; }
+  .leaf-collection-guide__paths a:hover, .leaf-collection-guide__paths a:focus-visible { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 900px) {
     .leaf-collection-guide__shell { grid-template-columns: 1fr; gap: 2rem; }
     .leaf-collection-guide__intro { position: static; }
