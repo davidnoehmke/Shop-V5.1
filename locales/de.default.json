@@ -212,7 +212,8 @@
       "heading": "{{ collection }} richtig auswählen",
       "topics": "Themen dieser Kollektion",
       "atoms_eyebrow": "Kurz bis ausführlich",
-      "atoms_heading": "Begriffe in dieser Produktwelt"
+      "atoms_heading": "Begriffe in dieser Produktwelt",
+      "care_heading": "Pflege & Anwendung"
     },
     "interieur": {
       "eyebrow": "Interieur Solutions Konfigurator",
