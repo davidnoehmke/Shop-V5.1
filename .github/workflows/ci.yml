@@ -90,6 +90,48 @@ jobs:
             exit 1
           fi
 
+      - name: Enforce LEAF assistant and admin hardening invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          settings = json.loads(Path('config/settings_data.json').read_text(encoding='utf-8'))
+          blocks = (settings.get('current') or {}).get('blocks') or {}
+          forbidden = ('/inbox/', '/cwill-ai-chat/')
+          enabled_duplicate_chat = [
+              block.get('type', '')
+              for block in blocks.values()
+              if not block.get('disabled', False)
+              and any(token in block.get('type', '') for token in forbidden)
+          ]
+          if enabled_duplicate_chat:
+              raise SystemExit('Duplicate chat embed still enabled: ' + ', '.join(enabled_duplicate_chat))
+
+          index = json.loads(Path('templates/index.json').read_text(encoding='utf-8'))
+          if 'shop_videos' in (index.get('sections') or {}) or 'shop_videos' in (index.get('order') or []):
+              raise SystemExit('Empty app-based homepage video section must not be part of the primary template.')
+
+          control = Path('supabase/functions/leaf-control-api/index.ts').read_text(encoding='utf-8')
+          if 'password === "Admin"' in control or 'password==="Admin"' in control or 'password==\"Admin\"' in control:
+              raise SystemExit('Default Admin/Admin bootstrap credential is forbidden.')
+          if '"Access-Control-Allow-Origin":"*"' in control or "'Access-Control-Allow-Origin':'*'" in control:
+              raise SystemExit('Wildcard CORS is forbidden for LEAF control API.')
+
+          assistant = Path('supabase/functions/storefront-assistant/index.ts').read_text(encoding='utf-8')
+          required = [
+              'consume_storefront_assistant_rate_limit',
+              'origin_not_allowed',
+              'approved_existing',
+              'approved',
+          ]
+          for token in required:
+              if token not in assistant:
+                  raise SystemExit('Storefront assistant hardening invariant missing: ' + token)
+          PY
+
   theme-check:
     name: Shopify Theme Check
     runs-on: ubuntu-24.04
@@ -309,6 +351,10 @@ jobs:
           fi
           grep -q 'enable row level security' supabase/migrations/20260914190200_content_approval_queue.sql
           grep -q 'service_role' supabase/migrations/20260914190200_content_approval_queue.sql
+
+          grep -q 'alter table public.storefront_assistant_rate_limits enable row level security' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'revoke all on table public.storefront_assistant_rate_limits from public, anon, authenticated' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'security invoker' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
 
   pipeline-tests:
     name: Pipeline unit tests
