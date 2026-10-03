@@ -19,10 +19,10 @@ main { isolation: isolate; }
 
 .template-index .hero__content { max-width: 760px; }
 .template-index .hero h1 {
-  max-width: 12ch;
-  font-size: clamp(3.5rem, 7vw, 7.2rem);
-  line-height: .88;
-  letter-spacing: -.068em;
+  max-width: 28ch;
+  font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+  line-height: 1.2;
+  letter-spacing: -.025em;
 }
 .template-index .hero__text,
 .template-index .hero__content > p { max-width: 58ch; font-size: clamp(1rem, 1.45vw, 1.18rem); }
@@ -41,9 +41,9 @@ main { isolation: isolate; }
 .home-collection-journey h2,
 .home-guides h2,
 .faq h2 {
-  font-size: clamp(2.4rem, 4.8vw, 4.8rem);
-  line-height: .94;
-  letter-spacing: -.055em;
+  font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -.025em;
 }
 
 .product-card,
@@ -86,7 +86,7 @@ main { isolation: isolate; }
   background: color-mix(in srgb, var(--surface), var(--background) 18%);
   box-shadow: var(--leaf-premium-shadow);
 }
-.main-product h1 { font-size: clamp(2.65rem, 4.6vw, 4.8rem); }
+.main-product h1 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
 .main-product__price { font-size: 1.65rem; }
 .main-product__availability { margin-top: .9rem; }
 .main-product__form { margin-block: 1.35rem; }
@@ -136,7 +136,7 @@ main { isolation: isolate; }
 
 @media (max-width: 800px) {
   .site-header__inner { min-height: 64px; }
-  .template-index .hero h1 { max-width: 13ch; font-size: clamp(2.2rem, 10vw, 3.4rem); line-height: .94; }
+  .template-index .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
   .main-product__details {
     padding: 0;
     border: 0;

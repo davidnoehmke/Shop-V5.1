@@ -1,5 +1,5 @@
 {% doc %}
-Renders the shared, mobile-first LEAF advisor for one collection or for the homepage across product worlds. Public matching inputs come only from storefront metafields; specialist configurators remain advanced tools.
+Renders the shared LEAF advisor. Supabase supplies all options, selection validation and recommendations; storefront metafields provide public product inputs only.
 @param {collection} [collection] - Current collection in collection mode.
 @param {string} section_id - Parent section id for anchor targets.
 @param [world_blocks] - Homepage collection blocks used as product worlds.
@@ -8,47 +8,23 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
 
 {% liquid
   assign advisor_home_mode = false
-  if home_mode and world_blocks != blank
+  if home_mode
     assign advisor_home_mode = true
   endif
 
   assign advisor_products = collection.products
-  assign advisor_count = collection.products_count | default: 0
   assign advisor_collection_handle = collection.handle
-  assign advisor_has_guidance = false
 
   if advisor_home_mode
-    assign advisor_count = 0
     assign advisor_collection_handle = ''
-    for world_block in world_blocks
-      assign world_collection = world_block.settings.collection
-      if world_collection != blank
-        assign advisor_count = advisor_count | plus: world_collection.products_count
-        if advisor_has_guidance == false
-          for advisor_product in world_collection.products limit: 40
-            if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
-              assign advisor_has_guidance = true
-              break
-            endif
-          endfor
-        endif
-      endif
-    endfor
     assign advisor_skip_href = '#HomeJourneyGrid-' | append: section_id
     assign advisor_all_href = routes.collections_url | append: '/all'
   else
-    for advisor_product in advisor_products limit: 50
-      if advisor_product.metafields.leaf_configurator.problem_tags.value != blank or advisor_product.metafields.leaf_configurator.growth_goals.value != blank or advisor_product.metafields.leaf_configurator.location_types.value != blank or advisor_product.metafields.leaf_configurator.room_types.value != blank or advisor_product.metafields.leaf_configurator.light_conditions.value != blank or advisor_product.metafields.leaf_configurator.plant_stages.value != blank or advisor_product.metafields.leaf_configurator.setup_types.value != blank or advisor_product.metafields.leaf_configurator.watering_styles.value != blank or advisor_product.metafields.leaf_configurator.appearance_preferences.value != blank or advisor_product.metafields.leafer.suitable_for.value != blank or advisor_product.metafields.leafer.primary_function.value != blank or advisor_product.metafields.lighting.use_cases.value != blank
-        assign advisor_has_guidance = true
-        break
-      endif
-    endfor
     assign advisor_skip_href = '#CollectionProducts-' | append: section_id
     assign advisor_all_href = advisor_skip_href
   endif
 %}
 
-{% if advisor_count > 0 and advisor_has_guidance %}
 <leaf-guided-advisor
   id="LeafAdvisor"
   class="leaf-advisor"
@@ -163,14 +139,26 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
 
     <div data-product-source hidden>
       {% if advisor_home_mode %}
+        {% assign has_houseplants_world = false %}
         {% for world_block in world_blocks %}
           {% assign world_collection = world_block.settings.collection %}
+          {% if world_collection.handle == 'zimmerpflanzen-1' %}
+            {% assign has_houseplants_world = true %}
+          {% endif %}
           {% if world_collection != blank %}
             {% for card_product in world_collection.products limit: 50 %}
               {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: world_collection.handle, world_title: world_collection.title %}
             {% endfor %}
           {% endif %}
         {% endfor %}
+        {% unless has_houseplants_world %}
+          {% assign fallback_houseplants = collections['zimmerpflanzen-1'] %}
+          {% if fallback_houseplants != blank %}
+            {% for card_product in fallback_houseplants.products limit: 50 %}
+              {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: fallback_houseplants.handle, world_title: fallback_houseplants.title %}
+            {% endfor %}
+          {% endif %}
+        {% endunless %}
       {% else %}
         {% for card_product in advisor_products limit: 50 %}
           {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: collection.handle, world_title: collection.title %}
@@ -184,7 +172,7 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
 .leaf-advisor{display:block;margin-block:clamp(1.5rem,4vw,3.5rem);scroll-margin-top:96px}
 .leaf-advisor__shell{border:1px solid var(--border);background:var(--background)}
 .leaf-advisor__head{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(210px,.55fr);gap:1.5rem;align-items:end;padding:clamp(1rem,2.5vw,1.5rem);border-bottom:1px solid var(--border)}
-.leaf-advisor__head h2{margin:.2rem 0 0;max-width:18ch;font-size:clamp(1.7rem,3vw,2.7rem);line-height:1;letter-spacing:-.04em}
+.leaf-advisor__head h2{margin:.2rem 0 0;max-width:18ch;font-size: clamp(1.35rem, 2.6vw, 1.9rem);line-height: 1.2;letter-spacing: -.025em}
 .leaf-advisor__head p:not(.leaf-advisor__eyebrow){max-width:64ch;margin:.7rem 0 0;color:var(--muted);line-height:1.55}
 .leaf-advisor__eyebrow{margin:0;color:var(--accent);font-size:.68rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
 .leaf-advisor__head-actions{display:flex;flex-direction:column;align-items:flex-end;gap:.55rem;font-size:.76rem}
@@ -240,7 +228,7 @@ Renders the shared, mobile-first LEAF advisor for one collection or for the home
   .leaf-advisor{margin-inline:calc(var(--page-padding,1rem) * -1)}
   .leaf-advisor__shell{border-inline:0}
   .leaf-advisor__head{padding:1rem}
-  .leaf-advisor__head h2{font-size:clamp(1.7rem,8vw,2.3rem)}
+  .leaf-advisor__head h2{font-size: clamp(1.35rem, 2.6vw, 1.9rem)}
   .leaf-advisor__progress{position:sticky;top:0;z-index:6;padding:.7rem 1rem}
   .leaf-advisor__flow{padding:1rem 1rem 0}
   .leaf-advisor__options{grid-template-columns:1fr}
@@ -651,4 +639,3 @@ if (!customElements.get('leaf-guided-advisor')) {
   });
 }
 {% endjavascript %}
-{% endif %}

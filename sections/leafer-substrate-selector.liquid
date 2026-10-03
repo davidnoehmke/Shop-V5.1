@@ -184,7 +184,17 @@
 
 
           {% if selector_product != blank %}
-            <section id="Profi-Konfigurator" class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
+            <details id="Profi-Konfigurator" class="leafer-substrate__advanced" data-substrate-advanced>
+              <summary class="leafer-substrate__advanced-summary">
+                <span>
+                  <small>{{ 'configurator.advanced.eyebrow' | t }}</small>
+                  <strong>{{ 'configurator.advanced.heading' | t }}</strong>
+                  <em>{{ 'configurator.advanced.intro' | t }}</em>
+                </span>
+                <b aria-hidden="true">+</b>
+              </summary>
+              <div class="leafer-substrate__advanced-body">
+            <section class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
               <header class="leafer-substrate__customizer-head">
                 <div>
                   <p class="leafer-substrate__eyebrow">Individuell mischen</p>
@@ -255,6 +265,8 @@
                 </div>
               </div>
             </section>
+              </div>
+            </details>
           {% endif %}
 
           {% form 'product', selector_product, id: product_form_id, class: 'leafer-substrate__form' %}
@@ -473,11 +485,11 @@
   .leafer-substrate { display: block; background: var(--background); color: var(--text); }
   .leafer-substrate__page { padding-block: var(--leafer-selector-top) var(--leafer-selector-bottom); }
   .leafer-substrate__empty { padding-block: clamp(4rem, 10vw, 8rem); }
-  .leafer-substrate__empty h1, .leafer-substrate__empty h2 { max-width: 13ch; margin: 0; font-size: clamp(2.8rem, 7vw, 6rem); line-height: .95; letter-spacing: -.055em; }
+  .leafer-substrate__empty h1, .leafer-substrate__empty h2 { max-width: 28ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .leafer-substrate__hero { display: grid; grid-template-columns: minmax(0, .9fr) minmax(360px, 1.1fr); gap: clamp(2rem, 6vw, 6rem); align-items: center; }
   .leafer-substrate__hero-copy { max-width: 720px; }
-  .leafer-substrate__hero h1, .leafer-substrate__hero h2 { max-width: 12ch; margin: 0; font-size: clamp(3rem, 7vw, 6.7rem); line-height: .91; letter-spacing: -.065em; }
+  .leafer-substrate__hero h1, .leafer-substrate__hero h2 { max-width: 28ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__intro { max-width: 62ch; margin-top: 1.35rem; font-size: clamp(1.05rem, 1.8vw, 1.25rem); }
   .leafer-substrate__product-subtitle { max-width: 58ch; margin: 1rem 0 0; color: var(--muted); font-weight: 700; }
   .leafer-substrate__signals { margin: 1.5rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .55rem; list-style: none; }
@@ -493,7 +505,7 @@
   .leafer-substrate__purchase-panel { background: var(--surface); }
   .leafer-substrate__recipe-panel { position: sticky; top: 1rem; background: linear-gradient(145deg, var(--text), color-mix(in srgb, var(--text), var(--accent) 18%)); color: var(--background); box-shadow: 0 18px 48px color-mix(in srgb, var(--text), transparent 82%); }
   .leafer-substrate__recipe-panel .leafer-substrate__eyebrow { color: var(--accent-soft); }
-  .leafer-substrate__panel-head h2, .leafer-substrate__section-head h2 { margin: 0; font-size: clamp(2rem, 4.5vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .leafer-substrate__panel-head h2, .leafer-substrate__section-head h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__progress { margin-top: 1.25rem; padding: .65rem .8rem; display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; border: 1px solid var(--border); border-radius: 999px; background: color-mix(in srgb, var(--background), transparent 15%); color: var(--muted); font-size: .7rem; font-weight: 800; }
   .leafer-substrate__progress span { display: inline-flex; align-items: center; gap: .4rem; white-space: nowrap; }
   .leafer-substrate__progress b { width: 1.45rem; height: 1.45rem; display: grid; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 84%); color: var(--text); font-size: .68rem; }
@@ -577,9 +589,19 @@
   .leafer-substrate__noscript p { margin-bottom: 0; }
 
 
-  .leafer-substrate__customizer { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb, var(--background), var(--accent) 4%); }
+  .leafer-substrate__advanced { margin-top: 1.5rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--background), var(--accent) 2%); }
+  .leafer-substrate__advanced-summary { min-height: 72px; padding: 1rem 1.1rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; cursor: pointer; list-style: none; }
+  .leafer-substrate__advanced-summary::-webkit-details-marker { display: none; }
+  .leafer-substrate__advanced-summary span, .leafer-substrate__advanced-summary small, .leafer-substrate__advanced-summary strong, .leafer-substrate__advanced-summary em { display: block; }
+  .leafer-substrate__advanced-summary small { color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .leafer-substrate__advanced-summary strong { margin-top: .2rem; font-size: 1rem; }
+  .leafer-substrate__advanced-summary em { margin-top: .25rem; color: var(--muted); font-size: .75rem; font-style: normal; line-height: 1.45; }
+  .leafer-substrate__advanced-summary b { font-size: 1.35rem; font-weight: 500; transition: transform .2s ease; }
+  .leafer-substrate__advanced[open] .leafer-substrate__advanced-summary b { transform: rotate(45deg); }
+  .leafer-substrate__advanced-body { padding: 0 1rem 1rem; }
+  .leafer-substrate__customizer { margin-top: 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: 0; background: color-mix(in srgb, var(--background), var(--accent) 4%); }
   .leafer-substrate__customizer-head { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
-  .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 3vw, 2.2rem); line-height: 1; letter-spacing: -.04em; }
+  .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__customizer-head > p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
   .leafer-substrate__customizer-grid { margin-top: 1.25rem; display: grid; grid-template-columns: minmax(150px, .7fr) minmax(0, 1.3fr); gap: 1.25rem; align-items: center; }
   .leafer-substrate__pot-slider { position: relative; width: min(100%, 190px); height: 260px; margin-inline: auto; padding: .45rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 2px solid color-mix(in srgb, var(--text), transparent 10%); border-radius: 12px 12px 34px 34px; background: color-mix(in srgb, var(--background), var(--text) 8%); box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--background), transparent 20%), 0 12px 25px color-mix(in srgb, var(--text), transparent 88%); }
@@ -632,7 +654,7 @@
   .leafer-substrate__details { display: grid; grid-template-columns: minmax(240px, .65fr) minmax(0, 1.35fr); gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(2rem, 5vw, 4rem); border-block: 1px solid var(--border); }
   .leafer-substrate__details .leafer-substrate__section-head { margin: 0; }
   .leafer-substrate__description { max-width: 760px; }
-  .leafer-substrate__description h2, .leafer-substrate__description h3 { margin-top: 2em; font-size: clamp(1.45rem, 3vw, 2.2rem); }
+  .leafer-substrate__description h2, .leafer-substrate__description h3 { margin-top: 2em; font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
   .leafer-substrate__description ul, .leafer-substrate__description ol { padding-left: 1.25rem; }
   .leafer-substrate__faq-list { max-width: 900px; border-top: 1px solid var(--border); }
   .leafer-substrate__faq details { border-bottom: 1px solid var(--border); }
@@ -661,7 +683,7 @@
 
   @media (max-width: 620px) {
     .leafer-substrate__page { padding-top: max(24px, calc(var(--leafer-selector-top) * .6)); }
-    .leafer-substrate__hero h1, .leafer-substrate__hero h2 { font-size: clamp(2.55rem, 14vw, 4.2rem); }
+    .leafer-substrate__hero h1, .leafer-substrate__hero h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
     .leafer-substrate__hero-media { padding: .75rem; }
     .leafer-substrate__options--profiles { grid-template-columns: 1fr; }
     .leafer-substrate__choice label { min-height: 96px; }
@@ -701,7 +723,10 @@
       this.insightPlants = this.querySelector('[data-insight-plants]');
       this.insightProperties = this.querySelector('[data-insight-properties]');
       this.insightCopy = this.querySelector('[data-insight-copy]');
+      this.advancedDetails = this.querySelector('[data-substrate-advanced]');
       this.initCustomizer();
+
+      if (this.advancedDetails && window.location.hash === '#Profi-Konfigurator') this.advancedDetails.open = true;
 
       if (!this.nativeSelect || !this.variants.length) return;
 
@@ -988,8 +1013,7 @@
 
     renderCustomRecipe(volume) {
       const segments = this.activeCustomSegments();
-      const lists = [...this.querySelectorAll('[data-recipe-list], [data-base-recipe-list]')];
-      const list = lists[0];
+      const list = this.querySelector('[data-recipe-list]');
       const empty = this.querySelector('[data-recipe-empty]');
       const sizeKey = String(volume).match(/[\d.,]+/)?.[0]?.replace(',', '.');
       const litresTotal = Number(sizeKey) || 0;
@@ -1011,7 +1035,11 @@
         name.textContent = segment.dataset.name;
         const values = document.createElement('span');
         values.className = 'leafer-substrate__recipe-values';
-        values.append(document.createTextNode(`${this.formatNumber(share)} %`), document.createTextNode(`${this.formatNumber(litres)} L`));
+        values.append(
+          document.createTextNode(`${this.formatNumber(share)} %`),
+          document.createTextNode(' · '),
+          document.createTextNode(`${this.formatNumber(litres)} L`)
+        );
         head.append(name, values);
         const bar = document.createElement('div');
         bar.className = 'leafer-substrate__recipe-bar';
@@ -1022,9 +1050,7 @@
         fragment.append(row);
         recipeParts.push(`${segment.dataset.name} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
       });
-      lists.forEach((targetList) => targetList.append(fragment.cloneNode(true)));
-      const baseSelection = this.querySelector('[data-base-recipe-selection]');
-      if (baseSelection) baseSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
+      list.append(fragment);
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
@@ -1127,11 +1153,12 @@
       const percentages = recipe?.percent || {};
       const sizes = recipe?.sizes_l?.[sizeKey] || recipe?.sizes_l?.[String(Number(sizeKey))] || {};
       const entries = Object.entries(percentages);
-      const list = this.querySelector('[data-recipe-list]');
+      const lists = [...this.querySelectorAll('[data-recipe-list], [data-base-recipe-list]')];
+      const list = lists[0];
       const empty = this.querySelector('[data-recipe-empty]');
       const notesList = this.querySelector('[data-recipe-notes]');
 
-      if (!lists.length) return '';
+      if (!lists.length || !list) return '';
       lists.forEach((targetList) => targetList.replaceChildren());
 
       if (!entries.length) {
@@ -1187,7 +1214,9 @@
         fragment.append(row);
       });
 
-      list.append(fragment);
+      lists.forEach((targetList) => targetList.append(fragment.cloneNode(true)));
+      const baseSelection = this.querySelector('[data-base-recipe-selection]');
+      if (baseSelection) baseSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');

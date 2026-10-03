@@ -1,0 +1,594 @@
+{% doc %}
+Renders the global LEAF shop assistant trigger and non-blocking conversation panel.
+{% enddoc %}
+
+{% liquid
+  assign assistant_advisor_href = '/#LeafAdvisor'
+  if request.page_type == 'collection'
+    assign assistant_advisor_href = '#LeafAdvisor'
+  endif
+%}
+
+<leaf-shop-assistant
+  class="leaf-shop-assistant"
+  data-leaf-shop-assistant
+  data-endpoint="https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant"
+  data-locale="{{ request.locale.iso_code | escape }}"
+  data-path="{{ request.path | escape }}"
+  data-error="{{ 'shop_assistant.error' | t | escape }}"
+  data-user-label="{{ 'shop_assistant.user_name' | t | escape }}"
+  data-assistant-label="{{ 'shop_assistant.assistant_name' | t | escape }}"
+  data-thinking="{{ 'shop_assistant.thinking' | t | escape }}"
+  data-voice-label="{{ 'shop_assistant.voice' | t | escape }}"
+  data-voice-stop-label="{{ 'shop_assistant.voice_stop' | t | escape }}"
+  data-voice-listening-label="{{ 'shop_assistant.voice_listening' | t | escape }}"
+  data-speak-label="{{ 'shop_assistant.speak' | t | escape }}"
+  data-storage-key="leafer-assistant-session-v1"
+>
+  <button
+    class="leaf-shop-assistant__trigger"
+    type="button"
+    aria-label="{{ 'shop_assistant.open' | t | escape }}"
+    aria-controls="LeafShopAssistantPanel"
+    aria-expanded="false"
+    data-assistant-open
+  >
+    <span class="leaf-shop-assistant__leaf" aria-hidden="true">
+      <svg viewBox="0 0 72 80" role="img">
+        <path d="M36 4C50 10 64 23 65 40c1 15-8 27-22 32l-7 5-7-5C15 67 6 55 7 40 8 23 22 10 36 4Z"/>
+        <path d="M36 13v54M36 28 19 40M36 38 53 29M36 49 22 58M36 55l12 7"/>
+        <circle cx="29" cy="31" r="2.2"/>
+        <circle cx="43" cy="31" r="2.2"/>
+      </svg>
+    </span>
+    <span class="leaf-shop-assistant__label" aria-hidden="true">{{ 'shop_assistant.open' | t }}</span>
+  </button>
+
+  <dialog class="leaf-shop-assistant__dialog" id="LeafShopAssistantPanel" aria-labelledby="LeafShopAssistantHeading" data-assistant-dialog>
+    <div class="leaf-shop-assistant__panel">
+      <header class="leaf-shop-assistant__header">
+        <div>
+          <p class="leaf-shop-assistant__eyebrow">{{ 'shop_assistant.eyebrow' | t }}</p>
+          <h2 id="LeafShopAssistantHeading">{{ 'shop_assistant.heading' | t }}</h2>
+        </div>
+        <button class="leaf-shop-assistant__close" type="button" data-assistant-close aria-label="{{ 'shop_assistant.close' | t }}">
+          <span aria-hidden="true">×</span>
+        </button>
+      </header>
+
+      <p class="leaf-shop-assistant__intro">{{ 'shop_assistant.intro' | t }}</p>
+
+      <div class="leaf-shop-assistant__suggestions" aria-label="{{ 'shop_assistant.suggestions' | t }}">
+        <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_substrate_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_substrate' | t }}</button>
+        <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_light_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_light' | t }}</button>
+        <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_care_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_care' | t }}</button>
+      </div>
+
+      <div class="leaf-shop-assistant__log" data-assistant-log aria-live="polite" aria-relevant="additions">
+        <div class="leaf-shop-assistant__message leaf-shop-assistant__message--assistant">
+          <strong>{{ 'shop_assistant.assistant_name' | t }}</strong>
+          <p>{{ 'shop_assistant.welcome' | t }}</p>
+        </div>
+      </div>
+
+      <form class="leaf-shop-assistant__form" data-assistant-form>
+        <label for="LeafShopAssistantInput">{{ 'shop_assistant.input_label' | t }}</label>
+        <div class="leaf-shop-assistant__composer">
+          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1200" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+          <button class="leaf-shop-assistant__voice" type="button" data-assistant-voice hidden aria-label="{{ 'shop_assistant.voice' | t | escape }}" title="{{ 'shop_assistant.voice' | t | escape }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
+          </button>
+        </div>
+        <p class="leaf-shop-assistant__voice-status" data-assistant-voice-status aria-live="polite"></p>
+        <div class="leaf-shop-assistant__form-actions">
+          <a href="{{ assistant_advisor_href }}" class="leaf-shop-assistant__advisor">{{ 'shop_assistant.advisor' | t }}</a>
+          <button type="submit" data-assistant-submit>{{ 'shop_assistant.send' | t }}</button>
+        </div>
+      </form>
+
+      <p class="leaf-shop-assistant__privacy">{{ 'shop_assistant.privacy' | t }}</p>
+    </div>
+  </dialog>
+</leaf-shop-assistant>
+
+{% stylesheet %}
+  .leaf-shop-assistant__trigger {
+    position: fixed;
+    z-index: 70;
+    right: max(1rem, env(safe-area-inset-right));
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 64px;
+    min-height: 64px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--text);
+    box-shadow: none;
+    transform: translateY(-50%);
+    transition: transform .2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .leaf-shop-assistant__trigger:hover {
+    background: transparent;
+    color: var(--text);
+    transform: translateY(calc(-50% - 2px));
+  }
+  .leaf-shop-assistant__trigger:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .leaf-shop-assistant__trigger[aria-expanded="true"] { visibility: hidden; pointer-events: none; }
+  .leaf-shop-assistant__leaf {
+    width: 48px;
+    height: 54px;
+    flex: 0 0 48px;
+    display: grid;
+    place-items: center;
+  }
+  .leaf-shop-assistant__leaf svg {
+    width: 48px;
+    height: 54px;
+    filter: drop-shadow(0 2px 1px rgb(255 255 255 / .35)) drop-shadow(0 5px 4px rgb(18 46 28 / .28));
+    fill: var(--accent);
+    stroke: color-mix(in srgb, var(--background), #fff 60%);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .leaf-shop-assistant__leaf circle {
+    fill: var(--background);
+    stroke: none;
+  }
+  .leaf-shop-assistant__label {
+    position: absolute;
+    right: calc(100% + .25rem);
+    width: max-content;
+    max-width: min(11rem, calc(100vw - 6rem));
+    padding: .65rem .85rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--background);
+    box-shadow: 0 5px 18px rgb(18 46 28 / .12);
+    font-size: .85rem;
+    font-weight: 750;
+    line-height: 1.2;
+    text-align: left;
+    opacity: 0;
+    transform: translateX(12px);
+    clip-path: inset(0 0 0 100%);
+    pointer-events: none;
+    transition: opacity .35s ease, transform .45s ease, clip-path .45s ease;
+  }
+  .leaf-shop-assistant.is-introducing .leaf-shop-assistant__label {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+  .leaf-shop-assistant__dialog {
+    position: fixed;
+    z-index: 69;
+    inset: 50% max(1rem, env(safe-area-inset-right)) auto auto;
+    width: min(410px, calc(100vw - 2rem));
+    max-height: min(720px, calc(100dvh - 2rem));
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--background);
+    color: var(--text);
+    box-shadow: 0 4px 14px rgb(18 46 28 / .10), 0 20px 60px rgb(18 46 28 / .20);
+    transform: translateY(-50%);
+  }
+  .leaf-shop-assistant__dialog::backdrop { background: transparent; }
+  .leaf-shop-assistant__panel {
+    display: grid;
+    grid-template-rows: auto auto auto minmax(120px, 1fr) auto auto;
+    max-height: inherit;
+  }
+  .leaf-shop-assistant__header {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.1rem .8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .leaf-shop-assistant__eyebrow {
+    margin: 0 0 .25rem;
+    color: var(--accent);
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+  .leaf-shop-assistant__header h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+  .leaf-shop-assistant__close {
+    width: 42px;
+    min-height: 42px;
+    padding: 0;
+    border-color: var(--border);
+    background: transparent;
+    color: var(--text);
+    font-size: 1.7rem;
+    line-height: 1;
+  }
+  .leaf-shop-assistant__intro {
+    margin: 0;
+    padding: .85rem 1.1rem 0;
+    color: var(--muted);
+    font-size: .84rem;
+  }
+  .leaf-shop-assistant__suggestions {
+    display: flex;
+    gap: .45rem;
+    overflow-x: auto;
+    padding: .8rem 1.1rem;
+    scrollbar-width: none;
+  }
+  .leaf-shop-assistant__suggestions::-webkit-scrollbar { display: none; }
+  .leaf-shop-assistant__suggestions button {
+    flex: 0 0 auto;
+    min-height: 36px;
+    padding: 0 .7rem;
+    border-color: var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: .72rem;
+    font-weight: 750;
+  }
+  .leaf-shop-assistant__log {
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    overflow-y: auto;
+    padding: .15rem 1.1rem 1rem;
+  }
+  .leaf-shop-assistant__message {
+    max-width: 88%;
+    border-radius: 12px;
+    padding: .7rem .8rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .leaf-shop-assistant__message--user {
+    align-self: end;
+    border-color: color-mix(in srgb, var(--accent), transparent 55%);
+    background: color-mix(in srgb, var(--accent-soft), var(--background) 45%);
+  }
+  .leaf-shop-assistant__message strong {
+    display: block;
+    margin-bottom: .25rem;
+    font-size: .68rem;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+  .leaf-shop-assistant__message p {
+    margin: 0;
+    font-size: .84rem;
+    line-height: 1.48;
+    white-space: pre-wrap;
+  }
+  .leaf-shop-assistant__links {
+    display: grid;
+    gap: .35rem;
+    margin-top: .55rem;
+  }
+  .leaf-shop-assistant__links a {
+    font-size: .78rem;
+    font-weight: 750;
+  }
+  .leaf-shop-assistant__form {
+    display: grid;
+    gap: .55rem;
+    padding: .9rem 1.1rem;
+    border-top: 1px solid var(--border);
+  }
+  .leaf-shop-assistant__form label {
+    font-size: .72rem;
+    font-weight: 800;
+  }
+  .leaf-shop-assistant__composer { position: relative; }
+  .leaf-shop-assistant__form textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 74px;
+    max-height: 150px;
+    padding: .7rem 3.5rem .7rem .7rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 1rem;
+    background: var(--surface);
+    color: var(--text);
+  }
+  .leaf-shop-assistant__voice {
+    position: absolute;
+    right: .45rem;
+    bottom: .45rem;
+    width: 42px;
+    min-height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    background: var(--background);
+    color: var(--text);
+  }
+  .leaf-shop-assistant__voice[hidden] { display: none; }
+  .leaf-shop-assistant__voice.is-listening { border-color: var(--accent); color: var(--accent); }
+  .leaf-shop-assistant__voice svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .leaf-shop-assistant__voice-status { min-height: 1em; margin: -.15rem 0 0; color: var(--muted); font-size: .68rem; }
+  .leaf-shop-assistant__speak { margin-top: .5rem; padding: .25rem .45rem; border: 1px solid var(--border); background: transparent; color: var(--accent); font-size: .68rem; font-weight: 760; }
+  .leaf-shop-assistant__form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .7rem;
+  }
+  .leaf-shop-assistant__form-actions button {
+    min-height: 42px;
+    padding-inline: .85rem;
+    font-size: .76rem;
+  }
+  .leaf-shop-assistant__advisor {
+    font-size: .76rem;
+    font-weight: 800;
+  }
+  .leaf-shop-assistant__privacy {
+    margin: 0;
+    padding: 0 1.1rem 1rem;
+    color: var(--muted);
+    font-size: .67rem;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 700px) {
+    .leaf-shop-assistant__trigger {
+      right: max(.75rem, env(safe-area-inset-right));
+      top: auto;
+      bottom: max(.75rem, env(safe-area-inset-bottom));
+      transform: none;
+    }
+    .leaf-shop-assistant__trigger:hover { transform: translateY(-2px); }
+    .leaf-shop-assistant__dialog {
+      inset: auto .75rem max(.75rem, env(safe-area-inset-bottom)) .75rem;
+      width: auto;
+      max-height: min(85dvh, 680px);
+      transform: none;
+    }
+    .leaf-shop-assistant__panel { grid-template-rows: auto auto auto minmax(60px, 1fr) auto auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .leaf-shop-assistant__trigger, .leaf-shop-assistant__label { transition: none; }
+    .leaf-shop-assistant__trigger:hover { transform: translateY(-50%); }
+  }
+  @media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+    .leaf-shop-assistant__trigger:hover { transform: none; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('leaf-shop-assistant')) {
+    customElements.define('leaf-shop-assistant', class extends HTMLElement {
+      connectedCallback() {
+        this.trigger = this.querySelector('[data-assistant-open]');
+        this.dialog = this.querySelector('[data-assistant-dialog]');
+        this.closeButton = this.querySelector('[data-assistant-close]');
+        this.form = this.querySelector('[data-assistant-form]');
+        this.input = this.querySelector('[data-assistant-input]');
+        this.submit = this.querySelector('[data-assistant-submit]');
+        this.log = this.querySelector('[data-assistant-log]');
+        this.voiceButton = this.querySelector('[data-assistant-voice]');
+        this.voiceStatus = this.querySelector('[data-assistant-voice-status]');
+        this.endpoint = this.dataset.endpoint || '';
+        this.storageKey = this.dataset.storageKey || 'leafer-assistant-session-v1';
+        this.history = this.restoreHistory();
+        this.introduce();
+
+        this.trigger?.addEventListener('click', () => this.open());
+        this.closeButton?.addEventListener('click', () => this.close());
+        this.form?.addEventListener('submit', (event) => this.send(event));
+        this.setupVoice();
+        this.restoreVisibleHistory();
+        this.querySelectorAll('[data-assistant-suggestion]').forEach((button) => {
+          button.addEventListener('click', () => {
+            if (!this.input) return;
+            this.input.value = button.dataset.assistantSuggestion || '';
+            this.input.focus();
+          });
+        });
+        this.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && this.dialog?.open) this.close();
+        });
+      }
+
+      disconnectedCallback() {
+        window.clearTimeout(this.introTimer);
+        this.recognition?.abort();
+      }
+
+      introduce() {
+        const key = 'leaf-assistant-introduced-v1';
+        try {
+          if (sessionStorage.getItem(key)) return;
+          sessionStorage.setItem(key, '1');
+        } catch {}
+        this.classList.add('is-introducing');
+        this.introTimer = window.setTimeout(() => this.classList.remove('is-introducing'), 2600);
+      }
+
+      restoreHistory() {
+        try {
+          const parsed = JSON.parse(sessionStorage.getItem(this.storageKey) || '[]');
+          return Array.isArray(parsed)
+            ? parsed.filter((item) => item && ['user', 'assistant'].includes(item.role) && typeof item.content === 'string').slice(-8)
+            : [];
+        } catch {
+          return [];
+        }
+      }
+
+      saveHistory() {
+        try {
+          sessionStorage.setItem(this.storageKey, JSON.stringify(this.history.slice(-8)));
+        } catch {}
+      }
+
+      restoreVisibleHistory() {
+        if (!this.history.length) return;
+        this.history.slice(-4).forEach((item) => this.appendMessage(item.role, item.content, [], false));
+      }
+
+      setupVoice() {
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition || !this.voiceButton) return;
+        this.voiceButton.hidden = false;
+        this.recognition = new Recognition();
+        this.recognition.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        this.recognition.interimResults = false;
+        this.recognition.continuous = false;
+        this.voiceButton.addEventListener('click', () => {
+          if (this.voiceButton.classList.contains('is-listening')) {
+            this.recognition.stop();
+            return;
+          }
+          try { this.recognition.start(); } catch {}
+        });
+        this.recognition.addEventListener('start', () => {
+          this.voiceButton.classList.add('is-listening');
+          this.voiceButton.setAttribute('aria-label', this.dataset.voiceStopLabel || '');
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
+        });
+        this.recognition.addEventListener('end', () => {
+          this.voiceButton.classList.remove('is-listening');
+          this.voiceButton.setAttribute('aria-label', this.dataset.voiceLabel || '');
+          if (this.voiceStatus) this.voiceStatus.textContent = '';
+        });
+        this.recognition.addEventListener('result', (event) => {
+          const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+          if (transcript && this.input) {
+            this.input.value = transcript;
+            this.input.focus();
+          }
+        });
+      }
+
+      speak(text) {
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        window.speechSynthesis.speak(utterance);
+      }
+
+      open() {
+        window.clearTimeout(this.introTimer);
+        this.classList.remove('is-introducing');
+        if (!this.dialog?.open) this.dialog?.show();
+        this.trigger?.setAttribute('aria-expanded', 'true');
+        window.setTimeout(() => this.input?.focus(), 20);
+      }
+
+      close() {
+        if (this.dialog?.open) this.dialog.close();
+        this.trigger?.setAttribute('aria-expanded', 'false');
+        this.trigger?.focus();
+      }
+
+      appendMessage(role, text, links = [], allowSpeech = true) {
+        if (!this.log) return;
+        const wrapper = document.createElement('div');
+        wrapper.className = 'leaf-shop-assistant__message' + (role === 'user' ? ' leaf-shop-assistant__message--user' : '');
+        const label = document.createElement('strong');
+        label.textContent = role === 'user' ? (this.dataset.userLabel || '') : (this.dataset.assistantLabel || '');
+        const body = document.createElement('p');
+        body.textContent = text;
+        wrapper.append(label, body);
+
+        if (Array.isArray(links) && links.length) {
+          const list = document.createElement('div');
+          list.className = 'leaf-shop-assistant__links';
+          links.slice(0, 3).forEach((link) => {
+            if (!link || typeof link.href !== 'string' || !/^\/products\/[a-z0-9-]+$/i.test(link.href)) return;
+            const anchor = document.createElement('a');
+            anchor.href = link.href;
+            anchor.textContent = String(link.label || link.href);
+            list.append(anchor);
+          });
+          if (list.childElementCount) wrapper.append(list);
+        }
+
+        if (role === 'assistant' && allowSpeech && 'speechSynthesis' in window) {
+          const speak = document.createElement('button');
+          speak.type = 'button';
+          speak.className = 'leaf-shop-assistant__speak';
+          speak.textContent = this.dataset.speakLabel || '';
+          speak.addEventListener('click', () => this.speak(text));
+          wrapper.append(speak);
+        }
+
+        this.log.append(wrapper);
+        this.log.scrollTop = this.log.scrollHeight;
+      }
+
+      async send(event) {
+        event.preventDefault();
+        const message = this.input?.value.trim() || '';
+        if (!message || !this.endpoint || this.submit?.disabled) return;
+
+        const priorHistory = this.history.slice(-6);
+        this.appendMessage('user', message);
+        this.history.push({ role: 'user', content: message });
+        this.saveHistory();
+        this.input.value = '';
+        this.submit.disabled = true;
+        this.input.disabled = true;
+
+        const thinking = document.createElement('div');
+        thinking.className = 'leaf-shop-assistant__message';
+        const thinkingBody = document.createElement('p');
+        thinkingBody.textContent = this.dataset.thinking || '';
+        thinking.append(thinkingBody);
+        this.log.append(thinking);
+        this.log.scrollTop = this.log.scrollHeight;
+
+        try {
+          const response = await fetch(this.endpoint, {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({
+              message,
+              history: priorHistory,
+              locale: this.dataset.locale || 'de',
+              path: this.dataset.path || location.pathname
+            })
+          });
+          const payload = await response.json().catch(() => ({}));
+          thinking.remove();
+          if (!response.ok || typeof payload.answer !== 'string') throw new Error('assistant_unavailable');
+          this.appendMessage('assistant', payload.answer, payload.links);
+          this.history.push({ role: 'assistant', content: payload.answer });
+          this.saveHistory();
+        } catch {
+          thinking.remove();
+          this.appendMessage('assistant', this.dataset.error || '');
+        } finally {
+          this.submit.disabled = false;
+          this.input.disabled = false;
+          this.input.focus();
+        }
+      }
+    });
+  }
+{% endjavascript %}
