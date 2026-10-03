@@ -333,12 +333,12 @@
       "advanced_configurator_text": "Optional: compare mounting, light level and budget in more detail."
     },
     "advisor": {
-      "eyebrow": "LEAF advisor",
-      "heading": "One advisor across every product world.",
+      "eyebrow": "LEAF Planner",
+      "heading": "One planner across every product world.",
       "intro": "The current collection provides context. Your selections persist across product worlds, while specialist tools only appear where they add real value.",
       "resume": "Saved selection found",
       "skip_to_products": "Go straight to products",
-      "progress_label": "LEAF advisor progress",
+      "progress_label": "LEAF Planner progress",
       "no_selection": "No selection yet",
       "need_heading": "What do you want to achieve or solve?",
       "need_text": "Choose the need that comes closest to your project.",
@@ -360,8 +360,8 @@
       "view_product": "Review product",
       "result_count": "recommendations",
       "dimmable": "Dimmable",
-      "home_heading": "Find your setup across every product world.",
-      "home_intro": "Start with a product world, then narrow the choice by need, context and preference. Your selection stays connected when you move between product worlds.",
+      "home_heading": "Plan your plant project across every product world.",
+      "home_intro": "Start with your goal or product world, then narrow the choice by need, context and preference. Specialist tools only open when they genuinely help your project.",
       "world_heading": "Which product world do you want to start with?",
       "world_text": "Choose the area you want to solve first. You can switch later or save your project.",
       "save_project": "Save project",
@@ -624,7 +624,9 @@
       "heading": "One plant project. One path to the right solution.",
       "text": "Tell us what you want to achieve. LEAF connects the plant, root zone, container, light, location and care routine – then shows only the next useful options.",
       "primary": "Find a solution",
-      "secondary": "Open product worlds"
+      "secondary": "Open product worlds",
+      "world_heading": "Or open a product world directly",
+      "world_intro": "The LEAF Planner is the central solution path. If you already know your goal, go directly to houseplants, substrate, interiors, planters, propagation, care or bundles."
     },
     "knowledge_links": {
       "label": "Keep learning",
@@ -746,7 +748,7 @@
     "welcome": "Ask me directly about substrate, plant lighting, planters or products in the shop.",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
-    "advisor": "Start LEAF Advisor",
+    "advisor": "Open LEAF Planner",
     "send": "Send",
     "privacy": "Your question is processed to provide an answer but is not stored as a customer profile.",
     "thinking": "Checking the LEAF knowledge base …",
