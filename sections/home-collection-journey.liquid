@@ -166,6 +166,16 @@
       <p class="home-journey__empty" data-journey-empty hidden>{{ section.settings.empty_label | escape }}</p>
     {% endif %}
 
+    {% if request.page_type == 'index' %}
+      <nav class="home-journey__knowledge-links" aria-label="{{ 'home.knowledge_links.label' | t | escape }}" data-leaf-reveal>
+        <a href="/pages/leafers-substratbestandteile">{{ 'home.knowledge_links.substrate' | t }}</a>
+        <a href="/pages/monstera-substrat">{{ 'home.knowledge_links.monstera' | t }}</a>
+        <a href="/pages/anthurium-substrat">{{ 'home.knowledge_links.anthurium' | t }}</a>
+        <a href="/collections/interieur-solutions">{{ 'home.knowledge_links.interieur' | t }}</a>
+        <a href="/blogs/leafers-nice2know-blog">{{ 'home.knowledge_links.blog' | t }}</a>
+      </nav>
+    {% endif %}
+
     {% if section.settings.all_link != blank %}
       <div class="home-journey__footer" data-leaf-reveal>
         <a class="button" href="{{ section.settings.all_link }}">{{ section.settings.all_label | escape }} <span aria-hidden="true">→</span></a>
@@ -207,6 +217,9 @@
   .home-journey__link span, .home-journey__footer .button span { transition: transform .25s var(--ease-out); }
   .home-journey__link:hover span, .home-journey__footer .button:hover span { transform: translateX(.2rem); }
   .home-journey__empty { margin: 1.5rem 0 0; color: var(--muted); text-align: center; }
+  .home-journey__knowledge-links { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+  .home-journey__knowledge-links a { min-height: 38px; display: inline-flex; align-items: center; padding: .45rem .65rem; border: 1px solid var(--border); background: var(--background); color: var(--text); font-size: .74rem; font-weight: 760; text-decoration: none; }
+  .home-journey__knowledge-links a:hover, .home-journey__knowledge-links a:focus-visible { border-color: var(--accent); color: var(--accent); }
   .home-journey__footer { display: flex; justify-content: center; margin-top: 2rem; }
   .home-journey__footer .button { gap: .6rem; }
   .home-journey__card[hidden] { display: none; }
