@@ -1,7 +1,24 @@
 {% liquid
   assign hero_heading = section.settings.heading
+  assign hero_eyebrow = section.settings.eyebrow
+  assign hero_text = section.settings.text
+  assign hero_primary_label = section.settings.primary_label
+  assign hero_primary_link = section.settings.primary_link
+  assign hero_secondary_label = section.settings.secondary_label
+  assign hero_secondary_link = section.settings.secondary_link
+
   if hero_heading == blank
     assign hero_heading = 'hero.heading' | t
+  endif
+
+  if request.page_type == 'index'
+    assign hero_eyebrow = 'home.solution.eyebrow' | t
+    assign hero_heading = 'home.solution.heading' | t
+    assign hero_text = 'home.solution.text' | t
+    assign hero_primary_label = 'home.solution.primary' | t
+    assign hero_primary_link = '#LeafAdvisor'
+    assign hero_secondary_label = 'home.solution.secondary' | t
+    assign hero_secondary_link = '#HomeProductWorlds'
   endif
 %}
 
@@ -21,19 +38,19 @@
           <sup class="hero__brand-tm" aria-hidden="true">™</sup>
         </div>
       {% endif %}
-      {% if section.settings.eyebrow != blank %}<p class="hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape }}</p>{% endif %}
       <h1 id="HeroHeading-{{ section.id }}">{{ hero_heading }}</h1>
-      {% if section.settings.text != blank %}<div class="hero__text rte">{{ section.settings.text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
+      {% if hero_text != blank %}<div class="hero__text rte">{{ hero_text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
       <div class="hero__buttons">
-        {% if section.settings.primary_link != blank %}
-          <a class="button" href="{{ section.settings.primary_link }}">
-            {% if section.settings.primary_label != blank %}{{ section.settings.primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
+        {% if hero_primary_link != blank %}
+          <a class="button" href="{{ hero_primary_link }}">
+            {% if hero_primary_label != blank %}{{ hero_primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
             <span aria-hidden="true">→</span>
           </a>
         {% endif %}
-        {% if section.settings.secondary_link != blank %}
-          <a class="button button--secondary" href="{{ section.settings.secondary_link }}">
-            {% if section.settings.secondary_label != blank %}{{ section.settings.secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
+        {% if hero_secondary_link != blank %}
+          <a class="button button--secondary" href="{{ hero_secondary_link }}">
+            {% if hero_secondary_label != blank %}{{ hero_secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
           </a>
         {% endif %}
       </div>
