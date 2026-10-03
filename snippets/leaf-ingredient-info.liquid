@@ -1,0 +1,78 @@
+{% doc %}
+Renders knowledge-first ingredient information for product ingredients.
+@param {array} items - Structured ingredient information projected from Supabase.
+{% enddoc %}
+
+{% if items != blank %}
+  <section class="leaf-ingredient-info" aria-labelledby="LeafIngredientInfoHeading">
+    <header class="leaf-ingredient-info__header">
+      <p>{{ 'product.ingredient_info.eyebrow' | t }}</p>
+      <h3 id="LeafIngredientInfoHeading">{{ 'product.ingredient_info.heading' | t }}</h3>
+      <span>{{ 'product.ingredient_info.intro' | t }}</span>
+    </header>
+
+    <div class="leaf-ingredient-info__grid" role="list">
+      {% for item in items %}
+        {% if item.name != blank or item.label != blank %}
+          <details class="leaf-ingredient-info__item" role="listitem">
+            <summary>
+              <span class="leaf-ingredient-info__label">{{ item.label | default: item.name | escape }}</span>
+              <span class="leaf-ingredient-info__i" aria-hidden="true">i</span>
+              <span class="visually-hidden">{{ 'product.ingredient_info.open' | t }}</span>
+            </summary>
+            <div class="leaf-ingredient-info__popover">
+              {% if item.name != blank %}<strong>{{ item.name | escape }}</strong>{% endif %}
+              {% if item.function != blank %}
+                <p class="leaf-ingredient-info__function"><span>{{ 'product.ingredient_info.function' | t }}</span>{{ item.function | escape }}</p>
+              {% endif %}
+              {% if item.intro != blank %}<p>{{ item.intro | escape }}</p>{% endif %}
+              {% if item.benefits != blank %}
+                <ul>
+                  {% for benefit in item.benefits limit: 3 %}
+                    <li>{{ benefit | escape }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+              {% if item.href != blank %}
+                <a href="{{ item.href }}">{{ 'product.ingredient_info.more' | t }} <span aria-hidden="true">→</span></a>
+              {% endif %}
+            </div>
+          </details>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+<style>
+  .leaf-ingredient-info { margin-top: clamp(2.2rem, 7vw, 4rem); }
+  .leaf-ingredient-info__header { max-width: 760px; }
+  .leaf-ingredient-info__header > p { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .leaf-ingredient-info__header h3 { margin: 0 0 .45rem; }
+  .leaf-ingredient-info__header > span { display: block; max-width: 68ch; color: var(--muted); font-size: .88rem; line-height: 1.55; }
+  .leaf-ingredient-info__grid { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1rem; }
+  .leaf-ingredient-info__item { position: relative; border: 1px solid var(--border); background: var(--background); }
+  .leaf-ingredient-info__item > summary { min-height: 42px; display: flex; align-items: center; gap: .55rem; padding: .55rem .65rem; cursor: pointer; list-style: none; }
+  .leaf-ingredient-info__item > summary::-webkit-details-marker { display: none; }
+  .leaf-ingredient-info__label { font-size: .78rem; font-weight: 760; }
+  .leaf-ingredient-info__i { width: 22px; height: 22px; flex: 0 0 22px; display: grid; place-items: center; margin-left: auto; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .72rem; font-weight: 900; }
+  .leaf-ingredient-info__popover { padding: .8rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .82rem; line-height: 1.55; }
+  .leaf-ingredient-info__popover strong { display: block; margin-bottom: .35rem; color: var(--text); font-size: .9rem; }
+  .leaf-ingredient-info__popover p { margin: .35rem 0; }
+  .leaf-ingredient-info__function span { display: block; color: var(--accent); font-size: .65rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+  .leaf-ingredient-info__popover ul { margin: .55rem 0; padding-left: 1.05rem; }
+  .leaf-ingredient-info__popover a { display: inline-flex; gap: .35rem; margin-top: .35rem; color: var(--accent); font-weight: 800; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .leaf-ingredient-info__item { min-width: min(100%, 190px); }
+    .leaf-ingredient-info__popover { position: absolute; z-index: 18; left: -1px; top: calc(100% + .35rem); width: min(340px, 82vw); display: none; border: 1px solid var(--border); background: var(--background); box-shadow: var(--shadow-soft); }
+    .leaf-ingredient-info__item:not([open]):hover > .leaf-ingredient-info__popover,
+    .leaf-ingredient-info__item:not([open]):focus-within > .leaf-ingredient-info__popover,
+    .leaf-ingredient-info__item[open] > .leaf-ingredient-info__popover { display: block; }
+  }
+
+  @media (max-width: 640px) {
+    .leaf-ingredient-info__grid { display: grid; grid-template-columns: 1fr; }
+    .leaf-ingredient-info__item > summary { min-height: 48px; }
+  }
+</style>
