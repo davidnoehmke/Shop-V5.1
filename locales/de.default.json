@@ -762,6 +762,8 @@
     }
   },
   "shop_assistant": {
+    "voice_speaking": "LEAF antwortet …",
+    "minimize": "Assistent minimieren",
     "open": "LEAF Assistent",
     "eyebrow": "LEAF Shop-Assistent",
     "heading": "Was möchtest du für dein Pflanzenprojekt klären?",
@@ -784,8 +786,8 @@
     "privacy": "Deine Frage wird zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
     "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Planer oder das Sortiment.",
-    "voice": "Spracheingabe starten",
-    "voice_stop": "Aufnahme stoppen",
+    "voice": "Sprachunterhaltung starten",
+    "voice_stop": "Sprachunterhaltung beenden",
     "voice_listening": "Ich höre zu …",
     "speak": "Antwort vorlesen"
   },
