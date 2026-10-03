@@ -41,6 +41,30 @@
   </div>
 </section>
 
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% assign faq_schema_count = 0 %}
+    {% for block in section.blocks %}
+      {% if block.settings.question != blank and block.settings.answer != blank %}
+        {% if faq_schema_count > 0 %},{% endif %}
+        {
+          "@type": "Question",
+          "name": {{ block.settings.question | strip_html | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ block.settings.answer | strip_html | json }}
+          }
+        }
+        {% assign faq_schema_count = faq_schema_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+
 {% stylesheet %}
   .faq { padding-block: var(--space-section); display: grid; grid-template-columns: minmax(240px, .75fr) minmax(0, 1.25fr); gap: clamp(2rem, 7vw, 7rem); }
   .faq__header { position: sticky; top: 130px; align-self: start; }
