@@ -415,6 +415,11 @@
       "result_empty": "Projektparameter auswählen",
       "result_empty_text": "Nach der Auswahl werden passende Rezeptur, technische Eigenschaften und sinnvolle Ergänzungen angezeigt.",
       "adjust": "Mischung im Profi-Konfigurator anpassen"
+    },
+    "advanced": {
+      "eyebrow": "Profi-Modus",
+      "heading": "Mischung selbst fein abstimmen",
+      "intro": "Bis zu fünf Komponenten und fachliche Grenzwerte – nur öffnen, wenn du bewusst selbst mischen möchtest."
     }
   },
   "search": {
