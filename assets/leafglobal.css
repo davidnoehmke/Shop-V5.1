@@ -248,3 +248,20 @@
   --leaf-max-width: 1240px;
 }
 @media(max-width:749px){.leaf-home__hero-media{max-height:180px;overflow:hidden}.leaf-home__hero-media img{height:180px;object-fit:contain;background:var(--surface)}}
+
+/* Global content motion: consistent across Shopify pages and Supabase-fed sections. */
+html.leaf-motion-ready #MainContent [data-leaf-reveal] {
+  opacity: 0;
+  transition: opacity .58s var(--ease-out) var(--leaf-delay, 0ms);
+}
+
+html.leaf-motion-ready #MainContent [data-leaf-reveal].is-visible {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.leaf-motion-ready #MainContent [data-leaf-reveal] {
+    opacity: 1;
+    transition: none;
+  }
+}
