@@ -1,5 +1,13 @@
 {% liquid
   assign section_heading = section.settings.heading
+  assign houseplants_collection = collections['zimmerpflanzen-1']
+  assign has_houseplants_block = false
+  for journey_block in section.blocks
+    if journey_block.settings.collection.handle == 'zimmerpflanzen-1'
+      assign has_houseplants_block = true
+      break
+    endif
+  endfor
   assign section_intro = section.settings.intro
   assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
 
@@ -162,6 +170,29 @@
             </article>
           {% endif %}
         {% endfor %}
+
+        {% if request.page_type == 'index' and houseplants_collection != blank and has_houseplants_block == false %}
+          <article class="home-journey__card" role="listitem" data-journey-card data-category="interieur" data-leaf-reveal>
+            <a class="home-journey__media" href="{{ houseplants_collection.url }}" aria-label="{{ houseplants_collection.title | escape }}">
+              {% if houseplants_collection.featured_image != blank %}
+                {{ houseplants_collection.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 600, 900, 1200', sizes: '(min-width: 760px) 33vw, 76vw', alt: houseplants_collection.featured_image.alt | default: houseplants_collection.title }}
+              {% else %}
+                <span class="home-journey__placeholder" aria-hidden="true">{{ 'collection-1' | placeholder_svg_tag }}</span>
+              {% endif %}
+              <span class="home-journey__visual-meta">
+                <span class="home-journey__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 29V14M16 23c-6-.8-10-4.7-10-11 6 0 10 3.8 10 9.6M16 18c5.7-.7 9.7-4.4 10-11-6 0-10 3.7-10 9.4M12 29h8"/></svg></span>
+                <span class="home-journey__badge">{{ houseplants_collection.metafields.custom.homepage_badge.value | default: 'Green Living' | escape }}</span>
+              </span>
+            </a>
+            <div class="home-journey__body">
+              <p class="home-journey__eyebrow">{{ houseplants_collection.metafields.custom.homepage_eyebrow.value | default: 'Zimmerpflanzen' | escape }}</p>
+              <h3><a href="{{ houseplants_collection.url }}">{{ houseplants_collection.title | escape }}</a></h3>
+              <p>{{ houseplants_collection.metafields.custom.homepage_intro.value | default: houseplants_collection.description | strip_html | truncatewords: 22 | escape }}</p>
+              <span class="home-journey__count">{{ houseplants_collection.products_count }} {{ section.settings.product_label | escape }}</span>
+              <a class="button button--secondary home-journey__link" href="{{ houseplants_collection.url }}">{{ section.settings.card_cta | escape }} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        {% endif %}
       </div>
       <p class="home-journey__empty" data-journey-empty hidden>{{ section.settings.empty_label | escape }}</p>
     {% endif %}
