@@ -96,6 +96,10 @@
   {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
   {% if collection.handle == 'interieur-solutions' %}
+    {% assign interior_guide = articles['leafers-nice2know-blog/interieur-begruenung-led-gefaess-substrat-pflanzen'] %}
+    {% if interior_guide != blank %}
+      <p class="main-collection__intro"><a href="{{ interior_guide.url }}">{{ 'interior_guide.read' | t }}</a></p>
+    {% endif %}
     <details class="main-collection__advanced">
       <summary>
         <span>{{ 'collection.interieur.advanced_builder_eyebrow' | t }}</span>
