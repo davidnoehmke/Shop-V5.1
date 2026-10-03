@@ -44,7 +44,7 @@ Renders knowledge-first ingredient information for product ingredients.
   </section>
 {% endif %}
 
-<style>
+{% stylesheet %}
   .leaf-ingredient-info { margin-top: clamp(2.2rem, 7vw, 4rem); }
   .leaf-ingredient-info__header { max-width: 760px; }
   .leaf-ingredient-info__header > p { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
@@ -75,4 +75,4 @@ Renders knowledge-first ingredient information for product ingredients.
     .leaf-ingredient-info__grid { display: grid; grid-template-columns: 1fr; }
     .leaf-ingredient-info__item > summary { min-height: 48px; }
   }
-</style>
+{% endstylesheet %}
