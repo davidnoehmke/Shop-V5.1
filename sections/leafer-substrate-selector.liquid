@@ -184,7 +184,17 @@
 
 
           {% if selector_product != blank %}
-            <section id="Profi-Konfigurator" class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
+            <details id="Profi-Konfigurator" class="leafer-substrate__advanced" data-substrate-advanced>
+              <summary class="leafer-substrate__advanced-summary">
+                <span>
+                  <small>Profi-Modus</small>
+                  <strong>Mischung selbst fein abstimmen</strong>
+                  <em>Bis zu fünf Komponenten und fachliche Grenzwerte – nur öffnen, wenn du bewusst selbst mischen möchtest.</em>
+                </span>
+                <b aria-hidden="true">+</b>
+              </summary>
+              <div class="leafer-substrate__advanced-body">
+            <section class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
               <header class="leafer-substrate__customizer-head">
                 <div>
                   <p class="leafer-substrate__eyebrow">Individuell mischen</p>
@@ -255,6 +265,8 @@
                 </div>
               </div>
             </section>
+              </div>
+            </details>
           {% endif %}
 
           {% form 'product', selector_product, id: product_form_id, class: 'leafer-substrate__form' %}
@@ -577,7 +589,17 @@
   .leafer-substrate__noscript p { margin-bottom: 0; }
 
 
-  .leafer-substrate__customizer { margin-top: 1.5rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: color-mix(in srgb, var(--background), var(--accent) 4%); }
+  .leafer-substrate__advanced { margin-top: 1.5rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--background), var(--accent) 2%); }
+  .leafer-substrate__advanced-summary { min-height: 72px; padding: 1rem 1.1rem; display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: center; cursor: pointer; list-style: none; }
+  .leafer-substrate__advanced-summary::-webkit-details-marker { display: none; }
+  .leafer-substrate__advanced-summary span, .leafer-substrate__advanced-summary small, .leafer-substrate__advanced-summary strong, .leafer-substrate__advanced-summary em { display: block; }
+  .leafer-substrate__advanced-summary small { color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .leafer-substrate__advanced-summary strong { margin-top: .2rem; font-size: 1rem; }
+  .leafer-substrate__advanced-summary em { margin-top: .25rem; color: var(--muted); font-size: .75rem; font-style: normal; line-height: 1.45; }
+  .leafer-substrate__advanced-summary b { font-size: 1.35rem; font-weight: 500; transition: transform .2s ease; }
+  .leafer-substrate__advanced[open] .leafer-substrate__advanced-summary b { transform: rotate(45deg); }
+  .leafer-substrate__advanced-body { padding: 0 1rem 1rem; }
+  .leafer-substrate__customizer { margin-top: 0; padding: 1.2rem; border: 1px solid var(--border); border-radius: 0; background: color-mix(in srgb, var(--background), var(--accent) 4%); }
   .leafer-substrate__customizer-head { display: flex; justify-content: space-between; gap: 1rem; align-items: end; }
   .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__customizer-head > p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
@@ -701,7 +723,10 @@
       this.insightPlants = this.querySelector('[data-insight-plants]');
       this.insightProperties = this.querySelector('[data-insight-properties]');
       this.insightCopy = this.querySelector('[data-insight-copy]');
+      this.advancedDetails = this.querySelector('[data-substrate-advanced]');
       this.initCustomizer();
+
+      if (this.advancedDetails && window.location.hash === '#Profi-Konfigurator') this.advancedDetails.open = true;
 
       if (!this.nativeSelect || !this.variants.length) return;
 
@@ -988,8 +1013,7 @@
 
     renderCustomRecipe(volume) {
       const segments = this.activeCustomSegments();
-      const lists = [...this.querySelectorAll('[data-recipe-list], [data-base-recipe-list]')];
-      const list = lists[0];
+      const list = this.querySelector('[data-recipe-list]');
       const empty = this.querySelector('[data-recipe-empty]');
       const sizeKey = String(volume).match(/[\d.,]+/)?.[0]?.replace(',', '.');
       const litresTotal = Number(sizeKey) || 0;
@@ -1011,7 +1035,11 @@
         name.textContent = segment.dataset.name;
         const values = document.createElement('span');
         values.className = 'leafer-substrate__recipe-values';
-        values.append(document.createTextNode(`${this.formatNumber(share)} %`), document.createTextNode(`${this.formatNumber(litres)} L`));
+        values.append(
+          document.createTextNode(`${this.formatNumber(share)} %`),
+          document.createTextNode(' · '),
+          document.createTextNode(`${this.formatNumber(litres)} L`)
+        );
         head.append(name, values);
         const bar = document.createElement('div');
         bar.className = 'leafer-substrate__recipe-bar';
@@ -1022,9 +1050,7 @@
         fragment.append(row);
         recipeParts.push(`${segment.dataset.name} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
       });
-      lists.forEach((targetList) => targetList.append(fragment.cloneNode(true)));
-      const baseSelection = this.querySelector('[data-base-recipe-selection]');
-      if (baseSelection) baseSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
+      list.append(fragment);
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
@@ -1127,11 +1153,12 @@
       const percentages = recipe?.percent || {};
       const sizes = recipe?.sizes_l?.[sizeKey] || recipe?.sizes_l?.[String(Number(sizeKey))] || {};
       const entries = Object.entries(percentages);
-      const list = this.querySelector('[data-recipe-list]');
+      const lists = [...this.querySelectorAll('[data-recipe-list], [data-base-recipe-list]')];
+      const list = lists[0];
       const empty = this.querySelector('[data-recipe-empty]');
       const notesList = this.querySelector('[data-recipe-notes]');
 
-      if (!lists.length) return '';
+      if (!lists.length || !list) return '';
       lists.forEach((targetList) => targetList.replaceChildren());
 
       if (!entries.length) {
@@ -1187,7 +1214,9 @@
         fragment.append(row);
       });
 
-      list.append(fragment);
+      lists.forEach((targetList) => targetList.append(fragment.cloneNode(true)));
+      const baseSelection = this.querySelector('[data-base-recipe-selection]');
+      if (baseSelection) baseSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
