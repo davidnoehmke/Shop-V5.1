@@ -139,14 +139,26 @@ Renders the shared LEAF advisor. Supabase supplies all options, selection valida
 
     <div data-product-source hidden>
       {% if advisor_home_mode %}
+        {% assign has_houseplants_world = false %}
         {% for world_block in world_blocks %}
           {% assign world_collection = world_block.settings.collection %}
+          {% if world_collection.handle == 'zimmerpflanzen-1' %}
+            {% assign has_houseplants_world = true %}
+          {% endif %}
           {% if world_collection != blank %}
             {% for card_product in world_collection.products limit: 50 %}
               {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: world_collection.handle, world_title: world_collection.title %}
             {% endfor %}
           {% endif %}
         {% endfor %}
+        {% unless has_houseplants_world %}
+          {% assign fallback_houseplants = collections['zimmerpflanzen-1'] %}
+          {% if fallback_houseplants != blank %}
+            {% for card_product in fallback_houseplants.products limit: 50 %}
+              {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: fallback_houseplants.handle, world_title: fallback_houseplants.title %}
+            {% endfor %}
+          {% endif %}
+        {% endunless %}
       {% else %}
         {% for card_product in advisor_products limit: 50 %}
           {% render 'leaf-advisor-product-source', card_product: card_product, world_handle: collection.handle, world_title: collection.title %}
