@@ -748,6 +748,8 @@
     }
   },
   "shop_assistant": {
+    "voice_speaking": "LEAF is speaking …",
+    "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
     "eyebrow": "LEAF Shop Assistant",
     "heading": "What would you like to clarify for your plant project?",
@@ -770,8 +772,8 @@
     "privacy": "Your question is processed to provide an answer but is not stored as a customer profile.",
     "thinking": "Checking the LEAF knowledge base …",
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
-    "voice": "Start voice input",
-    "voice_stop": "Stop recording",
+    "voice": "Start voice conversation",
+    "voice_stop": "End voice conversation",
     "voice_listening": "Listening …",
     "speak": "Read answer aloud"
   },
