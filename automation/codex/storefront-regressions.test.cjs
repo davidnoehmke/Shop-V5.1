@@ -42,3 +42,13 @@ test('pro recipe and volume are enabled on the submitted product form', () => {
   assert.match(liquid, /class: 'leafer-substrate__form js-leafer-cart-form'/);
   assert.match(fs.readFileSync('layout/theme.liquid', 'utf8'), /cart-forms\.js/);
 });
+
+
+test('pro mixer exposes per-component sliders and material previews', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  assert.match(liquid, /data-custom-slider-list/);
+  assert.match(liquid, /data-custom-segment-slider/);
+  assert.match(liquid, /component_product\.featured_image/);
+  assert.match(liquid, /balanceCustomSegment\(selected, rawValue\)/);
+  assert.doesNotMatch(liquid, /data-custom-share-slider/);
+});
