@@ -20,7 +20,8 @@
               <h2><a href="{{ item.url }}">{{ item.product.title | escape }}</a></h2>
               {% unless item.product.has_only_default_variant %}<p class="main-cart__variant">{{ item.variant.title | escape }}</p>{% endunless %}
 
-              {% if item.properties.size > 0 %}
+              {% assign property_count = item.properties | size %}
+              {% if property_count > 0 %}
                 <dl class="main-cart__properties">
                   {% for property in item.properties %}
                     {% liquid
