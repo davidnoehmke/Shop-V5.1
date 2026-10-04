@@ -15,7 +15,7 @@
 
 <leafer-substrate-selector
   {% if request.page_type == 'index' %}id="Substrat-Konfigurator"{% endif %}
-  class="leafer-substrate"
+  class="leafer-substrate{% if request.page_type == 'index' %} leafer-substrate--home-usp{% endif %}"
   data-profile-option="{{ profile_option_name | escape }}"
   data-volume-option="{{ volume_option_name | escape }}"
   data-add-label="{{ section.settings.add_label | escape }}"
@@ -185,7 +185,7 @@
 
 
           {% if selector_product != blank %}
-            <details id="Profi-Konfigurator" class="leafer-substrate__advanced" data-substrate-advanced>
+            <details id="Profi-Konfigurator" class="leafer-substrate__advanced" data-substrate-advanced {% if request.page_type == 'index' %}open{% endif %}>
               <summary class="leafer-substrate__advanced-summary">
                 <span>
                   <small>{{ 'configurator.advanced.eyebrow' | t }}</small>
@@ -207,11 +207,12 @@
                 <div>
                   <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="Vertikale Mischungsverteilung">
                     {% for pot_index in (1..5) %}
-                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" hidden aria-label="Freies Mischungssegment {{ forloop.index }}"></button>
+                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" data-order="{{ forloop.index0 }}" hidden aria-label="Freies Mischungssegment {{ forloop.index }}" aria-describedby="LeaferPotDragHint-{{ section.id }}"></button>
                     {% endfor %}
                     <span class="leafer-substrate__pot-rim" aria-hidden="true"></span>
                   </div>
                   <p class="leafer-substrate__customizer-total" data-customizer-total>0 % · 0 L</p>
+                  <p class="leafer-substrate__pot-drag-hint" id="LeaferPotDragHint-{{ section.id }}">Schichten im Topf ziehen, um nur die Ansicht zu sortieren. Die Prozentwerte bleiben unverändert.</p>
                 </div>
                 <div class="leafer-substrate__component-picker">
                   <div class="leafer-substrate__component-picker-head">
@@ -610,15 +611,17 @@
   .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__customizer-head > p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
   .leafer-substrate__customizer-grid { margin-top: 1.25rem; display: grid; grid-template-columns: minmax(150px, .7fr) minmax(0, 1.3fr); gap: 1.25rem; align-items: center; }
-  .leafer-substrate__pot-slider { position: relative; width: min(100%, 190px); height: 260px; margin-inline: auto; padding: .45rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 2px solid color-mix(in srgb, var(--text), transparent 10%); border-radius: 12px 12px 34px 34px; background: color-mix(in srgb, var(--background), var(--text) 8%); box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--background), transparent 20%), 0 12px 25px color-mix(in srgb, var(--text), transparent 88%); }
+  .leafer-substrate__pot-slider { position: relative; width: min(100%, 220px); height: 300px; margin-inline: auto; padding: 1rem 1.05rem 1.15rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 0; clip-path: polygon(4% 0, 96% 0, 82% 100%, 18% 100%); background: linear-gradient(90deg, color-mix(in srgb, var(--text), transparent 82%), color-mix(in srgb, var(--background), var(--text) 7%) 16% 84%, color-mix(in srgb, var(--text), transparent 80%)); box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--text), transparent 14%), inset 0 0 28px color-mix(in srgb, var(--text), transparent 72%), 0 18px 34px color-mix(in srgb, var(--text), transparent 84%); isolation: isolate; }
   .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
-  .leafer-substrate__pot-rim { position: absolute; top: .35rem; right: 8%; left: 8%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); pointer-events: none; }
-  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: pointer; font-size: .68rem; font-weight: 850; text-align: left; text-shadow: 0 1px 3px rgba(0,0,0,.55); transition: height .25s ease, filter .2s ease, box-shadow .2s ease; }
+  .leafer-substrate__pot-rim { position: absolute; z-index: 4; top: .35rem; right: 7%; left: 7%; height: 18px; border: 3px solid color-mix(in srgb, var(--text), transparent 18%); border-radius: 50%; background: color-mix(in srgb, var(--background), var(--text) 10%); box-shadow: inset 0 3px 7px color-mix(in srgb, var(--text), transparent 82%); pointer-events: none; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: .68rem; font-weight: 850; text-align: left; text-shadow: 0 1px 3px rgba(0,0,0,.55); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
   .leafer-substrate__pot-segment:nth-child(2n) { background-color: #667056; }
   .leafer-substrate__pot-segment:nth-child(3n) { background-color: #9a8665; }
   .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
+  .leafer-substrate__pot-segment.is-dragging { z-index: 6; cursor: grabbing; filter: brightness(1.12) saturate(1.05); box-shadow: 0 14px 24px rgba(0,0,0,.28), inset 0 0 0 3px var(--accent-soft); }
   .leafer-substrate__pot-segment[hidden] { display: none; }
   .leafer-substrate__customizer-total { margin: .7rem 0 0; color: var(--muted); font-size: .78rem; font-weight: 800; text-align: center; }
+  .leafer-substrate__pot-drag-hint { max-width: 220px; margin: .35rem auto 0; color: var(--muted); font-size: .66rem; line-height: 1.35; text-align: center; }
   .leafer-substrate__component-picker { min-width: 0; }
   .leafer-substrate__slider-list { margin-top: .85rem; display: grid; gap: .55rem; }
   .leafer-substrate__mix-slider { padding: .65rem .75rem .7rem; display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: .35rem .7rem; align-items: center; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--background), var(--accent) 2%); }
@@ -651,14 +654,44 @@
   .leafer-substrate__pro-metrics span { padding: .3rem .45rem; border-radius: 999px; background: color-mix(in srgb, var(--accent), transparent 91%); font-weight: 800; }
   .leafer-substrate__pro-feedback small { margin-top: .55rem; display: block; color: var(--muted); }
   @media (max-width: 620px) {
-    .leafer-substrate__customizer-head { display: block; }
-    .leafer-substrate__customizer-head > p { margin-top: .65rem; }
-    .leafer-substrate__customizer-grid { grid-template-columns: 1fr; }
-    .leafer-substrate__pot-slider { height: 220px; }
-    .leafer-substrate__custom-options { grid-template-columns: 1fr; max-height: none; }
-    .leafer-substrate__mix-slider { grid-template-columns: 42px minmax(0, 1fr) auto; }
-    .leafer-substrate__mix-slider-thumb { width: 42px; height: 42px; }
+    .leafer-substrate__advanced-body { padding: 0 .55rem .6rem; }
+    .leafer-substrate__customizer { padding: .75rem; border-radius: 14px; }
+    .leafer-substrate__customizer-head { display: grid; gap: .3rem; }
+    .leafer-substrate__customizer-head h2 { font-size: 1.16rem; }
+    .leafer-substrate__customizer-head > p { display: none; }
+    .leafer-substrate__customizer-grid { margin-top: .7rem; grid-template-columns: minmax(112px, .42fr) minmax(0, .58fr); gap: .65rem; align-items: start; }
+    .leafer-substrate__pot-slider,
+    .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: 100%; height: min(40svh, 270px); min-height: 220px; padding: .8rem .7rem .9rem; }
+    .leafer-substrate__pot-segment { padding-inline: .3rem; font-size: .58rem; }
+    .leafer-substrate__customizer-total { margin-top: .4rem; font-size: .7rem; }
+    .leafer-substrate__pot-drag-hint { display: none; }
+    .leafer-substrate__component-picker-head { margin-bottom: .4rem; font-size: .7rem; }
+    .leafer-substrate__custom-options { display: flex; gap: .4rem; max-height: 72px; overflow-x: auto; overflow-y: hidden; padding: 0 0 .2rem; scroll-snap-type: x proximity; scrollbar-width: none; }
+    .leafer-substrate__custom-options::-webkit-scrollbar { display: none; }
+    .leafer-substrate__custom-option { min-width: 136px; min-height: 62px; flex: 0 0 136px; grid-template-columns: 42px minmax(0, 1fr) auto; gap: .45rem; padding: .4rem; scroll-snap-align: start; }
+    .leafer-substrate__material-thumb { width: 42px; height: 42px; }
+    .leafer-substrate__custom-option small { display: none; }
+    .leafer-substrate__slider-list { margin-top: .45rem; gap: .32rem; max-height: min(36svh, 240px); overflow-y: auto; padding-right: .15rem; }
+    .leafer-substrate__mix-slider { min-height: 43px; padding: .35rem .45rem; grid-template-columns: minmax(0, 1fr) auto; gap: .2rem .45rem; }
+    .leafer-substrate__mix-slider-thumb { display: none; }
+    .leafer-substrate__mix-slider-name { font-size: .67rem; }
+    .leafer-substrate__mix-slider output { font-size: .68rem; }
+    .leafer-substrate__mix-slider input { grid-column: 1 / -1; min-height: 18px; }
+    .leafer-substrate__customizer-hint { margin-top: .4rem; font-size: .65rem; }
+    .leafer-substrate__pro-feedback { max-height: 84px; overflow: auto; margin-top: .45rem; padding: .55rem; }
   }
+
+  .leafer-substrate--home-usp { border-block: 1px solid color-mix(in srgb, var(--accent), transparent 72%); background: linear-gradient(180deg, color-mix(in srgb, var(--accent), transparent 96%), var(--background) 32%, color-mix(in srgb, var(--surface), var(--background) 35%)); }
+  .leafer-substrate--home-usp .leafer-substrate__hero,
+  .leafer-substrate--home-usp .leafer-substrate__commerce { width: min(calc(100% - 2rem), 1500px); max-width: 1500px; }
+  .leafer-substrate--home-usp .leafer-substrate__hero { grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); align-items: center; }
+  .leafer-substrate--home-usp .leafer-substrate__commerce { margin-top: clamp(1.8rem, 4vw, 3.4rem); grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); }
+  .leafer-substrate--home-usp .leafer-substrate__purchase-panel { border-width: 2px; box-shadow: 0 24px 60px color-mix(in srgb, var(--text), transparent 91%); }
+  .leafer-substrate--home-usp .leafer-substrate__advanced { border: 2px solid color-mix(in srgb, var(--accent), transparent 28%); box-shadow: 0 18px 42px color-mix(in srgb, var(--accent), transparent 90%); }
+  .leafer-substrate--home-usp .leafer-substrate__advanced-summary { min-height: 84px; background: linear-gradient(90deg, color-mix(in srgb, var(--accent), transparent 92%), transparent); }
+  .leafer-substrate--home-usp .leafer-substrate__advanced-summary strong { font-size: 1.08rem; }
+  .leafer-substrate--home-usp .leafer-substrate__customizer { border-radius: 18px; }
+  .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }
 
   .leafer-substrate__steps, .leafer-substrate__details, .leafer-substrate__faq, .leafer-substrate__components { margin-top: var(--space-section); }
   .leafer-substrate__section-head { max-width: 800px; margin-bottom: 2rem; }
@@ -690,7 +723,8 @@
   .leafer-substrate__component-copy strong { font-size: .92rem; }
 
   @media (max-width: 989px) {
-    .leafer-substrate__hero, .leafer-substrate__commerce, .leafer-substrate__details { grid-template-columns: 1fr; }
+    .leafer-substrate__hero, .leafer-substrate__commerce, .leafer-substrate__details,
+    .leafer-substrate--home-usp .leafer-substrate__hero, .leafer-substrate--home-usp .leafer-substrate__commerce { grid-template-columns: 1fr; }
     .leafer-substrate__hero-media { order: -1; aspect-ratio: 16 / 10; }
     .leafer-substrate__recipe-panel { position: static; }
     .leafer-substrate__steps ol { grid-template-columns: 1fr; }
@@ -736,6 +770,7 @@
       this.customOptions = [...this.querySelectorAll('[data-custom-option]')];
       this.customSliderList = this.querySelector('[data-custom-slider-list]');
       this.customSelectedIndex = 0;
+      this.customDragState = null;
       this.insightPlants = this.querySelector('[data-insight-plants]');
       this.insightProperties = this.querySelector('[data-insight-properties]');
       this.insightCopy = this.querySelector('[data-insight-copy]');
@@ -861,6 +896,7 @@
               freeSegment.dataset.structure = option.dataset.structure || '';
               freeSegment.dataset.nutrient = option.dataset.nutrient || '';
               freeSegment.dataset.technicalNote = option.dataset.technicalNote || '';
+              freeSegment.dataset.order = String(this.nextCustomOrder());
               const preview = option.querySelector('img');
               freeSegment.dataset.image = preview?.currentSrc || preview?.src || '';
             }
@@ -879,6 +915,7 @@
               delete segment.dataset.structure;
               delete segment.dataset.nutrient;
               delete segment.dataset.technicalNote;
+              delete segment.dataset.order;
               delete segment.dataset.image;
               segment.style.removeProperty('background-image');
               segment.style.removeProperty('background-size');
@@ -893,18 +930,108 @@
       });
       this.customSegments.forEach((segment) => {
         segment.addEventListener('click', () => {
-          if (segment.hidden) return;
+          if (segment.hidden || segment.dataset.justDragged === 'true') return;
           this.customSelectedIndex = Number(segment.dataset.index);
           this.customSegments.forEach((item) => item.classList.toggle('is-selected', item === segment));
           const slider = this.customSliderList?.querySelector(`[data-custom-segment-slider="${segment.dataset.index}"]`);
           slider?.focus({ preventScroll: true });
+        });
+        segment.addEventListener('pointerdown', (event) => this.beginCustomDrag(event, segment));
+        segment.addEventListener('pointermove', (event) => this.moveCustomDrag(event, segment));
+        segment.addEventListener('pointerup', (event) => this.endCustomDrag(event, segment));
+        segment.addEventListener('pointercancel', (event) => this.endCustomDrag(event, segment));
+        segment.addEventListener('keydown', (event) => {
+          if (segment.hidden || (event.key !== 'ArrowUp' && event.key !== 'ArrowDown')) return;
+          event.preventDefault();
+          this.moveCustomSegment(segment, event.key === 'ArrowUp' ? -1 : 1);
         });
       });
       this.syncCustomUI();
     }
 
     activeCustomSegments() {
-      return (this.customSegments || []).filter((segment) => !segment.hidden && segment.dataset.name);
+      return (this.customSegments || [])
+        .filter((segment) => !segment.hidden && segment.dataset.name)
+        .sort((a, b) => (Number(a.dataset.order) || 0) - (Number(b.dataset.order) || 0));
+    }
+
+    nextCustomOrder() {
+      return this.activeCustomSegments().reduce((max, segment) => Math.max(max, Number(segment.dataset.order) || 0), -1) + 1;
+    }
+
+    visualCustomSegments() {
+      return this.activeCustomSegments().slice().sort((a, b) => {
+        const aTop = a.getBoundingClientRect().top;
+        const bTop = b.getBoundingClientRect().top;
+        if (aTop !== bTop) return aTop - bTop;
+        return (Number(b.dataset.order) || 0) - (Number(a.dataset.order) || 0);
+      });
+    }
+
+    beginCustomDrag(event, segment) {
+      if (segment.hidden || (event.button !== undefined && event.button !== 0)) return;
+      this.customSelectedIndex = Number(segment.dataset.index);
+      this.customDragState = { pointerId: event.pointerId, segment, startY: event.clientY, moved: false };
+      segment.classList.add('is-dragging');
+      try { segment.setPointerCapture(event.pointerId); } catch {}
+    }
+
+    moveCustomDrag(event, segment) {
+      const state = this.customDragState;
+      if (!state || state.segment !== segment || state.pointerId !== event.pointerId) return;
+      const delta = event.clientY - state.startY;
+      if (Math.abs(delta) > 5) state.moved = true;
+      if (!state.moved) return;
+      event.preventDefault();
+      segment.style.transform = `translateY(${delta}px) scale(1.015)`;
+    }
+
+    endCustomDrag(event, segment) {
+      const state = this.customDragState;
+      if (!state || state.segment !== segment || state.pointerId !== event.pointerId) return;
+      if (state.moved) {
+        event.preventDefault();
+        this.reorderCustomSegments(segment, event.clientY);
+        segment.dataset.justDragged = 'true';
+        window.setTimeout(() => { delete segment.dataset.justDragged; }, 0);
+      }
+      segment.style.removeProperty('transform');
+      segment.classList.remove('is-dragging');
+      try { segment.releasePointerCapture(event.pointerId); } catch {}
+      this.customDragState = null;
+    }
+
+    reorderCustomSegments(dragged, clientY) {
+      const visual = this.visualCustomSegments();
+      const withoutDragged = visual.filter((segment) => segment !== dragged);
+      let insertAt = withoutDragged.findIndex((segment) => {
+        const rect = segment.getBoundingClientRect();
+        return clientY < rect.top + rect.height / 2;
+      });
+      if (insertAt < 0) insertAt = withoutDragged.length;
+      withoutDragged.splice(insertAt, 0, dragged);
+      withoutDragged.forEach((segment, index) => {
+        segment.dataset.order = String(withoutDragged.length - 1 - index);
+      });
+      this.updateCustomSegmentVisuals();
+      this.renderCustomSliders();
+      this.refreshCustomRecipe();
+    }
+
+    moveCustomSegment(segment, direction) {
+      const visual = this.visualCustomSegments();
+      const currentIndex = visual.indexOf(segment);
+      const targetIndex = Math.max(0, Math.min(visual.length - 1, currentIndex + direction));
+      if (currentIndex < 0 || targetIndex === currentIndex) return;
+      visual.splice(currentIndex, 1);
+      visual.splice(targetIndex, 0, segment);
+      visual.forEach((item, index) => {
+        item.dataset.order = String(visual.length - 1 - index);
+      });
+      this.updateCustomSegmentVisuals();
+      this.renderCustomSliders();
+      this.refreshCustomRecipe();
+      segment.focus({ preventScroll: true });
     }
 
     equalizeCustomSegments() {
@@ -914,40 +1041,96 @@
         this.syncCustomUI();
         return;
       }
-      const baseShare = Math.floor(100 / segments.length);
-      let remainder = 100 - (baseShare * segments.length);
-      segments.forEach((segment, index) => {
-        const share = baseShare + (remainder > 0 ? 1 : 0);
-        segment.dataset.share = String(share);
-        remainder -= 1;
-        if (index === 0) this.customSelectedIndex = Number(segment.dataset.index);
+
+      const minFor = (segment) => Math.max(0, Number(segment.dataset.proMin) || 0);
+      const maxFor = (segment) => Math.min(100, Number(segment.dataset.proMax) || 100);
+      let remaining = 100;
+
+      segments.forEach((segment) => {
+        const minimum = minFor(segment);
+        segment.dataset.share = String(minimum);
+        remaining -= minimum;
       });
+
+      let guard = 0;
+      while (remaining > 0 && guard < 1000) {
+        const candidates = segments.filter((segment) => Number(segment.dataset.share) < maxFor(segment));
+        if (!candidates.length) break;
+
+        const fairShare = Math.max(1, Math.floor(remaining / candidates.length));
+        for (const segment of candidates) {
+          if (remaining <= 0) break;
+          const current = Number(segment.dataset.share) || 0;
+          const capacity = maxFor(segment) - current;
+          const addition = Math.min(fairShare, capacity, remaining);
+          segment.dataset.share = String(current + addition);
+          remaining -= addition;
+        }
+        guard += 1;
+      }
+
+      if (remaining > 0) {
+        const fallback = segments.find((segment) => Number(segment.dataset.share) < 100);
+        if (fallback) fallback.dataset.share = String(Number(fallback.dataset.share) + remaining);
+      }
+
+      this.customSelectedIndex = Number(segments[0].dataset.index);
       this.syncCustomUI();
     }
 
     balanceCustomSegment(selected, rawValue) {
       const segments = this.activeCustomSegments();
       if (!selected || !segments.length) return;
-      const minShare = Math.max(0, Number(selected.dataset.proMin) || 0);
-      const maxShare = Math.min(100, Number(selected.dataset.proMax) || 100);
-      const requested = Math.max(minShare, Math.min(maxShare, Number(rawValue) || minShare));
-      const others = segments.filter((segment) => segment !== selected);
-      selected.dataset.share = String(others.length ? requested : 100);
 
-      if (others.length) {
-        let remaining = 100 - Number(selected.dataset.share);
-        const weight = others.reduce((sum, segment) => sum + (Number(segment.dataset.share) || 0), 0);
-        others.forEach((segment, index) => {
-          if (index === others.length - 1) {
-            segment.dataset.share = String(Math.max(0, remaining));
-            return;
-          }
-          const current = Number(segment.dataset.share) || 0;
-          const rawShare = weight > 0 ? Math.round((100 - Number(selected.dataset.share)) * current / weight) : Math.floor(remaining / (others.length - index));
-          const share = Math.max(0, Math.min(remaining, rawShare));
-          segment.dataset.share = String(share);
-          remaining -= share;
-        });
+      if (segments.length === 1) {
+        selected.dataset.share = '100';
+        this.updateCustomSegmentVisuals();
+        this.updateCustomSliderValues();
+        this.updateProFeedback();
+        return;
+      }
+
+      const minFor = (segment) => Math.max(0, Number(segment.dataset.proMin) || 0);
+      const maxFor = (segment) => Math.min(100, Number(segment.dataset.proMax) || 100);
+      const others = segments.filter((segment) => segment !== selected);
+      const othersMin = others.reduce((sum, segment) => sum + minFor(segment), 0);
+      const othersMax = others.reduce((sum, segment) => sum + maxFor(segment), 0);
+      const selectedMin = Math.max(minFor(selected), 100 - othersMax);
+      const selectedMax = Math.min(maxFor(selected), 100 - othersMin);
+      const lower = Math.min(selectedMin, selectedMax);
+      const upper = Math.max(selectedMin, selectedMax);
+      const requested = Math.max(lower, Math.min(upper, Number(rawValue) || lower));
+      selected.dataset.share = String(Math.round(requested));
+
+      const targetOtherTotal = 100 - Number(selected.dataset.share);
+      const priorWeight = others.reduce((sum, segment) => sum + Math.max(1, Number(segment.dataset.share) || 0), 0);
+      let assigned = 0;
+
+      others.forEach((segment) => {
+        const proportional = Math.round(targetOtherTotal * Math.max(1, Number(segment.dataset.share) || 0) / priorWeight);
+        const share = Math.max(minFor(segment), Math.min(maxFor(segment), proportional));
+        segment.dataset.share = String(share);
+        assigned += share;
+      });
+
+      let delta = targetOtherTotal - assigned;
+      let guard = 0;
+      while (delta !== 0 && guard < 500) {
+        const growing = delta > 0;
+        const candidates = others
+          .filter((segment) => growing
+            ? Number(segment.dataset.share) < maxFor(segment)
+            : Number(segment.dataset.share) > minFor(segment))
+          .sort((a, b) => {
+            const aCapacity = growing ? maxFor(a) - Number(a.dataset.share) : Number(a.dataset.share) - minFor(a);
+            const bCapacity = growing ? maxFor(b) - Number(b.dataset.share) : Number(b.dataset.share) - minFor(b);
+            return bCapacity - aCapacity;
+          });
+        if (!candidates.length) break;
+        const candidate = candidates[guard % candidates.length];
+        candidate.dataset.share = String(Number(candidate.dataset.share) + (growing ? 1 : -1));
+        delta += growing ? -1 : 1;
+        guard += 1;
       }
 
       this.updateCustomSegmentVisuals();
@@ -959,6 +1142,7 @@
       this.customSegments.forEach((segment) => {
         const share = Number(segment.dataset.share) || 0;
         segment.style.height = share ? `${share}%` : '';
+        segment.style.order = String(Number(segment.dataset.order) || 0);
         segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
         if (segment.dataset.image) {
@@ -978,7 +1162,7 @@
 
     renderCustomSliders() {
       if (!this.customSliderList) return;
-      const segments = this.activeCustomSegments();
+      const segments = this.activeCustomSegments().slice().sort((a, b) => (Number(b.dataset.order) || 0) - (Number(a.dataset.order) || 0));
       this.customSliderList.replaceChildren();
 
       segments.forEach((segment) => {
