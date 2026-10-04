@@ -52,3 +52,19 @@ test('pro mixer exposes per-component sliders and material previews', () => {
   assert.match(liquid, /balanceCustomSegment\(selected, rawValue\)/);
   assert.doesNotMatch(liquid, /data-custom-share-slider/);
 });
+
+
+test('homepage mixer supports bounded auto-balance and visual drag ordering', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const index = JSON.parse(fs.readFileSync('templates/index.json', 'utf8'));
+  assert.match(liquid, /leafer-substrate--home-usp/);
+  assert.match(liquid, /pointerdown/);
+  assert.match(liquid, /reorderCustomSegments\(dragged, clientY\)/);
+  assert.match(liquid, /moveCustomSegment\(segment, direction\)/);
+  assert.match(liquid, /100 - othersMax/);
+  assert.match(liquid, /touch-action: none/);
+  assert.match(liquid, /data-order=/);
+  assert.deepEqual(index.order.slice(0, 4), ['hero', 'substrate_configurator', 'home_collection_journey', 'trust']);
+  assert.match(index.sections.home_collection_journey.settings.heading, /Wurzelraum/);
+  assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
+});
