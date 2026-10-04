@@ -201,7 +201,7 @@
                   <p class="leafer-substrate__eyebrow">Individuell mischen</p>
                   <h2 id="LeaferCustomizerHeading-{{ section.id }}">Deine Mischung im Pflanztopf</h2>
                 </div>
-                <p>Wähle bis zu fünf Komponenten. Ein Regler verteilt die Anteile auf die markierten Segmente.</p>
+                <p>Wähle bis zu fünf Komponenten und passe jeden Anteil direkt mit seinem eigenen Regler an.</p>
               </header>
               <div class="leafer-substrate__customizer-grid">
                 <div>
@@ -212,11 +212,6 @@
                     <span class="leafer-substrate__pot-rim" aria-hidden="true"></span>
                   </div>
                   <p class="leafer-substrate__customizer-total" data-customizer-total>0 % · 0 L</p>
-                  <label class="leafer-substrate__share-control">
-                    <span data-custom-share-label>Segment auswählen</span>
-                    <input type="range" min="1" max="99" step="1" value="50" data-custom-share-slider disabled>
-                    <output data-custom-share-output>–</output>
-                  </label>
                 </div>
                 <div class="leafer-substrate__component-picker">
                   <div class="leafer-substrate__component-picker-head">
@@ -240,11 +235,18 @@
                         %}
                         {% if show_pro_component %}
                         <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_product.title | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_profile.aeration.value }}" data-drainage="{{ component_profile.drainage.value }}" data-water-retention="{{ component_profile.water_retention.value }}" data-structure="{{ component_profile.structure_stability.value }}" data-nutrient="{{ component_profile.nutrient_effect.value }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
-                          <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
-                          <span>
+                          <span class="leafer-substrate__material-thumb" aria-hidden="true">
+                            {% if component_product.featured_image != blank %}
+                              {{ component_product.featured_image | image_url: width: 180 | image_tag: widths: '90, 180', sizes: '54px', loading: 'lazy', alt: '' }}
+                            {% else %}
+                              <span class="leafer-substrate__material-pattern"></span>
+                            {% endif %}
+                          </span>
+                          <span class="leafer-substrate__custom-option-copy">
                             <strong>{{ component_product.title | escape }}</strong>
                             <small>{{ component_product.vendor | default: 'LEAFerservice' | escape }}</small>
                           </span>
+                          <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
                         </button>
                         {% assign custom_rendered_components = custom_rendered_components | plus: 1 %}
                         {% if custom_rendered_components == 12 %}{% break %}{% endif %}
@@ -255,12 +257,14 @@
                       {% assign fallback_components = 'Kokosfasern|Pinienrinde|Perlite|Bims|Lavagranulat|Sphagnum-Moos|Wurmhumus|Pflanzenkohle|Blähton|Algenkalk|Mykorrhiza|Aktivierter Biokohle-Kompost' | split: '|' %}
                       {% for fallback_component in fallback_components %}
                         <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ fallback_component | escape }}" aria-pressed="false">
+                          <span class="leafer-substrate__material-thumb leafer-substrate__material-thumb--generated" aria-hidden="true"><span class="leafer-substrate__material-pattern"></span></span>
+                          <span class="leafer-substrate__custom-option-copy"><strong>{{ fallback_component | escape }}</strong><small>Rezepturbestandteil</small></span>
                           <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
-                          <span><strong>{{ fallback_component | escape }}</strong><small>Rezepturbestandteil</small></span>
                         </button>
                       {% endfor %}
                     {% endif %}
                   </div>
+                  <div class="leafer-substrate__slider-list" data-custom-slider-list></div>
                   <p class="leafer-substrate__customizer-hint" data-customizer-hint>Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.</p>
                   <div class="leafer-substrate__pro-feedback" data-pro-feedback hidden aria-live="polite"></div>
                 </div>
@@ -609,22 +613,30 @@
   .leafer-substrate__pot-slider { position: relative; width: min(100%, 190px); height: 260px; margin-inline: auto; padding: .45rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 2px solid color-mix(in srgb, var(--text), transparent 10%); border-radius: 12px 12px 34px 34px; background: color-mix(in srgb, var(--background), var(--text) 8%); box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--background), transparent 20%), 0 12px 25px color-mix(in srgb, var(--text), transparent 88%); }
   .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
   .leafer-substrate__pot-rim { position: absolute; top: .35rem; right: 8%; left: 8%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); pointer-events: none; }
-  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .5rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 45%); background: #8a6a46; color: var(--background); cursor: pointer; font-size: .68rem; font-weight: 850; text-align: left; transition: height .25s ease, filter .2s ease, box-shadow .2s ease; }
-  .leafer-substrate__pot-segment:nth-child(2n) { background: #68754b; }
-  .leafer-substrate__pot-segment:nth-child(3n) { background: #a08c66; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: pointer; font-size: .68rem; font-weight: 850; text-align: left; text-shadow: 0 1px 3px rgba(0,0,0,.55); transition: height .25s ease, filter .2s ease, box-shadow .2s ease; }
+  .leafer-substrate__pot-segment:nth-child(2n) { background-color: #667056; }
+  .leafer-substrate__pot-segment:nth-child(3n) { background-color: #9a8665; }
   .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
   .leafer-substrate__pot-segment[hidden] { display: none; }
   .leafer-substrate__customizer-total { margin: .7rem 0 0; color: var(--muted); font-size: .78rem; font-weight: 800; text-align: center; }
-  .leafer-substrate__share-control { margin-top: 1rem; display: grid; grid-template-columns: 1fr auto; gap: .4rem .7rem; align-items: center; color: var(--muted); font-size: .76rem; font-weight: 800; }
-  .leafer-substrate__share-control input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
-  .leafer-substrate__share-control output { color: var(--text); font-variant-numeric: tabular-nums; }
   .leafer-substrate__component-picker { min-width: 0; }
+  .leafer-substrate__slider-list { margin-top: .85rem; display: grid; gap: .55rem; }
+  .leafer-substrate__mix-slider { padding: .65rem .75rem .7rem; display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: .35rem .7rem; align-items: center; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--background), var(--accent) 2%); }
+  .leafer-substrate__mix-slider-thumb { width: 46px; height: 46px; grid-row: 1 / span 2; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border), var(--text) 8%); border-radius: 10px; background-color: #80705a; background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,.26) 0 9%, transparent 10%), radial-gradient(circle at 72% 68%, rgba(0,0,0,.18) 0 12%, transparent 13%); background-size: 18px 18px, 27px 27px; background-position: center; }
+  .leafer-substrate__mix-slider-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .76rem; }
+  .leafer-substrate__mix-slider output { color: var(--text); font-size: .75rem; font-weight: 850; font-variant-numeric: tabular-nums; }
+  .leafer-substrate__mix-slider input { grid-column: 2 / -1; width: 100%; min-height: 28px; margin: 0; accent-color: var(--accent); cursor: ew-resize; }
+  .leafer-substrate__mix-slider input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: 3px; border-radius: 999px; }
   .leafer-substrate__component-picker-head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .65rem; font-size: .78rem; }
   .leafer-substrate__component-picker-head > span { color: var(--muted); }
-  .leafer-substrate__custom-options { display: grid; gap: .5rem; max-height: 265px; overflow: auto; padding-right: .2rem; }
-  .leafer-substrate__custom-option { width: 100%; min-height: 48px; padding: .65rem .7rem; display: flex; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 10px; background: var(--background); color: var(--text); cursor: pointer; text-align: left; transition: border-color .2s ease, background-color .2s ease, transform .2s ease; }
-  .leafer-substrate__custom-option:hover { transform: translateY(-1px); border-color: var(--accent); }
-  .leafer-substrate__custom-option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 90%); }
+  .leafer-substrate__custom-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; max-height: 340px; overflow: auto; padding-right: .2rem; }
+  .leafer-substrate__custom-option { width: 100%; min-height: 68px; padding: .55rem .6rem; display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--text); cursor: pointer; text-align: left; transition: border-color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
+  .leafer-substrate__custom-option:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 8px 18px color-mix(in srgb, var(--text), transparent 93%); }
+  .leafer-substrate__custom-option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 90%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 25%); }
+  .leafer-substrate__material-thumb { width: 54px; height: 54px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border), var(--text) 8%); border-radius: 10px; background: #83745d; }
+  .leafer-substrate__material-thumb img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(.9) contrast(1.04); }
+  .leafer-substrate__material-pattern { width: 100%; height: 100%; display: block; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,.34) 0 9%, transparent 10%), radial-gradient(circle at 72% 66%, rgba(0,0,0,.2) 0 13%, transparent 14%), linear-gradient(135deg, #927b5f, #5f674d); background-size: 18px 18px, 28px 28px, auto; }
+  .leafer-substrate__custom-option-copy { min-width: 0; }
   .leafer-substrate__custom-option-check { width: 1.5rem; height: 1.5rem; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--border); border-radius: 50%; color: var(--accent); font-size: 1.1rem; line-height: 1; }
   .leafer-substrate__custom-option[aria-pressed="true"] .leafer-substrate__custom-option-check { background: var(--accent); color: var(--background); }
   .leafer-substrate__custom-option strong, .leafer-substrate__custom-option small { display: block; }
@@ -643,7 +655,9 @@
     .leafer-substrate__customizer-head > p { margin-top: .65rem; }
     .leafer-substrate__customizer-grid { grid-template-columns: 1fr; }
     .leafer-substrate__pot-slider { height: 220px; }
-    .leafer-substrate__custom-options { max-height: none; }
+    .leafer-substrate__custom-options { grid-template-columns: 1fr; max-height: none; }
+    .leafer-substrate__mix-slider { grid-template-columns: 42px minmax(0, 1fr) auto; }
+    .leafer-substrate__mix-slider-thumb { width: 42px; height: 42px; }
   }
 
   .leafer-substrate__steps, .leafer-substrate__details, .leafer-substrate__faq, .leafer-substrate__components { margin-top: var(--space-section); }
@@ -720,7 +734,7 @@
       this.customizer = this.querySelector('[data-customizer]');
       this.customSegments = [...this.querySelectorAll('[data-pot-segment]')];
       this.customOptions = [...this.querySelectorAll('[data-custom-option]')];
-      this.customShareSlider = this.querySelector('[data-custom-share-slider]');
+      this.customSliderList = this.querySelector('[data-custom-slider-list]');
       this.customSelectedIndex = 0;
       this.insightPlants = this.querySelector('[data-insight-plants]');
       this.insightProperties = this.querySelector('[data-insight-properties]');
@@ -847,6 +861,8 @@
               freeSegment.dataset.structure = option.dataset.structure || '';
               freeSegment.dataset.nutrient = option.dataset.nutrient || '';
               freeSegment.dataset.technicalNote = option.dataset.technicalNote || '';
+              const preview = option.querySelector('img');
+              freeSegment.dataset.image = preview?.currentSrc || preview?.src || '';
             }
           } else {
             const segment = this.customSegments.find((item) => item.dataset.name === option.dataset.name);
@@ -863,6 +879,11 @@
               delete segment.dataset.structure;
               delete segment.dataset.nutrient;
               delete segment.dataset.technicalNote;
+              delete segment.dataset.image;
+              segment.style.removeProperty('background-image');
+              segment.style.removeProperty('background-size');
+              segment.style.removeProperty('background-position');
+              segment.style.removeProperty('background-blend-mode');
               segment.classList.remove('is-selected');
             }
           }
@@ -875,12 +896,9 @@
           if (segment.hidden) return;
           this.customSelectedIndex = Number(segment.dataset.index);
           this.customSegments.forEach((item) => item.classList.toggle('is-selected', item === segment));
-          this.syncCustomSlider();
+          const slider = this.customSliderList?.querySelector(`[data-custom-segment-slider="${segment.dataset.index}"]`);
+          slider?.focus({ preventScroll: true });
         });
-      });
-      if (this.customShareSlider) this.customShareSlider.addEventListener('input', () => {
-        this.balanceCustomShare();
-        this.refreshCustomRecipe();
       });
       this.syncCustomUI();
     }
@@ -907,42 +925,112 @@
       this.syncCustomUI();
     }
 
-    balanceCustomShare() {
+    balanceCustomSegment(selected, rawValue) {
       const segments = this.activeCustomSegments();
-      const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
-      if (!selected || !this.customShareSlider) return;
+      if (!selected || !segments.length) return;
       const minShare = Math.max(0, Number(selected.dataset.proMin) || 0);
       const maxShare = Math.min(100, Number(selected.dataset.proMax) || 100);
-      const requested = Math.max(minShare, Math.min(maxShare, Number(this.customShareSlider.value) || minShare));
+      const requested = Math.max(minShare, Math.min(maxShare, Number(rawValue) || minShare));
       const others = segments.filter((segment) => segment !== selected);
       selected.dataset.share = String(others.length ? requested : 100);
+
       if (others.length) {
-        const baseShare = Math.floor((100 - Number(selected.dataset.share)) / others.length);
-        let remainder = 100 - Number(selected.dataset.share) - (baseShare * others.length);
-        others.forEach((segment) => {
-          const share = baseShare + (remainder > 0 ? 1 : 0);
+        let remaining = 100 - Number(selected.dataset.share);
+        const weight = others.reduce((sum, segment) => sum + (Number(segment.dataset.share) || 0), 0);
+        others.forEach((segment, index) => {
+          if (index === others.length - 1) {
+            segment.dataset.share = String(Math.max(0, remaining));
+            return;
+          }
+          const current = Number(segment.dataset.share) || 0;
+          const rawShare = weight > 0 ? Math.round((100 - Number(selected.dataset.share)) * current / weight) : Math.floor(remaining / (others.length - index));
+          const share = Math.max(0, Math.min(remaining, rawShare));
           segment.dataset.share = String(share);
-          remainder -= 1;
+          remaining -= share;
         });
       }
-      this.syncCustomUI();
+
+      this.updateCustomSegmentVisuals();
+      this.updateCustomSliderValues();
+      this.updateProFeedback();
     }
 
-    syncCustomSlider() {
+    updateCustomSegmentVisuals() {
+      this.customSegments.forEach((segment) => {
+        const share = Number(segment.dataset.share) || 0;
+        segment.style.height = share ? `${share}%` : '';
+        segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
+        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
+        if (segment.dataset.image) {
+          const image = segment.dataset.image.replace(/"/g, '%22');
+          segment.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .18), rgba(24, 29, 20, .18)), url("${image}")`;
+          segment.style.backgroundSize = 'cover';
+          segment.style.backgroundPosition = 'center';
+          segment.style.backgroundBlendMode = 'multiply';
+        } else {
+          segment.style.removeProperty('background-image');
+          segment.style.removeProperty('background-size');
+          segment.style.removeProperty('background-position');
+          segment.style.removeProperty('background-blend-mode');
+        }
+      });
+    }
+
+    renderCustomSliders() {
+      if (!this.customSliderList) return;
       const segments = this.activeCustomSegments();
-      const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
-      if (!this.customShareSlider || !selected) return;
-      this.customSelectedIndex = Number(selected.dataset.index);
-      this.customShareSlider.disabled = false;
-      const minShare = Math.max(0, Number(selected.dataset.proMin) || 0);
-      const maxShare = Math.min(100, Number(selected.dataset.proMax) || 100);
-      this.customShareSlider.min = String(minShare);
-      this.customShareSlider.max = String(maxShare);
-      this.customShareSlider.value = String(Math.max(minShare, Math.min(maxShare, Number(selected.dataset.share) || Math.max(1, minShare))));
-      const label = this.querySelector('[data-custom-share-label]');
-      const output = this.querySelector('[data-custom-share-output]');
-      if (label) label.textContent = `${selected.dataset.name} anpassen`;
-      if (output) output.textContent = `${selected.dataset.share} %`;
+      this.customSliderList.replaceChildren();
+
+      segments.forEach((segment) => {
+        const row = document.createElement('label');
+        row.className = 'leafer-substrate__mix-slider';
+
+        const thumb = document.createElement('span');
+        thumb.className = 'leafer-substrate__mix-slider-thumb';
+        thumb.setAttribute('aria-hidden', 'true');
+        if (segment.dataset.image) {
+          const image = segment.dataset.image.replace(/"/g, '%22');
+          thumb.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .1), rgba(24, 29, 20, .1)), url("${image}")`;
+          thumb.style.backgroundSize = 'cover';
+          thumb.style.backgroundPosition = 'center';
+        }
+
+        const name = document.createElement('strong');
+        name.className = 'leafer-substrate__mix-slider-name';
+        name.textContent = segment.dataset.name;
+
+        const output = document.createElement('output');
+        output.dataset.customSegmentOutput = segment.dataset.index;
+        output.textContent = `${segment.dataset.share || 0} %`;
+
+        const range = document.createElement('input');
+        range.type = 'range';
+        range.step = '1';
+        range.min = String(Math.max(0, Number(segment.dataset.proMin) || 0));
+        range.max = String(Math.min(100, Number(segment.dataset.proMax) || 100));
+        range.value = String(Number(segment.dataset.share) || 0);
+        range.dataset.customSegmentSlider = segment.dataset.index;
+        range.setAttribute('aria-label', segment.dataset.name);
+        range.addEventListener('input', () => {
+          this.customSelectedIndex = Number(segment.dataset.index);
+          this.customSegments.forEach((item) => item.classList.toggle('is-selected', item === segment));
+          this.balanceCustomSegment(segment, range.value);
+          this.refreshCustomRecipe();
+        });
+
+        row.append(thumb, name, output, range);
+        this.customSliderList.append(row);
+      });
+    }
+
+    updateCustomSliderValues() {
+      if (!this.customSliderList) return;
+      this.activeCustomSegments().forEach((segment) => {
+        const slider = this.customSliderList.querySelector(`[data-custom-segment-slider="${segment.dataset.index}"]`);
+        const output = this.customSliderList.querySelector(`[data-custom-segment-output="${segment.dataset.index}"]`);
+        if (slider) slider.value = String(Number(segment.dataset.share) || 0);
+        if (output) output.textContent = `${segment.dataset.share || 0} %`;
+      });
     }
 
     syncCustomUI() {
@@ -950,18 +1038,13 @@
       const count = this.querySelector('[data-customizer-count]');
       const hint = this.querySelector('[data-customizer-hint]');
       if (count) count.textContent = String(segments.length);
-      if (hint) hint.textContent = segments.length ? 'Tippe auf ein Segment und passe seinen Anteil mit dem Regler an.' : 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.';
+      if (hint) hint.textContent = segments.length ? 'Passe jeden Anteil direkt mit seinem Regler an. Die Mischung bleibt automatisch bei 100 %.' : 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.';
       this.customOptions.forEach((option) => {
         const active = segments.some((segment) => segment.dataset.name === option.dataset.name);
         option.setAttribute('aria-pressed', active ? 'true' : 'false');
       });
-      this.customSegments.forEach((segment) => {
-        const share = Number(segment.dataset.share) || 0;
-        segment.style.height = share ? `${share}%` : '';
-        segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
-        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
-      });
-      this.syncCustomSlider();
+      this.updateCustomSegmentVisuals();
+      this.renderCustomSliders();
       this.updateProFeedback();
     }
 
