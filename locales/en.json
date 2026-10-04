@@ -620,13 +620,13 @@
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     },
     "solution": {
-      "eyebrow": "LEAFerservice · individually hand-mixed substrates",
+      "eyebrow": "LEAFerservice · custom substrate · lighting · planters · plants",
       "heading": "Your plant. Your substrate mix.",
-      "text": "Choose a plant profile and volume, or build your own recipe in pro mode. We hand-mix your substrate with transparent ingredients and proportions.",
-      "primary": "Configure substrate",
+      "text": "Build your recipe live in the pot: adjust proportions with sliders, move layers for a clearer visual overview and add the finished custom mix directly to cart. Explore plant lighting, planters, houseplants, propagation and care for complete setups.",
+      "primary": "Build your own mix",
       "secondary": "Plan a plant project",
-      "world_heading": "Or open a product world directly",
-      "world_intro": "The LEAF Planner is the central solution path. If you already know your goal, go directly to houseplants, substrate, interiors, planters, propagation, care or bundles."
+      "world_heading": "The product worlds around your plant project",
+      "world_intro": "Custom substrate remains the core, complemented by plant lighting and interiors, planters, houseplants, propagation, bundles and care as connected product worlds."
     },
     "knowledge_links": {
       "label": "Keep learning",
