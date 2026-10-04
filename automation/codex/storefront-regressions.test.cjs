@@ -68,3 +68,14 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(index.sections.home_collection_journey.settings.heading, /Wurzelraum/);
   assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
 });
+
+
+test('SSOT component profile JSON falls back when metaobject reference is absent', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  assert.match(liquid, /component_profile_data/);
+  assert.match(liquid, /component_profile_data\.min_percent/);
+  assert.match(liquid, /component_profile_data\.max_percent/);
+  assert.match(liquid, /component_profile_data\.aeration/);
+  assert.match(liquid, /component_profile_data\.structure/);
+  assert.match(liquid, /data-pro-max="{{ pro_max }}"/);
+});
