@@ -634,13 +634,13 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "LEAFerservice · individuell handgemischte Substrate",
+      "eyebrow": "LEAFerservice · Substrat nach Maß · Licht · Gefäße · Pflanzen",
       "heading": "Deine Pflanze. Deine Substratmischung.",
-      "text": "Wähle Pflanzenprofil und Menge oder stelle im Profi-Modus deine eigene Rezeptur zusammen. Wir mischen dein Substrat individuell – mit transparenten Bestandteilen und Anteilen.",
-      "primary": "Substrat konfigurieren",
+      "text": "Mische deine Rezeptur live im Topf: Anteile per Slider verändern, Schichten zur Übersicht verschieben und die individuelle Mischung direkt bestellen. Ergänzend findest du Pflanzenlicht, Gefäße, Zimmerpflanzen, Anzucht und Pflege für komplette Setups.",
+      "primary": "Eigene Mischung bauen",
       "secondary": "Pflanzenprojekt planen",
-      "world_heading": "Oder direkt in eine Produktwelt",
-      "world_intro": "Der LEAF Planer ist der zentrale Lösungsweg. Wenn du dein Ziel bereits kennst, kannst du direkt zu Zimmerpflanzen, Substrat, Interieur, Gefäßen, Anzucht, Pflege oder Sets wechseln."
+      "world_heading": "Das Sortiment rund um dein Pflanzenprojekt",
+      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten."
     },
     "knowledge_links": {
       "label": "Direkt weiterlernen",
