@@ -56,21 +56,24 @@ function safeLocale(value: unknown) {
   return locale.startsWith("en") ? "en" : "de";
 }
 
+const searchStopWords = new Set("was wie wofuer wofur macht ist sind der die das den dem des ein eine einer einem einen und oder fuer fur mit von zum zur im am auf bei ich du mir mich mein meine bitte what how does do is are the a an and or for with from in on my your please".split(" "));
+
 function tokens(query: string) {
   return [...new Set(
     query
       .toLocaleLowerCase()
       .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9äöüß\s-]/gi, " ")
       .split(/\s+/)
       .map((token) => token.trim())
-      .filter((token) => token.length >= 3)
+      .filter((token) => token.length >= 3 && !searchStopWords.has(token))
   )].slice(0, 8);
 }
 
 function scoreText(parts: unknown[], needles: string[]) {
-  const text = parts.map((value) => typeof value === "string" ? value : JSON.stringify(value ?? "")).join(" ").toLocaleLowerCase();
-  return needles.reduce((score, needle) => score + (text.includes(needle) ? 1 : 0), 0);
+  const words = parts.map((value) => typeof value === "string" ? value : JSON.stringify(value ?? "")).join(" ").toLocaleLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").split(/[^a-z0-9ß]+/);
+  return needles.reduce((score, needle) => score + (words.some((word) => word === needle || (needle.length >= 5 && word.startsWith(needle))) ? 1 : 0), 0);
 }
 
 async function contextFor(message: string) {
@@ -130,6 +133,11 @@ function fallbackAnswer(context: any, locale: string) {
   const knowledge = Array.isArray(context?.knowledge) ? context.knowledge : [];
   const products = Array.isArray(context?.products) ? context.products : [];
 
+  if (knowledge.length) {
+    const answer = clean(knowledge[0]?.answer, 1400);
+    if (answer) return answer;
+  }
+
   if (products.length) {
     const top = products[0];
     const title = clean(top?.canonical_title, 180);
@@ -149,12 +157,6 @@ function fallbackAnswer(context: any, locale: string) {
       "Für eine konkrete Produktauswahl nach Pflanze, Standort und Routine nutze den LEAF Planer."
     ].filter(Boolean);
     return parts.join(" ");
-  }
-
-  if (knowledge.length) {
-    const top = knowledge[0];
-    const answer = clean(top?.answer, 1400);
-    if (answer) return answer;
   }
 
   return locale === "en"

@@ -634,11 +634,11 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "LEAF Planer · ein zentraler Einstieg",
-      "heading": "Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.",
-      "text": "Sag uns, was du erreichen möchtest. LEAF verbindet Pflanze, Wurzelraum, Gefäß, Licht, Standort und Pflege – und zeigt dir nur die nächsten sinnvollen Optionen.",
-      "primary": "Lösung finden",
-      "secondary": "Produktwelten direkt öffnen",
+      "eyebrow": "LEAFerservice · individuell handgemischte Substrate",
+      "heading": "Deine Pflanze. Deine Substratmischung.",
+      "text": "Wähle Pflanzenprofil und Menge oder stelle im Profi-Modus deine eigene Rezeptur zusammen. Wir mischen dein Substrat individuell – mit transparenten Bestandteilen und Anteilen.",
+      "primary": "Substrat konfigurieren",
+      "secondary": "Pflanzenprojekt planen",
       "world_heading": "Oder direkt in eine Produktwelt",
       "world_intro": "Der LEAF Planer ist der zentrale Lösungsweg. Wenn du dein Ziel bereits kennst, kannst du direkt zu Zimmerpflanzen, Substrat, Interieur, Gefäßen, Anzucht, Pflege oder Sets wechseln."
     },
