@@ -1041,14 +1041,40 @@
         this.syncCustomUI();
         return;
       }
-      const baseShare = Math.floor(100 / segments.length);
-      let remainder = 100 - (baseShare * segments.length);
-      segments.forEach((segment, index) => {
-        const share = baseShare + (remainder > 0 ? 1 : 0);
-        segment.dataset.share = String(share);
-        remainder -= 1;
-        if (index === 0) this.customSelectedIndex = Number(segment.dataset.index);
+
+      const minFor = (segment) => Math.max(0, Number(segment.dataset.proMin) || 0);
+      const maxFor = (segment) => Math.min(100, Number(segment.dataset.proMax) || 100);
+      let remaining = 100;
+
+      segments.forEach((segment) => {
+        const minimum = minFor(segment);
+        segment.dataset.share = String(minimum);
+        remaining -= minimum;
       });
+
+      let guard = 0;
+      while (remaining > 0 && guard < 1000) {
+        const candidates = segments.filter((segment) => Number(segment.dataset.share) < maxFor(segment));
+        if (!candidates.length) break;
+
+        const fairShare = Math.max(1, Math.floor(remaining / candidates.length));
+        for (const segment of candidates) {
+          if (remaining <= 0) break;
+          const current = Number(segment.dataset.share) || 0;
+          const capacity = maxFor(segment) - current;
+          const addition = Math.min(fairShare, capacity, remaining);
+          segment.dataset.share = String(current + addition);
+          remaining -= addition;
+        }
+        guard += 1;
+      }
+
+      if (remaining > 0) {
+        const fallback = segments.find((segment) => Number(segment.dataset.share) < 100);
+        if (fallback) fallback.dataset.share = String(Number(fallback.dataset.share) + remaining);
+      }
+
+      this.customSelectedIndex = Number(segments[0].dataset.index);
       this.syncCustomUI();
     }
 
