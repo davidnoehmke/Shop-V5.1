@@ -225,17 +225,52 @@
                       {% if component_product.available and component_product.id != selector_product.id %}
                         {% liquid
                           assign component_profile = component_product.metafields.leaf_configurator.component_profile.value
-                          assign pro_min = component_profile.pro_min_percent.value | default: 0
-                          assign pro_max = component_profile.pro_max_percent.value | default: 100
+                          assign component_profile_data = component_product.metafields.leaf_configurator.component_profile_data.value
+
+                          assign pro_min = component_profile.pro_min_percent.value
+                          if pro_min == blank and component_profile_data != blank
+                            assign pro_min = component_profile_data.min_percent
+                          endif
+                          assign pro_min = pro_min | default: 0
+
+                          assign pro_max = component_profile.pro_max_percent.value
+                          if pro_max == blank and component_profile_data != blank
+                            assign pro_max = component_profile_data.max_percent
+                          endif
+                          assign pro_max = pro_max | default: 100
+
                           assign warning_percent = component_profile.warning_percent.value | default: pro_max
                           assign pro_note = component_profile.technical_note.value
+
+                          assign component_aeration = component_profile.aeration.value
+                          if component_aeration == blank and component_profile_data != blank
+                            assign component_aeration = component_profile_data.aeration
+                          endif
+
+                          assign component_drainage = component_profile.drainage.value
+                          if component_drainage == blank and component_profile_data != blank
+                            assign component_drainage = component_profile_data.drainage
+                          endif
+
+                          assign component_water_retention = component_profile.water_retention.value
+                          if component_water_retention == blank and component_profile_data != blank
+                            assign component_water_retention = component_profile_data.water_retention
+                          endif
+
+                          assign component_structure = component_profile.structure_stability.value
+                          if component_structure == blank and component_profile_data != blank
+                            assign component_structure = component_profile_data.structure
+                          endif
+
+                          assign component_nutrient = component_profile.nutrient_effect.value
+
                           assign show_pro_component = true
                           if component_profile != blank and component_profile.pro_enabled.value == false
                             assign show_pro_component = false
                           endif
                         %}
                         {% if show_pro_component %}
-                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_product.title | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_profile.aeration.value }}" data-drainage="{{ component_profile.drainage.value }}" data-water-retention="{{ component_profile.water_retention.value }}" data-structure="{{ component_profile.structure_stability.value }}" data-nutrient="{{ component_profile.nutrient_effect.value }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
+                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_product.title | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_aeration }}" data-drainage="{{ component_drainage }}" data-water-retention="{{ component_water_retention }}" data-structure="{{ component_structure }}" data-nutrient="{{ component_nutrient }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
                           <span class="leafer-substrate__material-thumb" aria-hidden="true">
                             {% if component_product.featured_image != blank %}
                               {{ component_product.featured_image | image_url: width: 180 | image_tag: widths: '90, 180', sizes: '54px', loading: 'lazy', alt: '' }}
