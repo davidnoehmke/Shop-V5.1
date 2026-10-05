@@ -203,11 +203,11 @@
 
     {% if request.page_type == 'index' %}
       <nav class="home-journey__knowledge-links" aria-label="{{ 'home.knowledge_links.label' | t | escape }}" data-leaf-reveal>
-        <a href="/pages/leafers-substratbestandteile">{{ 'home.knowledge_links.substrate' | t }}</a>
-        <a href="/pages/monstera-substrat">{{ 'home.knowledge_links.monstera' | t }}</a>
-        <a href="/pages/anthurium-substrat">{{ 'home.knowledge_links.anthurium' | t }}</a>
-        <a href="/collections/interieur-solutions">{{ 'home.knowledge_links.interieur' | t }}</a>
-        <a href="/blogs/leafers-nice2know-blog">{{ 'home.knowledge_links.blog' | t }}</a>
+        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/leafers-substratbestandteile">{{ 'home.knowledge_links.substrate' | t }}</a>
+        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/monstera-substrat">{{ 'home.knowledge_links.monstera' | t }}</a>
+        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/anthurium-substrat">{{ 'home.knowledge_links.anthurium' | t }}</a>
+        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/interieur-solutions">{{ 'home.knowledge_links.interieur' | t }}</a>
+        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog">{{ 'home.knowledge_links.blog' | t }}</a>
       </nav>
     {% endif %}
 
