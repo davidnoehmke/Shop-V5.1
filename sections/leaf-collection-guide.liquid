@@ -81,18 +81,18 @@
         {% endif %}
 
         <nav class="leaf-collection-guide__paths" aria-label="{{ 'collection.guide.paths_label' | t | escape }}">
-          <a href="/#LeafAdvisor">{{ 'collection.guide.planner_link' | t }}</a>
+          <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor">{{ 'collection.guide.planner_link' | t }}</a>
           {% if collection.handle contains 'substrat' %}
-            <a href="/collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
-            <a href="/collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
           {% elsif collection.handle == 'interieur-solutions' %}
-            <a href="/collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
-            <a href="/collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
           {% elsif collection.handle == 'zimmerpflanzen-1' %}
             <a href="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'collection.guide.substrate_link' | t }}</a>
-            <a href="/collections/interieur-solutions">{{ 'collection.guide.interieur_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/interieur-solutions">{{ 'collection.guide.interieur_link' | t }}</a>
           {% endif %}
-          <a href="/blogs/leafers-nice2know-blog">{{ 'collection.guide.knowledge_link' | t }}</a>
+          <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog">{{ 'collection.guide.knowledge_link' | t }}</a>
         </nav>
       </div>
     </div>
