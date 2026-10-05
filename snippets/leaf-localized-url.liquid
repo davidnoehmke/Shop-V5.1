@@ -1,5 +1,12 @@
 {%- liquid
   assign leaf_localized_url = url | default: routes.root_url
+  assign shop_url_size = shop.url | size
+  assign url_origin = leaf_localized_url | slice: 0, shop_url_size
+
+  if url_origin == shop.url
+    assign leaf_localized_url = leaf_localized_url | remove_first: shop.url
+  endif
+
   assign first_char = leaf_localized_url | slice: 0, 1
   assign first_two = leaf_localized_url | slice: 0, 2
   assign root_size = routes.root_url | size
