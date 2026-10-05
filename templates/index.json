@@ -456,7 +456,7 @@
         "intro": "<p>Wähle ein Pflanzenprofil oder baue deine eigene Rezeptur direkt im Topf. Jeder Slider verändert das sichtbare Volumen live; die übrigen Bestandteile gleichen sich automatisch auf 100 Prozent aus. Die Schichten kannst du per Drag & Drop nur für die Ansicht neu sortieren.</p>",
         "selection_eyebrow": "Deine Mischung",
         "selection_heading": "Grundrezeptur wählen oder direkt selbst mischen",
-        "selection_text": "<p>Für eine schnelle Lösung wählst du Pflanzenprofil und Menge. Im geöffneten Profi-Modus kombinierst du bis zu fünf Bestandteile selbst und siehst jede Änderung direkt im Topf.</p>",
+        "selection_text": "<p>Für eine schnelle Lösung wählst du Pflanzenprofil und Menge. Im geöffneten Profi-Modus kombinierst du bis zu vier Bestandteile selbst und siehst jede Änderung direkt im Topf.</p>",
         "profile_option_name": "Pflanzentyp",
         "volume_option_name": "Menge",
         "profile_legend": "1. Pflanzentyp wählen",
