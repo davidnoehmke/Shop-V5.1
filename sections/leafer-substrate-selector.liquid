@@ -86,16 +86,16 @@
           {% if section.settings.eyebrow != blank %}<p class="leafer-substrate__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
           <{{ heading_tag }} id="LeaferSubstrateHeading-{{ section.id }}">{{ section.settings.heading }}</{{ heading_tag }}>
           {% if section.settings.intro != blank %}<div class="leafer-substrate__intro rte">{{ section.settings.intro }}</div>{% endif %}
-          {% if product_subtitle != blank %}<p class="leafer-substrate__product-subtitle">{{ product_subtitle | escape }}</p>{% endif %}
+          {% if product_subtitle != blank %}<p class="leafer-substrate__product-subtitle">{% if request.locale.iso_code == 'en' %}Suitable substrate by plant type &amp; volume{% else %}{{ product_subtitle | escape }}{% endif %}</p>{% endif %}
 
-          <ul class="leafer-substrate__signals" aria-label="Entscheidungshilfen">
-            <li>{{ usp_1 | default: 'Sechs feste Pflanzenprofile' | escape }}</li>
-            <li>{{ usp_2 | default: '2 L, 5 L oder 10 L' | escape }}</li>
-            <li>{{ usp_3 | default: 'Rezeptur vor dem Kauf sichtbar' | escape }}</li>
+          <ul class="leafer-substrate__signals" aria-label="{% if request.locale.iso_code == 'en' %}Decision support{% else %}Entscheidungshilfen{% endif %}">
+            <li>{% if request.locale.iso_code == 'en' %}Six plant groups{% else %}{{ usp_1 | default: 'Sechs feste Pflanzenprofile' | escape }}{% endif %}</li>
+            <li>{% if request.locale.iso_code == 'en' %}2 L, 5 L or 10 L{% else %}{{ usp_2 | default: '2 L, 5 L oder 10 L' | escape }}{% endif %}</li>
+            <li>{% if request.locale.iso_code == 'en' %}Recipe visible before purchase{% else %}{{ usp_3 | default: 'Rezeptur vor dem Kauf sichtbar' | escape }}{% endif %}</li>
           </ul>
 
           <p class="leafer-substrate__price-range">
-            <span>Preisrahmen</span>
+            <span>{% if request.locale.iso_code == 'en' %}Price range{% else %}Preisrahmen{% endif %}</span>
             <strong>{% if selector_product.price_varies %}{{ min_price }} – {{ max_price }}{% else %}{{ min_price }}{% endif %}</strong>
           </p>
         </div>
@@ -115,12 +115,12 @@
             <p class="leafer-substrate__eyebrow">{{ section.settings.selection_eyebrow | escape }}</p>
             <h2>{{ section.settings.selection_heading | escape }}</h2>
             {% if section.settings.selection_text != blank %}<div class="rte">{{ section.settings.selection_text }}</div>{% endif %}
-            <div class="leafer-substrate__progress" aria-label="Auswahlfortschritt">
-              <span class="is-active"><b>1</b><em>Pflanzenprofil</em></span>
+            <div class="leafer-substrate__progress" aria-label="{% if request.locale.iso_code == 'en' %}Selection progress{% else %}Auswahlfortschritt{% endif %}">
+              <span class="is-active"><b>1</b><em>{% if request.locale.iso_code == 'en' %}Plant profile{% else %}Pflanzenprofil{% endif %}</em></span>
               <i aria-hidden="true">→</i>
-              <span><b>2</b><em>Menge</em></span>
+              <span><b>2</b><em>{% if request.locale.iso_code == 'en' %}Volume{% else %}Menge{% endif %}</em></span>
               <i aria-hidden="true">→</i>
-              <span><b>3</b><em>Rezeptur</em></span>
+              <span><b>3</b><em>{% if request.locale.iso_code == 'en' %}Recipe{% else %}Rezeptur{% endif %}</em></span>
             </div>
           </header>
 
@@ -199,25 +199,25 @@
             <section class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
               <header class="leafer-substrate__customizer-head">
                 <div>
-                  <p class="leafer-substrate__eyebrow">Individuell mischen</p>
-                  <h2 id="LeaferCustomizerHeading-{{ section.id }}">Deine Mischung im Pflanztopf</h2>
+                  <p class="leafer-substrate__eyebrow">{% if request.locale.iso_code == 'en' %}Custom mix{% else %}Individuell mischen{% endif %}</p>
+                  <h2 id="LeaferCustomizerHeading-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Your mix in the planter{% else %}Deine Mischung im Pflanztopf{% endif %}</h2>
                 </div>
-                <p>Wähle bis zu vier Komponenten und passe jeden Anteil direkt mit seinem eigenen Regler an.</p>
+                <p>{% if request.locale.iso_code == 'en' %}Choose up to four components and adjust each share with its own slider.{% else %}Wähle bis zu vier Komponenten und passe jeden Anteil direkt mit seinem eigenen Regler an.{% endif %}</p>
               </header>
               <div class="leafer-substrate__customizer-grid">
                 <div>
-                  <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="Vertikale Mischungsverteilung">
+                  <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="{% if request.locale.iso_code == 'en' %}Vertical mix distribution{% else %}Vertikale Mischungsverteilung{% endif %}">
                     {% for pot_index in (1..4) %}
-                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" data-order="{{ forloop.index0 }}" hidden aria-label="Freies Mischungssegment {{ forloop.index }}" aria-describedby="LeaferPotDragHint-{{ section.id }}"></button>
+                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" data-order="{{ forloop.index0 }}" hidden aria-label="{% if request.locale.iso_code == 'en' %}Free mix segment {{ forloop.index }}{% else %}Freies Mischungssegment {{ forloop.index }}{% endif %}" aria-describedby="LeaferPotDragHint-{{ section.id }}"></button>
                     {% endfor %}
                     <span class="leafer-substrate__pot-rim" aria-hidden="true"></span>
                   </div>
                   <p class="leafer-substrate__customizer-total" data-customizer-total>0 % · 0 L</p>
-                  <p class="leafer-substrate__pot-drag-hint" id="LeaferPotDragHint-{{ section.id }}">Schichten im Topf ziehen, um nur die Ansicht zu sortieren. Die Prozentwerte bleiben unverändert.</p>
+                  <p class="leafer-substrate__pot-drag-hint" id="LeaferPotDragHint-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Drag the layers in the pot to reorder the view only. Percentages stay unchanged.{% else %}Schichten im Topf ziehen, um nur die Ansicht zu sortieren. Die Prozentwerte bleiben unverändert.{% endif %}</p>
                 </div>
                 <div class="leafer-substrate__component-picker">
                   <div class="leafer-substrate__component-picker-head">
-                    <strong>Komponenten auswählen</strong>
+                    <strong>{% if request.locale.iso_code == 'en' %}Choose components{% else %}Komponenten auswählen{% endif %}</strong>
                     <span><b data-customizer-count>0</b>/4</span>
                   </div>
                   <div class="leafer-substrate__custom-options">
@@ -295,14 +295,14 @@
                       {% for fallback_component in fallback_components %}
                         <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ fallback_component | escape }}" aria-pressed="false">
                           <span class="leafer-substrate__material-thumb leafer-substrate__material-thumb--generated" aria-hidden="true"><span class="leafer-substrate__material-pattern"></span></span>
-                          <span class="leafer-substrate__custom-option-copy"><strong>{{ fallback_component | escape }}</strong><small>Rezepturbestandteil</small></span>
+                          <span class="leafer-substrate__custom-option-copy"><strong>{{ fallback_component | escape }}</strong><small>{% if request.locale.iso_code == 'en' %}Recipe component{% else %}Rezepturbestandteil{% endif %}</small></span>
                           <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
                         </button>
                       {% endfor %}
                     {% endif %}
                   </div>
                   <div class="leafer-substrate__slider-list" data-custom-slider-list></div>
-                  <p class="leafer-substrate__customizer-hint" data-customizer-hint>Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.</p>
+                  <p class="leafer-substrate__customizer-hint" data-customizer-hint>{% if request.locale.iso_code == 'en' %}Choose at least one component to start your custom distribution.{% else %}Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.{% endif %}</p>
                   <div class="leafer-substrate__pro-feedback" data-pro-feedback hidden aria-live="polite"></div>
                 </div>
               </div>
@@ -339,7 +339,7 @@
 
             <div class="leafer-substrate__selection-summary">
               <div>
-                <span>Deine Auswahl</span>
+                <span>{% if request.locale.iso_code == 'en' %}Your selection{% else %}Deine Auswahl{% endif %}</span>
                 <strong data-selection-summary>{{ selected_profile | escape }} · {{ selected_volume | escape }}</strong>
               </div>
               <strong class="leafer-substrate__selected-price" data-selected-price aria-live="polite">{{ selected_variant.price | money }}</strong>
@@ -360,10 +360,10 @@
             </div>
           {% endform %}
 
-          <div class="leafer-substrate__reassurance" aria-label="Hinweise zur Bestellung">
-            <span>✓ Preis und Bestand direkt aus Shopify</span>
-            <span>✓ Rezeptur an der Warenkorbposition</span>
-            <span>✓ Keine frei erfundenen Mischversprechen</span>
+          <div class="leafer-substrate__reassurance" aria-label="{% if request.locale.iso_code == 'en' %}Order information{% else %}Hinweise zur Bestellung{% endif %}">
+            <span>✓ {% if request.locale.iso_code == 'en' %}Price and inventory directly from Shopify{% else %}Preis und Bestand direkt aus Shopify{% endif %}</span>
+            <span>✓ {% if request.locale.iso_code == 'en' %}Recipe stored with the cart line item{% else %}Rezeptur an der Warenkorbposition{% endif %}</span>
+            <span>✓ {% if request.locale.iso_code == 'en' %}No unsupported mix claims{% else %}Keine frei erfundenen Mischversprechen{% endif %}</span>
           </div>
         </div>
 
@@ -375,13 +375,13 @@
           </header>
 
           <p class="leafer-substrate__recipe-selection" data-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
-          <p class="leafer-substrate__recipe-empty" data-recipe-empty>Die Rezeptur wird nach deiner Auswahl geladen.</p>
-          <div class="leafer-substrate__recipe-list" data-recipe-list aria-label="Bestandteile der ausgewählten Rezeptur"></div>
+          <p class="leafer-substrate__recipe-empty" data-recipe-empty>{% if request.locale.iso_code == 'en' %}The recipe loads after your selection.{% else %}Die Rezeptur wird nach deiner Auswahl geladen.{% endif %}</p>
+          <div class="leafer-substrate__recipe-list" data-recipe-list aria-label="{% if request.locale.iso_code == 'en' %}Components of the selected recipe{% else %}Bestandteile der ausgewählten Rezeptur{% endif %}"></div>
 
           <dl class="leafer-substrate__recipe-meta">
-            <div><dt>Gesamt</dt><dd data-recipe-total>100 %</dd></div>
-            <div><dt>Berechnungsbasis</dt><dd data-recipe-basis>{{ recipe_matrix.basis | default: 'Volumenanteile' | escape }}</dd></div>
-            <div><dt>Rezepturstand</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
+            <div><dt>{% if request.locale.iso_code == 'en' %}Total{% else %}Gesamt{% endif %}</dt><dd data-recipe-total>100 %</dd></div>
+            <div><dt>{% if request.locale.iso_code == 'en' %}Calculation basis{% else %}Berechnungsbasis{% endif %}</dt><dd data-recipe-basis>{% if request.locale.iso_code == 'en' %}Volume shares{% else %}{{ recipe_matrix.basis | default: 'Volumenanteile' | escape }}{% endif %}</dd></div>
+            <div><dt>{% if request.locale.iso_code == 'en' %}Recipe version{% else %}Rezepturstand{% endif %}</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
           </dl>
 
           <ul class="leafer-substrate__recipe-notes" data-recipe-notes hidden></ul>
@@ -389,31 +389,31 @@
 
 
           <section class="leafer-substrate__base-recipe" data-base-recipe aria-labelledby="LeaferBaseRecipeHeading-{{ section.id }}">
-            <p class="leafer-substrate__eyebrow">Deine bewährte Substratwelt</p>
-            <h3 id="LeaferBaseRecipeHeading-{{ section.id }}">Passende LEAFer-Grundrezeptur</h3>
+            <p class="leafer-substrate__eyebrow">{% if request.locale.iso_code == 'en' %}Your proven substrate base{% else %}Deine bewährte Substratwelt{% endif %}</p>
+            <h3 id="LeaferBaseRecipeHeading-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Matching LEAF base recipe{% else %}Passende LEAFer-Grundrezeptur{% endif %}</h3>
             <p class="leafer-substrate__base-recipe-selection" data-base-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
-            <p class="leafer-substrate__base-recipe-copy">Diese feste Rezeptur bleibt als bewährte Orientierung erhalten. Deine individuelle Mischung wird zusätzlich darüber berechnet.</p>
-            <div class="leafer-substrate__recipe-list" data-base-recipe-list aria-label="Bestandteile der bewährten Grundrezeptur"></div>
+            <p class="leafer-substrate__base-recipe-copy">{% if request.locale.iso_code == 'en' %}This fixed recipe remains as a proven reference while your custom mix is calculated separately.{% else %}Diese feste Rezeptur bleibt als bewährte Orientierung erhalten. Deine individuelle Mischung wird zusätzlich darüber berechnet.{% endif %}</p>
+            <div class="leafer-substrate__recipe-list" data-base-recipe-list aria-label="{% if request.locale.iso_code == 'en' %}Components of the proven base recipe{% else %}Bestandteile der bewährten Grundrezeptur{% endif %}"></div>
           </section>
 
           <section class="leafer-substrate__dynamic-insights" data-dynamic-insights aria-labelledby="LeaferDynamicInsightsHeading-{{ section.id }}">
-            <p class="leafer-substrate__eyebrow">Dynamische Einordnung</p>
-            <h3 id="LeaferDynamicInsightsHeading-{{ section.id }}">Passt besonders zu</h3>
+            <p class="leafer-substrate__eyebrow">{% if request.locale.iso_code == 'en' %}Dynamic guidance{% else %}Dynamische Einordnung{% endif %}</p>
+            <h3 id="LeaferDynamicInsightsHeading-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Especially suitable for{% else %}Passt besonders zu{% endif %}</h3>
             <p class="leafer-substrate__insight-copy" data-insight-copy></p>
             <div class="leafer-substrate__insight-block">
-              <strong>Geeignete Pflanzen</strong>
+              <strong>{% if request.locale.iso_code == 'en' %}Suitable plants{% else %}Geeignete Pflanzen{% endif %}</strong>
               <div class="leafer-substrate__insight-chips" data-insight-plants></div>
             </div>
             <div class="leafer-substrate__insight-block">
-              <strong>Eigenschaften deiner Mischung</strong>
+              <strong>{% if request.locale.iso_code == 'en' %}Properties of your mix{% else %}Eigenschaften deiner Mischung{% endif %}</strong>
               <ul data-insight-properties></ul>
             </div>
           </section>
 
           <noscript>
             <div class="leafer-substrate__noscript">
-              <strong>Rezepturvorschau ohne JavaScript</strong>
-              <p>Wähle die gewünschte Kombination im Variantenfeld. Die Variante enthält Pflanzentyp und Menge; die detaillierte Literverteilung ist mit aktiviertem JavaScript sichtbar.</p>
+              <strong>{% if request.locale.iso_code == 'en' %}Recipe preview without JavaScript{% else %}Rezepturvorschau ohne JavaScript{% endif %}</strong>
+              <p>{% if request.locale.iso_code == 'en' %}Choose the desired combination in the variant selector. The variant contains plant profile and volume; the detailed litre distribution is visible when JavaScript is enabled.{% else %}Wähle die gewünschte Kombination im Variantenfeld. Die Variante enthält Pflanzentyp und Menge; die detaillierte Literverteilung ist mit aktiviertem JavaScript sichtbar.{% endif %}</p>
             </div>
           </noscript>
         </aside>
@@ -805,6 +805,7 @@
     connectedCallback() {
       if (this.dataset.initialized === 'true') return;
       this.dataset.initialized = 'true';
+      this.isEnglish = String(this.dataset.locale || '').toLowerCase().startsWith('en');
 
       this.nativeSelect = this.querySelector('[data-variant-select]');
       this.nativeField = this.querySelector('[data-native-field]');
@@ -887,11 +888,13 @@
       const price = this.formatMoney(variant.price);
       this.querySelectorAll('[data-selected-price]').forEach((node) => { node.textContent = price; });
 
+      const profileChoice = this.profileChoices.find((choice) => choice.value === profile);
+      const profileDisplay = profileChoice?.nextElementSibling?.querySelector('strong')?.textContent?.trim() || profile;
       const summary = this.querySelector('[data-selection-summary]');
-      if (summary) summary.textContent = [profile, volume].filter(Boolean).join(' · ');
+      if (summary) summary.textContent = [profileDisplay, volume].filter(Boolean).join(' · ');
 
       const recipeSelection = this.querySelector('[data-recipe-selection]');
-      if (recipeSelection) recipeSelection.textContent = [profile, volume].filter(Boolean).join(' · ');
+      if (recipeSelection) recipeSelection.textContent = [profileDisplay, volume].filter(Boolean).join(' · ');
 
       const availability = this.querySelector('[data-availability]');
       if (availability) {
@@ -1196,7 +1199,7 @@
         segment.style.height = share ? `${share}%` : '';
         segment.style.order = String(Number(segment.dataset.order) || 0);
         segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
-        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
+        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} ${this.isEnglish ? 'percent' : 'Prozent'}` : (this.isEnglish ? 'Free mix segment' : 'Freies Mischungssegment'));
         if (segment.dataset.image) {
           const image = segment.dataset.image.replace(/"/g, '%22');
           segment.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .18), rgba(24, 29, 20, .18)), url("${image}")`;
@@ -1277,10 +1280,10 @@
       if (count) count.textContent = String(segments.length);
       if (hint) {
         hint.textContent = !segments.length
-          ? 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.'
+          ? (this.isEnglish ? 'Choose at least one component to start your custom distribution.' : 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.')
           : atLimit
-            ? 'Vier Komponenten aktiv. Ziehe die Topfschichten zum Sortieren; die Prozentwerte bleiben unverändert.'
-            : 'Passe jeden Anteil direkt mit seinem Regler an. Die Mischung bleibt automatisch bei 100 %.';
+            ? (this.isEnglish ? 'Four components active. Drag the pot layers to reorder the view; percentages stay unchanged.' : 'Vier Komponenten aktiv. Ziehe die Topfschichten zum Sortieren; die Prozentwerte bleiben unverändert.')
+            : (this.isEnglish ? 'Adjust each share with its own slider. The mix automatically stays at 100%.' : 'Passe jeden Anteil direkt mit seinem Regler an. Die Mischung bleibt automatisch bei 100 %.');
       }
       this.customOptions.forEach((option) => {
         const active = segments.some((segment) => segment.dataset.name === option.dataset.name);
@@ -1306,8 +1309,8 @@
         const share = Number(segment.dataset.share) || 0;
         const warning = Number(segment.dataset.warning) || 100;
         const max = Number(segment.dataset.proMax) || 100;
-        if (share > max) warnings.push(`${segment.dataset.name}: ${share}% liegt über dem fachlichen Maximalwert von ${max}%.`);
-        else if (share > warning) warnings.push(`${segment.dataset.name}: ${share}% liegt über der Warnschwelle von ${warning}%.`);
+        if (share > max) warnings.push(this.isEnglish ? `${segment.dataset.name}: ${share}% exceeds the technical maximum of ${max}%.` : `${segment.dataset.name}: ${share}% liegt über dem fachlichen Maximalwert von ${max}%.`);
+        else if (share > warning) warnings.push(this.isEnglish ? `${segment.dataset.name}: ${share}% exceeds the warning threshold of ${warning}%.` : `${segment.dataset.name}: ${share}% liegt über der Warnschwelle von ${warning}%.`);
         ['aeration','drainage','structure','nutrient'].forEach((key) => {
           const value = Number(segment.dataset[key]);
           if (Number.isFinite(value) && value > 0) metrics[key] += value * share;
@@ -1319,7 +1322,9 @@
       feedback.replaceChildren();
       const summary = document.createElement('p');
       summary.className = 'leafer-substrate__pro-summary';
-      summary.textContent = warnings.length ? 'Fachliche Prüfung: Bitte Warnhinweise beachten.' : 'Fachliche Prüfung: Mischung innerhalb der hinterlegten Grenzwerte.';
+      summary.textContent = warnings.length
+        ? (this.isEnglish ? 'Technical check: please review the warnings.' : 'Fachliche Prüfung: Bitte Warnhinweise beachten.')
+        : (this.isEnglish ? 'Technical check: mix is within the stored limits.' : 'Fachliche Prüfung: Mischung innerhalb der hinterlegten Grenzwerte.');
       feedback.append(summary);
       if (warnings.length) {
         const list = document.createElement('ul');
@@ -1329,7 +1334,10 @@
       if (metricWeight > 0) {
         const grid = document.createElement('div');
         grid.className = 'leafer-substrate__pro-metrics';
-        [['Luftigkeit','aeration'],['Drainage','drainage'],['Wasserspeicher','water'],['Struktur','structure'],['Nährstoffwirkung','nutrient']].forEach(([label,key]) => {
+        (this.isEnglish
+          ? [['Aeration','aeration'],['Drainage','drainage'],['Water retention','water'],['Structure','structure'],['Nutrient effect','nutrient']]
+          : [['Luftigkeit','aeration'],['Drainage','drainage'],['Wasserspeicher','water'],['Struktur','structure'],['Nährstoffwirkung','nutrient']]
+        ).forEach(([label,key]) => {
           if (!metrics[key]) return;
           const item = document.createElement('span');
           item.textContent = `${label} ${Math.round(metrics[key] / metricWeight)}/10`;
@@ -1385,9 +1393,9 @@
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
-      if (basisNode) basisNode.textContent = 'Individuelle Volumenanteile';
+      if (basisNode) basisNode.textContent = this.isEnglish ? 'Custom volume shares' : 'Individuelle Volumenanteile';
       const versionNode = this.querySelector('[data-recipe-version]');
-      if (versionNode) versionNode.textContent = 'Individuell';
+      if (versionNode) versionNode.textContent = this.isEnglish ? 'Custom' : 'Individuell';
       const totalLabel = this.querySelector('[data-customizer-total]');
       if (totalLabel) totalLabel.textContent = `${this.formatNumber(total)} % · ${this.formatNumber(litresTotal)} L`;
       const notesList = this.querySelector('[data-recipe-notes]');
@@ -1407,7 +1415,7 @@
         const recipeText = this.renderCustomRecipe(volume);
         this.updateInsights(profile, this.activeCustomSegments());
         this.setProperty('[data-property-recipe]', recipeText);
-        this.setProperty('[data-property-version]', 'Individuell');
+        this.setProperty('[data-property-version]', this.isEnglish ? 'Custom' : 'Individuell');
       } else {
         const profile = variant.options?.[this.dataset.profileOption] || '';
         this.renderRecipe(profile, volume);
@@ -1451,7 +1459,62 @@
         if (item.includes('algenkalk')) additions.push('pH-stabilisierende Ergänzung');
         if (item.includes('mykorrhiza')) additions.push('Unterstützung der Wurzelumgebung');
       });
-      const properties = [...new Set([...rule.properties, ...additions])];
+      let properties = [...new Set([...rule.properties, ...additions])];
+      if (this.isEnglish) {
+        const plantTranslations = {
+          'Zimmerpflanzen': 'Houseplants',
+          'Basilikum': 'Basil',
+          'Minze': 'Mint',
+          'Petersilie': 'Parsley',
+          'Balkonpflanzen': 'Balcony plants',
+          'Kakteen': 'Cacti',
+          'Areca-Palme': 'Areca palm',
+          'Kentia-Palme': 'Kentia palm',
+          'Keimlinge': 'Seedlings',
+          'Stecklinge': 'Cuttings',
+          'Jungpflanzen': 'Young plants',
+          'Kräuter-Anzucht': 'Herb propagation'
+        };
+        const propertyTranslations = {
+          'Alltagstaugliche Grundmischung': 'Everyday base mix',
+          'Luftige Struktur': 'Airy structure',
+          'Schneller Wasserabzug': 'Fast drainage',
+          'Gute Wurzelbelüftung': 'Good root aeration',
+          'Ausgewogene Feuchteführung': 'Balanced moisture management',
+          'Gute Drainage': 'Good drainage',
+          'Nährstoffgeeignete Basis': 'Nutrient-compatible base',
+          'Hoher Mineralanteil': 'High mineral content',
+          'Sehr gute Drainage': 'Very good drainage',
+          'Zügiger Wasserabzug': 'Rapid drainage',
+          'Sehr luftige Struktur': 'Very airy structure',
+          'Rindenbetonte Basis': 'Bark-rich base',
+          'Geringere Verdichtung': 'Lower compaction',
+          'Strukturstabil': 'Structure-stable',
+          'Ausgeglichene Wasserführung': 'Balanced water management',
+          'Gute Standfestigkeit': 'Good stability',
+          'Feinere Struktur': 'Finer structure',
+          'Leicht zu durchwurzeln': 'Easy to root through',
+          'Gleichmäßige Feuchte': 'Even moisture',
+          'Drainage und Porenraum': 'Drainage and pore space',
+          'Feuchtepuffer': 'Moisture buffer',
+          'Luftige Grobstruktur': 'Airy coarse structure',
+          'Organische Nährstoffbasis': 'Organic nutrient base',
+          'pH-stabilisierende Ergänzung': 'pH-stabilising addition',
+          'Unterstützung der Wurzelumgebung': 'Support for the root environment'
+        };
+        const copyTranslations = {
+          'Die Anzeige orientiert sich an deinem gewählten Pflanzenprofil und den Bestandteilen der Rezeptur.': 'This guidance is based on your selected plant profile and recipe components.',
+          'Für tropische Zimmerpflanzen mit kräftiger, luftliebender Wurzelzone.': 'For tropical houseplants with vigorous roots that benefit from an airy root zone.',
+          'Für Kräuter und Balkonpflanzen, bei denen Feuchteführung und Drainage zusammenpassen sollen.': 'For herbs and balcony plants where moisture management and drainage need to work together.',
+          'Für trockenheitsverträgliche Pflanzen mit besonders durchlässiger Wurzelzone.': 'For drought-tolerant plants that need a particularly free-draining root zone.',
+          'Für epiphytische Orchideen, deren Wurzeln viel Luft und eine grobe Struktur benötigen.': 'For epiphytic orchids whose roots need plenty of air and a coarse structure.',
+          'Für größere Grünpflanzen mit Bedarf an einer stabilen und gut drainierenden Mischung.': 'For larger foliage plants that need a stable, well-draining mix.',
+          'Für Aussaat, Stecklinge und junge Pflanzen mit empfindlicher Wurzelentwicklung.': 'For sowing, cuttings and young plants with sensitive root development.'
+        };
+        rule.plants = rule.plants.map((plant) => plantTranslations[plant] || plant);
+        properties = properties.map((property) => propertyTranslations[property] || property);
+        rule.copy = copyTranslations[rule.copy] || rule.copy;
+      }
       this.insightPlants.replaceChildren();
       rule.plants.forEach((plant) => {
         const chip = document.createElement('span');
