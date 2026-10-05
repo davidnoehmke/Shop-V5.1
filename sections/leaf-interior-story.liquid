@@ -1,110 +1,119 @@
+{% capture interior_url %}{% render 'leaf-localized-url', url: '/collections/interieur-solutions' %}{% endcapture %}
+{% capture substrate_url %}{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}{% endcapture %}
+{% capture light_url %}{% render 'leaf-localized-url', url: '/pages/pflanzenlicht-konfigurator' %}{% endcapture %}
+{% capture plants_url %}{% render 'leaf-localized-url', url: '/collections/zimmerpflanzen-1' %}{% endcapture %}
+{% capture planters_url %}{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}{% endcapture %}
+{% capture succulents_url %}{% render 'leaf-localized-url', url: '/collections/sukkulentenwelt' %}{% endcapture %}
+{% capture supports_url %}{% render 'leaf-localized-url', url: '/collections/pflanzenzubehor-rankhilfen' %}{% endcapture %}
+{% capture all_products_url %}{% render 'leaf-localized-url', url: routes.all_products_collection_url %}{% endcapture %}
+
 
 <article id="LeafInteriorStory-{{ section.id }}" class="leaf-story" data-leaf-story>
   <header class="leaf-story__hero">
     <div>
-      <span class="leaf-story__eyebrow">INTERIEUR SOLUTION · INTERAKTIVER RAUMGUIDE</span>
+      <span class="leaf-story__eyebrow">{{ 'interior_story.hero_eyebrow' | t }}</span>
       <h1>{{ article.title }}</h1>
       <p>{{ article.summary | strip_html }}</p>
     </div>
-    <span class="leaf-story__draft">Beispielprojekt</span>
+    <span class="leaf-story__draft">{{ 'interior_story.draft' | t }}</span>
   </header>
 
-  <section class="leaf-story__experience" aria-label="Interaktiver Pflanzeninterieur-Raum">
+  <section class="leaf-story__experience" aria-label="{{ 'interior_story.experience_aria' | t | escape }}">
     <div class="leaf-story__scene-wrap">
       <div class="leaf-story__scene is-overview" data-story-scene style="--focus-x:50%;--focus-y:50%;">
         <div class="leaf-story__focus" aria-hidden="true"></div>
 
-        <button type="button" class="leaf-story__hotspot is-active" data-zone="overview" data-x="50" data-y="50" data-bg="50% 50%" aria-label="Gesamtwirkung anzeigen">
-          <span>00</span><strong>Gesamt</strong>
+        <button type="button" class="leaf-story__hotspot is-active" data-zone="overview" data-x="50" data-y="50" data-bg="50% 50%" aria-label="{{ 'interior_story.hotspot_overview_aria' | t | escape }}">
+          <span>00</span><strong>{{ 'interior_story.hotspot_overview_label' | t }}</strong>
         </button>
-        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--plants" data-zone="plants" data-x="30" data-y="43" data-bg="31% 50%" aria-label="Statement-Pflanzen erklären">
-          <span>01</span><strong>Pflanzen</strong>
+        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--plants" data-zone="plants" data-x="30" data-y="43" data-bg="31% 50%" aria-label="{{ 'interior_story.hotspot_plants_aria' | t | escape }}">
+          <span>01</span><strong>{{ 'interior_story.hotspot_plants_label' | t }}</strong>
         </button>
-        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--planter" data-zone="planter" data-x="35" data-y="63" data-bg="38% 63%" aria-label="Pflanzgefäße und Substrat erklären">
-          <span>02</span><strong>Gefäß</strong>
+        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--planter" data-zone="planter" data-x="35" data-y="63" data-bg="38% 63%" aria-label="{{ 'interior_story.hotspot_planter_aria' | t | escape }}">
+          <span>02</span><strong>{{ 'interior_story.hotspot_planter_label' | t }}</strong>
         </button>
-        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--light" data-zone="light" data-x="54" data-y="32" data-bg="54% 34%" aria-label="Pflanzenbeleuchtung erklären">
-          <span>03</span><strong>Licht</strong>
+        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--light" data-zone="light" data-x="54" data-y="32" data-bg="54% 34%" aria-label="{{ 'interior_story.hotspot_light_aria' | t | escape }}">
+          <span>03</span><strong>{{ 'interior_story.hotspot_light_label' | t }}</strong>
         </button>
-        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--terrarium" data-zone="terrarium" data-x="79" data-y="52" data-bg="76% 53%" aria-label="Terrarium erklären">
-          <span>04</span><strong>Terrarium</strong>
+        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--terrarium" data-zone="terrarium" data-x="79" data-y="52" data-bg="76% 53%" aria-label="{{ 'interior_story.hotspot_terrarium_aria' | t | escape }}">
+          <span>04</span><strong>{{ 'interior_story.hotspot_terrarium_label' | t }}</strong>
         </button>
-        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--vertical" data-zone="vertical" data-x="70" data-y="22" data-bg="68% 28%" aria-label="Vertikale Begrünung erklären">
-          <span>05</span><strong>Vertikal</strong>
+        <button type="button" class="leaf-story__hotspot leaf-story__hotspot--vertical" data-zone="vertical" data-x="70" data-y="22" data-bg="68% 28%" aria-label="{{ 'interior_story.hotspot_vertical_aria' | t | escape }}">
+          <span>05</span><strong>{{ 'interior_story.hotspot_vertical_label' | t }}</strong>
         </button>
       </div>
 
       <div class="leaf-story__scene-hint">
-        <span>Punkte antippen</span>
-        <span>Bereich fokussieren</span>
+        <span>{{ 'interior_story.hint_tap' | t }}</span>
+        <span>{{ 'interior_story.hint_focus' | t }}</span>
       </div>
     </div>
 
     <aside class="leaf-story__panel" aria-live="polite">
       <div class="leaf-story__counter"><span data-zone-count>1 / 6</span></div>
-      <span class="leaf-story__panel-kicker" data-zone-kicker>Gesamtwirkung</span>
-      <h2 data-zone-title>Ein Pflanzenraum funktioniert als System</h2>
-      <p data-zone-copy>Die Wirkung entsteht nicht durch möglichst viele Einzelprodukte, sondern durch abgestimmte Ebenen: große Pflanzen als Anker, ruhigere Gefäße, strukturierte Substrate, bewusst gesetztes Licht und kleinere botanische Szenen.</p>
+      <span class="leaf-story__panel-kicker" data-zone-kicker>{{ 'interior_story.overview_kicker' | t }}</span>
+      <h2 data-zone-title>{{ 'interior_story.overview_title' | t }}</h2>
+      <p data-zone-copy>{{ 'interior_story.overview_copy' | t }}</p>
       <ul data-zone-points>
-        <li>Statement-Pflanzen definieren Blickachsen.</li>
-        <li>Gefäße wiederholen Material und Form.</li>
-        <li>Licht verbindet Pflegebedarf und Atmosphäre.</li>
+        <li>{{ 'interior_story.overview_point_1' | t }}</li>
+        <li>{{ 'interior_story.overview_point_2' | t }}</li>
+        <li>{{ 'interior_story.overview_point_3' | t }}</li>
       </ul>
 
       <!-- LEAF CONVERSION CTA START -->
       <div class="leaf-story__cta" data-zone-cta-wrap>
-        <a class="leaf-story__cta-primary" data-zone-cta href="/collections/interieur-solutions">Raumprojekt konfigurieren <span aria-hidden="true">→</span></a>
-        <a class="leaf-story__cta-secondary" data-zone-secondary href="/collections/interieur-solutions">Interieur Solutions entdecken</a>
+        <a class="leaf-story__cta-primary" data-zone-cta href="{{ interior_url | strip | escape }}">{{ 'interior_story.overview_cta' | t }} <span aria-hidden="true">→</span></a>
+        <a class="leaf-story__cta-secondary" data-zone-secondary href="{{ interior_url | strip | escape }}">{{ 'interior_story.overview_cta' | t }}</a>
       </div>
       <!-- LEAF CONVERSION CTA END -->
 
       <div class="leaf-story__controls">
-        <button type="button" data-zone-prev aria-label="Vorherige Zone">← Zurück</button>
-        <button type="button" data-zone-next>Weiter →</button>
+        <button type="button" data-zone-prev aria-label="{{ 'interior_story.prev' | t | escape }}">{{ 'interior_story.prev' | t }}</button>
+        <button type="button" data-zone-next>{{ 'interior_story.next' | t }}</button>
       </div>
     </aside>
   </section>
 
-  <nav class="leaf-story__tabs" aria-label="Interieur-Bereiche">
-    <button type="button" class="is-active" data-zone="overview">Gesamt</button>
-    <button type="button" data-zone="plants">Pflanzen</button>
-    <button type="button" data-zone="planter">Gefäß & Substrat</button>
-    <button type="button" data-zone="light">Licht</button>
-    <button type="button" data-zone="terrarium">Terrarium</button>
-    <button type="button" data-zone="vertical">Vertikale Begrünung</button>
+  <nav class="leaf-story__tabs" aria-label="{{ 'interior_story.tabs_aria' | t | escape }}">
+    <button type="button" class="is-active" data-zone="overview">{{ 'interior_story.hotspot_overview_label' | t }}</button>
+    <button type="button" data-zone="plants">{{ 'interior_story.hotspot_plants_label' | t }}</button>
+    <button type="button" data-zone="planter">{{ 'interior_story.planter_kicker' | t }}</button>
+    <button type="button" data-zone="light">{{ 'interior_story.hotspot_light_label' | t }}</button>
+    <button type="button" data-zone="terrarium">{{ 'interior_story.hotspot_terrarium_label' | t }}</button>
+    <button type="button" data-zone="vertical">{{ 'interior_story.vertical_kicker' | t }}</button>
   </nav>
 
   <section class="leaf-story__content" aria-labelledby="leaf-story-how">
     <div class="leaf-story__content-lead">
-      <span class="leaf-story__eyebrow">WARUM DIESE LÖSUNG FUNKTIONIERT</span>
-      <h2 id="leaf-story-how">Ein Raum, mehrere pflanzliche Ebenen</h2>
+      <span class="leaf-story__eyebrow">{{ 'interior_story.content_eyebrow' | t }}</span>
+      <h2 id="leaf-story-how">{{ 'interior_story.content_heading' | t }}</h2>
     </div>
     <div class="leaf-story__content-grid">
       <div>
-        <h3>Große Pflanzen geben Struktur</h3>
-        <p>Monstera, Strelitzia oder ähnliche Solitärpflanzen eignen sich als visuelle Anker. Sie werden nicht gleichmäßig verteilt, sondern gezielt an Blickachsen und Übergängen eingesetzt.</p>
+        <h3>{{ 'interior_story.card_plants_title' | t }}</h3>
+        <p>{{ 'interior_story.card_plants_text' | t }}</p>
       </div>
       <div>
-        <h3>Substrat bleibt Teil der Gestaltung</h3>
-        <p>Die technische Ebene verschwindet nicht: Wurzelraum, Drainage, Luftporen und Wasserspeicherung bestimmen, welche Gefäßgröße und welche Mischung sinnvoll sind.</p>
+        <h3>{{ 'interior_story.card_substrate_title' | t }}</h3>
+        <p>{{ 'interior_story.card_substrate_text' | t }}</p>
       </div>
       <div>
-        <h3>Licht wird zum Interior-Element</h3>
-        <p>Pflanzenlicht muss nicht wie Technik wirken. Pendel-, Spot- oder Regallicht kann so geplant werden, dass es Pflanzen versorgt und gleichzeitig die Raumwirkung unterstützt.</p>
+        <h3>{{ 'interior_story.card_light_title' | t }}</h3>
+        <p>{{ 'interior_story.card_light_text' | t }}</p>
       </div>
       <div>
-        <h3>Kleine Szenen schaffen Tiefe</h3>
-        <p>Terrarien, Sukkulenten und vertikale Begrünung ergänzen die großen Pflanzen. Dadurch entsteht eine mehrschichtige Pflanzenwelt statt einer Ansammlung einzelner Töpfe.</p>
+        <h3>{{ 'interior_story.card_scenes_title' | t }}</h3>
+        <p>{{ 'interior_story.card_scenes_text' | t }}</p>
       </div>
     </div>
 
-    <div class="leaf-story__pathways" aria-label="Passende Konfiguratoren und Kollektionen">
-      <a href="/collections/interieur-solutions"><strong>Interieur Solutions</strong><span>Raumbegrünung, Pflanzen, Gefäße, Licht und Terrarium als zusammenhängende Lösung entdecken.</span></a>
-      <a href="/products/leafer-substrat-konfigurator"><strong>Substrat-Konfigurator</strong><span>Substratmischung passend zur Pflanze individuell zusammenstellen.</span></a>
-      <a href="/pages/pflanzenlicht-konfigurator"><strong>Pflanzenlicht-Konfigurator</strong><span>Beleuchtung nach Standort, Pflanze und Raumwirkung planen.</span></a>
-      <a href="/collections/zimmerpflanzen-1"><strong>Zimmerpflanzen</strong><span>Pflanzen für die Raumbegrünung auswählen und kombinieren.</span></a>
-      <a href="/collections/pflanzgefasse"><strong>Pflanzgefäße & Töpfe</strong><span>Gefäße passend zu Pflanzenmaß, Wurzelraum und Stil finden.</span></a>
-      <a href="/collections/sukkulentenwelt"><strong>Sukkulentenwelt</strong><span>Sukkulenten und Terrarium-Ideen als kompakte Pflanzenwelt entdecken.</span></a>
+    <div class="leaf-story__pathways" aria-label="{{ 'interior_story.pathways_aria' | t | escape }}">
+      <a href="{{ interior_url | strip | escape }}"><strong>{{ 'interior_story.path_interior_title' | t }}</strong><span>{{ 'interior_story.path_interior_text' | t }}</span></a>
+      <a href="{{ substrate_url | strip | escape }}"><strong>{{ 'interior_story.path_substrate_title' | t }}</strong><span>{{ 'interior_story.path_substrate_text' | t }}</span></a>
+      <a href="{{ light_url | strip | escape }}"><strong>{{ 'interior_story.path_light_title' | t }}</strong><span>{{ 'interior_story.path_light_text' | t }}</span></a>
+      <a href="{{ plants_url | strip | escape }}"><strong>{{ 'interior_story.path_plants_title' | t }}</strong><span>{{ 'interior_story.path_plants_text' | t }}</span></a>
+      <a href="{{ planters_url | strip | escape }}"><strong>{{ 'interior_story.path_planters_title' | t }}</strong><span>{{ 'interior_story.path_planters_text' | t }}</span></a>
+      <a href="{{ succulents_url | strip | escape }}"><strong>{{ 'interior_story.path_succulents_title' | t }}</strong><span>{{ 'interior_story.path_succulents_text' | t }}</span></a>
     </div>
   </section>
 
@@ -112,9 +121,9 @@
     {{ article.content }}
   </section>
 
-  <nav class="leaf-story__related" aria-label="Passende LEAFerservice Bereiche">
-    <a href="/collections/interieur-solutions">Interieur Solutions entdecken</a>
-    <a href="{{ routes.all_products_collection_url }}">Sortiment entdecken</a>
+  <nav class="leaf-story__related" aria-label="{{ 'interior_story.related_aria' | t | escape }}">
+    <a href="{{ interior_url | strip | escape }}">{{ 'interior_story.related_interior' | t }}</a>
+    <a href="{{ all_products_url | strip | escape }}">{{ 'interior_story.related_all' | t }}</a>
   </nav>
 </article>
 
@@ -654,45 +663,57 @@
   const zones=[
     {
       id:'overview',
-      kicker:'Gesamtwirkung',
-      title:'Ein Pflanzenraum funktioniert als System',
-      copy:'Die Wirkung entsteht nicht durch möglichst viele Einzelprodukte, sondern durch abgestimmte Ebenen: große Pflanzen als Anker, ruhigere Gefäße, strukturierte Substrate, bewusst gesetztes Licht und kleinere botanische Szenen.',
-      points:['Statement-Pflanzen definieren Blickachsen.','Gefäße wiederholen Material und Form.','Licht verbindet Pflegebedarf und Atmosphäre.'],ctaLabel:'Interieur Solutions entdecken',ctaHref:'/collections/interieur-solutions',secondaryLabel:'Pflanzenlicht konfigurieren',secondaryHref:'/pages/pflanzenlicht-konfigurator'
+      kicker:{{ 'interior_story.overview_kicker' | t | json }},
+      title:{{ 'interior_story.overview_title' | t | json }},
+      copy:{{ 'interior_story.overview_copy' | t | json }},
+      points:[{{ 'interior_story.overview_point_1' | t | json }},{{ 'interior_story.overview_point_2' | t | json }},{{ 'interior_story.overview_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.overview_cta' | t | json }},ctaHref:{{ interior_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.overview_secondary' | t | json }},secondaryHref:{{ light_url | strip | json }}
     },
     {
       id:'plants',
-      kicker:'Statement-Pflanzen',
-      title:'Große Blätter geben dem Raum seine Architektur',
-      copy:'Die Monstera wirkt hier wie ein Möbelstück: groß genug als visueller Anker, aber mit freiem Raum um die Blätter. Ergänzende Pflanzen wiederholen die Grünwirkung, ohne mit dem Hauptmotiv zu konkurrieren.',
-      points:['Ein Hauptmotiv statt vieler gleich großer Pflanzen.','Höhenstaffelung erzeugt Tiefe.','Freiraum um große Blätter bewahrt Ruhe.'],ctaLabel:'Zimmerpflanzen auswählen',ctaHref:'/collections/zimmerpflanzen-1',secondaryLabel:'Mit Raumplanung verbinden',secondaryHref:'/collections/interieur-solutions'
+      kicker:{{ 'interior_story.plants_kicker' | t | json }},
+      title:{{ 'interior_story.plants_title' | t | json }},
+      copy:{{ 'interior_story.plants_copy' | t | json }},
+      points:[{{ 'interior_story.plants_point_1' | t | json }},{{ 'interior_story.plants_point_2' | t | json }},{{ 'interior_story.plants_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.plants_cta' | t | json }},ctaHref:{{ plants_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.plants_secondary' | t | json }},secondaryHref:{{ interior_url | strip | json }}
     },
     {
       id:'planter',
-      kicker:'Gefäß & Substrat',
-      title:'Technik und Gestaltung müssen zusammenpassen',
-      copy:'Große Gefäße geben den Wurzeln Reserve und stabilisieren die Proportion im Raum. Das Substrat wird nach Pflanze und Bewässerung gewählt; mineralische und grobe Komponenten können Luftführung und Drainage gezielt beeinflussen.',
-      points:['Gefäßgröße folgt Wurzelraum und Pflanzenmaß.','Material und Farbe wiederholen die Raumoberflächen.','Substrat wird funktional statt dekorativ geplant.'],ctaLabel:'Substrat konfigurieren',ctaHref:'/products/leafer-substrat-konfigurator',secondaryLabel:'Pflanzgefäße auswählen',secondaryHref:'/collections/pflanzgefasse'
+      kicker:{{ 'interior_story.planter_kicker' | t | json }},
+      title:{{ 'interior_story.planter_title' | t | json }},
+      copy:{{ 'interior_story.planter_copy' | t | json }},
+      points:[{{ 'interior_story.planter_point_1' | t | json }},{{ 'interior_story.planter_point_2' | t | json }},{{ 'interior_story.planter_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.planter_cta' | t | json }},ctaHref:{{ substrate_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.planter_secondary' | t | json }},secondaryHref:{{ planters_url | strip | json }}
     },
     {
       id:'light',
-      kicker:'Pflanzenbeleuchtung',
-      title:'Grow Light kann wie Interior Lighting aussehen',
-      copy:'Die Beleuchtung sitzt nicht als sichtbare Technik neben der Einrichtung, sondern wird in Pendel-, Spot- oder Regallösungen integriert. Entscheidend sind Position, Abstand und Lichtbedarf der Pflanze.',
-      points:['Lichtquelle möglichst in vorhandene Achsen integrieren.','Abstand und Abstrahlwinkel auf die Pflanze abstimmen.','Warm wirkendes Interior und Pflanzennutzen verbinden.'],ctaLabel:'Pflanzenlicht konfigurieren',ctaHref:'/pages/pflanzenlicht-konfigurator',secondaryLabel:'Interieur Solutions ansehen',secondaryHref:'/collections/interieur-solutions'
+      kicker:{{ 'interior_story.light_kicker' | t | json }},
+      title:{{ 'interior_story.light_title' | t | json }},
+      copy:{{ 'interior_story.light_copy' | t | json }},
+      points:[{{ 'interior_story.light_point_1' | t | json }},{{ 'interior_story.light_point_2' | t | json }},{{ 'interior_story.light_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.light_cta' | t | json }},ctaHref:{{ light_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.light_secondary' | t | json }},secondaryHref:{{ interior_url | strip | json }}
     },
     {
       id:'terrarium',
-      kicker:'Terrarium',
-      title:'Eine kleine Pflanzenwelt als eigenständiger Blickpunkt',
-      copy:'Das Terrarium bildet eine kompakte zweite Ebene im Raum. Sukkulenten, mineralischer Aufbau und Glasgefäß unterscheiden sich bewusst von den großen Solitärpflanzen und schaffen einen konzentrierten Detailpunkt.',
-      points:['Kleinere Maßstäbe ergänzen große Pflanzen.','Glas bringt eine neue Materialebene ein.','Substrataufbau und Pflanzenwahl gemeinsam planen.'],ctaLabel:'Sukkulentenwelt entdecken',ctaHref:'/collections/sukkulentenwelt',secondaryLabel:'Terrarium-Lösungen ansehen',secondaryHref:'/collections/interieur-solutions'
+      kicker:{{ 'interior_story.terrarium_kicker' | t | json }},
+      title:{{ 'interior_story.terrarium_title' | t | json }},
+      copy:{{ 'interior_story.terrarium_copy' | t | json }},
+      points:[{{ 'interior_story.terrarium_point_1' | t | json }},{{ 'interior_story.terrarium_point_2' | t | json }},{{ 'interior_story.terrarium_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.terrarium_cta' | t | json }},ctaHref:{{ succulents_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.terrarium_secondary' | t | json }},secondaryHref:{{ interior_url | strip | json }}
     },
     {
       id:'vertical',
-      kicker:'Vertikale Begrünung',
-      title:'Höhe nutzen, ohne Stellfläche zu verlieren',
-      copy:'Regale und obere Ebenen tragen kleinere Pflanzen und hängende Triebe. Dadurch wandert das Grün in die Höhe und der Raum wirkt dichter begrünt, ohne dass Boden und Laufwege vollgestellt werden.',
-      points:['Vertikale Ebenen entlasten den Boden.','Hängepflanzen verbinden Möbel und Architektur.','Pflegezugang trotz dichter Begrünung erhalten.'],ctaLabel:'Rankhilfen & Vertikalgrün',ctaHref:'/collections/pflanzenzubehor-rankhilfen',secondaryLabel:'Interieur Solutions ansehen',secondaryHref:'/collections/interieur-solutions'
+      kicker:{{ 'interior_story.vertical_kicker' | t | json }},
+      title:{{ 'interior_story.vertical_title' | t | json }},
+      copy:{{ 'interior_story.vertical_copy' | t | json }},
+      points:[{{ 'interior_story.vertical_point_1' | t | json }},{{ 'interior_story.vertical_point_2' | t | json }},{{ 'interior_story.vertical_point_3' | t | json }}],
+      ctaLabel:{{ 'interior_story.vertical_cta' | t | json }},ctaHref:{{ supports_url | strip | json }},
+      secondaryLabel:{{ 'interior_story.vertical_secondary' | t | json }},secondaryHref:{{ interior_url | strip | json }}
     }
   ];
 
@@ -740,7 +761,7 @@
     if(secondary){secondary.textContent=zone.secondaryLabel;secondary.href=zone.secondaryHref}
     prev.disabled=index===0;
     next.disabled=index===zones.length-1;
-    next.textContent=index===zones.length-1?'Ende':'Weiter →';
+    next.textContent=index===zones.length-1?{{ 'interior_story.end' | t | json }}:{{ 'interior_story.next' | t | json }};
   }
 
   buttons.forEach(btn=>btn.addEventListener('click',()=>activate(btn.dataset.zone)));
@@ -768,14 +789,14 @@
       "publisher":{"@type":"Organization","name":"LEAFerservice","url":{{ shop.url | json }}},
       "datePublished":{{ article.published_at | default: article.created_at | date: "%Y-%m-%dT%H:%M:%S%z" | json }},
       "dateModified":{{ article.updated_at | date: "%Y-%m-%dT%H:%M:%S%z" | json }},
-      "keywords":["Pflanzeninterieur","Raumbegrünung","Zimmerpflanzen","Pflanzensubstrat","Pflanzgefäße","Pflanzenlicht","Grow Light","Sukkulenten-Terrarium","vertikale Begrünung"]
+      "keywords":{{ 'interior_story.seo_keywords' | t | json }}
     },
     {
       "@type":"BreadcrumbList",
       "@id":{{ canonical_url | append: "#breadcrumbs" | json }},
       "itemListElement":[
         {"@type":"ListItem","position":1,"name":"LEAFerservice","item":{{ shop.url | json }}},
-        {"@type":"ListItem","position":2,"name":"Ratgeber","item":{{ shop.url | append: "/blogs/ratgeber" | json }}},
+        {"@type":"ListItem","position":2,"name":{{ 'interior_story.breadcrumb_guides' | t | json }},"item":{{ shop.url | append: blog.url | json }}},
         {"@type":"ListItem","position":3,"name":{{ article.title | json }},"item":{{ canonical_url | json }}}
       ]
     },
@@ -783,10 +804,10 @@
       "@type":"FAQPage",
       "@id":{{ canonical_url | append: "#faq" | json }},
       "mainEntity":[
-        {"@type":"Question","name":"Wie plane ich Pflanzen sinnvoll in einem Raum?","acceptedAnswer":{"@type":"Answer","text":"Beginne mit Standort, Licht und verfügbarem Platz. Danach werden Pflanzenhöhe, Wuchsform, Gefäß, Substrat und zusätzliche Beleuchtung als zusammenhängendes System geplant."}},
-        {"@type":"Question","name":"Welches Substrat eignet sich für ein Pflanzeninterieur?","acceptedAnswer":{"@type":"Answer","text":"Das Substrat richtet sich nach der jeweiligen Pflanze und Bewässerung. Luftführung, Wasserspeicherung und Drainage lassen sich über geeignete Mischungen und Komponenten abstimmen."}},
-        {"@type":"Question","name":"Wie integriere ich Pflanzenlicht unauffällig in die Einrichtung?","acceptedAnswer":{"@type":"Answer","text":"Pflanzenlicht kann als Pendel-, Spot- oder Regallösung in vorhandene Lichtachsen eingebunden werden. Wichtig sind Lichtbedarf, Abstand und Abstrahlwinkel."}},
-        {"@type":"Question","name":"Kann ein Sukkulenten-Terrarium Teil der Raumbegrünung sein?","acceptedAnswer":{"@type":"Answer","text":"Ja. Ein Terrarium ergänzt große Zimmerpflanzen um eine kleinere botanische Ebene und kann als eigenständiger Blickpunkt in das Pflanzeninterieur integriert werden."}}
+        {"@type":"Question","name":{{ 'interior_story.faq_q1' | t | json }},"acceptedAnswer":{"@type":"Answer","text":{{ 'interior_story.faq_a1' | t | json }}}},
+        {"@type":"Question","name":{{ 'interior_story.faq_q2' | t | json }},"acceptedAnswer":{"@type":"Answer","text":{{ 'interior_story.faq_a2' | t | json }}}},
+        {"@type":"Question","name":{{ 'interior_story.faq_q3' | t | json }},"acceptedAnswer":{"@type":"Answer","text":{{ 'interior_story.faq_a3' | t | json }}}},
+        {"@type":"Question","name":{{ 'interior_story.faq_q4' | t | json }},"acceptedAnswer":{"@type":"Answer","text":{{ 'interior_story.faq_a4' | t | json }}}}
       ]
     }
   ]
