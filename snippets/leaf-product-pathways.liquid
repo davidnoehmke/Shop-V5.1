@@ -11,17 +11,17 @@ Renders contextual internal links that move from knowledge to comparison and sel
     <span>{{ 'product.pathways.intro' | t }}</span>
   </header>
   <div class="leaf-product-pathways__links">
-    <a href="/#LeafAdvisor"><strong>{{ 'product.pathways.planner' | t }}</strong><span>{{ 'product.pathways.planner_text' | t }}</span></a>
+    <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor"><strong>{{ 'product.pathways.planner' | t }}</strong><span>{{ 'product.pathways.planner_text' | t }}</span></a>
     {% for product_collection in product.collections limit: 3 %}
       {% unless product_collection.handle == 'all' %}
         <a href="{{ product_collection.url }}"><strong>{{ product_collection.title | escape }}</strong><span>{{ 'product.pathways.collection_text' | t }}</span></a>
       {% endunless %}
     {% endfor %}
     {% if ingredient_info != blank %}
-      <a href="/pages/leafers-substratbestandteile"><strong>{{ 'product.pathways.ingredients' | t }}</strong><span>{{ 'product.pathways.ingredients_text' | t }}</span></a>
-      <a href="/pages/individuelles-substrat"><strong>{{ 'product.pathways.mix' | t }}</strong><span>{{ 'product.pathways.mix_text' | t }}</span></a>
+      <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/leafers-substratbestandteile"><strong>{{ 'product.pathways.ingredients' | t }}</strong><span>{{ 'product.pathways.ingredients_text' | t }}</span></a>
+      <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat"><strong>{{ 'product.pathways.mix' | t }}</strong><span>{{ 'product.pathways.mix_text' | t }}</span></a>
     {% endif %}
-    <a href="/blogs/leafers-nice2know-blog"><strong>{{ 'product.pathways.knowledge' | t }}</strong><span>{{ 'product.pathways.knowledge_text' | t }}</span></a>
+    <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog"><strong>{{ 'product.pathways.knowledge' | t }}</strong><span>{{ 'product.pathways.knowledge_text' | t }}</span></a>
   </div>
 </nav>
 

@@ -142,3 +142,19 @@ test('SSOT component profile JSON falls back when metaobject reference is absent
   assert.match(liquid, /component_profile_data\.structure/);
   assert.match(liquid, /data-pro-max="{{ pro_max }}"/);
 });
+
+
+test('German and English locale keys stay in parity', () => {
+  const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  const flattenKeys = (value, prefix = '', out = []) => {
+    for (const [key, child] of Object.entries(value)) {
+      const next = prefix ? `${prefix}.${key}` : key;
+      if (child && typeof child === 'object' && !Array.isArray(child)) flattenKeys(child, next, out);
+      else out.push(next);
+    }
+    return out.sort();
+  };
+  const de = flattenKeys(parseShopifyJson('locales/de.default.json'));
+  const en = flattenKeys(parseShopifyJson('locales/en.json'));
+  assert.deepEqual(en, de);
+});

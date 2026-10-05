@@ -204,6 +204,18 @@
       "mix_text": "Understand the base recipe and fine-tune it in advanced mode when needed.",
       "knowledge": "LEAFers nice2know",
       "knowledge_text": "Explore practical knowledge, background information and common plant questions."
+    },
+    "card": {
+      "decision_facts": "Decision facts",
+      "view_details": "Understand & choose product"
+    },
+    "decision_summary": {
+      "eyebrow": "Knowledge First",
+      "heading": "Does this product fit your setup?",
+      "function": "Function",
+      "fit": "Suitable for",
+      "spec": "Key specification",
+      "note": "If these points match your use case, choose the suitable variant below."
     }
   },
   "product_variant_guide": {
@@ -374,6 +386,16 @@
       "copied_project_link": "Project link copied.",
       "loading": "Loading your selection …",
       "unavailable": "The advisor is temporarily unavailable. You can browse the products directly."
+    },
+    "decision": {
+      "eyebrow": "Knowledge First",
+      "heading": "Understand first, then choose.",
+      "use_title": "Start with the use case",
+      "use_text": "Choose by plant, space or task — not by product name.",
+      "data_title": "Relevant data",
+      "data_text": "Compare only the specifications that actually matter for your use case.",
+      "choose_title": "Check the product",
+      "choose_text": "Open the product, review the details, then choose the suitable variant."
     }
   },
   "recipe": {

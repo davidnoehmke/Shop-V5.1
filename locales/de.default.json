@@ -793,5 +793,13 @@
   },
   "interior_guide": {
     "read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"
+  },
+  "shopify": {
+    "checkout": {
+      "shipping": {
+        "split_shipping_merchandise_quantity_label_inline_primary": "Menge: %{quantity}",
+        "split_shipping_merchandise_quantity_label_inline": "%{merchandise_title} × %{quantity}"
+      }
+    }
   }
 }
