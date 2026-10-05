@@ -70,6 +70,69 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
 });
 
 
+test('pro mixer is capped at four components across UI and locale copy', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  const de = parseShopifyJson('locales/de.default.json');
+  const en = parseShopifyJson('locales/en.json');
+  const index = fs.readFileSync('templates/index.json', 'utf8');
+  const substrateWorld = fs.readFileSync('templates/page.substratewelt.json', 'utf8');
+  assert.match(liquid, /data-max-components="4"/);
+  assert.match(liquid, /\{% for pot_index in \(1\.\.4\) %\}/);
+  assert.match(liquid, /data-customizer-count>0<\/b>\/4<\/span>/);
+  assert.match(liquid, /activeCustomSegments\(\)\.length >= this\.maxCustomComponents/);
+  assert.doesNotMatch(liquid, /bis zu fünf Komponenten/i);
+  assert.match(de.configurator.advanced.intro, /vier Komponenten/i);
+  assert.match(en.configurator.advanced.intro, /four components/i);
+  assert.match(index, /bis zu vier Bestandteile/i);
+  assert.doesNotMatch(substrateWorld, /bis zu fünf auswählbare Komponenten/i);
+});
+
+test('layer reordering preserves shares while slider balancing stays at 100 percent', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  let Selector;
+  vm.runInNewContext(liquid.split('{% javascript %}')[1].split('{% endjavascript %}')[0], {
+    HTMLElement: class {},
+    customElements: { get() {}, define(name, value) { Selector = value; } }
+  });
+  const makeSegment = (name, index, order, share, top) => ({
+    hidden: false,
+    dataset: {
+      name,
+      index: String(index),
+      order: String(order),
+      share: String(share),
+      proMin: '0',
+      proMax: '100'
+    },
+    getBoundingClientRect() { return { top, height: 40 }; }
+  });
+  const a = makeSegment('A', 0, 0, 25, 20);
+  const b = makeSegment('B', 1, 1, 25, 70);
+  const c = makeSegment('C', 2, 2, 25, 120);
+  const d = makeSegment('D', 3, 3, 25, 170);
+  const instance = new Selector();
+  instance.customSegments = [a, b, c, d];
+  instance.updateCustomSegmentVisuals = () => {};
+  instance.updateCustomSliderValues = () => {};
+  instance.updateProFeedback = () => {};
+  instance.renderCustomSliders = () => {};
+  instance.refreshCustomRecipe = () => {};
+
+  instance.balanceCustomSegment(a, 40);
+  assert.equal(instance.customSegments.reduce((sum, segment) => sum + Number(segment.dataset.share), 0), 100);
+  const before = Object.fromEntries(instance.customSegments.map(segment => [segment.dataset.name, segment.dataset.share]));
+
+  instance.visualCustomSegments = () => [a, b, c, d];
+  instance.reorderCustomSegments(d, 5);
+  const after = Object.fromEntries(instance.customSegments.map(segment => [segment.dataset.name, segment.dataset.share]));
+  assert.deepEqual(after, before);
+  assert.equal(d.dataset.order, '3');
+  assert.match(liquid, /event\.pointerType === 'mouse'/);
+  assert.match(liquid, /event\.type !== 'pointercancel'/);
+  assert.match(liquid, /touch-action: none/);
+});
+
 test('SSOT component profile JSON falls back when metaobject reference is absent', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
   assert.match(liquid, /component_profile_data/);
