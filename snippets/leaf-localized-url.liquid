@@ -1,0 +1,25 @@
+{%- liquid
+  assign localized_url = url | default: routes.root_url
+  assign first_char = localized_url | slice: 0
+  assign is_external = false
+  if localized_url contains '://' or localized_url contains 'mailto:' or localized_url contains 'tel:'
+    assign is_external = true
+  endif
+
+  if routes.root_url != '/' and is_external == false and first_char != '#'
+    assign localized_prefix = routes.root_url | append: '/'
+    assign prefix_size = localized_prefix | size
+    assign current_prefix = localized_url | slice: 0, prefix_size
+
+    if localized_url == '/'
+      assign localized_url = routes.root_url
+    elsif localized_url == routes.root_url or current_prefix == localized_prefix
+      assign localized_url = localized_url
+    elsif first_char == '/'
+      assign relative_path = localized_url | remove_first: '/'
+      assign localized_url = localized_prefix | append: relative_path
+    endif
+  endif
+
+  echo localized_url
+-%}
