@@ -12,14 +12,14 @@
   </form>
 
   <nav class="main-404__paths" aria-label="{{ 'page_404.text' | t | escape }}">
-    <a class="main-404__path main-404__path--primary" href="/#LeafAdvisor">
+    <a class="main-404__path main-404__path--primary" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor">
       <strong>{{ 'page_404.planner' | t }}</strong>
       <span aria-hidden="true">→</span>
     </a>
-    <a class="main-404__path" href="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'page_404.substrate' | t }}</a>
-    <a class="main-404__path" href="/collections/zimmerpflanzen-1">{{ 'page_404.plants' | t }}</a>
-    <a class="main-404__path" href="/collections/interieur-solutions">{{ 'page_404.interieur' | t }}</a>
-    <a class="main-404__path" href="/blogs/leafers-nice2know-blog">{{ 'page_404.knowledge' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'page_404.substrate' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'page_404.plants' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/interieur-solutions">{{ 'page_404.interieur' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog">{{ 'page_404.knowledge' | t }}</a>
   </nav>
 </section>
 
