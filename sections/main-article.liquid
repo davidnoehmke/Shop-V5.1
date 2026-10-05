@@ -89,7 +89,8 @@
   </section>
 
   <div class="main-article__layout page-width">
-    <div class="main-article__body rte" data-article-body>{{ article.content }}</div>
+    {% assign article_body = article.content | replace: 'href="/en/collections/pflanzenbeleuchtung"', 'href="/en/collections/interieur-solutions"' | replace: 'href="/collections/pflanzenbeleuchtung"', 'href="/collections/interieur-solutions"' %}
+    <div class="main-article__body rte" data-article-body>{{ article_body }}</div>
 
     <aside class="main-article__rail">
       <a class="main-article__back" href="{{ blog.url }}"><span aria-hidden="true">←</span> {{ back_label }}</a>
