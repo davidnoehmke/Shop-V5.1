@@ -90,9 +90,9 @@
 
           <ul class="leafer-substrate__signals" aria-label="{{ 'substrate_selector.signals_label' | t | escape }}">
             {% if request.locale.iso_code == 'de' %}
-              <li>{{ usp_1 | default: ('substrate_selector.signal_profiles' | t) | escape }}</li>
-              <li>{{ usp_2 | default: ('substrate_selector.signal_volumes' | t) | escape }}</li>
-              <li>{{ usp_3 | default: ('substrate_selector.signal_recipe_visible' | t) | escape }}</li>
+              <li>{% if usp_1 != blank %}{{ usp_1 | escape }}{% else %}{{ 'substrate_selector.signal_profiles' | t }}{% endif %}</li>
+              <li>{% if usp_2 != blank %}{{ usp_2 | escape }}{% else %}{{ 'substrate_selector.signal_volumes' | t }}{% endif %}</li>
+              <li>{% if usp_3 != blank %}{{ usp_3 | escape }}{% else %}{{ 'substrate_selector.signal_recipe_visible' | t }}{% endif %}</li>
             {% else %}
               <li>{{ 'substrate_selector.signal_profiles' | t }}</li>
               <li>{{ 'substrate_selector.signal_volumes' | t }}</li>
@@ -386,7 +386,7 @@
 
           <dl class="leafer-substrate__recipe-meta">
             <div><dt>{{ 'substrate_selector.total' | t }}</dt><dd data-recipe-total>100 %</dd></div>
-            <div><dt>{{ 'substrate_selector.calculation_basis' | t }}</dt><dd data-recipe-basis>{% if request.locale.iso_code == 'de' %}{{ recipe_matrix.basis | default: ('substrate_selector.volume_shares' | t) | escape }}{% else %}{{ 'substrate_selector.volume_shares' | t }}{% endif %}</dd></div>
+            <div><dt>{{ 'substrate_selector.calculation_basis' | t }}</dt><dd data-recipe-basis>{% if request.locale.iso_code == 'de' and recipe_matrix.basis != blank %}{{ recipe_matrix.basis | escape }}{% else %}{{ 'substrate_selector.volume_shares' | t }}{% endif %}</dd></div>
             <div><dt>{{ 'substrate_selector.recipe_version' | t }}</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
           </dl>
 
@@ -923,7 +923,7 @@
     formatText(key, values = {}, fallback = '') {
       let output = this.t(key, fallback);
       Object.entries(values).forEach(([name, value]) => {
-        output = output.split(`%{${name}}`).join(String(value));
+        output = output.split(`[${name}]`).join(String(value));
       });
       return output;
     }
