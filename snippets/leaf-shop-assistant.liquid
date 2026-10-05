@@ -3,7 +3,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 {% enddoc %}
 
 {% liquid
-  assign assistant_advisor_href = '/#LeafAdvisor'
+  assign assistant_advisor_href = routes.root_url | append: '#LeafAdvisor'
   if request.page_type == 'collection'
     assign assistant_advisor_href = '#LeafAdvisor'
   endif
