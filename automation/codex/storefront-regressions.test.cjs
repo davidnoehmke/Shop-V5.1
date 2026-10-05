@@ -72,8 +72,9 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
 
 test('pro mixer is capped at four components across UI and locale copy', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
-  const de = JSON.parse(fs.readFileSync('locales/de.default.json', 'utf8'));
-  const en = JSON.parse(fs.readFileSync('locales/en.json', 'utf8'));
+  const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  const de = parseShopifyJson('locales/de.default.json');
+  const en = parseShopifyJson('locales/en.json');
   const index = fs.readFileSync('templates/index.json', 'utf8');
   const substrateWorld = fs.readFileSync('templates/page.substratewelt.json', 'utf8');
   assert.match(liquid, /data-max-components="4"/);
