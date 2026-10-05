@@ -31,7 +31,7 @@
     <div class="leafer-substrate__empty page-width">
       <p class="leafer-substrate__eyebrow">{{ section.settings.eyebrow | escape }}</p>
       <{{ heading_tag }} id="LeaferSubstrateHeading-{{ section.id }}">{{ section.settings.heading }}</{{ heading_tag }}>
-      <p>Wähle im Theme-Editor das Shopify-Produkt für den Substrat-Konfigurator aus.</p>
+      <p>{{ 'substrate_selector.empty_config' | t }}</p>
     </div>
   {% else %}
     {% liquid
@@ -86,16 +86,22 @@
           {% if section.settings.eyebrow != blank %}<p class="leafer-substrate__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
           <{{ heading_tag }} id="LeaferSubstrateHeading-{{ section.id }}">{{ section.settings.heading }}</{{ heading_tag }}>
           {% if section.settings.intro != blank %}<div class="leafer-substrate__intro rte">{{ section.settings.intro }}</div>{% endif %}
-          {% if product_subtitle != blank %}<p class="leafer-substrate__product-subtitle">{{ product_subtitle | escape }}</p>{% endif %}
+          {% if product_subtitle != blank and request.locale.iso_code == 'de' %}<p class="leafer-substrate__product-subtitle">{{ product_subtitle | escape }}</p>{% endif %}
 
-          <ul class="leafer-substrate__signals" aria-label="Entscheidungshilfen">
-            <li>{{ usp_1 | default: 'Sechs feste Pflanzenprofile' | escape }}</li>
-            <li>{{ usp_2 | default: '2 L, 5 L oder 10 L' | escape }}</li>
-            <li>{{ usp_3 | default: 'Rezeptur vor dem Kauf sichtbar' | escape }}</li>
+          <ul class="leafer-substrate__signals" aria-label="{{ 'substrate_selector.signals_label' | t | escape }}">
+            {% if request.locale.iso_code == 'de' %}
+              <li>{% if usp_1 != blank %}{{ usp_1 | escape }}{% else %}{{ 'substrate_selector.signal_profiles' | t }}{% endif %}</li>
+              <li>{% if usp_2 != blank %}{{ usp_2 | escape }}{% else %}{{ 'substrate_selector.signal_volumes' | t }}{% endif %}</li>
+              <li>{% if usp_3 != blank %}{{ usp_3 | escape }}{% else %}{{ 'substrate_selector.signal_recipe_visible' | t }}{% endif %}</li>
+            {% else %}
+              <li>{{ 'substrate_selector.signal_profiles' | t }}</li>
+              <li>{{ 'substrate_selector.signal_volumes' | t }}</li>
+              <li>{{ 'substrate_selector.signal_recipe_visible' | t }}</li>
+            {% endif %}
           </ul>
 
           <p class="leafer-substrate__price-range">
-            <span>Preisrahmen</span>
+            <span>{{ 'substrate_selector.price_range' | t }}</span>
             <strong>{% if selector_product.price_varies %}{{ min_price }} – {{ max_price }}{% else %}{{ min_price }}{% endif %}</strong>
           </p>
         </div>
@@ -115,12 +121,12 @@
             <p class="leafer-substrate__eyebrow">{{ section.settings.selection_eyebrow | escape }}</p>
             <h2>{{ section.settings.selection_heading | escape }}</h2>
             {% if section.settings.selection_text != blank %}<div class="rte">{{ section.settings.selection_text }}</div>{% endif %}
-            <div class="leafer-substrate__progress" aria-label="Auswahlfortschritt">
-              <span class="is-active"><b>1</b><em>Pflanzenprofil</em></span>
+            <div class="leafer-substrate__progress" aria-label="{{ 'substrate_selector.progress_label' | t | escape }}">
+              <span class="is-active"><b>1</b><em>{{ 'substrate_selector.progress_profile' | t }}</em></span>
               <i aria-hidden="true">→</i>
-              <span><b>2</b><em>Menge</em></span>
+              <span><b>2</b><em>{{ 'substrate_selector.progress_volume' | t }}</em></span>
               <i aria-hidden="true">→</i>
-              <span><b>3</b><em>Rezeptur</em></span>
+              <span><b>3</b><em>{{ 'substrate_selector.progress_recipe' | t }}</em></span>
             </div>
           </header>
 
@@ -199,25 +205,25 @@
             <section class="leafer-substrate__customizer" data-customizer aria-labelledby="LeaferCustomizerHeading-{{ section.id }}">
               <header class="leafer-substrate__customizer-head">
                 <div>
-                  <p class="leafer-substrate__eyebrow">Individuell mischen</p>
-                  <h2 id="LeaferCustomizerHeading-{{ section.id }}">Deine Mischung im Pflanztopf</h2>
+                  <p class="leafer-substrate__eyebrow">{{ 'substrate_selector.customizer_eyebrow' | t }}</p>
+                  <h2 id="LeaferCustomizerHeading-{{ section.id }}">{{ 'substrate_selector.customizer_heading' | t }}</h2>
                 </div>
-                <p>Wähle bis zu vier Komponenten und passe jeden Anteil direkt mit seinem eigenen Regler an.</p>
+                <p>{{ 'substrate_selector.customizer_intro' | t }}</p>
               </header>
               <div class="leafer-substrate__customizer-grid">
                 <div>
-                  <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="Vertikale Mischungsverteilung">
+                  <div class="leafer-substrate__pot-slider" data-pot-slider role="group" aria-label="{{ 'substrate_selector.distribution_label' | t | escape }}">
                     {% for pot_index in (1..4) %}
-                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" data-order="{{ forloop.index0 }}" hidden aria-label="Freies Mischungssegment {{ forloop.index }}" aria-describedby="LeaferPotDragHint-{{ section.id }}"></button>
+                      <button type="button" class="leafer-substrate__pot-segment" data-pot-segment data-index="{{ forloop.index0 }}" data-order="{{ forloop.index0 }}" hidden aria-label="{{ 'substrate_selector.free_segment' | t | escape }} {{ forloop.index }}" aria-describedby="LeaferPotDragHint-{{ section.id }}"></button>
                     {% endfor %}
                     <span class="leafer-substrate__pot-rim" aria-hidden="true"></span>
                   </div>
                   <p class="leafer-substrate__customizer-total" data-customizer-total>0 % · 0 L</p>
-                  <p class="leafer-substrate__pot-drag-hint" id="LeaferPotDragHint-{{ section.id }}">Schichten im Topf ziehen, um nur die Ansicht zu sortieren. Die Prozentwerte bleiben unverändert.</p>
+                  <p class="leafer-substrate__pot-drag-hint" id="LeaferPotDragHint-{{ section.id }}">{{ 'substrate_selector.drag_hint' | t }}</p>
                 </div>
                 <div class="leafer-substrate__component-picker">
                   <div class="leafer-substrate__component-picker-head">
-                    <strong>Komponenten auswählen</strong>
+                    <strong>{{ 'substrate_selector.choose_components' | t }}</strong>
                     <span><b data-customizer-count>0</b>/4</span>
                   </div>
                   <div class="leafer-substrate__custom-options">
@@ -291,18 +297,18 @@
                       {% endif %}
                     {% endfor %}
                     {% if custom_rendered_components == 0 and component_products == blank %}
-                      {% assign fallback_components = 'Kokosfasern|Pinienrinde|Perlite|Bims|Lavagranulat|Sphagnum-Moos|Wurmhumus|Pflanzenkohle|Blähton|Algenkalk|Mykorrhiza|Aktivierter Biokohle-Kompost' | split: '|' %}
+                      {% assign fallback_components = 'substrate_selector.fallback_components' | t | split: '|' %}
                       {% for fallback_component in fallback_components %}
                         <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ fallback_component | escape }}" aria-pressed="false">
                           <span class="leafer-substrate__material-thumb leafer-substrate__material-thumb--generated" aria-hidden="true"><span class="leafer-substrate__material-pattern"></span></span>
-                          <span class="leafer-substrate__custom-option-copy"><strong>{{ fallback_component | escape }}</strong><small>Rezepturbestandteil</small></span>
+                          <span class="leafer-substrate__custom-option-copy"><strong>{{ fallback_component | escape }}</strong><small>{{ 'substrate_selector.component_role' | t }}</small></span>
                           <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
                         </button>
                       {% endfor %}
                     {% endif %}
                   </div>
                   <div class="leafer-substrate__slider-list" data-custom-slider-list></div>
-                  <p class="leafer-substrate__customizer-hint" data-customizer-hint>Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.</p>
+                  <p class="leafer-substrate__customizer-hint" data-customizer-hint>{{ 'substrate_selector.hint_empty' | t }}</p>
                   <div class="leafer-substrate__pro-feedback" data-pro-feedback hidden aria-live="polite"></div>
                 </div>
               </div>
@@ -339,7 +345,7 @@
 
             <div class="leafer-substrate__selection-summary">
               <div>
-                <span>Deine Auswahl</span>
+                <span>{{ 'substrate_selector.selection' | t }}</span>
                 <strong data-selection-summary>{{ selected_profile | escape }} · {{ selected_volume | escape }}</strong>
               </div>
               <strong class="leafer-substrate__selected-price" data-selected-price aria-live="polite">{{ selected_variant.price | money }}</strong>
@@ -360,10 +366,10 @@
             </div>
           {% endform %}
 
-          <div class="leafer-substrate__reassurance" aria-label="Hinweise zur Bestellung">
-            <span>✓ Preis und Bestand direkt aus Shopify</span>
-            <span>✓ Rezeptur an der Warenkorbposition</span>
-            <span>✓ Keine frei erfundenen Mischversprechen</span>
+          <div class="leafer-substrate__reassurance" aria-label="{{ 'substrate_selector.reassurance_label' | t | escape }}">
+            <span>✓ {{ 'substrate_selector.reassurance_price' | t }}</span>
+            <span>✓ {{ 'substrate_selector.reassurance_recipe' | t }}</span>
+            <span>✓ {{ 'substrate_selector.reassurance_claims' | t }}</span>
           </div>
         </div>
 
@@ -375,13 +381,13 @@
           </header>
 
           <p class="leafer-substrate__recipe-selection" data-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
-          <p class="leafer-substrate__recipe-empty" data-recipe-empty>Die Rezeptur wird nach deiner Auswahl geladen.</p>
-          <div class="leafer-substrate__recipe-list" data-recipe-list aria-label="Bestandteile der ausgewählten Rezeptur"></div>
+          <p class="leafer-substrate__recipe-empty" data-recipe-empty>{{ 'substrate_selector.recipe_loading' | t }}</p>
+          <div class="leafer-substrate__recipe-list" data-recipe-list aria-label="{{ 'substrate_selector.recipe_parts_label' | t | escape }}"></div>
 
           <dl class="leafer-substrate__recipe-meta">
-            <div><dt>Gesamt</dt><dd data-recipe-total>100 %</dd></div>
-            <div><dt>Berechnungsbasis</dt><dd data-recipe-basis>{{ recipe_matrix.basis | default: 'Volumenanteile' | escape }}</dd></div>
-            <div><dt>Rezepturstand</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
+            <div><dt>{{ 'substrate_selector.total' | t }}</dt><dd data-recipe-total>100 %</dd></div>
+            <div><dt>{{ 'substrate_selector.calculation_basis' | t }}</dt><dd data-recipe-basis>{% if request.locale.iso_code == 'de' and recipe_matrix.basis != blank %}{{ recipe_matrix.basis | escape }}{% else %}{{ 'substrate_selector.volume_shares' | t }}{% endif %}</dd></div>
+            <div><dt>{{ 'substrate_selector.recipe_version' | t }}</dt><dd data-recipe-version>{{ recipe_version | escape }}</dd></div>
           </dl>
 
           <ul class="leafer-substrate__recipe-notes" data-recipe-notes hidden></ul>
@@ -389,31 +395,31 @@
 
 
           <section class="leafer-substrate__base-recipe" data-base-recipe aria-labelledby="LeaferBaseRecipeHeading-{{ section.id }}">
-            <p class="leafer-substrate__eyebrow">Deine bewährte Substratwelt</p>
-            <h3 id="LeaferBaseRecipeHeading-{{ section.id }}">Passende LEAFer-Grundrezeptur</h3>
+            <p class="leafer-substrate__eyebrow">{{ 'substrate_selector.base_eyebrow' | t }}</p>
+            <h3 id="LeaferBaseRecipeHeading-{{ section.id }}">{{ 'substrate_selector.base_heading' | t }}</h3>
             <p class="leafer-substrate__base-recipe-selection" data-base-recipe-selection>{{ selected_profile | escape }}{% if selected_profile != blank and selected_volume != blank %} · {% endif %}{{ selected_volume | escape }}</p>
-            <p class="leafer-substrate__base-recipe-copy">Diese feste Rezeptur bleibt als bewährte Orientierung erhalten. Deine individuelle Mischung wird zusätzlich darüber berechnet.</p>
-            <div class="leafer-substrate__recipe-list" data-base-recipe-list aria-label="Bestandteile der bewährten Grundrezeptur"></div>
+            <p class="leafer-substrate__base-recipe-copy">{{ 'substrate_selector.base_copy' | t }}</p>
+            <div class="leafer-substrate__recipe-list" data-base-recipe-list aria-label="{{ 'substrate_selector.base_parts_label' | t | escape }}"></div>
           </section>
 
           <section class="leafer-substrate__dynamic-insights" data-dynamic-insights aria-labelledby="LeaferDynamicInsightsHeading-{{ section.id }}">
-            <p class="leafer-substrate__eyebrow">Dynamische Einordnung</p>
-            <h3 id="LeaferDynamicInsightsHeading-{{ section.id }}">Passt besonders zu</h3>
+            <p class="leafer-substrate__eyebrow">{{ 'substrate_selector.insights_eyebrow' | t }}</p>
+            <h3 id="LeaferDynamicInsightsHeading-{{ section.id }}">{{ 'substrate_selector.insights_heading' | t }}</h3>
             <p class="leafer-substrate__insight-copy" data-insight-copy></p>
             <div class="leafer-substrate__insight-block">
-              <strong>Geeignete Pflanzen</strong>
+              <strong>{{ 'substrate_selector.insights_plants' | t }}</strong>
               <div class="leafer-substrate__insight-chips" data-insight-plants></div>
             </div>
             <div class="leafer-substrate__insight-block">
-              <strong>Eigenschaften deiner Mischung</strong>
+              <strong>{{ 'substrate_selector.insights_properties' | t }}</strong>
               <ul data-insight-properties></ul>
             </div>
           </section>
 
           <noscript>
             <div class="leafer-substrate__noscript">
-              <strong>Rezepturvorschau ohne JavaScript</strong>
-              <p>Wähle die gewünschte Kombination im Variantenfeld. Die Variante enthält Pflanzentyp und Menge; die detaillierte Literverteilung ist mit aktiviertem JavaScript sichtbar.</p>
+              <strong>{{ 'substrate_selector.noscript_heading' | t }}</strong>
+              <p>{{ 'substrate_selector.noscript_text' | t }}</p>
             </div>
           </noscript>
         </aside>
@@ -521,6 +527,53 @@
       ]
     </script>
     <script type="application/json" data-recipe-matrix>{{ recipe_matrix | json }}</script>
+    <script type="application/json" data-selector-i18n>
+      {
+        "hint_empty": {{ 'substrate_selector.hint_empty' | t | json }},
+        "hint_limit": {{ 'substrate_selector.hint_limit' | t | json }},
+        "hint_adjust": {{ 'substrate_selector.hint_adjust' | t | json }},
+        "warning_max": {{ 'substrate_selector.warning_max' | t | json }},
+        "warning_threshold": {{ 'substrate_selector.warning_threshold' | t | json }},
+        "feedback_warning": {{ 'substrate_selector.feedback_warning' | t | json }},
+        "feedback_ok": {{ 'substrate_selector.feedback_ok' | t | json }},
+        "metric_aeration": {{ 'substrate_selector.metric_aeration' | t | json }},
+        "metric_drainage": {{ 'substrate_selector.metric_drainage' | t | json }},
+        "metric_water": {{ 'substrate_selector.metric_water' | t | json }},
+        "metric_structure": {{ 'substrate_selector.metric_structure' | t | json }},
+        "metric_nutrient": {{ 'substrate_selector.metric_nutrient' | t | json }},
+        "segment_percent": {{ 'substrate_selector.segment_percent' | t | json }},
+        "free_segment": {{ 'substrate_selector.free_segment' | t | json }},
+        "custom_basis": {{ 'substrate_selector.custom_basis' | t | json }},
+        "custom_version": {{ 'substrate_selector.custom_version' | t | json }},
+        "insight_default_plants": {{ 'substrate_selector.insight_default_plants' | t | json }},
+        "insight_default_properties": {{ 'substrate_selector.insight_default_properties' | t | json }},
+        "insight_default_copy": {{ 'substrate_selector.insight_default_copy' | t | json }},
+        "insight_aroid_plants": {{ 'substrate_selector.insight_aroid_plants' | t | json }},
+        "insight_aroid_properties": {{ 'substrate_selector.insight_aroid_properties' | t | json }},
+        "insight_aroid_copy": {{ 'substrate_selector.insight_aroid_copy' | t | json }},
+        "insight_herb_plants": {{ 'substrate_selector.insight_herb_plants' | t | json }},
+        "insight_herb_properties": {{ 'substrate_selector.insight_herb_properties' | t | json }},
+        "insight_herb_copy": {{ 'substrate_selector.insight_herb_copy' | t | json }},
+        "insight_cactus_plants": {{ 'substrate_selector.insight_cactus_plants' | t | json }},
+        "insight_cactus_properties": {{ 'substrate_selector.insight_cactus_properties' | t | json }},
+        "insight_cactus_copy": {{ 'substrate_selector.insight_cactus_copy' | t | json }},
+        "insight_orchid_plants": {{ 'substrate_selector.insight_orchid_plants' | t | json }},
+        "insight_orchid_properties": {{ 'substrate_selector.insight_orchid_properties' | t | json }},
+        "insight_orchid_copy": {{ 'substrate_selector.insight_orchid_copy' | t | json }},
+        "insight_palm_plants": {{ 'substrate_selector.insight_palm_plants' | t | json }},
+        "insight_palm_properties": {{ 'substrate_selector.insight_palm_properties' | t | json }},
+        "insight_palm_copy": {{ 'substrate_selector.insight_palm_copy' | t | json }},
+        "insight_seed_plants": {{ 'substrate_selector.insight_seed_plants' | t | json }},
+        "insight_seed_properties": {{ 'substrate_selector.insight_seed_properties' | t | json }},
+        "insight_seed_copy": {{ 'substrate_selector.insight_seed_copy' | t | json }},
+        "addition_drainage": {{ 'substrate_selector.addition_drainage' | t | json }},
+        "addition_moisture": {{ 'substrate_selector.addition_moisture' | t | json }},
+        "addition_bark": {{ 'substrate_selector.addition_bark' | t | json }},
+        "addition_nutrient": {{ 'substrate_selector.addition_nutrient' | t | json }},
+        "addition_ph": {{ 'substrate_selector.addition_ph' | t | json }},
+        "addition_root": {{ 'substrate_selector.addition_root' | t | json }}
+      }
+    </script>
   {% endif %}
 </leafer-substrate-selector>
 
@@ -812,6 +865,7 @@
       this.volumeChoices = [...this.querySelectorAll('[data-volume-choice]')];
       this.variants = this.parseData('[data-variants]', []);
       this.matrix = this.parseData('[data-recipe-matrix]', {});
+      this.i18n = this.parseData('[data-selector-i18n]', {});
       this.customizer = this.querySelector('[data-customizer]');
       this.customSegments = [...this.querySelectorAll('[data-pot-segment]')];
       this.customOptions = [...this.querySelectorAll('[data-custom-option]')];
@@ -860,6 +914,53 @@
       } catch (error) {
         return fallback;
       }
+    }
+
+    t(key, fallback = '') {
+      return this.i18n?.[key] || fallback;
+    }
+
+    formatText(key, values = {}, fallback = '') {
+      let output = this.t(key, fallback);
+      Object.entries(values).forEach(([name, value]) => {
+        output = output.split(`[${name}]`).join(String(value));
+      });
+      return output;
+    }
+
+    tList(key, fallback = '') {
+      return this.t(key, fallback).split('|').map((item) => item.trim()).filter(Boolean);
+    }
+
+    isGermanLocale() {
+      return String(this.dataset.locale || '').toLowerCase().startsWith('de');
+    }
+
+    translateIngredient(name) {
+      if (this.isGermanLocale()) return name;
+      const normalized = String(name || '').trim().toLowerCase();
+      const translations = {
+        'kokosfasern': 'Coconut fibre',
+        'kokosfaser': 'Coconut fibre',
+        'pinienrinde': 'Pine bark',
+        'perlite': 'Perlite',
+        'bims': 'Pumice',
+        'lavagranulat': 'Lava granules',
+        'lava': 'Lava granules',
+        'sphagnum-moos': 'Sphagnum moss',
+        'sphagnum': 'Sphagnum moss',
+        'wurmhumus': 'Worm castings',
+        'pflanzenkohle': 'Biochar',
+        'blähton': 'Expanded clay',
+        'algenkalk': 'Algae lime',
+        'mykorrhiza': 'Mycorrhiza',
+        'aktivierter biokohle-kompost': 'Activated biochar compost',
+        'zeolith': 'Zeolite',
+        'vermiculit': 'Vermiculite',
+        'vermiculite': 'Vermiculite',
+        'tongranulat': 'Clay granules'
+      };
+      return translations[normalized] || name;
     }
 
     variantById(id) {
@@ -1196,7 +1297,7 @@
         segment.style.height = share ? `${share}%` : '';
         segment.style.order = String(Number(segment.dataset.order) || 0);
         segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
-        segment.setAttribute('aria-label', share ? `${segment.dataset.name}, ${share} Prozent` : 'Freies Mischungssegment');
+        segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
         if (segment.dataset.image) {
           const image = segment.dataset.image.replace(/"/g, '%22');
           segment.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .18), rgba(24, 29, 20, .18)), url("${image}")`;
@@ -1233,7 +1334,7 @@
 
         const name = document.createElement('strong');
         name.className = 'leafer-substrate__mix-slider-name';
-        name.textContent = segment.dataset.name;
+        name.textContent = this.translateIngredient(segment.dataset.name);
 
         const output = document.createElement('output');
         output.dataset.customSegmentOutput = segment.dataset.index;
@@ -1277,10 +1378,10 @@
       if (count) count.textContent = String(segments.length);
       if (hint) {
         hint.textContent = !segments.length
-          ? 'Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.'
+          ? this.t('hint_empty')
           : atLimit
-            ? 'Vier Komponenten aktiv. Ziehe die Topfschichten zum Sortieren; die Prozentwerte bleiben unverändert.'
-            : 'Passe jeden Anteil direkt mit seinem Regler an. Die Mischung bleibt automatisch bei 100 %.';
+            ? this.t('hint_limit')
+            : this.t('hint_adjust');
       }
       this.customOptions.forEach((option) => {
         const active = segments.some((segment) => segment.dataset.name === option.dataset.name);
@@ -1306,8 +1407,8 @@
         const share = Number(segment.dataset.share) || 0;
         const warning = Number(segment.dataset.warning) || 100;
         const max = Number(segment.dataset.proMax) || 100;
-        if (share > max) warnings.push(`${segment.dataset.name}: ${share}% liegt über dem fachlichen Maximalwert von ${max}%.`);
-        else if (share > warning) warnings.push(`${segment.dataset.name}: ${share}% liegt über der Warnschwelle von ${warning}%.`);
+        if (share > max) warnings.push(this.formatText('warning_max', { name: segment.dataset.name, share, max }));
+        else if (share > warning) warnings.push(this.formatText('warning_threshold', { name: segment.dataset.name, share, warning }));
         ['aeration','drainage','structure','nutrient'].forEach((key) => {
           const value = Number(segment.dataset[key]);
           if (Number.isFinite(value) && value > 0) metrics[key] += value * share;
@@ -1319,7 +1420,7 @@
       feedback.replaceChildren();
       const summary = document.createElement('p');
       summary.className = 'leafer-substrate__pro-summary';
-      summary.textContent = warnings.length ? 'Fachliche Prüfung: Bitte Warnhinweise beachten.' : 'Fachliche Prüfung: Mischung innerhalb der hinterlegten Grenzwerte.';
+      summary.textContent = warnings.length ? this.t('feedback_warning') : this.t('feedback_ok');
       feedback.append(summary);
       if (warnings.length) {
         const list = document.createElement('ul');
@@ -1329,7 +1430,7 @@
       if (metricWeight > 0) {
         const grid = document.createElement('div');
         grid.className = 'leafer-substrate__pro-metrics';
-        [['Luftigkeit','aeration'],['Drainage','drainage'],['Wasserspeicher','water'],['Struktur','structure'],['Nährstoffwirkung','nutrient']].forEach(([label,key]) => {
+        [[this.t('metric_aeration'),'aeration'],[this.t('metric_drainage'),'drainage'],[this.t('metric_water'),'water'],[this.t('metric_structure'),'structure'],[this.t('metric_nutrient'),'nutrient']].forEach(([label,key]) => {
           if (!metrics[key]) return;
           const item = document.createElement('span');
           item.textContent = `${label} ${Math.round(metrics[key] / metricWeight)}/10`;
@@ -1338,7 +1439,7 @@
         feedback.append(grid);
       }
       const selected = segments.find((segment) => Number(segment.dataset.index) === this.customSelectedIndex) || segments[0];
-      if (selected?.dataset.technicalNote) { const note = document.createElement('small'); note.textContent = selected.dataset.technicalNote; feedback.append(note); }
+      if (this.isGermanLocale() && selected?.dataset.technicalNote) { const note = document.createElement('small'); note.textContent = selected.dataset.technicalNote; feedback.append(note); }
       feedback.hidden = false;
     }
 
@@ -1379,15 +1480,15 @@
         bar.append(fill);
         row.append(head, bar);
         fragment.append(row);
-        recipeParts.push(`${segment.dataset.name} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
+        recipeParts.push(`${this.translateIngredient(segment.dataset.name)} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
       });
       list.append(fragment);
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
-      if (basisNode) basisNode.textContent = 'Individuelle Volumenanteile';
+      if (basisNode) basisNode.textContent = this.t('custom_basis');
       const versionNode = this.querySelector('[data-recipe-version]');
-      if (versionNode) versionNode.textContent = 'Individuell';
+      if (versionNode) versionNode.textContent = this.t('custom_version');
       const totalLabel = this.querySelector('[data-customizer-total]');
       if (totalLabel) totalLabel.textContent = `${this.formatNumber(total)} % · ${this.formatNumber(litresTotal)} L`;
       const notesList = this.querySelector('[data-recipe-notes]');
@@ -1407,7 +1508,7 @@
         const recipeText = this.renderCustomRecipe(volume);
         this.updateInsights(profile, this.activeCustomSegments());
         this.setProperty('[data-property-recipe]', recipeText);
-        this.setProperty('[data-property-version]', 'Individuell');
+        this.setProperty('[data-property-version]', this.t('custom_version'));
       } else {
         const profile = variant.options?.[this.dataset.profileOption] || '';
         this.renderRecipe(profile, volume);
@@ -1422,34 +1523,34 @@
       if (!this.insightPlants || !this.insightProperties) return;
       const normalized = String(profile || '').toLowerCase();
       let rule = {
-        plants: ['Zimmerpflanzen'],
-        properties: ['Alltagstaugliche Grundmischung'],
-        copy: 'Die Anzeige orientiert sich an deinem gewählten Pflanzenprofil und den Bestandteilen der Rezeptur.'
+        plants: this.tList('insight_default_plants'),
+        properties: this.tList('insight_default_properties'),
+        copy: this.t('insight_default_copy')
       };
-      if (normalized.includes('aroid') || normalized.includes('tropical') || normalized.includes('luftig')) {
-        rule = { plants: ['Monstera', 'Philodendron', 'Alocasia', 'Syngonium'], properties: ['Luftige Struktur', 'Schneller Wasserabzug', 'Gute Wurzelbelüftung'], copy: 'Für tropische Zimmerpflanzen mit kräftiger, luftliebender Wurzelzone.' };
-      } else if (normalized.includes('kräuter') || normalized.includes('balkon') || normalized.includes('ausgewogen')) {
-        rule = { plants: ['Basilikum', 'Minze', 'Petersilie', 'Balkonpflanzen'], properties: ['Ausgewogene Feuchteführung', 'Gute Drainage', 'Nährstoffgeeignete Basis'], copy: 'Für Kräuter und Balkonpflanzen, bei denen Feuchteführung und Drainage zusammenpassen sollen.' };
-      } else if (normalized.includes('kakt') || normalized.includes('sukkulent') || normalized.includes('mineral')) {
-        rule = { plants: ['Kakteen', 'Echeverien', 'Haworthien', 'Crassula'], properties: ['Hoher Mineralanteil', 'Sehr gute Drainage', 'Zügiger Wasserabzug'], copy: 'Für trockenheitsverträgliche Pflanzen mit besonders durchlässiger Wurzelzone.' };
-      } else if (normalized.includes('orchid') || normalized.includes('orchidee') || normalized.includes('rinden')) {
-        rule = { plants: ['Phalaenopsis', 'Dendrobium', 'Cattleya', 'Oncidium'], properties: ['Sehr luftige Struktur', 'Rindenbetonte Basis', 'Geringere Verdichtung'], copy: 'Für epiphytische Orchideen, deren Wurzeln viel Luft und eine grobe Struktur benötigen.' };
-      } else if (normalized.includes('palm') || normalized.includes('palmen') || normalized.includes('struktur')) {
-        rule = { plants: ['Areca-Palme', 'Kentia-Palme', 'Strelitzie', 'Ficus'], properties: ['Strukturstabil', 'Ausgeglichene Wasserführung', 'Gute Standfestigkeit'], copy: 'Für größere Grünpflanzen mit Bedarf an einer stabilen und gut drainierenden Mischung.' };
-      } else if (normalized.includes('anzucht') || normalized.includes('jung') || normalized.includes('fein')) {
-        rule = { plants: ['Keimlinge', 'Stecklinge', 'Jungpflanzen', 'Kräuter-Anzucht'], properties: ['Feinere Struktur', 'Leicht zu durchwurzeln', 'Gleichmäßige Feuchte'], copy: 'Für Aussaat, Stecklinge und junge Pflanzen mit empfindlicher Wurzelentwicklung.' };
+      if (normalized.includes('aroid') || normalized.includes('tropical') || normalized.includes('luftig') || normalized.includes('airy')) {
+        rule = { plants: this.tList('insight_aroid_plants'), properties: this.tList('insight_aroid_properties'), copy: this.t('insight_aroid_copy') };
+      } else if (normalized.includes('kräuter') || normalized.includes('balkon') || normalized.includes('ausgewogen') || normalized.includes('herb') || normalized.includes('balcony') || normalized.includes('balanced')) {
+        rule = { plants: this.tList('insight_herb_plants'), properties: this.tList('insight_herb_properties'), copy: this.t('insight_herb_copy') };
+      } else if (normalized.includes('kakt') || normalized.includes('sukkulent') || normalized.includes('mineral') || normalized.includes('cactus') || normalized.includes('succulent')) {
+        rule = { plants: this.tList('insight_cactus_plants'), properties: this.tList('insight_cactus_properties'), copy: this.t('insight_cactus_copy') };
+      } else if (normalized.includes('orchid') || normalized.includes('orchidee') || normalized.includes('rinden') || normalized.includes('bark')) {
+        rule = { plants: this.tList('insight_orchid_plants'), properties: this.tList('insight_orchid_properties'), copy: this.t('insight_orchid_copy') };
+      } else if (normalized.includes('palm') || normalized.includes('palmen') || normalized.includes('struktur') || normalized.includes('structure')) {
+        rule = { plants: this.tList('insight_palm_plants'), properties: this.tList('insight_palm_properties'), copy: this.t('insight_palm_copy') };
+      } else if (normalized.includes('anzucht') || normalized.includes('jung') || normalized.includes('fein') || normalized.includes('propagation') || normalized.includes('young') || normalized.includes('seed')) {
+        rule = { plants: this.tList('insight_seed_plants'), properties: this.tList('insight_seed_properties'), copy: this.t('insight_seed_copy') };
       }
 
       const names = customSegments.length ? customSegments.map((segment) => segment.dataset.name) : Object.keys(this.matrix?.recipes?.[profile]?.percent || {});
       const additions = [];
       names.forEach((name) => {
         const item = String(name).toLowerCase();
-        if (item.includes('perlit') || item.includes('bims') || item.includes('lava') || item.includes('blähton')) additions.push('Drainage und Porenraum');
-        if (item.includes('kokos') || item.includes('sphagnum') || item.includes('moos')) additions.push('Feuchtepuffer');
-        if (item.includes('rinde')) additions.push('Luftige Grobstruktur');
-        if (item.includes('wurmhumus') || item.includes('kompost')) additions.push('Organische Nährstoffbasis');
-        if (item.includes('algenkalk')) additions.push('pH-stabilisierende Ergänzung');
-        if (item.includes('mykorrhiza')) additions.push('Unterstützung der Wurzelumgebung');
+        if (item.includes('perlit') || item.includes('bims') || item.includes('pumice') || item.includes('lava') || item.includes('blähton') || item.includes('expanded clay')) additions.push(this.t('addition_drainage'));
+        if (item.includes('kokos') || item.includes('coconut') || item.includes('sphagnum') || item.includes('moos') || item.includes('moss')) additions.push(this.t('addition_moisture'));
+        if (item.includes('rinde') || item.includes('bark')) additions.push(this.t('addition_bark'));
+        if (item.includes('wurmhumus') || item.includes('worm') || item.includes('kompost') || item.includes('compost')) additions.push(this.t('addition_nutrient'));
+        if (item.includes('algenkalk') || item.includes('algae lime')) additions.push(this.t('addition_ph'));
+        if (item.includes('mykorrhiza') || item.includes('mycorrhiza')) additions.push(this.t('addition_root'));
       });
       const properties = [...new Set([...rule.properties, ...additions])];
       this.insightPlants.replaceChildren();
@@ -1515,7 +1616,7 @@
         head.className = 'leafer-substrate__recipe-row-head';
 
         const name = document.createElement('strong');
-        name.textContent = ingredient;
+        name.textContent = this.translateIngredient(ingredient);
 
         const values = document.createElement('span');
         values.className = 'leafer-substrate__recipe-values';
@@ -1528,9 +1629,9 @@
           const amount = document.createElement('span');
           amount.textContent = `${this.formatNumber(litres)} L`;
           values.append(amount);
-          recipeParts.push(`${ingredient} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
+          recipeParts.push(`${this.translateIngredient(ingredient)} ${this.formatNumber(share)} % (${this.formatNumber(litres)} L)`);
         } else {
-          recipeParts.push(`${ingredient} ${this.formatNumber(share)} %`);
+          recipeParts.push(`${this.translateIngredient(ingredient)} ${this.formatNumber(share)} %`);
         }
 
         head.append(name, values);
@@ -1551,7 +1652,7 @@
       const totalNode = this.querySelector('[data-recipe-total]');
       if (totalNode) totalNode.textContent = `${this.formatNumber(total)} % · ${volume}`;
       const basisNode = this.querySelector('[data-recipe-basis]');
-      if (basisNode && this.matrix?.basis) basisNode.textContent = this.matrix.basis;
+      if (basisNode) basisNode.textContent = this.isGermanLocale() && this.matrix?.basis ? this.matrix.basis : this.t('volume_shares', 'Volume shares');
       const versionNode = this.querySelector('[data-recipe-version]');
       if (versionNode && this.matrix?.version) versionNode.textContent = this.matrix.version;
 
@@ -1562,6 +1663,7 @@
     renderNotes(percentages, notesList) {
       if (!notesList) return;
       notesList.replaceChildren();
+      if (!this.isGermanLocale()) { notesList.hidden = true; return; }
       const notes = Object.entries(this.matrix?.notes || {}).filter(([ingredient]) => Object.prototype.hasOwnProperty.call(percentages, ingredient));
       if (!notes.length) {
         notesList.hidden = true;

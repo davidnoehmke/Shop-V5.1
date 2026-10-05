@@ -1,0 +1,12 @@
+{%- liquid
+  assign leaf_localized_url = url | default: routes.root_url
+  assign first_char = leaf_localized_url | slice: 0, 1
+  assign first_two = leaf_localized_url | slice: 0, 2
+  assign root_size = routes.root_url | size
+  assign current_prefix = leaf_localized_url | slice: 0, root_size
+
+  if routes.root_url != '/' and first_char == '/' and first_two != '//' and current_prefix != routes.root_url
+    assign leaf_localized_url = routes.root_url | append: leaf_localized_url
+  endif
+-%}
+{{- leaf_localized_url -}}
