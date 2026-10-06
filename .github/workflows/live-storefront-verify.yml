@@ -19,8 +19,12 @@ jobs:
       github.event.workflow_run.head_branch == 'main' &&
       github.event.workflow_run.event == 'push'
     runs-on: ubuntu-24.04
-    timeout-minutes: 8
+    timeout-minutes: 25
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
       - name: Wait for Shopify native sync and verify live storefront
         shell: bash
         env:
@@ -91,3 +95,6 @@ jobs:
             "${base}/collections/interieur-solutions"*) ;;
             *) echo "Unexpected Pflanzeninterieur redirect target: $final" >&2; exit 1 ;;
           esac
+
+      - name: Crawl public sitemap and internal German and English links
+        run: node automation/codex/live-links.cjs
