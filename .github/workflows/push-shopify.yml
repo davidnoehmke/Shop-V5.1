@@ -32,13 +32,14 @@ jobs:
         shell: bash
         env:
           STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
+          FALLBACK_STAGING_THEME_ID: '190367662465'
         run: |
           set -euo pipefail
-          test -n "$STAGING_THEME_ID"
-          [[ "$STAGING_THEME_ID" =~ ^[0-9]+$ ]]
+          resolved_theme_id="${STAGING_THEME_ID:-$FALLBACK_STAGING_THEME_ID}"
+          [[ "$resolved_theme_id" =~ ^[0-9]+$ ]]
           {
             echo "started_ms=$(date +%s%3N)"
-            echo "theme_id=$STAGING_THEME_ID"
+            echo "theme_id=$resolved_theme_id"
             echo "files_changed=$(git diff --name-only HEAD^ HEAD 2>/dev/null | wc -l | tr -d ' ')"
           } >> "$GITHUB_OUTPUT"
 
@@ -56,6 +57,26 @@ jobs:
           node-version: '24'
       - name: Install Shopify CLI
         run: npm install -g @shopify/cli@latest
+
+      - name: Verify staging theme is still unpublished
+        shell: bash
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
+          THEME_ID: ${{ steps.meta.outputs.theme_id }}
+        run: |
+          set -euo pipefail
+          test -n "$SHOPIFY_STORE"
+          test -n "$SHOPIFY_CLI_THEME_TOKEN"
+          theme_json=$(shopify theme list --id "$THEME_ID" --role unpublished --json --store "$SHOPIFY_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN")
+          printf '%s' "$theme_json" | jq -e --arg id "$THEME_ID" '
+            type == "array"
+            and length == 1
+            and (
+              (.[0].id | tostring) == $id
+              or (.[0].id | tostring) == ("gid://shopify/OnlineStoreTheme/" + $id)
+            )
+          ' >/dev/null
 
       - name: Deploy repository theme to permanent staging theme
         id: push
