@@ -68,7 +68,7 @@ jobs:
           shopify theme push --theme "$THEME_ID" --path . --store "$SHOPIFY_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN" --nodelete
 
       - name: Record deployment and analysis in Supabase
-        if: always() && secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != ''
+        if: always()
         shell: bash
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -79,8 +79,10 @@ jobs:
           PUSH_OUTCOME: ${{ steps.push.outcome }}
         run: |
           set -euo pipefail
-          test -n "$SUPABASE_URL"
-          test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "Supabase deployment telemetry skipped because credentials are not configured."
+            exit 0
+          fi
           now_ms=$(date +%s%3N)
           duration=$((now_ms - STARTED_MS))
           if [ "$PUSH_OUTCOME" = "success" ]; then status=succeeded; else status=failed; fi
