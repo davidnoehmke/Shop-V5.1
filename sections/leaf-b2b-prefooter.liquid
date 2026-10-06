@@ -6,6 +6,7 @@
     assign primary = 'B2B-Anfrage stellen'
     assign secondary = 'EU-Versand ansehen'
     assign shipping = 'Versand aus Deutschland · Lieferung nach Deutschland & in die EU'
+    assign image_alt_default = 'LEAFerservice Pflanzenprojekt mit Gefäß, Substrat und Beleuchtung'
   else
     assign eyebrow = 'Projects & B2B'
     assign heading = 'Planning bigger? We are open to B2B.'
@@ -13,13 +14,16 @@
     assign primary = 'Send a B2B enquiry'
     assign secondary = 'View EU shipping'
     assign shipping = 'Shipping from Germany · Delivery across Germany and the EU'
+    assign image_alt_default = 'LEAFerservice plant project with planter, substrate and lighting'
   endif
+  assign b2b_link = section.settings.b2b_link | default: '/pages/kooperationen-pflanzenprojekte'
+  assign shipping_link = section.settings.shipping_link | default: '/pages/versand'
 %}
 <section class="leaf-prefooter" aria-labelledby="LeafPrefooter-{{ section.id }}">
   <div class="page-width leaf-prefooter__grid">
     <div class="leaf-prefooter__media">
       {% if section.settings.image != blank %}
-        {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '420,640,900,1200,1400', sizes: '(min-width: 900px) 42vw, 100vw', loading: 'lazy', alt: section.settings.image.alt | default: 'LEAFerservice Pflanzenprojekt mit Gefäß, Substrat und Beleuchtung' }}
+        {{ section.settings.image | image_url: width: 1400 | image_tag: widths: '420,640,900,1200,1400', sizes: '(min-width: 900px) 42vw, 100vw', loading: 'lazy', alt: section.settings.image.alt | default: image_alt_default }}
       {% else %}
         {{ 'lifestyle-1' | placeholder_svg_tag }}
       {% endif %}
@@ -29,9 +33,11 @@
       <h2 id="LeafPrefooter-{{ section.id }}">{{ heading }}</h2>
       <p class="leaf-prefooter__copy">{{ copy }}</p>
       <p class="leaf-prefooter__shipping">{{ shipping }}</p>
+      {% capture b2b_href %}{% render 'leaf-localized-url', url: b2b_link %}{% endcapture %}
+      {% capture shipping_href %}{% render 'leaf-localized-url', url: shipping_link %}{% endcapture %}
       <div class="leaf-prefooter__actions">
-        <a class="button" href="{{ section.settings.b2b_link | default: '/pages/kooperationen-pflanzenprojekte' }}">{{ primary }} <span aria-hidden="true">→</span></a>
-        <a class="leaf-prefooter__link" href="{{ section.settings.shipping_link | default: '/pages/versand' }}">{{ secondary }} <span aria-hidden="true">→</span></a>
+        <a class="button" href="{{ b2b_href | strip | escape }}">{{ primary }} <span aria-hidden="true">→</span></a>
+        <a class="leaf-prefooter__link" href="{{ shipping_href | strip | escape }}">{{ secondary }} <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </div>

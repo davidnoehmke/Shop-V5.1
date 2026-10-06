@@ -19,12 +19,12 @@
                 {% if link.links != blank %}
                   <details class="site-header__mobile-disclosure">
                     <summary>
-                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></span>
+                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span>
                       <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                     </summary>
                     <div class="site-header__mobile-submenu">
-                      <a class="site-header__mobile-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
-                        <span>{{ link.title }}</span>
+                      <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>
+                        <span>{% render 'leaf-localized-label', text: link.title %}</span>
                         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
                       </a>
                       <ul>
@@ -33,23 +33,23 @@
                             {% if child_link.links != blank %}
                               <details class="site-header__mobile-disclosure site-header__mobile-disclosure--nested">
                                 <summary>
-                                  <span>{{ child_link.title }}</span>
+                                  <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
                                   <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                                 </summary>
                                 <div class="site-header__mobile-submenu site-header__mobile-submenu--nested">
-                                  <a class="site-header__mobile-overview" href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>
-                                    <span>{{ child_link.title }}</span>
+                                  <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                                    <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
                                     <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
                                   </a>
                                   <ul>
                                     {% for grandchild_link in child_link.links %}
-                                      <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title }}</a></li>
+                                      <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
                                     {% endfor %}
                                   </ul>
                                 </div>
                               </details>
                             {% else %}
-                              <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title }}</a>
+                              <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
                             {% endif %}
                           </li>
                         {% endfor %}
@@ -57,7 +57,7 @@
                     </div>
                   </details>
                 {% else %}
-                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}><span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></span></a>
+                  <a class="site-header__mobile-link" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}><span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span></a>
                 {% endif %}
               </li>
             {% endfor %}
@@ -75,17 +75,17 @@
             <li>
               {% if link.links != blank %}
                 <details class="site-header__desktop-disclosure" data-desktop-menu>
-                  <summary>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title | escape }}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+                  <summary>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
                   <div class="site-header__desktop-panel">
-                    <a class="site-header__desktop-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }} <span aria-hidden="true">→</span></a>
+                    <a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: link.title %} <span aria-hidden="true">→</span></a>
                     <ul>
                       {% for child_link in link.links %}
                         <li>
-                          <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title | escape }}</a>
+                          <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
                           {% if child_link.links != blank %}
                             <ul class="site-header__desktop-nested">
                               {% for grandchild_link in child_link.links %}
-                                <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title | escape }}</a></li>
+                                <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
                               {% endfor %}
                             </ul>
                           {% endif %}
@@ -95,7 +95,7 @@
                   </div>
                 </details>
               {% else %}
-                <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title | escape }}</span></a>
+                <a href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></a>
               {% endif %}
             </li>
           {% endfor %}

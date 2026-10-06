@@ -68,10 +68,15 @@ main { isolation: isolate; }
 .product-card__options { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .24em; }
 
 .home-collection-journey__card,
-.home-guides__card,
 .community-gallery__item {
   border: 1px solid var(--leaf-premium-line);
   background: var(--surface);
+}
+
+.home-guides__card {
+  border-color: color-mix(in srgb, #183522, transparent 88%);
+  background: #f6f3ea;
+  color: #183522;
 }
 .home-collection-journey__card:hover { border-color: color-mix(in srgb, var(--accent), transparent 55%); }
 

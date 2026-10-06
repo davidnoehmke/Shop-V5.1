@@ -16,7 +16,9 @@
       <span>{{ 'brand_story.proof_two' | t }}</span>
       <span>{{ 'brand_story.proof_three' | t }}</span>
     </div>
-    <a class="brand-story__link" href="{{ section.settings.link | default: routes.all_products_collection_url }}">{{ 'brand_story.link' | t }}</a>
+    {%- assign brand_story_link = section.settings.link | default: '/pages/ueber-uns' -%}
+    {%- capture localized_brand_story_link -%}{%- render 'leaf-localized-url', url: brand_story_link -%}{%- endcapture -%}
+    <a class="brand-story__link" href="{{ localized_brand_story_link | strip }}">{{ 'brand_story.link' | t }}</a>
   </div>
 </section>
 
