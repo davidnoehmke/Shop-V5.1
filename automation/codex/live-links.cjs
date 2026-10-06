@@ -23,8 +23,19 @@ function findings(path, status, finalUrl, html) {
 }
 async function get(url) {
   let error;
-  for (let attempt = 0; attempt < 2; attempt++) {
-    try { const r = await fetch(url, {signal: AbortSignal.timeout(25000)}); const html = await r.text(); if (r.status >= 500 && attempt === 0) continue; return {status:r.status, url:r.url, html}; }
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      const r = await fetch(url, {signal: AbortSignal.timeout(25000)}); const html = await r.text();
+      if ((r.status === 429 || r.status >= 500) && attempt < 2) {
+        const header = r.headers.get('retry-after');
+        const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
+        if (seconds > 60) return {status:r.status, url:r.url, html};
+        await new Promise(resolve => setTimeout(resolve, Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000)));
+        continue;
+      }
+      return {status:r.status, url:r.url, html};
+    }
     catch (e) { error = e; }
   }
   throw error;
@@ -41,7 +52,7 @@ async function main() {
   }
   const seen = new Set(), results = [], sources = new Map();
   while (true) {
-    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 6); if (!batch.length) break;
+    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 1); if (!batch.length) break;
     if (seen.size + batch.length > 1800) throw new Error('Crawl bound reached; verification incomplete');
     batch.forEach(p => seen.add(p));
     await Promise.all(batch.map(async path => {
@@ -51,6 +62,7 @@ async function main() {
         if (r.status === 200) for (const target of links(r.html,r.url)) { todo.add(target); if (!sources.has(target)) sources.set(target,new Set()); sources.get(target).add(path); }
       } catch (e) { results.push({path,status:0,issues:[e.message]}); }
     }));
+    if (seen.size % 50 === 0) console.log(`Verified ${seen.size} public routes`);
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
   const report = {checked:results.length,failures,results};
