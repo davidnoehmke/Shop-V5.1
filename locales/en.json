@@ -1032,5 +1032,35 @@
     "support": "Customer service",
     "support_help": "Contact and support",
     "sphagnum": "Sphagnum moss – for cuttings & aroids"
-}
+},
+  "lighting_configurator": {
+    "eyebrow": "Plant lighting as a system",
+    "heading": "Choose plant lighting to suit your plants, room and setup.",
+    "intro": "Compare grow lights, aquascape lighting and complete plant stations by use, budget and power. Technical details come from each product’s lighting data.",
+    "location": "Location",
+    "plant": "Plant",
+    "area": "Area",
+    "light": "Light",
+    "filter_aria": "Filter plant lighting",
+    "use": "Use",
+    "all_systems": "All systems",
+    "houseplants": "Houseplants",
+    "aquascape": "Aquascape / Wabi-Kusa",
+    "station": "Plant station",
+    "max_price": "Maximum price",
+    "power": "Power",
+    "all_power": "All power levels",
+    "compact": "Up to 20 W",
+    "medium": "21–50 W",
+    "high": "51 W and above",
+    "result_one": "matching product",
+    "result_other": "matching products",
+    "reset": "Reset filters",
+    "view": "view",
+    "cct": "Colour temperature",
+    "mounting": "Mounting",
+    "details": "Details & buying options",
+    "empty": "No product currently matches your selection.",
+    "empty_help": "Change a filter or reset your selection."
+  }
 }
