@@ -81,7 +81,7 @@
               </a>
               <div class="main-blog__card-body">
                 <div class="main-blog__meta">
-                  {% if article.tags.first != blank %}<span>{{ article.tags.first | escape }}</span>{% endif %}
+                  {% if article.tags.first != blank %}<span>{% render 'leaf-localized-label', text: article.tags.first %}</span>{% endif %}
                   {% if section.settings.show_date %}
                     <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
                       {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
