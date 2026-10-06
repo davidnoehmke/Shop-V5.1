@@ -963,6 +963,11 @@
   },
   "shop_assistant": {
     "voice_speaking": "LEAF antwortet …",
+    "photo": "Pflanzenfoto hinzufügen",
+    "photo_remove": "Foto entfernen",
+    "photo_ready": "Foto bereit zur Analyse",
+    "photo_too_large": "Bitte nutze ein JPG, PNG oder WebP mit maximal 10 MB.",
+    "photo_message": "Pflanzenfoto zur Analyse gesendet",
     "minimize": "Assistent minimieren",
     "open": "LEAF Assistent",
     "eyebrow": "LEAF Shop-Assistent",
