@@ -1032,5 +1032,35 @@
     "support": "Kundenservice",
     "support_help": "Kontakt und Hilfe im Service",
     "sphagnum": "Sphagnum-Moos – für Stecklinge & Aroiden"
-}
+},
+  "lighting_configurator": {
+    "eyebrow": "Pflanzenlicht als System",
+    "heading": "Pflanzenlicht passend zu Pflanze, Raum und Aufbau auswählen.",
+    "intro": "Vergleiche Pflanzenlampen, Aquascape-Licht und komplette Pflanzenstationen nach Einsatz, Budget und Leistung.",
+    "location": "Standort",
+    "plant": "Pflanze",
+    "area": "Fläche",
+    "light": "Licht",
+    "filter_aria": "Pflanzenlicht filtern",
+    "use": "Einsatz",
+    "all_systems": "Alle Systeme",
+    "houseplants": "Zimmerpflanzen",
+    "aquascape": "Aquascape / Wabi-Kusa",
+    "station": "Pflanzenstation",
+    "max_price": "Max. Preis",
+    "power": "Leistung",
+    "all_power": "Alle Leistungen",
+    "compact": "bis 20 W",
+    "medium": "21–50 W",
+    "high": "ab 51 W",
+    "result_one": "passendes Produkt",
+    "result_other": "passende Produkte",
+    "reset": "Filter zurücksetzen",
+    "view": "ansehen",
+    "cct": "Farbtemperatur",
+    "mounting": "Montage",
+    "details": "Details & Kaufoptionen",
+    "empty": "Für diese Auswahl ist aktuell kein Produkt hinterlegt.",
+    "empty_help": "Ändere einen Filter oder setze die Auswahl zurück."
+  }
 }
