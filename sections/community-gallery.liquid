@@ -1,3 +1,9 @@
+{% liquid
+  assign community_cta_link = section.settings.cta_link
+  if community_cta_link contains '/collections/zimmerpflanzen' and collections['zimmerpflanzen-1'] != blank
+    assign community_cta_link = collections['zimmerpflanzen-1'].url
+  endif
+%}
 <section class="community page-width" aria-labelledby="CommunityHeading-{{ section.id }}">
   <div class="community__intro" data-leaf-reveal>
     <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V15M16 23C9 22 5 18 5 10c7 0 11 4 11 11M16 18c6-1 10-5 11-12-7 0-11 4-11 10"/></svg>
@@ -5,7 +11,7 @@
       <h2 id="CommunityHeading-{{ section.id }}">{% if section.settings.heading != blank %}{{ section.settings.heading | escape }}{% else %}{{ 'community.heading' | t }}{% endif %}</h2>
       {% if section.settings.text != blank %}<p>{{ section.settings.text | escape }}</p>{% elsif section.settings.handle != blank %}<p>{{ section.settings.handle | escape }}</p>{% endif %}
     </div>
-    {% if section.settings.cta_link != blank %}<a class="button button--secondary" href="{{ section.settings.cta_link }}">{{ section.settings.cta_label | default: 'Mehr entdecken' | escape }} <span aria-hidden="true">→</span></a>{% endif %}
+    {% if community_cta_link != blank %}<a class="button button--secondary" href="{{ community_cta_link }}">{{ section.settings.cta_label | default: 'Mehr entdecken' | escape }} <span aria-hidden="true">→</span></a>{% endif %}
   </div>
 
   <div class="community__grid">
@@ -45,7 +51,7 @@
       endif
       assign archive_asset = section.settings.archive_asset_filename | default: 'drive-aglaonema-pink-lady.jpg'
       assign archive_alt = section.settings.archive_alt | default: 'Aglaonema mit rosa-grüner Panaschierung im Pflanztopf'
-      assign archive_link = section.settings.archive_link | default: section.settings.cta_link
+      assign archive_link = section.settings.archive_link | default: community_cta_link
     %}
     {% if show_archive_image and archive_asset != blank %}
       {% if archive_link != blank %}
@@ -66,7 +72,7 @@
   .community__intro { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; margin-bottom: 1.3rem; }
   .community__intro svg { width: 38px; fill: none; stroke: currentColor; stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; }
   .community__intro h2, .community__intro p { margin: 0; }
-  .community__intro h2 { font-size: clamp(1.65rem, 3vw, 2.5rem); line-height: 1.05; }
+  .community__intro h2 { font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; }
   .community__intro p { margin-top: .35rem; color: var(--muted); font-size: .88rem; }
   .community__intro .button { gap: .5rem; }
   .community__grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .7rem; }

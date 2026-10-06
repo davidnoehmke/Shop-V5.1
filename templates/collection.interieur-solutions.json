@@ -12,7 +12,8 @@
     "main": {
       "type": "main-collection",
       "settings": {
-        "show_type_filters": true
+        "show_type_filters": true,
+        "brand_logo": "shopify://shop_images/leaferservice-brand-logo.png"
       }
     },
     "interieur_guide": {
@@ -78,8 +79,8 @@
   "order": [
     "breadcrumbs",
     "main",
-    "leaf_guide",
+    "interieur_guide",
     "trust",
-    "interieur_guide"
+    "leaf_guide"
   ]
 }

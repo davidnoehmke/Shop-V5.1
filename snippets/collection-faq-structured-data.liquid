@@ -1,0 +1,31 @@
+{% doc %}
+Renders FAQPage JSON-LD for visible collection FAQs projected from Supabase.
+@param {collection} collection - Current Shopify collection.
+{% enddoc %}
+
+{% assign faq_items = collection.metafields.leafer.faq.value %}
+{% if faq_items != blank %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {% assign faq_schema_count = 0 %}
+        {% for item in faq_items %}
+          {% if item.question != blank and item.answer != blank %}
+            {% if faq_schema_count > 0 %},{% endif %}
+            {
+              "@type": "Question",
+              "name": {{ item.question | strip_html | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ item.answer | strip_html | json }}
+              }
+            }
+            {% assign faq_schema_count = faq_schema_count | plus: 1 %}
+          {% endif %}
+        {% endfor %}
+      ]
+    }
+  </script>
+{% endif %}

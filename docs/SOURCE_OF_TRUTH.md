@@ -1,50 +1,50 @@
 # Source of truth
 
-## Shopify Theme
+## Verbindlicher Produktionszustand
 
-| Quelle | Status | Verwendung |
+| Bereich | Autorität | Rolle |
 |---|---|---|
-| `LEAFerservice_Master_Theme_2026-09-14_v3(3).zip` | lokaler Master-Export, SHA-256 `53a97b1a…` | Primäre Theme-Grundlage |
-| Shopify `Leaferservice Shop` · `gid://shopify/OnlineStoreTheme/189655417217` | unveröffentlicht, 97 Dateien | Referenz für den letzten Shopify-Stand |
-| Shopify `Leaferservice Shop` · `gid://shopify/OnlineStoreTheme/189741891969` | Live, 88 Dateien | Produktionsreferenz, nicht als Schreibziel |
-| Shopify `Kopie von Leaferservice Shop` · `gid://shopify/OnlineStoreTheme/190356259201` | unveröffentlicht, 88 Dateien | ältere Kopie, nicht primär |
-| `davidnoehmke/Shop-V5.1/theme` | Ziel-Repository | kanonischer deploybarer Theme-Root |
+| Produkt-/Content-/SEO-Daten | Supabase | einzige editierbare fachliche SSOT |
+| Storefront/Commerce | Shopify | Projektion, Checkout, Sales Channels, Rücklesequelle |
+| Orchestrierung | ChatGPT | kontrollierte Research-, Prüf- und Owner-Workflows |
+| Code/Theme/Migrationen | GitHub `davidnoehmke/Shop-V5.1` | versionierte Implementierung, PR-/CI-Release-Gate, keine Runtime |
+| `control_center/` | Legacy | Entwicklungs-/Archivartefakt, nicht produktiv |
+| Railway | ausgeschlossen | keine Runtime, kein Sync-Bus, keine Business-Logik |
+| Notion | getrennt | keine produktive Datenquelle |
+| Google Sheets / Apps Script | getrennt | Legacy, keine produktive Datenquelle |
 
-Der lokale Master enthält zusätzliche, bereits erarbeitete Sections und Templates
-wie den Projekt-Konfigurator, Entscheidungshelfer, Breadcrumbs, Collection Guide,
-Component Signature und die erweiterten Substrat-/Produktbausteine. Sein Inhalt
-wird in `davidnoehmke/Shop-V5.1/theme` direkt im Theme-Root versioniert.
-Für die versionierbare Grundlage wurde die FAQ-Key-Liste in
-`snippets/product-faq-structured-data.liquid` normalisiert, damit die
-Liquid-Prüfung den Loop zuverlässig akzeptiert. Zusätzlich wurden nur
-prüfungsrelevante Integrationsfehler bereinigt: fehlende Bilddimensionen,
-zu lange Section-Schemanamen, veraltete Asset-Fallbacks und fehlende deutsche
-SEO-Übersetzungen. Die übrigen Kompatibilitätswarnungen sind in
-`docs/VALIDATION.md` dokumentiert.
+## Projektionspfade
 
-## Automation
+### Daten und Content
 
-`automation/google-apps-script/` stammt aus dem zuletzt bereitgestellten
-bidirektionalen `LEAFerservice_Shopify_Notion_Bidirectional_Sync.zip` und enthält
-die am 14.09. gehärtete, credential-freie Fassung.
+`ChatGPT -> Supabase -> Shopify`
 
-Der Sync trennt bewusst:
+Supabase hält die fachliche Wahrheit. Shopify erhält nur freigegebene Projektionen und
+liefert technische Readbacks wie GIDs, Handles, URLs, Status und Verifikation zurück.
 
-- Shopify als führende Quelle für Live-Commerce-Felder
-- Notion als redaktionelle Wissens- und Content-Basis
-- Google Sheets als kontrollierte Freigabe-/Audit-Schicht
+### Theme, Code und Struktur
 
-`davidnoehmke/Shop-V5.1` enthält Theme, Sync, Dokumentation und Experimente in
-getrennten Pfaden. `theme/` bleibt die alleinige Quelle für deploybaren
-Theme-Code.
+`ChatGPT -> GitHub Branch -> Pull Request -> CI -> Merge -> Shopify`
 
-Tokens, Spreadsheet-IDs und Datenbank-IDs werden erst bei der privaten
-Installation in Script Properties hinterlegt.
+Theme- oder Codeänderungen dürfen nicht direkt an GitHub vorbei in Produktion gelangen.
+Für Supabase-Schema-/Policy-Änderungen bleibt GitHub die versionierte Migrationsquelle.
 
-## Verwandte Repositories
+## Konfliktregeln
 
-- `LeafersShop/leafertheme_V1` – vorgesehenes Theme-only-Mirror
-- `davidnoehmke/leaferpage` – Headless-/Hydrogen- und Theme-Arbeitsstand
-- `davidnoehmke/LEAF-OS` – Agent-/Substratwelt-Arbeitsstand
-- `davidnoehmke/seo-performing-leaferservice` – SEO-Arbeitsstand
-- `davidnoehmke/Leaferservice-Knowledge-organic-grouth` – Wissens-/Content-Repository
+- Supabase gewinnt bei Produktinhalt, VK-Preis, Produktidentität, Produktstatus und Metafeld-Schema gemäß `commerce_ssot_policy`.
+- Shopify-IDs und Handles werden erhalten und als Projektion/Rücklese-Referenz verwendet.
+- Theme-/Storefront-Struktur wird nur aus einem gemergten und geprüften GitHub-Stand projiziert.
+- Automationen dürfen aktive Produkte nicht automatisch auf Draft/Archived zurücksetzen.
+- Kein bidirektionaler Notion-/Sheets-Rücksync darf den produktiven Pfad beeinflussen.
+- Railway darf nicht als Runtime, Sync-Bus, Business-Logik oder Content-Quelle reaktiviert werden.
+
+## Headless-/Decoupling-Regel
+
+Die fachliche Datenbasis darf nicht an Shopify gebunden sein. Ein späteres Ablösen des
+Shopify-Frontends darf keinen Neuaufbau von Pflanzen-, Produkt-, Content-, SEO- oder
+Konfiguratordaten erfordern. Supabase bleibt SSOT; GitHub bleibt Implementierungs- und
+Release-Schicht.
+
+## Legacy
+
+Historische Railway-, Notion-, Google-Sheets-, LEAF-OS- und alternative Sync-Pfade sind nicht Teil der produktiven Architektur. Sie dürfen nur als Dokumentation/Archiv existieren, solange sie keine Trigger oder schreibenden Verbindungen aktivieren.

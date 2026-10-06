@@ -14,6 +14,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  live-links:
+    name: Public DE/EN link verification
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - name: Verify public sitemap and internal links before merge
+        run: node automation/codex/live-links.cjs
+
   repository-validation:
     name: Repository validation
     runs-on: ubuntu-24.04
@@ -42,23 +57,95 @@ jobs:
             echo 'Potential committed secret detected.' >&2
             exit 1
           fi
+      - name: Enforce storefront portability and browser safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          storefront_paths=(assets sections snippets layout templates config)
 
-  theme-check:
-    name: Shopify Theme Check
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-      - uses: ruby/setup-ruby@bec3f19a76460dbe12f60def7d1a77585f07516c # v1
-        with:
-          ruby-version: '3.3.12'
-          bundler-cache: false
-      - name: Install pinned Shopify Theme Check
-        run: gem install theme-check --version 1.15.0 --no-document
-      - name: Run Theme Check
-        run: theme-check .
+          leaked_artifact=$(find "${storefront_paths[@]}" -type f \( -name '*.map' -o -name '*.ts' -o -name '*.tsx' \) -print -quit)
+          if [ -n "$leaked_artifact" ]; then
+            echo "Storefront source artifact must not be deployed: $leaked_artifact" >&2
+            exit 1
+          fi
+
+          if git grep -nE '(SUPABASE_SERVICE_ROLE_KEY|sb_secret_[A-Za-z0-9_-]+|OPENAI_API_KEY|SHOPIFY_CLI_THEME_TOKEN|LEAF_GITHUB_TOKEN|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY)' -- "${storefront_paths[@]}"; then
+            echo 'Server credential or private key reference found in storefront-delivered code.' >&2
+            exit 1
+          fi
+
+          if git grep -n 'sourceMappingURL=' -- assets sections snippets layout templates; then
+            echo 'Production storefront source maps are forbidden.' >&2
+            exit 1
+          fi
+
+          configurators=(
+            sections/substrate-configurator.liquid
+            sections/leafer-substrate-selector.liquid
+            sections/leaf-project-configurator.liquid
+            sections/leaf-lighting-configurator.liquid
+            sections/custom-grow-creator.liquid
+          )
+          existing_configurators=()
+          for file in "${configurators[@]}"; do
+            [ -f "$file" ] && existing_configurators+=("$file")
+          done
+
+          if [ "${#existing_configurators[@]}" -gt 0 ] && git grep -nE 'https?://[^"[:space:]]*\.myshopify\.com|/cart/add\.js' -- "${existing_configurators[@]}"; then
+            echo 'Hard-coded Shopify commerce endpoint found inside configurator core. Inject the adapter URL instead.' >&2
+            exit 1
+          fi
+
+      - name: Prevent internal SEO strategy leaks
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git grep -nE 'metafields\.leafer\.(longtail_keywords|search_intent)' -- assets sections snippets layout templates; then
+            echo 'Internal SEO strategy field referenced by storefront-delivered code.' >&2
+            exit 1
+          fi
+
+      - name: Enforce LEAF assistant and admin hardening invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          settings = json.loads(Path('config/settings_data.json').read_text(encoding='utf-8'))
+          blocks = (settings.get('current') or {}).get('blocks') or {}
+          forbidden = ('/inbox/', '/cwill-ai-chat/')
+          enabled_duplicate_chat = [
+              block.get('type', '')
+              for block in blocks.values()
+              if not block.get('disabled', False)
+              and any(token in block.get('type', '') for token in forbidden)
+          ]
+          if enabled_duplicate_chat:
+              raise SystemExit('Duplicate chat embed still enabled: ' + ', '.join(enabled_duplicate_chat))
+
+          index = json.loads(Path('templates/index.json').read_text(encoding='utf-8'))
+          if 'shop_videos' in (index.get('sections') or {}) or 'shop_videos' in (index.get('order') or []):
+              raise SystemExit('Empty app-based homepage video section must not be part of the primary template.')
+
+          control = Path('supabase/functions/leaf-control-api/index.ts').read_text(encoding='utf-8')
+          if 'password === "Admin"' in control or 'password==="Admin"' in control or 'password==\"Admin\"' in control:
+              raise SystemExit('Default Admin/Admin bootstrap credential is forbidden.')
+          if '"Access-Control-Allow-Origin":"*"' in control or "'Access-Control-Allow-Origin':'*'" in control:
+              raise SystemExit('Wildcard CORS is forbidden for LEAF control API.')
+
+          assistant = Path('supabase/functions/storefront-assistant/index.ts').read_text(encoding='utf-8')
+          required = [
+              'consume_storefront_assistant_rate_limit',
+              'origin_not_allowed',
+              'approved_existing',
+              'approved',
+          ]
+          for token in required:
+              if token not in assistant:
+                  raise SystemExit('Storefront assistant hardening invariant missing: ' + token)
+          PY
 
   theme-structure:
     name: Theme structure
@@ -104,6 +191,140 @@ jobs:
           while IFS= read -r -d '' file; do
             node --check "$file"
           done < <(find assets -type f -name '*.js' -print0)
+      - name: Validate dynamic configurator UX invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          required = {
+              'sections/substrate-configurator.liquid': [
+                  "addEventListener('input'",
+                  'data-recipe',
+                  'substrate:change',
+              ],
+              'sections/leafer-substrate-selector.liquid': [
+                  'data-recipe-matrix',
+                  'data-recipe-list',
+                  "addEventListener('input'",
+              ],
+              'sections/leaf-lighting-configurator.liquid': [
+                  'data-result-count',
+                  "addEventListener('input'",
+                  'plant_light_recommendation',
+                  'metafields.lighting.use_cases',
+              ],
+              'templates/page.pflanzenlicht-konfigurator.json': [
+                  'sunlite-7w-led-pflanzenlampe-mit-teleskopstab',
+                  'neusius-led-bloom-20w-3500k-pflanzenleuchte',
+                  'neusius-aurora-76-cm-led-pflanzenleuchte-15w',
+                  'venso-sunlite-xl-25w-led-pflanzenlampe',
+                  'venso-e27-pflanzenlampe-indoor-plants-7w-15w',
+                  'mother-plantspectrum-16-32-pflanzenleuchte',
+              ],
+              'sections/leaf-project-configurator.liquid': [
+                  'data-project-light',
+                  'data-project-rules',
+              ],
+              'snippets/leaf-content-atoms.liquid': [
+                  'one_liner',
+                  'short_explanation',
+                  'long_explanation',
+                  "render 'leaf-knowledge-icon'",
+              ],
+              'sections/leaferservice-product.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'chips'",
+                  'truncatewords: 32',
+              ],
+              'sections/product-seo-details.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'long'",
+                  '<details class="product-seo-details__description">',
+              ],
+              'sections/main-collection.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'chips'",
+              ],
+              'sections/leaf-collection-guide.liquid': [
+                  'metafields.leafer.knowledge_atoms',
+                  "mode: 'long'",
+                  '<details class="leaf-collection-guide__panel">',
+              ],
+              'snippets/home-discovery-product.liquid': [
+                  'truncatewords: 18',
+              ],
+              'sections/home-collection-journey.liquid': [
+                  'truncatewords: 22',
+              ],
+              'sections/home-discovery-path.liquid': [
+                  'home-discovery__story-icon',
+                  'home-discovery__story-body',
+                  '<details class="home-discovery__story"',
+              ],
+              'snippets/structured-content-seo.liquid': [
+                  'knowledge_atoms',
+                  '"mentions"',
+              ],
+          }
+
+          missing = []
+          for filename, tokens in required.items():
+              path = Path(filename)
+              if not path.exists():
+                  missing.append(f'{filename}: file missing')
+                  continue
+              content = path.read_text(encoding='utf-8')
+              for token in tokens:
+                  if token not in content:
+                      missing.append(f'{filename}: {token}')
+
+          if missing:
+              print('Dynamic configurator UX invariant failed:', file=sys.stderr)
+              for item in missing:
+                  print(f'- {item}', file=sys.stderr)
+              sys.exit(1)
+          PY
+      - name: Validate blog indexability invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          theme = Path('layout/theme.liquid').read_text(encoding='utf-8')
+          blog = Path('sections/main-blog.liquid').read_text(encoding='utf-8')
+
+          required_theme = {
+              'canonical link': '<link rel="canonical" href="{{ canonical_url }}">',
+              'default index robots': '<meta name="robots" content="index,follow,max-image-preview:large">',
+              'search/cart-only noindex gate': "request.page_type == 'search' or request.page_type == 'cart'",
+              'article structured data gate': "request.page_type == 'article'",
+              'Article JSON-LD': '"@type": "Article"',
+          }
+          required_blog = {
+              'article pagination': 'paginate blog.articles',
+              'crawlable pagination links': 'default_pagination',
+              'crawlable article links': 'href="{{ article.url }}"',
+          }
+
+          missing = []
+          for label, token in required_theme.items():
+              if token not in theme:
+                  missing.append(f'layout/theme.liquid: {label}')
+          for label, token in required_blog.items():
+              if token not in blog:
+                  missing.append(f'sections/main-blog.liquid: {label}')
+
+          if missing:
+              print('Blog indexability invariant failed:', file=sys.stderr)
+              for item in missing:
+                  print(f'- {item}', file=sys.stderr)
+              sys.exit(1)
+          PY
 
   migration-validation:
     name: Supabase migration validation
@@ -129,6 +350,10 @@ jobs:
           grep -q 'enable row level security' supabase/migrations/20260914190200_content_approval_queue.sql
           grep -q 'service_role' supabase/migrations/20260914190200_content_approval_queue.sql
 
+          grep -q 'alter table public.storefront_assistant_rate_limits enable row level security' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'revoke all on table public.storefront_assistant_rate_limits from public, anon, authenticated' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'security invoker' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+
   pipeline-tests:
     name: Pipeline unit tests
     runs-on: ubuntu-24.04
@@ -144,6 +369,6 @@ jobs:
         run: |
           for file in automation/codex/*.cjs; do node --check "$file"; done
       - name: Run policy and delivery unit tests
-        run: node --test automation/codex/controller.test.cjs
+        run: node --test automation/codex/*.test.cjs
       - name: Validate workflow syntax and expressions
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -color

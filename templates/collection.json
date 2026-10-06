@@ -3,7 +3,8 @@
     "main": {
       "type": "main-collection",
       "settings": {
-        "show_type_filters": true
+        "show_type_filters": true,
+        "brand_logo": "shopify://shop_images/leaferservice-brand-logo.png"
       }
     },
     "trust": {
@@ -69,8 +70,8 @@
   "order": [
     "breadcrumbs",
     "main",
-    "leaf_guide",
     "trust",
+    "leaf_guide",
     "seo_copy"
   ]
 }

@@ -1,30 +1,77 @@
 # LEAFerservice Shop V5.1
 
-Kanonische, versionierbare Grundlage für den LEAFerservice-Shop. Das Repository
-trennt den deploybaren Shopify-Theme-Code von Sync, Experimenten und
-Dokumentation, ohne eine zweite Theme-Kopie zu erzeugen.
+Kanonische, versionierbare Grundlage für LEAFerservice.
+
+## Verbindliche Produktionsroute
+
+```text
+Content / Daten:
+ChatGPT -> Supabase (SSOT) -> Shopify (Storefront / Commerce-Projektion)
+
+Code / Theme / Migrationen:
+ChatGPT -> GitHub PR -> CI -> Merge -> Shopify
+                       └────────────> Supabase-Migrationen
+```
+
+ChatGPT ist die kontrollierte Orchestrierungs- und Arbeitsebene. Supabase ist die
+einzige editierbare SSOT für fachliche Daten. GitHub versioniert Code, Theme,
+Migrationen, Prüfregeln und Dokumentation und ist der verpflichtende Release-Gate
+für Codeänderungen. Shopify ist Storefront und Commerce-Projektion.
+
+Railway, Notion, Google Sheets, LEAF-OS und frühere Parallel-Syncs gehören nicht
+zum produktiven Datenpfad.
 
 ## Struktur
 
 | Pfad | Inhalt |
 | --- | --- |
-| `theme/` | vollständiger Shopify-Online-Store-2.0-Theme-Root |
-| `automation/google-apps-script/` | kontrollierter Shopify↔Google-Sheets-/Notion-Sync |
-| `automation/experiments/` | optionale, nicht automatisch aktive Prototypen |
-| `automation/ci-examples/` | inaktive Deployment-Vorlagen |
-| `docs/` | Architektur, Metafeld-Vertrag, SEO, Deployment und QA |
+| `theme/` | Shopify Online Store 2.0 Theme |
+| `supabase/migrations/` | versionierte Supabase-Schema-/Policy-Änderungen |
+| `control_center/` | Legacy-/Entwicklungsartefakt; keine produktive Runtime |
+| `automation/content-agent/` | Verträge und Vorlagen für kontrollierte Content-Vorbereitung |
+| `automation/codex/` | Policy-/Delivery-Helfer und Tests für CI, kein Scheduler |
+| `.github/workflows/ci.yml` | Validierung/Tests bei PR und Push |
+| `docs/` | Architektur, SEO, Deployment und QA |
 
-## Aktueller Stand
+## Betriebsregeln
 
-Der Theme-Code basiert auf `LEAFerservice_Master_Theme_2026-09-14_v3(3)` vom
-14.09.2026 und enthält unter anderem Substrat- und Projekt-Konfigurator,
-Produkt-/Collection-Content, Cross-Selling, Trust-Elemente, FAQ-, Produkt- und
-Breadcrumb-Structured-Data sowie die zuletzt ergänzten UX-/SEO-Bausteine.
+- Supabase ist die einzige editierbare SSOT für Produkt-, Content-, SEO- und Konfiguratordaten.
+- Shopify ist Storefront, Commerce-Ziel und Verifikations-/Rücklesequelle.
+- GitHub ist für Theme-/Codeänderungen Pflichtpfad: Branch -> PR -> CI -> Merge -> Shopify.
+- Supabase-Schema- und Policy-Änderungen werden in GitHub versioniert.
+- Automatisches Zurückstufen aktiver Produkte auf Draft/Archived ist verboten.
+- Bestandsverfolgung bleibt deaktiviert; Varianten dürfen weiterverkauft werden.
+- Daten-/Contentprojektion erfolgt Supabase -> Shopify.
+- Theme-/Codeprojektion erfolgt ausschließlich aus einem gemergten GitHub-Stand.
+- Railway, Notion, Google Sheets und LEAF-OS sind vollständig außerhalb der produktiven Runtime.
+- Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
+- Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
+- Konfiguratoren bleiben performance-first und browserlokal für hochfrequente Interaktionen; Shopify-spezifische Commerce-Funktionen bleiben austauschbare Randintegration.
+- Produktions-Storefronts enthalten keine TypeScript-Quelldateien oder Source Maps; die Portabilitätsregeln stehen in `docs/STOREFRONT_PORTABILITY.md`.
 
-Der Sync stammt aus dem bidirektionalen Shopify↔Notion-/Google-Sheets-Stand und
-arbeitet standardmäßig mit Dry-Run, eindeutiger ID-Prüfung, Update-only-
-Schutz, expliziter Freigabe und Audit-Log. Zugangsdaten und Runtime-Daten
-werden nicht in Git versioniert.
+## Storefront-Freeze ab 2026-09-19
+
+Der aktuelle Shopify-Storefront-Stand gilt als stabile Produktionsbasis.
+
+Standardmäßiges Wachstum erfolgt ab jetzt nur noch über:
+- neue bzw. verbesserte Produkte inklusive Metafeldern, Medien und interner Verlinkung
+- neue bzw. verbesserte Blog-/Ratgeberinhalte inklusive FAQ/HowTo, Quellen und interner Verlinkung
+
+Theme-Struktur, Startseite, Navigation, URL-/Handle-Struktur, Canonicals, Robots-Regeln und grundlegende SEO-Architektur werden nicht mehr proaktiv umgebaut.
+
+Ausnahmen sind nur zulässig, wenn mindestens einer dieser Punkte erfüllt ist:
+- ein reproduzierbarer technischer Fehler liegt vor
+- Search Console oder Analytics zeigen einen belastbaren negativen Effekt
+- eine zwingende technische/gesetzliche Anforderung erfordert die Änderung
+- der Owner gibt die Änderung ausdrücklich frei
+
+Jede Ausnahme folgt weiterhin: Ist-Zustand prüfen -> kleinste sichere Änderung -> CI/QA -> Live-Verifikation.
+
+Nach einem erfolgreichen `LEAF CI`-Push auf `main` prüft `.github/workflows/freeze-stable.yml`
+die reale Storefront nach der nativen Shopify-GitHub-Synchronisierung. Nur wenn Startseite
+und Referenz-Collection ohne Liquid-Fehler laufen, der gemeinsame LEAF Berater sichtbar ist
+und der globale Shop-Assistent ausgeliefert wird, wird der Commit als unveränderlicher
+`freeze/verified-<sha>`-Tag eingefroren. Ein grüner CI-Lauf allein reicht nicht als Freeze. Zusätzlich muss der globale Shop-Assistent eine echte Antwort liefern. Der zuletzt vollständig verifizierte Stand wird außerdem über den beweglichen Branch `freeze/best-verified` markiert.
 
 ## Entwicklung
 
@@ -34,15 +81,3 @@ shopify theme push --unpublished --store="$SHOPIFY_STORE" --path theme
 ```
 
 Vor einer Veröffentlichung die Checkliste in `docs/DEPLOYMENT.md` ausführen.
-Der aktuelle Theme-Check-Stand ist in `docs/VALIDATION.md` festgehalten.
-Die getrennten Runtime-Secrets, Sicherheitsschalter und der schreibfreie
-Konfigurations-Dry-Run sind in `docs/AUTOMATION_RUNTIME.md` dokumentiert.
-
-## Verwandte Repositories
-
-- [LeafersShop/leafertheme_V1](https://github.com/LeafersShop/leafertheme_V1) –
-  vorgesehenes Theme-only-Mirror
-- [davidnoehmke/leaferpage](https://github.com/davidnoehmke/leaferpage) –
-  Headless-/Hydrogen-Arbeitsstand
-- [davidnoehmke/LEAF-OS](https://github.com/davidnoehmke/LEAF-OS) –
-  ältere Oxygen-/Agent-Experimente

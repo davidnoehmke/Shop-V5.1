@@ -1,23 +1,17 @@
-# LEAFerservice Admin Hub
+# LEAFerservice Admin Hub (Legacy)
 
-Runtime entrypoint: `control_center/admin_hub.py`.
+Dieser Ordner ist ein historisches Entwicklungsartefakt und **nicht Teil der produktiven LEAFerservice-Pipeline**.
 
-Required Railway environment variables:
-- `LEAF_LICENSE_SHA256`
-- `LEAF_LICENSE_ID`
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `ADMIN_CHANGELOG_READ_TOKEN`
+Die verbindliche Produktionsroute ist:
 
-The app uses the read-only Supabase RPC `public.admin_panel_snapshot(...)`. No service-role key is required or allowed in the UI runtime.
-
-Production start command:
-
-```sh
-streamlit run admin_hub.py --server.address 0.0.0.0 --server.port $PORT --server.headless true --browser.gatherUsageStats false
+```text
+ChatGPT -> Supabase -> Shopify
 ```
 
-Healthcheck: `/_stcore/health`.
+Es gibt keinen produktiven Railway-Admin-Hub. Der Code darf ausschließlich lokal
+zu Diagnose-, Entwicklungs- oder Archivzwecken erhalten bleiben. Er darf nicht als
+öffentliche Administrationsoberfläche, Runtime, Datenquelle, Scheduler oder Sync-Bus
+reaktiviert werden.
 
 The application must remain usable when the data RPC fails: show diagnostics instead of a blank page. Shopify writes, GitHub writes, merges and deployments remain separate controlled operations.
 

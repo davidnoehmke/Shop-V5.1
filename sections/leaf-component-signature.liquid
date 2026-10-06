@@ -59,7 +59,7 @@
       {% endif %}
 
       {% if profile.pro_enabled.value != false %}
-        <a class="button leaf-signature__cta" href="/pages/individuelles-substrat#Profi-Konfigurator">{{ 'product.signature.cta' | t }}</a>
+        <a class="button leaf-signature__cta" href="{{ routes.root_url }}pages/individuelles-substrat#Profi-Konfigurator">{{ 'product.signature.cta' | t }}</a>
       {% endif %}
     </div>
   </section>
@@ -69,7 +69,7 @@
   .leaf-signature { margin-block: var(--space-section); display: grid; grid-template-columns: minmax(230px,.72fr) minmax(0,1.28fr); gap: clamp(2rem,6vw,6rem); padding-block: clamp(2rem,5vw,4rem); border-block: 1px solid var(--border); }
   .leaf-signature__intro { align-self: start; }
   .leaf-signature__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-  .leaf-signature h2 { margin: 0; font-size: clamp(2rem,5vw,4rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-signature h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leaf-signature__intro > p:not(.leaf-signature__eyebrow) { color: var(--muted); line-height: 1.65; }
   .leaf-signature__description { margin-top: 1.25rem; padding-left: 1rem; border-left: 3px solid var(--accent); }
   .leaf-signature__panel { display: grid; gap: 1.35rem; }

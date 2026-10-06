@@ -49,7 +49,7 @@
           endif
         %}
         <div class="main-product__image">
-          {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 88vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+          {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 430px, (min-width: 801px) 45vw, 74vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
         </div>
       {% endfor %}
     {% else %}
@@ -67,15 +67,6 @@
     {% if product.type != blank or product.vendor != blank %}<p class="main-product__eyebrow">{% if product.type != blank %}{{ product.type | escape }}{% else %}{{ product.vendor | escape }}{% endif %}</p>{% endif %}
     <h1>{{ product.title | escape }}</h1>
     {% if product_subtitle != blank %}<p class="main-product__claim">{{ product_subtitle | escape }}</p>{% endif %}
-    {% assign product_rating = product.metafields.reviews.rating.value %}
-    {% assign product_rating_count = product.metafields.reviews.rating_count.value %}
-    {% if product_rating != blank and product_rating_count != blank and product_rating_count > 0 %}
-      <div class="main-product__rating" aria-label="{{ product_rating.rating }} von {{ product_rating.scale_max }} Sternen bei {{ product_rating_count }} Bewertungen">
-        <span aria-hidden="true">★★★★★</span>
-        <span>{{ product_rating.rating }} / {{ product_rating.scale_max }} · {{ product_rating_count }} {% if product_rating_count == 1 %}Bewertung{% else %}Bewertungen{% endif %}</span>
-      </div>
-    {% endif %}
-
     <div class="main-product__price-wrap" aria-live="polite">
       <p class="main-product__price" data-product-price>{{ selected_variant.price | money }}</p>
       <s class="main-product__compare" data-product-compare{% unless selected_on_sale %} hidden{% endunless %}>{% if selected_on_sale %}{{ selected_variant.compare_at_price | money }}{% endif %}</s>
@@ -109,7 +100,8 @@
               data-compare-at="{% if variant_on_sale %}{{ variant.compare_at_price | money | escape }}{% endif %}"
               data-unit-price="{{ variant_unit_price | strip | escape }}"
               data-available="{{ variant.available }}"
-              data-sku="{{ variant.sku | escape }}"\n              data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
+              data-sku="{{ variant.sku | escape }}"
+              data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
               {% if variant == selected_variant %}selected{% endif %}
             >
               {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.sold_out' | t }}{% endunless %}
@@ -150,6 +142,10 @@
     </div>
 
     {% if section.settings.show_description and product.description != blank %}<div class="main-product__description rte">{{ product.description }}</div>{% endif %}
+
+    {% for block in section.blocks %}
+      {% render block %}
+    {% endfor %}
   </product-purchase>
 
   <div class="main-product__dock" aria-label="{{ product.title | escape }}">
@@ -163,18 +159,17 @@
 {% render 'product-faq', product: product %}
 
 {% stylesheet %}
-  .main-product { padding-block: clamp(1rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1.28fr) minmax(340px, .72fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: start; }
+  .main-product { padding-block: clamp(1rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(360px, .58fr); gap: clamp(1.5rem, 3.5vw, 4.25rem); align-items: start; }
   .main-product__breadcrumbs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); font-size: .75rem; }
   .main-product__breadcrumbs a { color: inherit; }
-  .main-product__media { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
-  .main-product__image { aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; padding: clamp(.8rem, 2.5vw, 2.5rem); border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
+  .main-product__media { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  @media (min-width: 1280px) { .main-product { width: min(100% - 2rem, 1560px); } }
+  .main-product__image { aspect-ratio: 1 / 1; display: grid; place-items: center; overflow: hidden; padding: clamp(.65rem, 1.6vw, 1.4rem); border: 1px solid var(--border); border-radius: var(--radius); background: #f5f2eb; }
   .main-product__image img, .main-product__image svg { width: 100%; height: 100%; object-fit: contain; object-position: center; }
   .main-product__details { position: sticky; top: 108px; min-width: 0; }
   .main-product__eyebrow { margin: 0 0 .65rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
-  .main-product h1 { margin: 0; font-size: clamp(2.55rem, 4.8vw, 5rem); line-height: .95; letter-spacing: -.06em; overflow-wrap: anywhere; }
+  .main-product h1 { margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; overflow-wrap: anywhere; }
   .main-product__claim { max-width: 58ch; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; }
-  .main-product__rating { display: flex; align-items: center; gap: .6rem; margin-top: 1rem; color: #79551b; font-size: .9rem; }
-  .main-product__rating span:first-child { letter-spacing: .08em; }
   .main-product__price-wrap { display: flex; align-items: baseline; gap: .75rem; margin-top: 1.35rem; }
   .main-product__price { margin: 0; font-size: 1.45rem; font-weight: 800; }
   .main-product__compare { color: var(--muted); font-size: 1rem; }
@@ -198,19 +193,24 @@
   .main-product__description > *:last-child { margin-bottom: 0; }
   .main-product__dock { display: none; }
   @media (max-width: 800px) {
-    .main-product { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: 7rem; }
+    .main-product { grid-template-columns: 1fr; gap: 1.5rem; padding-bottom: calc(7rem + env(safe-area-inset-bottom)); }
     .main-product__details { position: static; }
     .main-product__media { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin-inline: -.75rem; padding-inline: .75rem; }
     .main-product__media::-webkit-scrollbar { display: none; }
-    .main-product__image { min-width: 88%; padding: .55rem; aspect-ratio: 1 / 1.12; scroll-snap-align: center; }
-    .main-product h1 { font-size: clamp(2.35rem, 11vw, 4rem); line-height: .94; }
+    .main-product__image { min-width: clamp(240px, 74vw, 320px); max-height: 58vh; padding: .4rem; aspect-ratio: 1 / 1; scroll-snap-align: center; }
+    .main-product h1 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
     .main-product__claim { font-size: 1rem; line-height: 1.5; }
     .main-product__reassurance { grid-template-columns: 1fr; }
-    .main-product__dock { position: fixed; z-index: 25; inset: auto .65rem .65rem; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .8rem; padding: .7rem; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb, var(--background), transparent 3%); box-shadow: 0 16px 42px color-mix(in srgb, var(--text), transparent 78%); backdrop-filter: blur(18px); }
+    .main-product__dock { position: fixed; z-index: 25; inset: auto 5.25rem calc(.65rem + env(safe-area-inset-bottom)) .65rem; min-height: 72px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: .8rem; padding: .7rem; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb, var(--background), transparent 3%); box-shadow: 0 16px 42px color-mix(in srgb, var(--text), transparent 78%); backdrop-filter: blur(18px); }
     .main-product__dock small, .main-product__dock strong { display: block; }
     .main-product__dock small { overflow: hidden; color: var(--muted); font-size: .67rem; text-overflow: ellipsis; white-space: nowrap; }
     .main-product__dock strong { font-size: 1rem; }
     .main-product__dock button { min-height: 50px; padding-inline: 1rem; }
+  }
+  @media (max-width: 480px) {
+    .main-product__dock { grid-template-columns: 1fr; }
+    .main-product__dock > div { display: none; }
+    .main-product__dock button { width: 100%; }
   }
 {% endstylesheet %}
 
@@ -290,6 +290,9 @@
   "name": "t:sections.main_product.name",
   "settings": [
     { "type": "checkbox", "id": "show_description", "label": "t:sections.main_product.show_description", "default": false }
+  ],
+  "blocks": [
+    { "type": "@app" }
   ]
 }
 {% endschema %}

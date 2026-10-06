@@ -1,7 +1,24 @@
 {% liquid
   assign hero_heading = section.settings.heading
+  assign hero_eyebrow = section.settings.eyebrow
+  assign hero_text = section.settings.text
+  assign hero_primary_label = section.settings.primary_label
+  assign hero_primary_link = section.settings.primary_link
+  assign hero_secondary_label = section.settings.secondary_label
+  assign hero_secondary_link = section.settings.secondary_link
+
   if hero_heading == blank
     assign hero_heading = 'hero.heading' | t
+  endif
+
+  if request.page_type == 'index'
+    assign hero_eyebrow = 'home.solution.eyebrow' | t
+    assign hero_heading = 'home.solution.heading' | t
+    assign hero_text = 'home.solution.text' | t
+    assign hero_primary_label = 'home.solution.primary' | t
+    assign hero_primary_link = '#Substrat-Konfigurator'
+    assign hero_secondary_label = 'home.solution.secondary' | t
+    assign hero_secondary_link = '#LeafAdvisor'
   endif
 %}
 
@@ -15,19 +32,25 @@
 
   <div class="page-width hero__inner">
     <div class="hero__content" data-leaf-reveal>
-      {% if section.settings.eyebrow != blank %}<p class="hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      {% if section.settings.show_brand_logo and section.settings.brand_logo != blank %}
+        <div class="hero__brand-lockup" style="--hero-brand-width: {{ section.settings.brand_logo_width }}px" aria-label="LEAFerservice™">
+          {{ section.settings.brand_logo | image_url: width: 700 | image_tag: widths: '220, 320, 480, 700', sizes: '(min-width: 700px) 260px, 210px', loading: 'eager', alt: 'LEAFerservice' }}
+          <sup class="hero__brand-tm" aria-hidden="true">™</sup>
+        </div>
+      {% endif %}
+      {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape }}</p>{% endif %}
       <h1 id="HeroHeading-{{ section.id }}">{{ hero_heading }}</h1>
-      {% if section.settings.text != blank %}<div class="hero__text rte">{{ section.settings.text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
+      {% if hero_text != blank %}<div class="hero__text rte">{{ hero_text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
       <div class="hero__buttons">
-        {% if section.settings.primary_link != blank %}
-          <a class="button" href="{{ section.settings.primary_link }}">
-            {% if section.settings.primary_label != blank %}{{ section.settings.primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
+        {% if hero_primary_link != blank %}
+          <a class="button" href="{{ hero_primary_link }}">
+            {% if hero_primary_label != blank %}{{ hero_primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
             <span aria-hidden="true">→</span>
           </a>
         {% endif %}
-        {% if section.settings.secondary_link != blank %}
-          <a class="button button--secondary" href="{{ section.settings.secondary_link }}">
-            {% if section.settings.secondary_label != blank %}{{ section.settings.secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
+        {% if hero_secondary_link != blank %}
+          <a class="button button--secondary" href="{{ hero_secondary_link }}">
+            {% if hero_secondary_label != blank %}{{ hero_secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
           </a>
         {% endif %}
       </div>
@@ -66,8 +89,11 @@
   .hero__fallback span:nth-child(3) { right: 36%; bottom: 6%; width: 15%; height: 60%; border-radius: 9px; background: #f0e7d7; transform: none; }
   .hero__inner { position: relative; min-height: inherit; display: grid; align-content: space-between; padding-block: clamp(3.6rem, 7vw, 6rem) 2.4rem; }
   .hero__content { max-width: 720px; }
+  .hero__brand-lockup { position: relative; width: min(100%, var(--hero-brand-width)); margin: 0 0 1rem; }
+  .hero__brand-lockup img { width: 100%; height: auto; }
+  .hero__brand-tm { position: absolute; top: -.12rem; right: -.75rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem; font-weight: 800; line-height: 1; }
   .hero__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
-  .hero h1 { max-width: 12ch; margin: 0 0 1rem; font-size: clamp(2.8rem, 5.3vw, 5.45rem); line-height: .98; letter-spacing: -.04em; }
+  .hero h1 { max-width: 28ch; margin: 0 0 1rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .hero__text, .hero__content > p { max-width: 600px; font-size: clamp(1rem, 1.5vw, 1.16rem); }
   .hero__buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.65rem; }
   .hero__buttons .button { gap: .65rem; }
@@ -87,26 +113,53 @@
     @keyframes leaf-hero-breathe { from { transform: scale(1.015); } to { transform: scale(1.055); } }
   }
 
+  @media (min-width: 1051px) {
+    .hero { min-height: min(760px, calc(100svh - 88px)); }
+    .hero__image { object-position: 64% center; }
+    .hero__shade { background: linear-gradient(90deg, rgba(232,226,213,.97) 0%, rgba(232,226,213,.92) 32%, rgba(232,226,213,.58) 52%, rgba(232,226,213,.05) 78%); }
+    .hero__inner { width: min(100% - 6rem, 1480px); padding-block: clamp(4.5rem, 7vh, 6.5rem) 2.5rem; }
+    .hero__content { max-width: 760px; padding: clamp(1.5rem, 2.4vw, 2.5rem) clamp(1.5rem, 2.8vw, 3rem) clamp(1.5rem, 2.4vw, 2.5rem) 0; }
+    .hero__brand-lockup { width: min(100%, max(var(--hero-brand-width), 280px)); margin-bottom: 1.25rem; }
+    .hero__brand-tm { top: -.22rem; right: -1rem; font-size: .9rem; font-weight: 900; text-shadow: 0 0 1px currentColor; }
+    .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
+    .hero__text, .hero__content > p { max-width: 55ch; font-size: clamp(1.05rem, 1.15vw, 1.2rem); line-height: 1.65; }
+    .hero__buttons { gap: .8rem; margin-top: 2rem; }
+    .hero__buttons .button { min-height: 52px; padding-inline: 1.35rem; }
+    .hero__benefits { width: fit-content; max-width: 760px; gap: 0; margin-top: 3rem; border-top: 1px solid color-mix(in srgb, var(--text), transparent 76%); }
+    .hero__benefit { max-width: 250px; min-height: 72px; padding: .85rem 1.4rem .85rem 0; }
+    .hero__benefit + .hero__benefit { padding-left: 1.4rem; border-left: 1px solid color-mix(in srgb, var(--text), transparent 76%); }
+  }
+
+  @media (min-width: 1500px) {
+    .hero__inner { width: min(100% - 8rem, 1560px); }
+    .hero__content { max-width: 820px; }
+  }
+
   @media (max-width: 700px) {
-    .hero { min-height: 760px; }
-    .hero__image { height: 46%; object-position: center 38%; }
+    .hero { min-height: clamp(660px, 88svh, 720px); }
+    .hero__image { height: 40%; object-position: center 38%; }
     .hero__shade { background: linear-gradient(0deg, rgba(232,226,213,1) 0 55%, rgba(232,226,213,.74) 70%, rgba(232,226,213,.08) 100%); }
     .hero__inner { align-content: end; padding-block: 2rem 1.25rem; }
-    .hero__content { padding-top: 42svh; }
-    .hero h1 { max-width: 13ch; font-size: clamp(2.45rem, 10.8vw, 4rem); line-height: .96; }
+    .hero__content { padding-top: 34svh; }
+    .hero__brand-lockup { width: min(210px, 72vw); margin-bottom: .65rem; }
+    .hero__brand-tm { right: -.6rem; font-size: .6rem; }
+    .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
     .hero__content > p, .hero__text { font-size: 1rem; line-height: 1.55; }
     .hero__buttons { display: grid; grid-template-columns: 1fr; gap: .65rem; margin-top: 1.2rem; }
     .hero__buttons .button { width: 100%; }
     .hero__benefits { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-top: 1.4rem; }
   }
 
-  @media (max-width: 420px) { .hero { min-height: 790px; } .hero__image { height: 40%; } .hero__content { padding-top: 35svh; } }
+  @media (max-width: 420px) { .hero { min-height: clamp(680px, 92svh, 730px); } .hero__image { height: 34%; } .hero__content { padding-top: 29svh; } }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:sections.hero.name",
   "settings": [
+    { "type": "image_picker", "id": "brand_logo", "label": "Markenlogo" },
+    { "type": "checkbox", "id": "show_brand_logo", "label": "Logo im Hero anzeigen", "default": true },
+    { "type": "range", "id": "brand_logo_width", "label": "Logo-Breite", "min": 160, "max": 320, "step": 10, "default": 250, "unit": "px" },
     { "type": "image_picker", "id": "image", "label": "t:sections.hero.image" },
     { "type": "range", "id": "overlay", "label": "t:sections.hero.overlay", "min": 20, "max": 100, "step": 5, "default": 70, "unit": "%" },
     { "type": "text", "id": "eyebrow", "label": "Kicker" },

@@ -1,3 +1,5 @@
+{% unless request.page_type == 'index' %}
+{% comment %}Best-of live sync trigger.{% endcomment %}
 {% liquid
   assign choice_image_alt = section.settings.image.alt | default: section.settings.heading
 %}
@@ -19,10 +21,13 @@
       <div class="home-choice__buttons">
         {% if section.settings.primary_link != blank %}<a class="button" href="{{ section.settings.primary_link }}">{{ section.settings.primary_label | escape }} <span aria-hidden="true">→</span></a>{% endif %}
         {% if section.settings.secondary_link != blank %}<a class="button button--secondary" href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_label | escape }}</a>{% endif %}
+        <a class="button button--secondary" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/pflanzenlicht-konfigurator">Pflanzenlicht konfigurieren</a>
       </div>
     </div>
   </div>
 </section>
+
+{% endunless %}
 
 {% stylesheet %}
   .home-choice { padding-block: var(--space-section); }
@@ -32,7 +37,7 @@
   .home-choice__media img { transition: transform .8s var(--ease-out); }
   .home-choice__content { align-self: center; padding: clamp(2rem, 6vw, 5.5rem); }
   .home-choice__eyebrow { margin: 0 0 .75rem; color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-  .home-choice h2 { max-width: 13ch; margin: 0 0 1rem; font-size: clamp(2.2rem, 4.5vw, 4.6rem); line-height: .98; }
+  .home-choice h2 { max-width: 13ch; margin: 0 0 1rem; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; }
   .home-choice__text { max-width: 55ch; color: color-mix(in srgb, var(--text), transparent 24%); }
   .home-choice__buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.6rem; }
   .home-choice__buttons .button { gap: .55rem; }
