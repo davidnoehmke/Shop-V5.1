@@ -42,6 +42,17 @@
   endif
   assign configurator_title = 'product.decision.advisor_title' | t
   assign configurator_text = 'product.decision.advisor_text' | t
+  if request.locale.iso_code == 'de'
+    assign power_label = 'Leistung'
+    assign spectrum_label = 'Spektrum'
+    assign coverage_label = 'Fläche & Abstand'
+    assign use_case_label = 'Einsatz'
+  else
+    assign power_label = 'Power'
+    assign spectrum_label = 'Spectrum'
+    assign coverage_label = 'Coverage & distance'
+    assign use_case_label = 'Use case'
+  endif
   assign has_content = false
   if subtitle != blank or intro != blank or primary_function != blank or suitable_for != blank or water_behavior != blank or mixing_ratio != blank or application != blank or warning != blank or manufacturer != blank or model != blank or rated_power != blank or spectrum != blank or cct != blank or beam_angle != blank or ppfd != blank or coverage != blank or distance != blank or mounting != blank or ip_rating != blank or voltage != blank or socket_connector != blank or use_cases != blank or safety != blank or manual_url != blank
     assign has_content = true
@@ -69,19 +80,19 @@
       {% endif %}
       {% if rated_power != blank %}
         <details class="leaf-knowledge__tile">
-          <summary><span class="leaf-knowledge__icon" aria-hidden="true">↯</span><span>Leistung</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">↯</span><span>{{ power_label }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
           <div class="leaf-knowledge__value">{{ rated_power | escape }} W</div>
         </details>
       {% endif %}
       {% if spectrum != blank or cct != blank %}
         <details class="leaf-knowledge__tile">
-          <summary><span class="leaf-knowledge__icon" aria-hidden="true">☼</span><span>Spektrum</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">☼</span><span>{{ spectrum_label }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
           <div class="leaf-knowledge__value">{% if spectrum != blank %}{{ spectrum | escape }}{% endif %}{% if cct != blank %}<br>{{ cct | escape }}{% endif %}</div>
         </details>
       {% endif %}
       {% if coverage != blank or distance != blank %}
         <details class="leaf-knowledge__tile">
-          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌖</span><span>Fläche & Abstand</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌖</span><span>{{ coverage_label }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
           <div class="leaf-knowledge__value">{% if coverage != blank %}{{ coverage | escape }}{% endif %}{% if distance != blank %}<br>{{ distance | escape }}{% endif %}</div>
         </details>
       {% endif %}
@@ -105,7 +116,7 @@
       {% endif %}
       {% if use_cases != blank or plant_groups != blank %}
         <details class="leaf-knowledge__tile">
-          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌁</span><span>Einsatz</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
+          <summary><span class="leaf-knowledge__icon" aria-hidden="true">⌁</span><span>{{ use_case_label }}</span><span class="leaf-knowledge__info" aria-hidden="true">i</span></summary>
           <div class="leaf-knowledge__value">{% if use_cases != blank %}{% render 'leaf-metafield-value', field: product.metafields.lighting.use_cases %}{% endif %}{% if plant_groups != blank %}<br>{% render 'leaf-metafield-value', field: product.metafields.leaf_configurator.plant_groups %}{% endif %}</div>
         </details>
       {% endif %}
