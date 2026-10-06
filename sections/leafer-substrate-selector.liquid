@@ -7,6 +7,15 @@
 
   assign profile_option_name = section.settings.profile_option_name | default: 'Pflanzentyp'
   assign volume_option_name = section.settings.volume_option_name | default: 'Menge'
+
+  for product_option in selector_product.options_with_values
+    case product_option.name
+      when 'Pflanzentyp', 'Plant type'
+        assign profile_option_name = product_option.name
+      when 'Menge', 'Quantity', 'Volume'
+        assign volume_option_name = product_option.name
+    endcase
+  endfor
   assign product_form_id = 'LeaferSubstrateForm-' | append: section.id
   assign profile_blocks = section.blocks | where: 'type', 'profile'
   assign step_blocks = section.blocks | where: 'type', 'step'
@@ -231,6 +240,10 @@
                     {% for component_product in component_products %}
                       {% if component_product.available and component_product.id != selector_product.id %}
                         {% liquid
+                          assign component_label = component_product.title
+                          if request.locale.iso_code == 'en' and component_product.title == 'Sphagnum-Moos – für Stecklinge & Aroiden'
+                            assign component_label = 'live_labels.sphagnum' | t | replace: '&amp;', '&'
+                          endif
                           assign component_profile = component_product.metafields.leaf_configurator.component_profile.value
                           assign component_profile_data = component_product.metafields.leaf_configurator.component_profile_data.value
 
@@ -277,7 +290,7 @@
                           endif
                         %}
                         {% if show_pro_component %}
-                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_product.title | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_aeration }}" data-drainage="{{ component_drainage }}" data-water-retention="{{ component_water_retention }}" data-structure="{{ component_structure }}" data-nutrient="{{ component_nutrient }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
+                        <button type="button" class="leafer-substrate__custom-option" data-custom-option data-name="{{ component_label | escape }}" data-pro-min="{{ pro_min }}" data-pro-max="{{ pro_max }}" data-warning="{{ warning_percent }}" data-aeration="{{ component_aeration }}" data-drainage="{{ component_drainage }}" data-water-retention="{{ component_water_retention }}" data-structure="{{ component_structure }}" data-nutrient="{{ component_nutrient }}" data-technical-note="{{ pro_note | escape }}" aria-pressed="false">
                           <span class="leafer-substrate__material-thumb" aria-hidden="true">
                             {% if component_product.featured_image != blank %}
                               {{ component_product.featured_image | image_url: width: 180 | image_tag: widths: '90, 180', sizes: '54px', loading: 'lazy', alt: '' }}
@@ -286,7 +299,7 @@
                             {% endif %}
                           </span>
                           <span class="leafer-substrate__custom-option-copy">
-                            <strong>{{ component_product.title | escape }}</strong>
+                            <strong>{{ component_label | escape }}</strong>
                             <small>{{ component_product.vendor | default: 'LEAFerservice' | escape }}</small>
                           </span>
                           <span class="leafer-substrate__custom-option-check" aria-hidden="true">+</span>
@@ -963,6 +976,17 @@
       return translations[normalized] || name;
     }
 
+    recipeForProfile(profile) {
+      const canonicalProfiles = {
+        'Herbs & Balcony': 'Kräuter & Balkon',
+        'Cacti & Succulents': 'Kakteen & Sukkulenten',
+        'Orchids': 'Orchideen',
+        'Palms & Green Plants': 'Palmen & Grünpflanzen',
+        'Seed Starting & Seedlings': 'Anzucht & Jungpflanzen'
+      };
+      return this.matrix?.recipes?.[profile] || this.matrix?.recipes?.[canonicalProfiles[profile]];
+    }
+
     variantById(id) {
       return this.variants.find((variant) => String(variant.id) === String(id));
     }
@@ -1541,7 +1565,7 @@
         rule = { plants: this.tList('insight_seed_plants'), properties: this.tList('insight_seed_properties'), copy: this.t('insight_seed_copy') };
       }
 
-      const names = customSegments.length ? customSegments.map((segment) => segment.dataset.name) : Object.keys(this.matrix?.recipes?.[profile]?.percent || {});
+      const names = customSegments.length ? customSegments.map((segment) => segment.dataset.name) : Object.keys(this.recipeForProfile(profile)?.percent || {});
       const additions = [];
       names.forEach((name) => {
         const item = String(name).toLowerCase();
@@ -1580,7 +1604,7 @@
     }
 
     renderRecipe(profile, volume) {
-      const recipe = this.matrix?.recipes?.[profile];
+      const recipe = this.recipeForProfile(profile);
       const sizeKey = String(volume).match(/[\d.,]+/)?.[0]?.replace(',', '.');
       const percentages = recipe?.percent || {};
       const sizes = recipe?.sizes_l?.[sizeKey] || recipe?.sizes_l?.[String(Number(sizeKey))] || {};

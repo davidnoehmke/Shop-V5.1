@@ -158,3 +158,44 @@ test('German and English locale keys stay in parity', () => {
   const en = flattenKeys(parseShopifyJson('locales/en.json'));
   assert.deepEqual(en, de);
 });
+
+test('English plant profiles resolve canonical recipes with nonzero litre amounts', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  let Selector;
+  const node = () => ({ style: { setProperty() {} }, append() {}, replaceChildren() {}, cloneNode() { return node(); } });
+  vm.runInNewContext(liquid.split('{% javascript %}')[1].split('{% endjavascript %}')[0], {
+    HTMLElement: class {},
+    document: { createElement: node, createDocumentFragment: node },
+    customElements: { get() {}, define(name, value) { Selector = value; } }
+  });
+  const instance = new Selector();
+  instance.dataset = { locale: 'en' };
+  instance.matrix = { recipes: { 'Kräuter & Balkon': {
+    percent: { Kokosfasern: 55, Perlite: 25, Wurmhumus: 20 },
+    sizes_l: { '5': { Kokosfasern: 2.75, Perlite: 1.25, Wurmhumus: 1 } }
+  } } };
+  const nodes = Object.fromEntries(['empty', 'total', 'basis', 'version', 'notes', 'base-recipe-selection'].map(key => [`[data-recipe-${key}]`, node()]));
+  instance.querySelector = selector => nodes[selector];
+  instance.querySelectorAll = () => [node(), node()];
+  instance.formatNumber = value => String(value);
+  instance.renderNotes = () => {};
+  const recipe = instance.renderRecipe('Herbs & Balcony', '5 L');
+  assert.equal(recipe, 'Coconut fibre 55 % (2.75 L) · Perlite 25 % (1.25 L) · Worm castings 20 % (1 L)');
+  assert.equal(nodes['[data-recipe-total]'].textContent, '100 % · 5 L');
+  assert.equal(instance.recipeForProfile('Kräuter & Balkon'), instance.recipeForProfile('Herbs & Balcony'));
+  assert.equal(instance.recipeForProfile('Unknown'), undefined);
+  // The live English product uses Quantity, while the translated theme setting uses Volume.
+  assert.match(liquid, /when 'Menge', 'Quantity', 'Volume'\s+assign volume_option_name = product_option.name/);
+});
+
+test('interior zone transitions decode translated entities before safe text output', () => {
+  const liquid = fs.readFileSync('sections/leaf-interior-story.liquid', 'utf8');
+  const decoder = liquid.slice(liquid.indexOf('  const entities ='), liquid.indexOf('  zones.forEach'));
+  const context = vm.createContext({});
+  vm.runInContext(decoder + '\nglobalThis.decode = plainText;', context);
+  assert.equal(context.decode('Planter &amp; substrate'), 'Planter & substrate');
+  assert.equal(context.decode('the plant&#39;s light requirement'), "the plant's light requirement");
+  assert.equal(context.decode('&lt;img&gt;'), '<img>');
+  assert.match(liquid, /kicker.textContent=zone.kicker/);
+  assert.match(liquid, /zone.points.map\(p=>'<li>'\+esc\(p\)/);
+});

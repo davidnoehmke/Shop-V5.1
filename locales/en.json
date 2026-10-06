@@ -1001,5 +1001,36 @@
   },
   "interior_guide": {
     "read": "Plan your green corner: lighting, pots, growing media and plants explained"
-  }
+  },
+  "live_labels": {
+    "solutions": "Find a solution",
+    "substrate_plan": "Plan substrate",
+    "interior_plan": "Plan interiors",
+    "plants_rooms": "Plants & rooms",
+    "interior": "Interior Solutions",
+    "planters": "Planters",
+    "substrate_roots": "Substrate & roots",
+    "ready_mix": "Ready-made substrates",
+    "ingredients": "Ingredients & additives",
+    "custom_mix": "Plan your own mix",
+    "ingredient_guide": "Understand substrate ingredients",
+    "propagation_care": "Propagation & care",
+    "care": "Plant care & accessories",
+    "supports": "Plant supports",
+    "knowledge": "Knowledge & help",
+    "contact": "Contact & callback",
+    "search": "Search",
+    "legal": "Legal notice",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy",
+    "refund": "Returns & refunds",
+    "shipping": "Shipping policy",
+    "shipping_options": "Shipping options",
+    "shipping_check": "Check during checkout",
+    "payment": "Payment methods",
+    "payment_available": "Available at checkout",
+    "support": "Customer service",
+    "support_help": "Contact and support",
+    "sphagnum": "Sphagnum moss – for cuttings & aroids"
+}
 }

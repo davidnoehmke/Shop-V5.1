@@ -1001,5 +1001,36 @@
         "split_shipping_merchandise_quantity_label_inline": "%{merchandise_title} × %{quantity}"
       }
     }
-  }
+  },
+  "live_labels": {
+    "solutions": "Lösung finden",
+    "substrate_plan": "Substrat planen",
+    "interior_plan": "Interieur planen",
+    "plants_rooms": "Pflanzen & Räume",
+    "interior": "Interieur Solutions",
+    "planters": "Pflanzgefäße",
+    "substrate_roots": "Substrat & Wurzeln",
+    "ready_mix": "Fertige Substrate",
+    "ingredients": "Bestandteile & Zusätze",
+    "custom_mix": "Eigene Mischung planen",
+    "ingredient_guide": "Substratbestandteile verstehen",
+    "propagation_care": "Anzucht & Pflege",
+    "care": "Pflanzenpflege & Zubehör",
+    "supports": "Rankhilfen",
+    "knowledge": "Wissen & Hilfe",
+    "contact": "Kontakt & Rückruf",
+    "search": "Suche",
+    "legal": "Impressum",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutzerklärung",
+    "refund": "Rückgabe & Erstattung",
+    "shipping": "Versandrichtlinie",
+    "shipping_options": "Versandoptionen",
+    "shipping_check": "Im Bestellprozess prüfen",
+    "payment": "Zahlungsarten",
+    "payment_available": "Im Checkout verfügbar",
+    "support": "Kundenservice",
+    "support_help": "Kontakt und Hilfe im Service",
+    "sphagnum": "Sphagnum-Moos – für Stecklinge & Aroiden"
+}
 }

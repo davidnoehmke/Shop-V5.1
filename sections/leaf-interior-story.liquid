@@ -717,6 +717,14 @@
     }
   ];
 
+  // Liquid translations are HTML-escaped; textContent needs plain text.
+  const entities = { amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'" };
+  const plainText = value => String(value).replace(/&(amp|lt|gt|quot|#39);/g, (_, key) => entities[key]);
+  zones.forEach(zone => {
+    ['kicker', 'title', 'copy', 'ctaLabel', 'secondaryLabel'].forEach(key => { zone[key] = plainText(zone[key]); });
+    zone.points = zone.points.map(plainText);
+  });
+
   const scene=root.querySelector('[data-story-scene]');
   const buttons=[...root.querySelectorAll('[data-zone]')];
   const count=root.querySelector('[data-zone-count]');
