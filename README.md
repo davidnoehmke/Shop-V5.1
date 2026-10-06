@@ -5,16 +5,20 @@ Kanonische, versionierbare Grundlage für LEAFerservice.
 ## Verbindliche Produktionsroute
 
 ```text
+ChatGPT
+   │
+   ▼
 Supabase (SSOT)
-      │
-      ▼
+   │
+   ▼
 Shopify (Storefront / Commerce-Projektion)
 ```
 
+ChatGPT ist die kontrollierte Orchestrierungs- und Arbeitsebene. Supabase ist die
+einzige editierbare SSOT. Shopify ist Storefront und Commerce-Projektion.
 GitHub versioniert ausschließlich Code, Migrationen, Prüfregeln und Dokumentation.
-Railway hostet ausschließlich den read-only Admin Hub und ist keine Daten- oder
-Sync-Quelle. Notion, Google Sheets, LEAF-OS und frühere Parallel-Syncs gehören
-nicht zum produktiven Datenpfad.
+Railway, Notion, Google Sheets, LEAF-OS und frühere Parallel-Syncs gehören nicht
+zum produktiven Datenpfad.
 
 ## Struktur
 
@@ -22,7 +26,7 @@ nicht zum produktiven Datenpfad.
 | --- | --- |
 | `theme/` | Shopify Online Store 2.0 Theme |
 | `supabase/migrations/` | versionierte Supabase-Schemaänderungen |
-| `control_center/` | read-only Admin Hub auf Basis von Supabase |
+| `control_center/` | Legacy-/Entwicklungsartefakt; keine produktive Runtime |
 | `automation/content-agent/` | Verträge und Vorlagen für kontrollierte Content-Vorbereitung |
 | `automation/codex/` | Policy-/Delivery-Helfer und Tests für CI, kein Scheduler |
 | `.github/workflows/ci.yml` | reine Validierung/Tests bei PR und Push |
@@ -34,7 +38,8 @@ nicht zum produktiven Datenpfad.
 - Shopify ist Storefront, Commerce-Ziel und Verifikations-/Rücklesequelle.
 - Automatisches Zurückstufen aktiver Produkte auf Draft/Archived ist verboten.
 - Bestandsverfolgung bleibt deaktiviert; Varianten dürfen weiterverkauft werden.
-- Kein Notion-, Google-Sheets-, LEAF-OS- oder Railway-Datensync ist Teil der Produktionsroute.
+- Die produktive Pipeline ist ausschließlich ChatGPT -> Supabase -> Shopify.
+- Railway, Notion, Google Sheets und LEAF-OS sind vollständig außerhalb der produktiven Runtime.
 - Veröffentlichungen und schreibende Änderungen bleiben über die vorgesehenen Freigaben kontrolliert.
 - Secrets und Runtime-Zugangsdaten werden nicht in Git versioniert.
 

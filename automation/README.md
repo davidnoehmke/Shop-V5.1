@@ -2,10 +2,12 @@
 
 ## Einzige produktive Datenroute
 
-`Supabase (SSOT) -> Shopify (Storefront / Commerce-Projektion)`
+`ChatGPT -> Supabase (SSOT) -> Shopify (Storefront / Commerce-Projektion)`
 
-Dieses Repository enthält keinen produktiven Zeitplaner für Notion, Google Sheets,
-LEAF-OS oder Railway. Railway ist ausschließlich Hosting für den read-only Admin Hub.
+ChatGPT übernimmt kontrollierte Orchestrierung und Vorbereitung. Supabase bleibt
+die einzige editierbare SSOT und Shopify die einzige produktive Commerce-Projektion.
+Dieses Repository enthält keinen produktiven Zeitplaner oder Runtime-Pfad für
+Railway, Notion, Google Sheets oder LEAF-OS.
 
 ## Verbleibende Komponenten
 

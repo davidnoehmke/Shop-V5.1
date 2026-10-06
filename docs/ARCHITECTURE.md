@@ -1,33 +1,31 @@
 # LEAFerservice development architecture
 
 ```text
+ChatGPT
+  └─ controlled orchestration, research and owner-approved work
+        │
+        ▼
 Supabase
   └─ authoritative SSOT for product/content/SEO/configurator data
         │
         ▼
 Shopify
-  └─ storefront, products, collections, metafields, channels
+  └─ storefront, products, collections, metafields, checkout, channels
         │
         ▼
 Customers / search engines / sales channels
 
 GitHub
-  └─ versioned code and migrations
-
-Admin Hub
-  └─ read-only operational view over Supabase
-
-Railway
-  └─ hosting runtime for Admin Hub only
+  └─ versioned code, migrations, CI and documentation only
 ```
 
 ## Verbindliche Grenzen
 
+- Die produktive Pipeline ist ausschließlich ChatGPT -> Supabase -> Shopify.
 - Supabase ist die einzige editierbare Datenquelle für Commerce- und Content-Daten.
 - Shopify ist Projektionsziel und Rücklesequelle, nicht konkurrierende SSOT.
-- GitHub enthält Code, Migrationen und Dokumentation, aber keine operative Content-SSOT.
-- Railway hostet den Admin Hub; Railway ist weder Datenquelle noch Sync-Bus.
-- Notion und Google Sheets sind nicht Teil der produktiven Route.
-- Legacy-Syncs und Experimente dürfen keine produktiven Trigger ausführen.
+- GitHub enthält Code, Migrationen, CI und Dokumentation, aber keine produktive Runtime und keine operative Content-SSOT.
+- Railway, Notion, Google Sheets und LEAF-OS sind nicht Teil der produktiven Route.
+- Legacy-Syncs, Admin-Hub-Runtimes und Experimente dürfen keine produktiven Trigger ausführen.
 - Schreibende Änderungen an Shopify erfolgen nur kontrolliert aus dem festgelegten Supabase-Projektionspfad.
 - Bestehende aktive Produkte dürfen durch Automationen nicht automatisch deaktiviert oder zurückgestuft werden.
