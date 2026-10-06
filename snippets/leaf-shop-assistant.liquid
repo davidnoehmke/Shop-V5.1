@@ -24,6 +24,11 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-voice-listening-label="{{ 'shop_assistant.voice_listening' | t | escape }}"
   data-speak-label="{{ 'shop_assistant.speak' | t | escape }}"
   data-voice-speaking-label="{{ 'shop_assistant.voice_speaking' | t | escape }}"
+  data-photo-label="{{ 'shop_assistant.photo' | t | escape }}"
+  data-photo-remove-label="{{ 'shop_assistant.photo_remove' | t | escape }}"
+  data-photo-ready="{{ 'shop_assistant.photo_ready' | t | escape }}"
+  data-photo-too-large="{{ 'shop_assistant.photo_too_large' | t | escape }}"
+  data-photo-message="{{ 'shop_assistant.photo_message' | t | escape }}"
   data-storage-key="leafer-assistant-session-v1"
 >
   <button
@@ -82,10 +87,19 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       <form class="leaf-shop-assistant__form" data-assistant-form>
         <label for="LeafShopAssistantInput">{{ 'shop_assistant.input_label' | t }}</label>
         <div class="leaf-shop-assistant__composer">
-          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1200" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1600" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+          <input type="file" accept="image/jpeg,image/png,image/webp" data-assistant-photo-input hidden>
+          <button class="leaf-shop-assistant__photo" type="button" data-assistant-photo aria-label="{{ 'shop_assistant.photo' | t | escape }}" title="{{ 'shop_assistant.photo' | t | escape }}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h3l1.5-2h7L17 7h3v12H4Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+          </button>
           <button class="leaf-shop-assistant__voice" type="button" data-assistant-voice hidden aria-label="{{ 'shop_assistant.voice' | t | escape }}" title="{{ 'shop_assistant.voice' | t | escape }}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
           </button>
+        </div>
+        <div class="leaf-shop-assistant__photo-preview" data-assistant-photo-preview hidden>
+          <img data-assistant-photo-image alt="">
+          <span data-assistant-photo-name></span>
+          <button type="button" data-assistant-photo-remove aria-label="{{ 'shop_assistant.photo_remove' | t | escape }}">×</button>
         </div>
         <p class="leaf-shop-assistant__voice-status" data-assistant-voice-status aria-live="polite"></p>
         <div class="leaf-shop-assistant__form-actions">
@@ -346,16 +360,16 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     resize: vertical;
     min-height: 74px;
     max-height: 150px;
-    padding: .7rem 3.5rem .7rem .7rem;
+    padding: .7rem 6.4rem .7rem .7rem;
     border: 1px solid var(--border);
     border-radius: 10px;
     font-size: 1rem;
     background: var(--surface);
     color: var(--text);
   }
+  .leaf-shop-assistant__photo,
   .leaf-shop-assistant__voice {
     position: absolute;
-    right: .45rem;
     bottom: .45rem;
     width: 42px;
     min-height: 42px;
@@ -366,9 +380,36 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     background: var(--background);
     color: var(--text);
   }
+  .leaf-shop-assistant__photo { right: 3.15rem; }
+  .leaf-shop-assistant__voice {
+    right: .45rem;
+  }
   .leaf-shop-assistant__voice[hidden] { display: none; }
+  .leaf-shop-assistant__photo svg,
+  .leaf-shop-assistant__voice svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .leaf-shop-assistant__photo-preview {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) 34px;
+    align-items: center;
+    gap: .55rem;
+    padding: .5rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  .leaf-shop-assistant__photo-preview[hidden] { display: none; }
+  .leaf-shop-assistant__photo-preview img { width: 54px; height: 54px; object-fit: cover; border-radius: 8px; }
+  .leaf-shop-assistant__photo-preview span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .72rem; }
+  .leaf-shop-assistant__photo-preview button { min-height: 34px; width: 34px; padding: 0; font-size: 1.1rem; }
   .leaf-shop-assistant__voice.is-listening { border-color: var(--accent); color: var(--accent); }
-  .leaf-shop-assistant__voice svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
   .leaf-shop-assistant__voice-status { min-height: 1em; margin: -.15rem 0 0; color: var(--muted); font-size: .68rem; }
   .leaf-shop-assistant__speak { margin-top: .5rem; padding: .25rem .45rem; border: 1px solid var(--border); background: transparent; color: var(--accent); font-size: .68rem; font-weight: 760; }
   .leaf-shop-assistant__form-actions {
@@ -439,6 +480,12 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.submit = this.querySelector('[data-assistant-submit]');
         this.log = this.querySelector('[data-assistant-log]');
         this.voiceButton = this.querySelector('[data-assistant-voice]');
+        this.photoButton = this.querySelector('[data-assistant-photo]');
+        this.photoInput = this.querySelector('[data-assistant-photo-input]');
+        this.photoPreview = this.querySelector('[data-assistant-photo-preview]');
+        this.photoImage = this.querySelector('[data-assistant-photo-image]');
+        this.photoName = this.querySelector('[data-assistant-photo-name]');
+        this.photoRemove = this.querySelector('[data-assistant-photo-remove]');
         this.voiceStopButton = this.querySelector('[data-assistant-voice-stop]');
         this.voiceStopButton?.addEventListener('click', () => this.stopVoice());
         this.voiceStatus = this.querySelector('[data-assistant-voice-status]');
@@ -452,6 +499,9 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.minimizeButton?.addEventListener('click', () => this.close());
         this.setupDrag();
         this.form?.addEventListener('submit', (event) => this.send(event, false));
+        this.photoButton?.addEventListener('click', () => this.photoInput?.click());
+        this.photoInput?.addEventListener('change', () => this.selectPhoto());
+        this.photoRemove?.addEventListener('click', () => this.clearPhoto());
         this.setupVoice();
         this.restoreVisibleHistory();
         this.querySelectorAll('[data-assistant-suggestion]').forEach((button) => {
@@ -547,6 +597,61 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.dialog.style.setProperty('--assistant-left', x + 'px');
         this.dialog.style.setProperty('--assistant-top', y + 'px');
         this.dialog.classList.add('is-positioned');
+      }
+
+      async selectPhoto() {
+        const file = this.photoInput?.files?.[0];
+        if (!file) return;
+        if (!/^image\/(jpeg|png|webp)$/i.test(file.type) || file.size > 10 * 1024 * 1024) {
+          this.clearPhoto();
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.photoTooLarge || this.dataset.error || '';
+          return;
+        }
+        try {
+          this.photoDataUrl = await this.preparePhoto(file);
+          if (!this.photoDataUrl) throw new Error('photo_unavailable');
+          if (this.photoImage) this.photoImage.src = this.photoDataUrl;
+          if (this.photoName) this.photoName.textContent = file.name || this.dataset.photoReady || '';
+          if (this.photoPreview) this.photoPreview.hidden = false;
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.photoReady || '';
+        } catch {
+          this.clearPhoto();
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.error || '';
+        }
+      }
+
+      preparePhoto(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = reject;
+          reader.onload = () => {
+            const image = new Image();
+            image.onerror = reject;
+            image.onload = () => {
+              const maxSide = 1400;
+              const scale = Math.min(1, maxSide / Math.max(image.naturalWidth || 1, image.naturalHeight || 1));
+              const width = Math.max(1, Math.round(image.naturalWidth * scale));
+              const height = Math.max(1, Math.round(image.naturalHeight * scale));
+              const canvas = document.createElement('canvas');
+              canvas.width = width;
+              canvas.height = height;
+              const context = canvas.getContext('2d');
+              if (!context) return reject(new Error('canvas_unavailable'));
+              context.drawImage(image, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', .82));
+            };
+            image.src = String(reader.result || '');
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      clearPhoto() {
+        this.photoDataUrl = '';
+        if (this.photoInput) this.photoInput.value = '';
+        if (this.photoImage) this.photoImage.removeAttribute('src');
+        if (this.photoName) this.photoName.textContent = '';
+        if (this.photoPreview) this.photoPreview.hidden = true;
       }
 
       setupVoice() {
@@ -674,6 +779,9 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         const epoch = this.voiceEpoch || 0;
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        utterance.rate = .88;
+        utterance.pitch = 1;
+        utterance.volume = 1;
         if (continueVoice) {
           this.voiceSpeaking = true;
           if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceSpeakingLabel || '';
@@ -746,14 +854,18 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       async send(event, speakResponse = false) {
         event?.preventDefault();
         const message = this.input?.value.trim() || '';
-        if (!message || !this.endpoint || this.submit?.disabled) return;
+        const imageDataUrl = this.photoDataUrl || '';
+        if ((!message && !imageDataUrl) || !this.endpoint || this.submit?.disabled) return;
 
         if (!speakResponse) this.stopVoice();
         const voiceEpoch = this.voiceEpoch || 0;
         const priorHistory = this.history.slice(-6);
-        this.appendMessage('user', message);
-        this.history.push({ role: 'user', content: message });
-        this.saveHistory();
+        const visibleMessage = message || this.dataset.photoMessage || this.dataset.photoReady || '';
+        this.appendMessage('user', visibleMessage);
+        if (message) {
+          this.history.push({ role: 'user', content: message });
+          this.saveHistory();
+        }
         this.input.value = '';
         this.submit.disabled = true;
         this.input.disabled = true;
@@ -773,6 +885,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
               message,
+              image: imageDataUrl ? { dataUrl: imageDataUrl } : undefined,
               history: priorHistory,
               locale: this.dataset.locale || 'de',
               path: this.dataset.path || location.pathname
@@ -782,7 +895,9 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           thinking.remove();
           if (!response.ok || typeof payload.answer !== 'string') throw new Error('assistant_unavailable');
           this.appendMessage('assistant', payload.answer, payload.links);
-          if (speakResponse && this.voiceMode && this.isConnected && voiceEpoch === (this.voiceEpoch || 0)) this.speak(payload.answer, this.voiceMode);
+          this.clearPhoto();
+          const spoken = typeof payload.speech === 'string' && payload.speech ? payload.speech : payload.answer;
+          if (speakResponse && this.voiceMode && this.isConnected && voiceEpoch === (this.voiceEpoch || 0)) this.speak(spoken, this.voiceMode);
           this.history.push({ role: 'assistant', content: payload.answer });
           this.saveHistory();
         } catch {

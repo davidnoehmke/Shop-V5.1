@@ -8,7 +8,7 @@ const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts
 const helpers = source.slice(source.indexOf('function clean('), source.indexOf('async function contextFor('))
   + source.slice(source.indexOf('function fallbackAnswer('), source.indexOf('function outputText('));
 const scope = vm.createContext({});
-vm.runInContext(stripTypeScriptTypes(helpers), scope);
+vm.runInContext('const MAX_IMAGE_BYTES = 2800000;\n' + stripTypeScriptTypes(helpers), scope);
 
 test('Bims question excludes generic question words and matches the ingredient', () => {
   const needles = scope.tokens('Was macht Bims im Substrat?');
@@ -22,7 +22,7 @@ test('Bims question excludes generic question words and matches the ingredient',
 
 test('approved knowledge answers precede a product advertisement', () => {
   assert.equal(scope.fallbackAnswer({ knowledge: [{ answer: 'Bims lockert die Mischung.' }], products: [{ canonical_title: 'Umtopfmatte', intro: 'Wasserdicht' }] }, 'de'), 'Bims lockert die Mischung.');
-  assert.match(scope.fallbackAnswer({ knowledge: [], products: [] }, 'de'), /keine freigegebene/);
+  assert.match(scope.fallbackAnswer({ knowledge: [], products: [] }, 'de'), /keine ausreichend verifizierte/);
 });
 
 test('pro recipe and volume are enabled on the submitted product form', () => {
@@ -198,4 +198,29 @@ test('interior zone transitions decode translated entities before safe text outp
   assert.equal(context.decode('&lt;img&gt;'), '<img>');
   assert.match(liquid, /kicker.textContent=zone.kicker/);
   assert.match(liquid, /zone.points.map\(p=>'<li>'\+esc\(p\)/);
+});
+
+
+test('plant photo diagnosis accepts bounded images and uses verified multimodal context', () => {
+  const valid = 'data:image/jpeg;base64,' + Buffer.from('leaf-photo').toString('base64');
+  assert.equal(scope.parseImageDataUrl(valid).mimeType, 'image/jpeg');
+  assert.equal(scope.parseImageDataUrl('data:text/plain;base64,SGVsbG8='), null);
+  assert.equal(scope.parseImageDataUrl('data:image/jpeg;base64,' + 'A'.repeat(4_000_000)), null);
+
+  const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8');
+  assert.match(source, /type: "input_image"/);
+  assert.match(source, /source_citations/);
+  assert.match(source, /Beobachtung\\nEinordnung\\nWahrscheinliche Ursachen/);
+  assert.match(source, /Confidence section must explicitly say low, medium or high/);
+  assert.match(source, /max_output_tokens: image \? 1200 : 850/);
+});
+
+test('shop assistant exposes photo upload and calmer continuous voice', () => {
+  const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(liquid, /data-assistant-photo-input/);
+  assert.match(liquid, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(liquid, /canvas\.toDataURL\('image\/jpeg', \.82\)/);
+  assert.match(liquid, /utterance\.rate = \.88/);
+  assert.match(liquid, /payload\.speech/);
+  assert.match(liquid, /this\.resumeVoice\(\)/);
 });
