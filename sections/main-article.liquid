@@ -57,7 +57,9 @@
         {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
       </time>
       {% if article.author != blank %}<span>{{ article.author | escape }}</span>{% endif %}
-      {% if article.tags.size > 0 %}<span>{{ article.tags | join: ' · ' | escape }}</span>{% endif %}
+      {% if article.tags.size > 0 %}
+        <span>{% for tag in article.tags %}{% unless forloop.first %} · {% endunless %}{% render 'leaf-localized-label', text: tag %}{% endfor %}</span>
+      {% endif %}
     </div>
   </header>
 
@@ -96,7 +98,7 @@
       <a class="main-article__back" href="{{ blog.url }}"><span aria-hidden="true">←</span> {{ back_label }}</a>
       {% if article.tags.size > 0 %}
         <div class="main-article__tags" aria-label="Tags">
-          {% for tag in article.tags %}<span>{{ tag | escape }}</span>{% endfor %}
+          {% for tag in article.tags %}<span>{% render 'leaf-localized-label', text: tag %}</span>{% endfor %}
         </div>
       {% endif %}
     </aside>
