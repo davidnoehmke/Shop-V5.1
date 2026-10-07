@@ -257,7 +257,7 @@ function fallbackAnswer(context: any, locale: string, message = "") {
   }
   return locale === "en"
     ? "I do not have a sufficiently specific approved answer yet. Which plant or product do you mean, and what would you like to know about it?"
-    : "Dazu habe ich noch keine ausreichend konkrete freigegebene Antwort. Welche Pflanze oder welches Produkt meinst du, und was möchtest du darüber wissen?";
+    : "Da möchte ich dir nichts Falsches sagen. Dazu habe ich noch keine ausreichend konkrete freigegebene Antwort. Welche Pflanze oder welches Produkt meinst du, und was möchtest du darüber wissen?";
 }
 
 function outputText(payload: any) {
