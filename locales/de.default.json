@@ -1154,4 +1154,21 @@
     "upsell_details": "Details ansehen",
     "upsell_note": "Kompatibilität immer am konkreten Produkt prüfen. Zubehör ist keine eigenständige Lichtquelle."
   }
+,
+  "led_article": {
+    "dynamic_eyebrow": "Aktuelle Produktauswahl",
+    "technical_heading": "Technische Beispiele aus dem aktuellen Pflanzenlicht-Sortiment",
+    "comparison_heading": "Passende Bauformen direkt am Sortiment vergleichen",
+    "technical_intro": "Die Auswahl wird aus der Pflanzenbeleuchtungs-Collection und den gepflegten Produktmetafeldern geladen. Werte erscheinen nur, wenn sie im Produktdatensatz vorhanden sind.",
+    "comparison_intro": "Die Produkte werden dynamisch aus der aktuellen Pflanzenbeleuchtungs-Collection geladen, damit der Ratgeber nicht mit veralteten statischen Listen arbeitet.",
+    "mobile_info": "Mehr Infos zur Auswahl",
+    "mobile_info_text": "Produktdaten können sich ändern. Der Ratgeber zieht Produktname, Preis, Hersteller und vorhandene technische Metafelder direkt aus dem Shop.",
+    "power": "Leistung",
+    "mounting": "Montage",
+    "distance": "Abstand",
+    "use": "Einsatz",
+    "product_details": "Produktdetails ansehen",
+    "dynamic_note": "Die Karten sind eine dynamische Orientierung, keine pauschale Rangliste. Entscheidend bleiben Pflanzenbedarf, Fläche, Abstand und Montage.",
+    "collection_cta": "Alle Pflanzenleuchten vergleichen"
+  }
 }

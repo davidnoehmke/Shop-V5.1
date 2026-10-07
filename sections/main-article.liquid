@@ -91,7 +91,7 @@
   </section>
 
   <div class="main-article__layout page-width">
-    {% assign article_body = article.content | replace: 'href="/en/collections/pflanzenbeleuchtung"', 'href="/en/collections/interieur-solutions"' | replace: 'href="/collections/pflanzenbeleuchtung"', 'href="/collections/interieur-solutions"' %}
+    {% assign article_body = article.content %}
     <div class="main-article__body rte" data-article-body>{{ article_body }}</div>
 
     <aside class="main-article__rail">
