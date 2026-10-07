@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-article",
+      "settings": {
+        "show_cta": true,
+        "cta_eyebrow": "Pflanzenlicht passend auswählen",
+        "cta_heading": "Vergleiche Leuchten nach Einsatz, Fläche und Montage.",
+        "cta_text": "<p>Nutze die Pflanzenbeleuchtungs-Collection als Wissens- und Vergleichshub für Venso, Neusius und Soltech.</p>",
+        "cta_label": "Pflanzenlicht vergleichen",
+        "cta_link": "/collections/pflanzenbeleuchtung",
+        "show_related": true,
+        "related_limit": 3
+      }
+    },
+    "led_products": {
+      "type": "led-article-guide",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "led_products"
+  ]
+}
