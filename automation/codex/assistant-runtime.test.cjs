@@ -4,13 +4,23 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const { stripTypeScriptTypes } = require('node:module');
 
-function runtime(key = '', vaultKey = '') {
+function runtime(key = '', vaultKey = '', datasets = {}) {
   const requests = [];
-  const chain = { select() { return this; }, not() { return this; }, in() { return this; }, order() { return this; }, limit() { return Promise.resolve({ data: [], error: null }); } };
+  const from = name => {
+    let rows = [...(datasets[name] || [])];
+    return {
+      select() { return this; },
+      not(column, op, value) { rows = rows.filter(row => row[column] !== value && row[column] !== undefined); return this; },
+      in(column, values) { rows = rows.filter(row => values.includes(row[column])); return this; },
+      eq(column, value) { rows = rows.filter(row => row[column] === value); return this; },
+      order() { return this; },
+      range(start, end) { return Promise.resolve({ data: rows.slice(start, end + 1), error: null }); }
+    };
+  };
   let handler;
   const scope = vm.createContext({
     Request, Response, FormData, TextEncoder, crypto: globalThis.crypto, AbortSignal, console,
-    createClient: () => ({ from: () => chain, rpc: async name => ({ data: name === 'leaf_read_server_secret' ? vaultKey : true }) }),
+    createClient: () => ({ from, rpc: async name => ({ data: name === 'leaf_read_server_secret' ? vaultKey : true }) }),
     Deno: { env: { get: name => ({ SUPABASE_URL: 'https://example.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'test-service', OPENAI_API_KEY: key })[name] }, serve: value => { handler = value; } },
     fetch: async (url, options) => {
       if (url.endsWith('/realtime/calls')) {
@@ -74,6 +84,77 @@ test('text replies retain follow-up context, use conversational instructions and
   assert.equal(app.requests[0].store, false);
   assert.equal(app.requests[0].input[0].content, 'Was macht Bims?');
   assert.match(app.requests[0].instructions, /short, clear sentences/);
+});
+
+function knowledgeFixture() {
+  return {
+    storefront_product_content: [{ product_gid: 'p1', handle: 'venso-indoor', canonical_title: 'Venso Indoor Plants', intro: 'UNVERIFIED-CANONICAL', verified_at: null }, { product_gid: 'draft', handle: 'venso-draft', canonical_title: 'Venso Draft', verified_at: '2026-10-07', intro: 'DRAFT-CONTENT' }],
+    shopify_resource_snapshots: [{ resource_type: 'product', shopify_id: 'p1', status: 'ACTIVE', published: '2026-10-07' }, { resource_type: 'product', shopify_id: 'draft', status: 'DRAFT', published: null }],
+    shopify_metafield_registry: [
+      { owner_type: 'PRODUCT', namespace: 'lighting', key: 'recommended_distance', name: 'Abstand', data_type: 'multi_line_text_field', dynamic_role: 'care', active: true, storefront_visible: true },
+      { owner_type: 'PRODUCT', namespace: 'lighting', key: 'safety_notes', name: 'Sicherheit', data_type: 'multi_line_text_field', dynamic_role: 'safety', active: true, storefront_visible: true },
+      { owner_type: 'PRODUCT', namespace: 'procurement', key: 'margin', name: 'Marge', data_type: 'number_decimal', dynamic_role: 'commerce', active: true, storefront_visible: false }
+    ],
+    shopify_metafield_state: [
+      { product_gid: 'p1', namespace: 'lighting', key: 'recommended_distance', parsed_value: '7 W: 30–40 cm; 15 W: 30–80 cm', validation_status: 'valid', synced_at: '2026-10-07', dirty_for_shopify: false },
+      { product_gid: 'p1', namespace: 'lighting', key: 'safety_notes', parsed_value: '15-W-Variante nicht mit VEGA-Schirm kombinieren.', validation_status: 'valid', synced_at: '2026-10-07', dirty_for_shopify: false },
+      { product_gid: 'p1', namespace: 'procurement', key: 'margin', parsed_value: 'PRIVATE-MARGIN', validation_status: 'valid', synced_at: '2026-10-07', dirty_for_shopify: false },
+      { product_gid: 'p1', namespace: 'lighting', key: 'recommended_distance', parsed_value: 'STALE-OLD-DISTANCE', validation_status: 'stale', synced_at: '2026-10-07', dirty_for_shopify: false },
+      { product_gid: 'p1', namespace: 'lighting', key: 'recommended_distance', parsed_value: 'UNSYNCED-DISTANCE', validation_status: 'valid', synced_at: '2026-10-07', dirty_for_shopify: true }
+    ],
+    knowledge_qa: [{ question: 'Venso secret', answer: 'PENDING-RESEARCH', approval_status: 'pending_review' }],
+    information_blocks: [{ statement: 'Venso', description: 'RESEARCHED-NOT-APPROVED', status: 'researched' }]
+  };
+}
+
+test('knowledge lookup uses synchronized public fields and excludes drafts, private, stale and unapproved data', async () => {
+  const app = runtime('', '', knowledgeFixture());
+  const response = await app.send({ action: 'knowledge_lookup', message: 'Welchen Abstand hat Venso Indoor Plants?' });
+  const body = await response.text();
+  assert.equal(response.status, 200);
+  assert.match(body, /30–40 cm/);
+  assert.match(body, /VEGA/);
+  assert.doesNotMatch(body, /PRIVATE-MARGIN|UNVERIFIED-CANONICAL|DRAFT-CONTENT|STALE-OLD|UNSYNCED|PENDING-RESEARCH|RESEARCHED-NOT/);
+});
+
+test('fallback answers an actual technical question and retains the variant safety limitation', async () => {
+  const app = runtime('', '', knowledgeFixture());
+  const response = await app.send({ message: 'Welchen Abstand braucht Venso Indoor Plants?', locale: 'de' });
+  const body = await response.json();
+  assert.match(body.answer, /7 W: 30–40 cm; 15 W: 30–80 cm/);
+  assert.match(body.answer, /nicht mit VEGA/);
+  assert.equal(body.mode, 'approved_context');
+});
+
+test('published explanations compare both materials instead of returning a random product pitch', async () => {
+  const datasets = { content_atoms: [
+    { slug: 'bims', name: 'Bims', aliases: ['Pumice'], long_explanation: 'Bims ist dauerhaft strukturstabil und hält Luftporen offen.', active: true, shopify_metaobject_gid: 'public1' },
+    { slug: 'perlite', name: 'Perlite', aliases: ['Perlit'], long_explanation: 'Perlite ist besonders leicht und kann nach oben wandern.', active: true, shopify_metaobject_gid: 'public2' }
+  ] };
+  const app = runtime('', '', datasets);
+  const body = await (await app.send({ message: 'Was ist der Unterschied zwischen Bims und Perlite?' })).json();
+  assert.match(body.answer, /strukturstabil/);
+  assert.match(body.answer, /besonders leicht/);
+});
+
+test('retrieval includes explanations beyond a full database page', async () => {
+  const content_atoms = Array.from({ length: 1001 }, (_, i) => ({ slug: `a${i}`, name: i === 1000 ? 'Bims' : 'Unrelated', long_explanation: i === 1000 ? 'LATEST-PAGE-FACT' : 'Other', active: true, shopify_metaobject_gid: `public${i}` }));
+  const app = runtime('', '', { content_atoms });
+  const body = await (await app.send({ message: 'Was macht Bims?' })).json();
+  assert.match(body.answer, /LATEST-PAGE-FACT/);
+});
+
+test('relevant article passages after the old 1800-character prefix remain available', async () => {
+  const app = runtime('', '', { content_articles: [{ id: 'a1', title: 'Lichtplanung', handle: 'licht', status: 'published', body_html: `<p>${'Einleitung ohne die konkrete Antwort. '.repeat(90)}</p><p>Alocasia braucht eine Standortprüfung und passende Beleuchtung; mehr Gießen ersetzt kein Licht.</p>` }] });
+  const body = await (await app.send({ message: 'Was bedeutet Beleuchtung für Alocasia?' })).json();
+  assert.match(body.answer, /mehr Gießen ersetzt kein Licht/);
+});
+
+test('follow-up retains the product context but does not invent a fixed quantity', async () => {
+  const app = runtime('', '', knowledgeFixture());
+  const body = await (await app.send({ message: 'Wie viel davon?', history: [{ role: 'user', content: 'Venso Indoor Plants' }, { role: 'user', content: 'Und im Winter?' }] })).json();
+  assert.match(body.answer, /keine freigegebene feste Menge/);
+  assert.match(body.answer, /Venso Indoor Plants/);
 });
 
 function assistant(extra = {}) {
