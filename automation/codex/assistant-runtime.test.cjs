@@ -4,13 +4,13 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const { stripTypeScriptTypes } = require('node:module');
 
-function runtime(key = '') {
+function runtime(key = '', vaultKey = '') {
   const requests = [];
   const chain = { select() { return this; }, not() { return this; }, in() { return this; }, order() { return this; }, limit() { return Promise.resolve({ data: [], error: null }); } };
   let handler;
   const scope = vm.createContext({
     Request, Response, TextEncoder, crypto: globalThis.crypto, AbortSignal, console,
-    createClient: () => ({ from: () => chain, rpc: async () => ({ data: true }) }),
+    createClient: () => ({ from: () => chain, rpc: async name => ({ data: name === 'leaf_read_server_secret' ? vaultKey : true }) }),
     Deno: { env: { get: name => ({ SUPABASE_URL: 'https://example.supabase.co', SUPABASE_SERVICE_ROLE_KEY: 'test-service', OPENAI_API_KEY: key })[name] }, serve: value => { handler = value; } },
     fetch: async (url, options) => {
       requests.push(JSON.parse(options.body));
@@ -23,6 +23,15 @@ function runtime(key = '') {
 }
 
 const photo = { dataUrl: 'data:image/jpeg;base64,' + Buffer.from('test-image').toString('base64') };
+
+test('GitHub-provisioned vault credentials activate vision without returning a key to the browser', async () => {
+  const app = runtime('', 'private-vault-key');
+  const response = await app.send({ image: photo, locale: 'de' });
+  const text = await response.text();
+  assert.equal(JSON.parse(text).analysis_mode, 'plant_photo');
+  assert.equal(app.requests.length, 1);
+  assert.doesNotMatch(text, /private-vault-key/);
+});
 
 test('missing model credentials never claim image analysis or advertise diagnosis products', async () => {
   const app = runtime();
