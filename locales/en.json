@@ -970,7 +970,7 @@
     "addition_root": "Support for the root environment"
   },
   "shop_assistant": {
-    "voice_speaking": "LEAF is speaking …",
+    "voice_speaking": "LEAF is answering …",
     "photo": "Add plant photo",
     "photo_remove": "Remove photo",
     "photo_ready": "Photo ready for analysis",
@@ -980,7 +980,7 @@
     "open": "LEAF Assistant",
     "eyebrow": "LEAF Shop Assistant",
     "heading": "What would you like to clarify for your plant project?",
-    "intro": "Ask about products, materials and use. For a concrete product choice, use the LEAF Advisor.",
+    "intro": "I can help with plant questions, products and use. You can type, talk, or send a plant photo.",
     "close": "Close assistant",
     "suggestions": "Quick questions",
     "suggestion_substrate": "Find substrate",
@@ -991,7 +991,7 @@
     "suggestion_care_prompt": "Help me understand a product in the LEAFerservice range.",
     "assistant_name": "LEAF",
     "user_name": "You",
-    "welcome": "Ask me directly about substrate, plant lighting, planters or products in the shop.",
+    "welcome": "Hi! I’m LEAF. Ask me about substrate, plant lighting, planters, products, or send me a plant photo.",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
     "advisor": "Open LEAF Planner",
@@ -1001,8 +1001,14 @@
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice conversation",
     "voice_stop": "End voice conversation",
-    "voice_listening": "Listening …",
-    "speak": "Read answer aloud"
+    "voice_listening": "I’m listening …",
+    "speak": "Read answer aloud",
+    "voice_greeting": "Hi! Nice to have you here. Just tell me what you would like help with for your plant.",
+    "actions": "LEAF Assistant actions",
+    "action_chat": "Open chat",
+    "action_voice": "Voice conversation",
+    "action_photo": "Plant photo",
+    "action_advisor": "LEAF Planner"
   },
   "interior_guide": {
     "read": "Plan your green corner: lighting, pots, growing media and plants explained"
@@ -1037,7 +1043,7 @@
     "support": "Customer service",
     "support_help": "Contact and support",
     "sphagnum": "Sphagnum moss – for cuttings & aroids"
-},
+  },
   "lighting_configurator": {
     "eyebrow": "Plant lighting as a system",
     "heading": "Choose plant lighting to suit your plants, room and setup.",
