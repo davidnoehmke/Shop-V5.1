@@ -151,7 +151,9 @@
           <th>{{ 'led_collection.table_price' | t }}</th>
         </tr></thead>
         <tbody>
-          {% assign compare_count = 0 %}
+          {% assign venso_compare = 0 %}
+          {% assign neusius_compare = 0 %}
+          {% assign soltech_compare = 0 %}
           {% for product in collection.products %}
             {% liquid
               assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
@@ -170,8 +172,22 @@
                 assign approved_maker = true
               endif
             %}
-            {% if is_led and approved_maker and compare_count < 8 %}
-              {% assign compare_count = compare_count | plus: 1 %}
+            {% assign show_compare = false %}
+            {% if is_led and approved_maker %}
+              {% if maker contains 'Venso' and venso_compare < 3 %}
+                {% assign show_compare = true %}
+                {% assign venso_compare = venso_compare | plus: 1 %}
+              {% elsif maker contains 'NEUSIUS' or maker contains 'Neusius' %}
+                {% if neusius_compare < 3 %}
+                  {% assign show_compare = true %}
+                  {% assign neusius_compare = neusius_compare | plus: 1 %}
+                {% endif %}
+              {% elsif maker contains 'Soltech' and soltech_compare < 3 %}
+                {% assign show_compare = true %}
+                {% assign soltech_compare = soltech_compare | plus: 1 %}
+              {% endif %}
+            {% endif %}
+            {% if show_compare %}
               {% assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0 %}
               {% assign mounting = product.metafields.lighting.mounting.value | default: product.metafields.lighting.socket_connector.value %}
               {% assign distance = product.metafields.lighting.recommended_distance.value %}
@@ -262,7 +278,8 @@
   const apply = (filter) => {
     let visible = 0;
     cards.forEach((card) => {
-      const show = matches(card, filter);
+      const matchesFilter = matches(card, filter);
+      const show = matchesFilter && visible < 6;
       card.hidden = !show;
       if (show) visible += 1;
     });
