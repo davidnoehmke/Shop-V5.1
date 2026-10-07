@@ -39,7 +39,7 @@
 %}
 
 <section class="main-collection page-width">
-  {% unless section.settings.hide_hero %}
+  {% unless section.settings.hide_hero or collection.handle == 'pflanzenbeleuchtung' %}
   <header class="main-collection__hero">
     <div class="main-collection__hero-copy">
       <p class="main-collection__eyebrow">
