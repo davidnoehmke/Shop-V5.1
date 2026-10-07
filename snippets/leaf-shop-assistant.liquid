@@ -190,6 +190,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     .leaf-shop-assistant:focus-within .leaf-shop-assistant__quick-actions { display: grid; }
     .leaf-shop-assistant.is-open .leaf-shop-assistant__quick-actions { display: none; }
     .leaf-shop-assistant__quick-actions button { min-height: 42px; padding: .5rem .75rem; text-align: left; }
+    .leaf-shop-assistant__quick-actions button[hidden] { display: none; }
   }
   .leaf-shop-assistant__voice-stop svg { width: 20px; height: 20px; fill: currentColor; }
   .leaf-shop-assistant.is-voice-mode .leaf-shop-assistant__leaf {
@@ -955,7 +956,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
             if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.photoUnavailable || '';
           }
           this.appendMessage('assistant', payload.answer, payload.links);
-          if (!imageDataUrl || payload.analysis_mode === 'plant_photo') this.clearPhoto();
+          if (this.photoDataUrl === imageDataUrl && (!imageDataUrl || payload.analysis_mode === 'plant_photo')) this.clearPhoto();
           const spoken = typeof payload.speech === 'string' && payload.speech ? payload.speech : payload.answer;
           if (speakResponse && this.voiceMode && this.isConnected && voiceEpoch === (this.voiceEpoch || 0)) this.speak(spoken, this.voiceMode);
           this.history.push({ role: 'assistant', content: payload.answer });
