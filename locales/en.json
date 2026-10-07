@@ -1146,6 +1146,12 @@
     "tip_1": "Define the plant and illuminated area before choosing power.",
     "tip_2": "Use the manufacturer distance as a starting point and observe the plant.",
     "tip_3": "For shelves, prioritize even distribution over one very bright point.",
-    "tip_4": "Introduce supplemental light gradually and maintain a stable day-night rhythm."
+    "tip_4": "Introduce supplemental light gradually and maintain a stable day-night rhythm.",
+    "upsell_eyebrow": "Matching accessories",
+    "upsell_heading": "Complete your plant lighting setup",
+    "upsell_intro": "These accessories complement specific lights and systems. They stay outside the LED comparison and appear here as relevant add-ons.",
+    "upsell_for": "Works with",
+    "upsell_details": "View details",
+    "upsell_note": "Always check compatibility on the specific product. Accessories are not standalone light sources."
   }
 }
