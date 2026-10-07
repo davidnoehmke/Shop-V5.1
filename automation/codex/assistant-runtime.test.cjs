@@ -99,6 +99,7 @@ test('browser speech is slower and does not listen until the greeting ends', asy
   instance.resumeVoice = () => { resumes++; };
   await instance.startVoice();
   assert.equal(window.lastSpeech.rate, .78);
+  assert.equal(instance.voiceFallback, true);
   assert.equal(resumes, 0);
   window.lastSpeech.onend();
   assert.equal(resumes, 1);

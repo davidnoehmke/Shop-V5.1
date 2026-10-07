@@ -688,6 +688,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           }
         }
         if (!this.recognition) return;
+        this.voiceFallback = true;
         this.voiceMode = true;
         this.updateVoiceButton();
         if ('speechSynthesis' in window && this.dataset.welcome) this.speak(this.dataset.welcome, true);
