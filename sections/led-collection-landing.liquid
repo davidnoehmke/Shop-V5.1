@@ -11,6 +11,7 @@
   endif
 %}
 
+{% if collection.handle == 'pflanzenbeleuchtung' %}
 <section class="led-hub page-width" data-led-hub>
   <header class="led-hub__hero">
     <div class="led-hub__copy">
@@ -259,6 +260,7 @@
   buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.ledFilter || 'all')));
 })();
 </script>
+{% endif %}
 
 {% stylesheet %}
 .led-hub{padding-block:1rem clamp(3rem,7vw,7rem)}
