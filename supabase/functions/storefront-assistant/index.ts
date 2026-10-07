@@ -111,6 +111,32 @@ function stripHtml(value: unknown, max = 1600) {
   );
 }
 
+function productHref(handleValue: unknown, locale: string) {
+  const handle = clean(handleValue, 180);
+  if (!handle || /[/?#\\]/.test(handle) || /[\u0000-\u001f\u007f]/.test(handle)) return "";
+  const prefix = locale === "en" ? "/en" : "";
+  return `${prefix}/products/${encodeURIComponent(handle)}`;
+}
+
+function productLinks(products: any[], locale: string) {
+  return (Array.isArray(products) ? products : []).slice(0, 3).map((product: any) => ({
+    label: clean(product?.canonical_title, 120),
+    href: productHref(product?.handle, locale)
+  })).filter((link: any) => link.label && link.href);
+}
+
+const criticalProductBlockers = new Set([
+  "content_evidence_present",
+  "identity_confirmed",
+  "supplier_confirmed",
+  "safety_reviewed"
+]);
+
+function hasCriticalProductBlocker(blockers: unknown) {
+  if (!Array.isArray(blockers)) return false;
+  return blockers.some((blocker: any) => criticalProductBlockers.has(clean(blocker?.rule, 80)));
+}
+
 async function contextFor(message: string, hasImage = false) {
   const queryText = hasImage
     ? `${message} alocasia blatt flecken braun gelb wurzel wasser licht luftfeuchtigkeit schädlinge substrat`
@@ -118,13 +144,17 @@ async function contextFor(message: string, hasImage = false) {
   const needles = tokens(queryText);
   if (!supabaseAdmin) return { products: [], knowledge: [], articles: [] };
 
-  const [productsResult, knowledgeResult, articleResult] = await Promise.all([
+  const [productsResult, readinessResult, knowledgeResult, articleResult] = await Promise.all([
     supabaseAdmin
       .from("storefront_product_content")
-      .select("handle,canonical_title,subtitle,intro,primary_function,use_cases,benefits,faq,verified_at,evidence")
+      .select("product_gid,handle,canonical_title,subtitle,intro,primary_function,use_cases,benefits,faq,verified_at,evidence")
       .not("verified_at", "is", null)
       .order("updated_at", { ascending: false })
       .limit(120),
+    supabaseAdmin
+      .from("product_readiness")
+      .select("product_gid,blockers")
+      .limit(250),
     supabaseAdmin
       .from("knowledge_qa")
       .select("question,answer,intent,long_tail_keywords,approval_status,source_refs,factuality_score")
@@ -140,10 +170,17 @@ async function contextFor(message: string, hasImage = false) {
   ]);
 
   if (productsResult.error) console.error("storefront-assistant product context unavailable");
+  if (readinessResult.error) console.error("storefront-assistant product readiness unavailable");
   if (knowledgeResult.error) console.error("storefront-assistant knowledge context unavailable");
   if (articleResult.error) console.error("storefront-assistant article context unavailable");
 
   const productsRaw = productsResult.error ? [] : (productsResult.data ?? []);
+  const readinessRaw = readinessResult.error ? [] : (readinessResult.data ?? []);
+  const readinessByProduct = new Map(
+    (Array.isArray(readinessRaw) ? readinessRaw : [])
+      .filter((row: any) => row?.product_gid)
+      .map((row: any) => [row.product_gid, row.blockers])
+  );
   const knowledgeRaw = knowledgeResult.error ? [] : (knowledgeResult.data ?? []);
   const articlesRaw = articleResult.error ? [] : (articleResult.data ?? []);
 
@@ -155,7 +192,12 @@ async function contextFor(message: string, hasImage = false) {
         scoreText([row.subtitle, row.primary_function], needles) * 3 +
         scoreText([row.intro, row.use_cases, row.benefits, row.faq], needles)
     }))
-    .filter((row) => row.handle && row.verified_at && (needles.length === 0 || row._score > 0))
+    .filter((row) =>
+      row.handle
+      && row.verified_at
+      && !hasCriticalProductBlocker(readinessByProduct.get(row.product_gid))
+      && (needles.length === 0 || row._score > 0)
+    )
     .sort((a, b) => b._score - a._score)
     .slice(0, 6)
     .map(({ _score, ...row }) => row);
@@ -169,9 +211,8 @@ async function contextFor(message: string, hasImage = false) {
     }))
     .filter((row) => {
       if (needles.length > 0 && row._score <= 0) return false;
-      if (!hasImage) return true;
       const refs = Array.isArray(row.source_refs) ? row.source_refs : [];
-      return refs.length > 0 || Number(row.factuality_score || 0) >= 0.9;
+      return refs.length > 0 && Number(row.factuality_score || 0) >= 0.9;
     })
     .sort((a, b) => b._score - a._score)
     .slice(0, 8)
@@ -198,7 +239,6 @@ async function contextFor(message: string, hasImage = false) {
     })
     .filter((row) => {
       if (needles.length > 0 && row._score <= 0) return false;
-      if (!hasImage) return true;
       return Array.isArray(row.source_citations) && row.source_citations.length > 0;
     })
     .sort((a, b) => b._score - a._score)
@@ -333,6 +373,7 @@ Deno.serve(async (req: Request) => {
     if (body?.image && !image) return json(origin, 400, { error: "invalid_image" });
 
     const locale = safeLocale(body?.locale);
+    const voiceMode = body?.voice === true;
     const fallbackPrompt = locale === "en"
       ? "Analyze this plant photo and help me narrow down the visible problem."
       : "Analysiere dieses Pflanzenfoto und hilf mir, das sichtbare Problem einzugrenzen.";
@@ -352,10 +393,7 @@ Deno.serve(async (req: Request) => {
 
     if (!openaiKey) {
       const answer = fallbackAnswer(context, locale, Boolean(image));
-      const links = context.products.slice(0, 3).map((product: any) => ({
-        label: clean(product.canonical_title, 120),
-        href: `/products/${clean(product.handle, 120)}`
-      })).filter((link: any) => link.label && /^\/products\/[a-z0-9-]+$/i.test(link.href));
+      const links = productLinks(context.products, locale);
       return json(origin, 200, { answer, speech: speechSummary(answer, locale), links, mode: "approved_context" });
     }
 
@@ -379,6 +417,9 @@ Deno.serve(async (req: Request) => {
       "The Confidence section must explicitly say low, medium or high and why. A photo-based diagnosis is never fully certain.",
       "If one or two missing details would materially improve the assessment, ask targeted follow-up questions at the end, but still provide an immediate assessment first.",
       "Without a photo, answer normally but with enough detail to explain the reasoning. Prefer structured paragraphs or short bullets for complex plant problems.",
+      voiceMode
+        ? "This is an active spoken conversation. Sound warm, natural and human. Start with the answer rather than a formal heading, use short spoken sentences, avoid technical jargon where a simpler phrase works, and do not repeat a greeting on every turn."
+        : "Use a warm, approachable tone and explain technical terms briefly when they are necessary.",
       "For concrete product choice, explain the deciding factors and use the LEAF Planner rather than recreating its ranking logic.",
       `Current storefront path: ${path || "/"}.`,
       `Verified context: ${contextJson}`
@@ -416,10 +457,7 @@ Deno.serve(async (req: Request) => {
     const answer = outputText(payload);
     if (!answer) return json(origin, 502, { error: "assistant_unavailable" });
 
-    const links = context.products.slice(0, 3).map((product: any) => ({
-      label: clean(product.canonical_title, 120),
-      href: `/products/${clean(product.handle, 120)}`
-    })).filter((link: any) => link.label && /^\/products\/[a-z0-9-]+$/i.test(link.href));
+    const links = productLinks(context.products, locale);
 
     return json(origin, 200, {
       answer,
