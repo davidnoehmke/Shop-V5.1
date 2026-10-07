@@ -180,10 +180,11 @@ jobs:
               'origin_not_allowed',
               'approved_existing',
               'approved',
-              'parseImageDataUrl',
-              'type: "input_image"',
+              'images_disabled',
+              'interrupt_response: true',
               'source_citations',
-              'analysis_mode: image ? "plant_photo" : "text"',
+              'analysis_mode: "text"',
+              'image_analysis: false',
           ]
           for token in required:
               if token not in assistant:
