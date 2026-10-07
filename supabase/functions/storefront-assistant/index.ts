@@ -149,7 +149,7 @@ async function contextFor(message: string, current = message, path = "") {
     allRows(() => supabaseAdmin.from("shopify_metafield_registry").select("namespace,key,name,data_type,dynamic_role").eq("owner_type", "PRODUCT").eq("active", true).eq("storefront_visible", true).order("id"), "field registry"),
     allRows(() => supabaseAdmin.from("shopify_metafield_state").select("product_gid,namespace,key,parsed_value,raw_value").eq("validation_status", "valid").eq("dirty_for_shopify", false).not("synced_at", "is", null).order("product_gid").order("namespace").order("key"), "public product fields"),
     allRows(() => supabaseAdmin.from("knowledge_qa").select("question,answer,intent,long_tail_keywords").in("approval_status", ["approved_existing", "approved"]).order("id"), "knowledge context"),
-    allRows(() => supabaseAdmin.from("content_articles").select("title,handle,excerpt,body_html,primary_keyword,secondary_keywords").in("status", ["approved", "published"]).order("id"), "article context"),
+    allRows(() => supabaseAdmin.from("content_articles").select("title,handle,excerpt,body_html,primary_keyword,secondary_keywords,source_citations").in("status", ["approved", "published"]).order("id"), "article context"),
     allRows(() => supabaseAdmin.from("content_atoms").select("slug,name,one_liner,short_explanation,long_explanation,aliases").eq("active", true).not("shopify_metaobject_gid", "is", null).order("slug"), "published explanations"),
     allRows(() => supabaseAdmin.from("collection_content").select("handle,title,short_intro,buying_guide,care_guidance,faq").in("content_status", ["researched", "approved", "published"]).not("validated_at", "is", null).order("handle"), "validated collection guides"),
     allRows(() => supabaseAdmin.from("information_blocks").select("scope_type,scope_key,statement,description,valid_from,valid_until").in("status", ["approved", "published"]).order("id"), "approved explanations")
@@ -224,7 +224,7 @@ function fallbackAnswer(context: any, locale: string, message = "") {
   const needles = tokens(message);
   const asks = message.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "");
   const compare = /unterschied|vergleich|versus|\bvs\b|difference|compare|\boder\b/.test(asks);
-  const exactQA = (context.knowledge || []).find((item: any) => needles.length > 0 && scoreText([item.question], needles) >= Math.max(1, Math.ceil(needles.length * .65)));
+  const exactQA = !message ? context.knowledge?.[0] : (context.knowledge || []).find((item: any) => needles.length > 0 && scoreText([item.question], needles) >= Math.max(1, Math.ceil(needles.length * .65)));
   if (exactQA && !compare) return clean(exactQA.answer, 1800);
   const namedAtoms = (context.atoms || []).filter((item: any) => scoreText([item.name], needles) > 0);
   if (namedAtoms.length && (compare || /erklar|warum|wofur|was macht|what|why|explain/.test(asks))) return namedAtoms.slice(0, compare ? 2 : 1).map((item: any) => `${item.name}: ${item.explanation}`).join("\n\n");
