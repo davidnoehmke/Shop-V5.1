@@ -1036,7 +1036,7 @@
     "support": "Kundenservice",
     "support_help": "Kontakt und Hilfe im Service",
     "sphagnum": "Sphagnum-Moos – für Stecklinge & Aroiden"
-  },
+},
   "lighting_configurator": {
     "eyebrow": "Pflanzenlicht als System",
     "heading": "Pflanzenlicht passend zu Pflanze, Raum und Aufbau auswählen.",
@@ -1068,3 +1068,4 @@
     "empty_help": "Ändere einen Filter oder setze die Auswahl zurück."
   }
 }
+

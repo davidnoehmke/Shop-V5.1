@@ -1036,7 +1036,7 @@
     "support": "Customer service",
     "support_help": "Contact and support",
     "sphagnum": "Sphagnum moss – for cuttings & aroids"
-  },
+},
   "lighting_configurator": {
     "eyebrow": "Plant lighting as a system",
     "heading": "Choose plant lighting to suit your plants, room and setup.",
@@ -1068,3 +1068,4 @@
     "empty_help": "Change a filter or reset your selection."
   }
 }
+
