@@ -972,7 +972,7 @@
     "open": "LEAF Assistent",
     "eyebrow": "LEAF Shop-Assistent",
     "heading": "Was möchtest du für dein Pflanzenprojekt klären?",
-    "intro": "Frag zu Produkten, Materialien und Anwendung. Für eine konkrete Produktauswahl nutzt du den LEAF Berater.",
+    "intro": "Ich helfe dir bei Pflanzenfragen, Produkten und Anwendung. Du kannst schreiben, sprechen oder ein Pflanzenfoto schicken.",
     "close": "Assistent schließen",
     "suggestions": "Schnelle Fragen",
     "suggestion_substrate": "Substrat finden",
@@ -983,7 +983,7 @@
     "suggestion_care_prompt": "Hilf mir, ein Produkt im LEAFerservice Sortiment besser zu verstehen.",
     "assistant_name": "LEAF",
     "user_name": "Du",
-    "welcome": "Frag mich direkt zu Substrat, Pflanzenlicht, Gefäßen oder Produkten im Shop.",
+    "welcome": "Hallo! Ich bin LEAF. Frag mich gern zu Substrat, Pflanzenlicht, Gefäßen, Produkten oder schick mir ein Pflanzenfoto.",
     "input_label": "Deine Frage",
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
     "advisor": "LEAF Planer öffnen",
@@ -993,8 +993,14 @@
     "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Planer oder das Sortiment.",
     "voice": "Sprachunterhaltung starten",
     "voice_stop": "Sprachunterhaltung beenden",
-    "voice_listening": "Ich höre zu …",
-    "speak": "Antwort vorlesen"
+    "voice_listening": "Ich höre dir zu …",
+    "speak": "Antwort vorlesen",
+    "voice_greeting": "Hallo! Schön, dass du da bist. Sag mir einfach, wobei ich dir mit deiner Pflanze helfen kann.",
+    "actions": "Aktionen für den LEAF Assistenten",
+    "action_chat": "Chat öffnen",
+    "action_voice": "Sprachgespräch",
+    "action_photo": "Pflanzenfoto",
+    "action_advisor": "LEAF Planer"
   },
   "interior_guide": {
     "read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"
@@ -1037,7 +1043,7 @@
     "support": "Kundenservice",
     "support_help": "Kontakt und Hilfe im Service",
     "sphagnum": "Sphagnum-Moos – für Stecklinge & Aroiden"
-},
+  },
   "lighting_configurator": {
     "eyebrow": "Pflanzenlicht als System",
     "heading": "Pflanzenlicht passend zu Pflanze, Raum und Aufbau auswählen.",
