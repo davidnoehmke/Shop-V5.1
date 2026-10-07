@@ -80,7 +80,7 @@
           capture search_blob
             echo product.title
             echo ' '
-            echo product.product_type
+            echo product.type
             echo ' '
             echo product.tags
             echo ' '
@@ -92,11 +92,11 @@
           endcapture
           assign search_blob = search_blob | downcase
           assign is_led = false
-          if product.product_type contains 'LED-Pflanzen' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
+          if product.type contains 'LED-Pflanzen' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
             assign is_led = true
           endif
           assign approved_maker = false
-          if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius'
+          if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
             assign approved_maker = true
           endif
         %}
@@ -149,11 +149,11 @@
             {% liquid
               assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
               assign is_led = false
-              if product.product_type contains 'LED-Pflanzen' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
+              if product.type contains 'LED-Pflanzen' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
                 assign is_led = true
               endif
               assign approved_maker = false
-              if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius'
+              if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
                 assign approved_maker = true
               endif
             %}
