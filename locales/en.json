@@ -1154,4 +1154,21 @@
     "upsell_details": "View details",
     "upsell_note": "Always check compatibility on the specific product. Accessories are not standalone light sources."
   }
+,
+  "led_article": {
+    "dynamic_eyebrow": "Current product selection",
+    "technical_heading": "Technical examples from the current plant-lighting range",
+    "comparison_heading": "Compare suitable form factors against the current range",
+    "technical_intro": "The selection is loaded from the plant-lighting collection and maintained product metafields. Values are only shown when they exist in the product record.",
+    "comparison_intro": "Products are loaded dynamically from the current plant-lighting collection so the guide does not depend on outdated static lists.",
+    "mobile_info": "More about this selection",
+    "mobile_info_text": "Product data can change. This guide pulls product name, price, manufacturer and available technical metafields directly from the shop.",
+    "power": "Power",
+    "mounting": "Mounting",
+    "distance": "Distance",
+    "use": "Use",
+    "product_details": "View product details",
+    "dynamic_note": "These cards are dynamic orientation, not a universal ranking. Plant needs, area, distance and mounting still matter.",
+    "collection_cta": "Compare all plant lights"
+  }
 }
