@@ -965,6 +965,7 @@
     "voice_speaking": "LEAF antwortet …",
     "photo": "Pflanzenfoto hinzufügen",
     "photo_remove": "Foto entfernen",
+    "photo_unavailable": "Die Fotoanalyse ist gerade nicht verfügbar. Dein Foto bleibt für einen erneuten Versuch ausgewählt.",
     "photo_ready": "Foto bereit zur Analyse",
     "photo_too_large": "Bitte nutze ein JPG, PNG oder WebP mit maximal 10 MB.",
     "photo_message": "Pflanzenfoto zur Analyse gesendet",
@@ -983,7 +984,7 @@
     "suggestion_care_prompt": "Hilf mir, ein Produkt im LEAFerservice Sortiment besser zu verstehen.",
     "assistant_name": "LEAF",
     "user_name": "Du",
-    "welcome": "Frag mich direkt zu Substrat, Pflanzenlicht, Gefäßen oder Produkten im Shop.",
+    "welcome": "Hallo, ich bin LEAF. Schön, dass du da bist! Wie kann ich dir mit deiner Pflanze oder deinem Projekt helfen?",
     "input_label": "Deine Frage",
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
     "advisor": "LEAF Planer öffnen",
@@ -1069,3 +1070,4 @@
     "empty_help": "Ändere einen Filter oder setze die Auswahl zurück."
   }
 }
+

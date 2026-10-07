@@ -973,6 +973,7 @@
     "voice_speaking": "LEAF is speaking …",
     "photo": "Add plant photo",
     "photo_remove": "Remove photo",
+    "photo_unavailable": "Photo analysis is currently unavailable. Your photo remains selected so you can try again.",
     "photo_ready": "Photo ready for analysis",
     "photo_too_large": "Please use a JPG, PNG or WebP up to 10 MB.",
     "photo_message": "Plant photo sent for analysis",
@@ -991,7 +992,7 @@
     "suggestion_care_prompt": "Help me understand a product in the LEAFerservice range.",
     "assistant_name": "LEAF",
     "user_name": "You",
-    "welcome": "Ask me directly about substrate, plant lighting, planters or products in the shop.",
+    "welcome": "Hi, I’m LEAF. Nice to meet you! How can I help with your plant or project?",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
     "advisor": "Open LEAF Planner",
@@ -1069,3 +1070,4 @@
     "empty_help": "Change a filter or reset your selection."
   }
 }
+
