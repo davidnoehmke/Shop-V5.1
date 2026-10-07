@@ -31,6 +31,17 @@ const MAX_MESSAGE = 1600;
 const MAX_HISTORY = 6;
 const rateMax = 10;
 
+async function readOpenAIKey() {
+  if (openaiKey) return openaiKey;
+  if (!supabaseAdmin) return "";
+  const { data, error } = await supabaseAdmin.rpc("leaf_read_server_secret", { p_name: "OPENAI_API_KEY" });
+  if (error) {
+    console.error("storefront-assistant model credential unavailable");
+    return "";
+  }
+  return typeof data === "string" ? data.trim() : "";
+}
+
 function headers(origin: string) {
   const value: Record<string, string> = {
     "content-type": "application/json; charset=utf-8",
@@ -349,9 +360,12 @@ Deno.serve(async (req: Request) => {
       : [];
 
     const previousQuestion = history.filter((item: any) => item.role === "user").slice(-1)[0]?.content || "";
-    const context = await contextFor(`${message} ${previousQuestion}`.trim(), Boolean(image));
+    const [context, runtimeOpenaiKey] = await Promise.all([
+      contextFor(`${message} ${previousQuestion}`.trim(), Boolean(image)),
+      readOpenAIKey()
+    ]);
 
-    if (!openaiKey) {
+    if (!runtimeOpenaiKey) {
       const answer = fallbackAnswer(context, locale, Boolean(image));
       const links = context.products.slice(0, 3).map((product: any) => ({
         label: clean(product.canonical_title, 120),
@@ -398,7 +412,7 @@ Deno.serve(async (req: Request) => {
       method: "POST",
       signal: AbortSignal.timeout(40_000),
       headers: {
-        authorization: `Bearer ${openaiKey}`,
+        authorization: `Bearer ${runtimeOpenaiKey}`,
         "content-type": "application/json"
       },
       body: JSON.stringify({
