@@ -92,9 +92,15 @@
             echo mounting
           endcapture
           assign search_blob = search_blob | downcase
+          assign is_accessory = false
+          if product.type contains 'Zubehör' or product.type contains 'Ständer' or product.type contains 'Halterung' or product.title contains 'Controller' or product.title contains 'Netzteil'
+            assign is_accessory = true
+          endif
           assign is_led = false
-          if product.type contains 'LED-Pflanzen' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
-            assign is_led = true
+          if is_accessory == false
+            if product.type contains 'LED-Pflanzen' or product.type contains 'Pflanzenleuchten-Set' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
+              assign is_led = true
+            endif
           endif
           assign approved_maker = false
           if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
