@@ -23,7 +23,7 @@ function runtime(key = '', vaultKey = '') {
   });
   const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8').replace(/^import .*;\n/gm, '');
   vm.runInContext(stripTypeScriptTypes(source), scope);
-  return { requests, send: body => handler(new Request('https://example.test', { method: 'POST', headers: { origin: 'https://leaferservice.com', 'content-type': 'application/json' }, body: JSON.stringify(body) })) };
+  return { requests, publicContext: scope.publicVoiceContext, send: body => handler(new Request('https://example.test', { method: 'POST', headers: { origin: 'https://leaferservice.com', 'content-type': 'application/json' }, body: JSON.stringify(body) })) };
 }
 const offer = 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\n';
 
@@ -206,4 +206,16 @@ test('WebRTC setup uses only the store backend and starts listening without repl
   assert.equal(instance.voiceStarting, false);
   assert.equal(instance.voiceActive, true);
   assert.equal(instance.realtimePeer.remote.type, 'answer');
+});
+
+ test('voice knowledge exposes approved answers without internal SEO or verification metadata', () => {
+  const app = runtime();
+  const context = app.publicContext({
+    products: [{ handle: 'bims', canonical_title: 'Bims', intro: 'Luftige Mischung.', evidence: 'private-review', verified_at: 'private-timestamp' }],
+    knowledge: [{ question: 'Was macht Bims?', answer: 'Bims lockert die Mischung.', long_tail_keywords: ['internal-strategy'], source_refs: ['private-review-url'] }],
+    articles: [{ title: 'Substrat', body: 'Bims hilft.', primary_keyword: 'internal-strategy' }]
+  });
+  const serialized = JSON.stringify(context);
+  assert.match(serialized, /Bims lockert die Mischung/);
+  assert.doesNotMatch(serialized, /internal-strategy|private-review|private-timestamp/);
 });

@@ -191,6 +191,18 @@ async function contextFor(message: string) {
   return { products, knowledge, articles };
 }
 
+function publicVoiceContext(context: any) {
+  return {
+    products: (context.products || []).map((item: any) => ({
+      handle: clean(item.handle, 120), title: clean(item.canonical_title, 180),
+      intro: stripHtml(item.intro, 1200), primary_function: clean(item.primary_function, 400),
+      use_cases: item.use_cases, benefits: item.benefits, faq: item.faq
+    })),
+    knowledge: (context.knowledge || []).map((item: any) => ({ question: clean(item.question, 300), answer: clean(item.answer, 1800) })),
+    articles: (context.articles || []).map((item: any) => ({ title: clean(item.title, 180), excerpt: clean(item.excerpt, 650), body: clean(item.body, 1800) }))
+  };
+}
+
 function fallbackAnswer(context: any, locale: string) {
   const knowledge = Array.isArray(context?.knowledge) ? context.knowledge : [];
   const articles = Array.isArray(context?.articles) ? context.articles : [];
@@ -321,7 +333,7 @@ Deno.serve(async (req: Request) => {
       if (!sdp.startsWith("v=0") || !sdp.includes("m=audio") || sdp.includes("m=video")) return json(origin, 400, { error: "invalid_voice_offer" });
       const key = await readOpenAIKey();
       if (!key) return json(origin, 503, { error: "voice_unavailable" });
-      const context = await contextFor("Pflanze Substrat Licht Pflege");
+      const context = publicVoiceContext(await contextFor("Pflanze Substrat Licht Pflege"));
       const config = {
         type: "realtime",
         model: "gpt-realtime",
@@ -354,7 +366,7 @@ Deno.serve(async (req: Request) => {
     }
     const message = clean(body?.message, MAX_MESSAGE);
     if (!message) return json(origin, 400, { error: "message_required" });
-    if (action === "knowledge_lookup") return json(origin, 200, { context: await contextFor(message) });
+    if (action === "knowledge_lookup") return json(origin, 200, { context: publicVoiceContext(await contextFor(message)) });
     if (action) return json(origin, 400, { error: "invalid_action" });
 
     const previousQuestion = history.filter((item: any) => item.role === "user").slice(-1)[0]?.content || "";
