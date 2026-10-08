@@ -1315,6 +1315,31 @@
       this.updateProFeedback();
     }
 
+    materialTexture(name = '') {
+      const label = String(name).toLowerCase();
+      // Material-specific, repeatable grain textures. No product image URLs in the pot.
+      const materials = [
+        { match: /perlit/, color: '#e9e7df', grain: 8 },
+        { match: /bims|pumice/, color: '#b7b2a4', grain: 14 },
+        { match: /lava/, color: '#544a43', grain: 12 },
+        { match: /seramis|tonbruch|blähton|blaehton/, color: '#a75e42', grain: 13 },
+        { match: /pinien|rinde|bark/, color: '#745039', grain: 19 },
+        { match: /sphagnum|moos|moss/, color: '#8a8351', grain: 11 },
+        { match: /kokos|coco/, color: '#896a50', grain: 10 },
+        { match: /wurmhumus|kompost|humus|erde/, color: '#433b31', grain: 6 },
+        { match: /kohle|biochar/, color: '#383735', grain: 8 },
+        { match: /zeolith/, color: '#a1a79b', grain: 11 },
+        { match: /sand|quarz/, color: '#c8b999', grain: 5 }
+      ];
+      const match = materials.find((entry) => entry.match.test(label)) || { color: '#958570', grain: 10 };
+      const grain = match.grain;
+      return {
+        color: match.color,
+        size: `${grain}px ${grain}px, ${Math.round(grain * 1.6)}px ${Math.round(grain * 1.6)}px, auto`,
+        pattern: 'radial-gradient(ellipse at 25% 28%, rgba(255,255,255,.48) 0 16%, transparent 20%), radial-gradient(ellipse at 68% 72%, rgba(0,0,0,.28) 0 21%, transparent 24%), linear-gradient(135deg, rgba(255,255,255,.12), rgba(0,0,0,.12))'
+      };
+    }
+
     updateCustomSegmentVisuals() {
       this.customSegments.forEach((segment) => {
         const share = Number(segment.dataset.share) || 0;
@@ -1322,18 +1347,13 @@
         segment.style.order = String(Number(segment.dataset.order) || 0);
         segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
-        if (segment.dataset.image) {
-          const image = segment.dataset.image.replace(/"/g, '%22');
-          segment.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .18), rgba(24, 29, 20, .18)), url("${image}")`;
-          segment.style.backgroundSize = 'cover';
-          segment.style.backgroundPosition = 'center';
-          segment.style.backgroundBlendMode = 'multiply';
-        } else {
-          segment.style.removeProperty('background-image');
-          segment.style.removeProperty('background-size');
-          segment.style.removeProperty('background-position');
-          segment.style.removeProperty('background-blend-mode');
-        }
+        // The pot visualises loose substrate, never packaged product photography.
+        const material = this.materialTexture(segment.dataset.name);
+        segment.style.backgroundColor = material.color;
+        segment.style.backgroundImage = material.pattern;
+        segment.style.backgroundSize = material.size;
+        segment.style.backgroundPosition = 'center';
+        segment.style.removeProperty('background-blend-mode');
       });
     }
 
@@ -1349,12 +1369,10 @@
         const thumb = document.createElement('span');
         thumb.className = 'leafer-substrate__mix-slider-thumb';
         thumb.setAttribute('aria-hidden', 'true');
-        if (segment.dataset.image) {
-          const image = segment.dataset.image.replace(/"/g, '%22');
-          thumb.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .1), rgba(24, 29, 20, .1)), url("${image}")`;
-          thumb.style.backgroundSize = 'cover';
-          thumb.style.backgroundPosition = 'center';
-        }
+        const material = this.materialTexture(segment.dataset.name);
+        thumb.style.backgroundColor = material.color;
+        thumb.style.backgroundImage = material.pattern;
+        thumb.style.backgroundSize = material.size;
 
         const name = document.createElement('strong');
         name.className = 'leafer-substrate__mix-slider-name';
