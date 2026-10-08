@@ -724,7 +724,7 @@
   .leafer-substrate__pot-slider { position: relative; width: min(100%, 220px); height: 300px; margin-inline: auto; padding: 1rem 1.05rem 1.15rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 0; clip-path: polygon(4% 0, 96% 0, 82% 100%, 18% 100%); background: linear-gradient(90deg, color-mix(in srgb, var(--text), transparent 82%), color-mix(in srgb, var(--background), var(--text) 7%) 16% 84%, color-mix(in srgb, var(--text), transparent 80%)); box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--text), transparent 14%), inset 0 0 28px color-mix(in srgb, var(--text), transparent 72%), 0 18px 34px color-mix(in srgb, var(--text), transparent 84%); isolation: isolate; }
   .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
   .leafer-substrate__pot-rim { position: absolute; z-index: 4; top: .35rem; right: 7%; left: 7%; height: 18px; border: 3px solid color-mix(in srgb, var(--text), transparent 18%); border-radius: 50%; background: color-mix(in srgb, var(--background), var(--text) 10%); box-shadow: inset 0 3px 7px color-mix(in srgb, var(--text), transparent 82%); pointer-events: none; }
-  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: .68rem; font-weight: 850; text-align: left; text-shadow: 0 1px 3px rgba(0,0,0,.55); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: clamp(.85rem, 1.1vw, 1rem); font-weight: 850; text-align: center; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 0 8px rgba(0,0,0,.7); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
   .leafer-substrate__pot-segment:nth-child(2n) { background-color: #667056; }
   .leafer-substrate__pot-segment:nth-child(3n) { background-color: #9a8665; }
   .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
@@ -775,7 +775,7 @@
     .leafer-substrate__customizer-grid { margin-top: .55rem; grid-template-columns: minmax(104px, .4fr) minmax(0, .6fr); gap: .5rem; align-items: start; }
     .leafer-substrate__pot-slider,
     .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: 100%; height: min(31svh, 220px); min-height: 180px; padding: .72rem .6rem .78rem; }
-    .leafer-substrate__pot-segment { padding-inline: .25rem; font-size: .56rem; }
+    .leafer-substrate__pot-segment { padding-inline: .25rem; font-size: .85rem; }
     .leafer-substrate__customizer-total { margin-top: .3rem; font-size: .68rem; }
     .leafer-substrate__pot-drag-hint { display: none; }
     .leafer-substrate__component-picker { align-self: start; }
@@ -1353,7 +1353,7 @@
         const share = Number(segment.dataset.share) || 0;
         segment.style.height = share ? `${share}%` : '';
         segment.style.order = String(Number(segment.dataset.order) || 0);
-        segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
+        segment.textContent = share ? `${this.translateIngredient(segment.dataset.name).split(/\s+[–—-]\s+/)[0].trim()} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
         // The pot visualises loose substrate, never packaged product photography.
         const material = this.materialTexture(segment.dataset.name);
