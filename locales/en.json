@@ -1170,5 +1170,13 @@
     "product_details": "View product details",
     "dynamic_note": "These cards are dynamic orientation, not a universal ranking. Plant needs, area, distance and mounting still matter.",
     "collection_cta": "Compare all plant lights"
+  },
+  "leaf_listening": {
+    "eyebrow": "We listened",
+    "heading": "Your feedback is shaping our substrate range.",
+    "intro": "We are updating how we present and ship our carefully selected substrate recipes. Going forward, recipe kits will be clearly labelled as separately portioned components for mixing at home, rather than pre-mixed substrates. Until the transition is complete, the delivery format shown on each product page applies.",
+    "details_label": "Why we are changing this",
+    "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
+    "link_label": "Explore substrates"
   }
 }
