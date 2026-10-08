@@ -468,7 +468,8 @@
       "block_order": [
         "loox_reviews_home"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "brand_story": {
       "type": "brand-story",
@@ -501,7 +502,6 @@
     "home_guides",
     "faq",
     "community",
-    "loox_reviews",
     "brand_story",
     "phone_call"
   ]
