@@ -52,7 +52,7 @@ async function main() {
   }
   const seen = new Set(), results = [], sources = new Map();
   while (true) {
-    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 1); if (!batch.length) break;
+    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 4); if (!batch.length) break;
     if (seen.size + batch.length > 1800) throw new Error('Crawl bound reached; verification incomplete');
     batch.forEach(p => seen.add(p));
     await Promise.all(batch.map(async path => {
