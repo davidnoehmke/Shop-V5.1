@@ -1170,5 +1170,13 @@
     "product_details": "Produktdetails ansehen",
     "dynamic_note": "Die Karten sind eine dynamische Orientierung, keine pauschale Rangliste. Entscheidend bleiben Pflanzenbedarf, Fläche, Abstand und Montage.",
     "collection_cta": "Alle Pflanzenleuchten vergleichen"
+  },
+  "leaf_listening": {
+    "eyebrow": "Wir haben zugehört",
+    "heading": "Euer Feedback verändert unsere Substratwelt.",
+    "intro": "Wir überarbeiten die Darstellung und Lieferung unserer abgestimmten Substratrezepturen. Künftig sollen Rezeptur-Sets klar als einzeln portionierte Bestandteile zum Selbstmischen gekennzeichnet sein – statt als bereits fertig vermischtes Substrat. Bis die Umstellung abgeschlossen ist, gilt die Lieferform auf der jeweiligen Produktseite.",
+    "details_label": "Warum wir das ändern",
+    "details_text": "Ehrliche Rückmeldungen zu Verpackung und Produktdarstellung helfen uns, unsere Angebote verständlicher und den Versand kontrollierbarer zu gestalten. Wir prüfen unsere Abläufe und passen Produkttexte und Abbildungen an, bevor wir die neue Lieferform anbieten.",
+    "link_label": "Substratwelt entdecken"
   }
 }
