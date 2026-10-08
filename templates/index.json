@@ -484,10 +484,17 @@
         "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
         "button_label": "Rückruf anfragen"
       }
+    },
+    "leaf_listening": {
+      "type": "leaf-listening",
+      "settings": {
+        "link": "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+      }
     }
   },
   "order": [
     "hero",
+    "leaf_listening",
     "substrate_configurator",
     "home_collection_journey",
     "trust",
