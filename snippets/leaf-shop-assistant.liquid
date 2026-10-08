@@ -80,6 +80,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_substrate_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_substrate' | t }}</button>
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_light_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_light' | t }}</button>
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_care_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_care' | t }}</button>
+        <a class="leaf-shop-assistant__suggestion-link" href="/blogs/leafers-nice2know-blog/shoplandkarte-navigation-barrierefreiheit-vorlesen">{{ 'shop_assistant.suggestion_map' | t }}</a>
       </div>
 
       <div class="leaf-shop-assistant__log" data-assistant-log aria-live="polite" aria-relevant="additions">
@@ -310,15 +311,19 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     scrollbar-width: none;
   }
   .leaf-shop-assistant__suggestions::-webkit-scrollbar { display: none; }
-  .leaf-shop-assistant__suggestions button {
+  .leaf-shop-assistant__suggestions button,
+  .leaf-shop-assistant__suggestion-link {
     flex: 0 0 auto;
     min-height: 36px;
     padding: 0 .7rem;
-    border-color: var(--border);
+    border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text);
     font-size: .72rem;
     font-weight: 750;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
   }
   .leaf-shop-assistant__log {
     display: flex;
