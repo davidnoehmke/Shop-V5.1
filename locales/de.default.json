@@ -1036,7 +1036,7 @@
     "support": "Kundenservice",
     "support_help": "Kontakt und Hilfe im Service",
     "sphagnum": "Sphagnum-Moos – für Stecklinge & Aroiden"
-},
+  },
   "lighting_configurator": {
     "eyebrow": "Pflanzenlicht als System",
     "heading": "Pflanzenlicht passend zu Pflanze, Raum und Aufbau auswählen.",
@@ -1066,8 +1066,7 @@
     "details": "Details & Kaufoptionen",
     "empty": "Für diese Auswahl ist aktuell kein Produkt hinterlegt.",
     "empty_help": "Ändere einen Filter oder setze die Auswahl zurück."
-  }
-,
+  },
   "led_collection": {
     "eyebrow": "Pflanzenlicht verständlich auswählen",
     "heading": "LED-Pflanzenlicht für Zimmerpflanzen, Regale und dunkle Räume",
@@ -1153,8 +1152,7 @@
     "upsell_for": "Passend für",
     "upsell_details": "Details ansehen",
     "upsell_note": "Kompatibilität immer am konkreten Produkt prüfen. Zubehör ist keine eigenständige Lichtquelle."
-  }
-,
+  },
   "led_article": {
     "dynamic_eyebrow": "Aktuelle Produktauswahl",
     "technical_heading": "Technische Beispiele aus dem aktuellen Pflanzenlicht-Sortiment",
@@ -1170,5 +1168,26 @@
     "product_details": "Produktdetails ansehen",
     "dynamic_note": "Die Karten sind eine dynamische Orientierung, keine pauschale Rangliste. Entscheidend bleiben Pflanzenbedarf, Fläche, Abstand und Montage.",
     "collection_cta": "Alle Pflanzenleuchten vergleichen"
+  },
+  "led_home": {
+    "eyebrow": "LEAF Lichtberater · Pflanzenbeleuchtung verstehen",
+    "heading": "Welches Pflanzenlicht passt zu dir?",
+    "intro": "Wähle deine Beleuchtungssituation und erfahre, welche Lichtlösung zu Pflanzen, Fläche und Standort passt.",
+    "choices_aria": "Beleuchtungssituation wählen",
+    "single": "Einzelpflanze",
+    "shelf": "Pflanzenregal",
+    "large": "Große Fläche",
+    "winter": "Winter und wenig Tageslicht",
+    "single_title": "Gezieltes Licht für eine Einzelpflanze",
+    "single_text": "Ein Spot oder eine E27-Pflanzenlampe kann eine einzelne Pflanze ergänzen. Prüfe zuerst die Ausleuchtung, Herstellerabstand und sichere Montage.",
+    "shelf_title": "Gleichmäßiges Licht im Pflanzenregal",
+    "shelf_text": "Lineare LED-Leisten eignen sich häufig für längliche Regalfächer. Entscheidend sind Regalbreite, Blatthöhe und dokumentierte Lichtwerte.",
+    "large_title": "Mehr Fläche gezielt beleuchten",
+    "large_text": "Bei größeren Pflanzflächen zählt die Verteilung der Lichtintensität über die gesamte Fläche – nicht nur der Spitzenwert in der Mitte.",
+    "winter_title": "Licht im Winter ergänzen",
+    "winter_text": "Zusatzlicht kann geringe Tageslichtmengen ausgleichen. Beleuchtungsdauer, Pflanzenart und vorhandenes Fensterlicht bestimmen die passende Lösung.",
+    "cta": "LED-Beratung und Produkte entdecken",
+    "info_title": "Was bedeuten PPFD und DLI?",
+    "info_text": "PPFD beschreibt die photosynthetisch wirksame Lichtintensität am Blatt. DLI beschreibt die über den Tag erhaltene Lichtmenge. Watt allein verrät nicht, wie viel Licht die Pflanze erreicht."
   }
 }
