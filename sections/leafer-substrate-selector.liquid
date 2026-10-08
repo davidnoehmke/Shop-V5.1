@@ -368,6 +368,14 @@
               {% if selected_variant.available %}{{ section.settings.available_label | escape }}{% else %}{{ section.settings.unavailable_label | escape }}{% endif %}
             </p>
 
+            <p class="leafer-substrate__packing-note" role="note">
+              {% if request.locale.iso_code == 'de' %}
+                <strong>Einzeln verpackte Bestandteile:</strong> Deine ausgewählten Substratkomponenten werden getrennt portioniert und verpackt geliefert – nicht fertig vorgemischt. Du mischst sie selbst nach deiner Rezeptur. Die einzelnen Beutel können gemeinsam in einem Paket ankommen.
+              {% else %}
+                <strong>Individually packed ingredients:</strong> Your selected substrate components are portioned and packed separately, not pre-mixed. Combine them yourself using your recipe. The individual bags may arrive together in one parcel.
+              {% endif %}
+            </p>
+
             <div class="leafer-substrate__buy-row">
               <label for="Quantity-{{ section.id }}">
                 <span>{{ section.settings.quantity_label | escape }}</span>
