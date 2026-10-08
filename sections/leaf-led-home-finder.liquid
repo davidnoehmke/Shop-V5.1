@@ -1,0 +1,29 @@
+{% assign led_collection = collections['pflanzenbeleuchtung'] %}
+<section class="page-width leaf-led-home" id="LeafLedHome-{{ section.id }}" aria-labelledby="LeafLedHomeHeading-{{ section.id }}">
+  <div class="leaf-led-home__intro">
+    <p class="leaf-led-home__eyebrow">LEAF Lichtberater · Pflanzenbeleuchtung verstehen</p>
+    <h2 id="LeafLedHomeHeading-{{ section.id }}">Welches Pflanzenlicht passt zu dir?</h2>
+    <p>Finde den passenden Einstieg nach deinem Standort. Wir erklären Lichtbedarf, Beleuchtungsdauer und worauf du bei LED-Pflanzenlampen achten solltest.</p>
+  </div>
+  <div class="leaf-led-home__choices" role="group" aria-label="Beleuchtungssituation wählen">
+    <button type="button" data-led-choice="single" aria-pressed="true">Einzelpflanze</button>
+    <button type="button" data-led-choice="shelf" aria-pressed="false">Pflanzenregal</button>
+    <button type="button" data-led-choice="large" aria-pressed="false">Große Fläche</button>
+    <button type="button" data-led-choice="winter" aria-pressed="false">Winter & wenig Tageslicht</button>
+  </div>
+  <div class="leaf-led-home__answer" aria-live="polite">
+    <h3 data-led-title>Gezieltes Licht für eine Einzelpflanze</h3>
+    <p data-led-text>Prüfe zunächst den verfügbaren Platz, den Abstand zur Pflanze und die Herstellerangaben zur Lichtintensität. Eine E27-Lampe oder ein Spot kann ein sinnvoller Einstieg sein.</p>
+    <a class="button" data-led-link href="{{ led_collection.url | default: '/collections/pflanzenbeleuchtung' }}#LedFinder">LED-Beratung und Produkte öffnen</a>
+  </div>
+  <details class="leaf-led-home__info"><summary>Was bedeuten PPFD und DLI?</summary><p>PPFD beschreibt die photosynthetisch wirksamen Photonen pro Quadratmeter und Sekunde. DLI beschreibt die gesamte Lichtmenge pro Tag. Für die Eignung einer Lampe sind Messabstand, beleuchtete Fläche und Beleuchtungsdauer entscheidend – Watt allein reicht nicht.</p></details>
+</section>
+<style>
+.leaf-led-home{padding-block:clamp(2rem,5vw,4rem)}.leaf-led-home__intro{max-width:760px}.leaf-led-home__eyebrow{font-size:.8rem;letter-spacing:.09em;text-transform:uppercase}.leaf-led-home__choices{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.4rem 0}.leaf-led-home__choices button{padding:.8rem 1.1rem;border:1px solid currentColor;border-radius:999px;background:transparent;color:inherit;cursor:pointer;font:inherit}.leaf-led-home__choices button[aria-pressed=true]{background:#244d39;color:white;border-color:#244d39}.leaf-led-home__answer{padding:clamp(1.1rem,3vw,2rem);background:rgba(100,125,100,.09);border-radius:1rem;max-width:850px}.leaf-led-home__answer p{max-width:680px}.leaf-led-home__info{margin-top:1.2rem;max-width:850px}.leaf-led-home__info summary{cursor:pointer;font-weight:600}
+</style>
+<script>
+(()=>{const root=document.getElementById('LeafLedHome-{{ section.id }}');if(!root||root.dataset.ready)return;root.dataset.ready='1';const data={single:['Gezieltes Licht für eine Einzelpflanze','Prüfe Platz, Abstand und Herstellerangaben zur Lichtintensität. Eine E27-Lampe oder ein Spot kann ein sinnvoller Einstieg sein.'],shelf:['Gleichmäßiges Licht im Pflanzenregal','LED-Leisten können mehrere Pflanzen gleichmäßiger versorgen. Achte auf Regalbreite, Befestigung und den gemessenen Lichtwert auf Blatthöhe.'],large:['Eine größere Fläche beleuchten','Vergleiche die PPFD-Verteilung über die gesamte Fläche und nicht nur den höchsten Messwert in der Mitte. Montagehöhe und Wärmeabfuhr sind wichtig.'],winter:['Weniger Tageslicht gezielt ausgleichen','Im Winter kann Zusatzlicht helfen. Orientiere die Beleuchtungsdauer am vorhandenen Tageslicht und an der Pflanzenart; eine pauschale Stundenzahl passt nicht für alle Pflanzen.']};root.querySelectorAll('[data-led-choice]').forEach(btn=>btn.addEventListener('click',()=>{root.querySelectorAll('[data-led-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));const d=data[btn.dataset.ledChoice];root.querySelector('[data-led-title]').textContent=d[0];root.querySelector('[data-led-text]').textContent=d[1];}));})();
+</script>
+{% schema %}
+{"name":"LEAF LED Start-Berater","settings":[],"presets":[{"name":"LEAF LED Start-Berater"}]}
+{% endschema %}

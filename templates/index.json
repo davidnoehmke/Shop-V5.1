@@ -484,12 +484,17 @@
         "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
         "button_label": "Rückruf anfragen"
       }
+    },
+    "led_home_finder": {
+      "type": "leaf-led-home-finder",
+      "settings": {}
     }
   },
   "order": [
     "hero",
     "substrate_configurator",
     "home_collection_journey",
+    "led_home_finder",
     "trust",
     "home_guides",
     "faq",
