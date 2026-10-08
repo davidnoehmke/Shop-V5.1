@@ -17,21 +17,21 @@
     <div class="led-hub__copy">
       <p class="led-hub__eyebrow">{{ 'led_collection.eyebrow' | t }}</p>
       <h1>{{ 'led_collection.heading' | t }}</h1>
-      <p class="led-hub__lead">{{ collection.metafields.leafer.intro.value | default: 'led_collection.intro' | t }}</p>
+      <p class="led-hub__lead">{% if request.locale.iso_code == 'de' and collection.metafields.leafer.intro.value != blank %}{{ collection.metafields.leafer.intro.value | escape }}{% else %}{{ 'led_collection.intro' | t }}{% endif %}</p>
 
       <details class="led-hub__info">
         <summary><span aria-hidden="true">ⓘ</span>{{ 'led_collection.more_info' | t }}</summary>
         <div>
-          <p>{{ collection.metafields.leafer.expert_intro.value | default: 'led_collection.more_info_text' | t }}</p>
+          <p>{% if request.locale.iso_code == 'de' and collection.metafields.leafer.expert_intro.value != blank %}{{ collection.metafields.leafer.expert_intro.value | escape }}{% else %}{{ 'led_collection.more_info_text' | t }}{% endif %}</p>
           {% if collection.metafields.leafer.guide.value != blank %}
-            <p>{{ collection.metafields.leafer.guide.value | escape }}</p>
+            <p>{% if request.locale.iso_code == 'de' %}{{ collection.metafields.leafer.guide.value | escape }}{% else %}{{ 'led_collection.more_info_text' | t }}{% endif %}</p>
           {% endif %}
         </div>
       </details>
 
       <div class="led-hub__actions">
         <a class="button" href="#LedFinder-{{ section.id }}">{{ 'led_collection.start_finder' | t }}</a>
-        <a class="button button--secondary" href="#CollectionProducts-{{ section.id }}">{{ 'led_collection.view_all' | t }}</a>
+        <a class="button button--secondary" href="#CollectionProducts">{{ 'led_collection.view_all' | t }}</a>
       </div>
 
       <div class="led-hub__signals">
@@ -51,7 +51,7 @@
     </div>
   </header>
 
-  <section class="led-hub__finder" id="LedFinder-{{ section.id }}" aria-labelledby="LedFinderHeading-{{ section.id }}">
+  <section class="led-hub__finder" id="LedFinder" aria-labelledby="LedFinderHeading-{{ section.id }}">
     <header class="led-hub__section-head">
       <p class="led-hub__eyebrow">{{ 'led_collection.finder_eyebrow' | t }}</p>
       <h2 id="LedFinderHeading-{{ section.id }}">{{ 'led_collection.finder_heading' | t }}</h2>
@@ -287,6 +287,8 @@
     if (empty) empty.hidden = visible !== 0;
   };
   buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.ledFilter || 'all')));
+  const requested = new URLSearchParams(window.location.search).get('led_use');
+  if (['single', 'shelf', 'large', 'winter'].includes(requested)) apply(requested);
 })();
 </script>
 {% endif %}
