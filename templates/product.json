@@ -48,7 +48,8 @@
       "block_order": [
         "loox_product_reviews"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
     }
   },
   "order": [
@@ -58,7 +59,6 @@
     "component_signature",
     "recipe",
     "seo_details",
-    "loox_reviews",
     "cross_sell"
   ]
 }
