@@ -151,8 +151,8 @@ async function contextFor(message: string, current = message, path = "") {
     allRows(() => supabaseAdmin.from("knowledge_qa").select("question,answer,intent,long_tail_keywords").in("approval_status", ["approved_existing", "approved"]).order("id"), "knowledge context"),
     allRows(() => supabaseAdmin.from("content_articles").select("title,handle,excerpt,body_html,primary_keyword,secondary_keywords,source_citations").in("status", ["approved", "published"]).order("id"), "article context"),
     allRows(() => supabaseAdmin.from("content_atoms").select("slug,name,one_liner,short_explanation,long_explanation,aliases").eq("active", true).not("shopify_metaobject_gid", "is", null).order("slug"), "published explanations"),
-    allRows(() => supabaseAdmin.from("collection_content").select("handle,title,short_intro,buying_guide,care_guidance,faq").in("content_status", ["researched", "approved", "published"]).not("validated_at", "is", null).order("handle"), "validated collection guides"),
-    allRows(() => supabaseAdmin.from("information_blocks").select("scope_type,scope_key,statement,description,valid_from,valid_until").in("status", ["approved", "published"]).order("id"), "approved explanations")
+    allRows(() => supabaseAdmin.from("collection_content").select("handle,title,short_intro,buying_guide,care_guidance,faq").in("content_status", ["researched", "validated", "sync_ready", "published"]).not("validated_at", "is", null).order("handle"), "validated collection guides"),
+    allRows(() => supabaseAdmin.from("information_blocks").select("scope_type,scope_key,statement,description,valid_from,valid_until").in("status", ["validated", "published"]).order("id"), "approved explanations")
   ]);
   const visible = new Map();
   for (const row of snapshotRows) if (!visible.has(row.shopify_id)) visible.set(row.shopify_id, row.status === "ACTIVE" && Boolean(row.published));

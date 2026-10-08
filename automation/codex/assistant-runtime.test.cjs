@@ -103,7 +103,10 @@ function knowledgeFixture() {
       { product_gid: 'p1', namespace: 'lighting', key: 'recommended_distance', parsed_value: 'UNSYNCED-DISTANCE', validation_status: 'valid', synced_at: '2026-10-07', dirty_for_shopify: true }
     ],
     knowledge_qa: [{ question: 'Venso secret', answer: 'PENDING-RESEARCH', approval_status: 'pending_review' }],
-    information_blocks: [{ statement: 'Venso', description: 'RESEARCHED-NOT-APPROVED', status: 'researched' }]
+    information_blocks: [
+      { statement: 'Venso', description: 'RESEARCHED-NOT-APPROVED', status: 'researched' },
+      { statement: 'Venso', description: 'VALIDATED-PUBLIC-GUIDANCE', status: 'validated' }
+    ]
   };
 }
 
@@ -114,7 +117,18 @@ test('knowledge lookup uses synchronized public fields and excludes drafts, priv
   assert.equal(response.status, 200);
   assert.match(body, /30–40 cm/);
   assert.match(body, /VEGA/);
+  assert.match(body, /VALIDATED-PUBLIC-GUIDANCE/);
   assert.doesNotMatch(body, /PRIVATE-MARGIN|UNVERIFIED-CANONICAL|DRAFT-CONTENT|STALE-OLD|UNSYNCED|PENDING-RESEARCH|RESEARCHED-NOT/);
+});
+
+test('validated collection guides are available while unvalidated research stays private', async () => {
+  const app = runtime('', '', { collection_content: [
+    { handle: 'pflanzenbeleuchtung', title: 'Pflanzenlicht', buying_guide: 'VALIDATED-COLLECTION-GUIDE', content_status: 'validated', validated_at: '2026-10-07' },
+    { handle: 'pflanzenlicht-entwurf', title: 'Pflanzenlicht Entwurf', buying_guide: 'UNVALIDATED-COLLECTION-RESEARCH', content_status: 'researched', validated_at: null }
+  ] });
+  const body = await (await app.send({ message: 'Was muss ich bei Pflanzenlicht beachten?' })).json();
+  assert.match(body.answer, /VALIDATED-COLLECTION-GUIDE/);
+  assert.doesNotMatch(body.answer, /UNVALIDATED-COLLECTION-RESEARCH/);
 });
 
 test('fallback answers an actual technical question and retains the variant safety limitation', async () => {
