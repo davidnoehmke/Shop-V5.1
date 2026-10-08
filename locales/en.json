@@ -1036,7 +1036,7 @@
     "support": "Customer service",
     "support_help": "Contact and support",
     "sphagnum": "Sphagnum moss – for cuttings & aroids"
-},
+  },
   "lighting_configurator": {
     "eyebrow": "Plant lighting as a system",
     "heading": "Choose plant lighting to suit your plants, room and setup.",
@@ -1066,8 +1066,7 @@
     "details": "Details & buying options",
     "empty": "No product currently matches your selection.",
     "empty_help": "Change a filter or reset your selection."
-  }
-,
+  },
   "led_collection": {
     "eyebrow": "Choose plant lighting with confidence",
     "heading": "LED grow lights for houseplants, shelves and darker rooms",
@@ -1153,8 +1152,7 @@
     "upsell_for": "Works with",
     "upsell_details": "View details",
     "upsell_note": "Always check compatibility on the specific product. Accessories are not standalone light sources."
-  }
-,
+  },
   "led_article": {
     "dynamic_eyebrow": "Current product selection",
     "technical_heading": "Technical examples from the current plant-lighting range",
@@ -1170,5 +1168,26 @@
     "product_details": "View product details",
     "dynamic_note": "These cards are dynamic orientation, not a universal ranking. Plant needs, area, distance and mounting still matter.",
     "collection_cta": "Compare all plant lights"
+  },
+  "led_home": {
+    "eyebrow": "LEAF lighting advisor · Understand grow lights",
+    "heading": "Which grow light fits your space?",
+    "intro": "Choose your lighting setup and learn how to match plant needs, coverage and location with a suitable grow light.",
+    "choices_aria": "Choose your lighting situation",
+    "single": "Single plant",
+    "shelf": "Plant shelf",
+    "large": "Large area",
+    "winter": "Winter and low daylight",
+    "single_title": "Targeted light for a single plant",
+    "single_text": "A spotlight or an E27 grow bulb may supplement one plant. Check light coverage, manufacturer-recommended distance and secure mounting.",
+    "shelf_title": "Even light across a plant shelf",
+    "shelf_text": "Linear LED bars often suit long shelving spaces. Shelf width, leaf height and documented light measurements matter most.",
+    "large_title": "Cover a larger growing area",
+    "large_text": "For larger growing areas, consider the distribution of light intensity across the entire area, not only the brightest point in the center.",
+    "winter_title": "Supplement light in winter",
+    "winter_text": "Additional light can compensate for reduced daylight. The right duration depends on the plant, location and available window light.",
+    "cta": "Explore LED advice and products",
+    "info_title": "What do PPFD and DLI mean?",
+    "info_text": "PPFD measures photosynthetically useful photon flux reaching the leaves per second. DLI measures the total amount received during a day. Electrical wattage alone does not tell you how much light reaches the plant."
   }
 }

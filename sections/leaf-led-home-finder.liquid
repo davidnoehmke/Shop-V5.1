@@ -1,29 +1,104 @@
-{% assign led_collection = collections['pflanzenbeleuchtung'] %}
-<section class="page-width leaf-led-home" id="LeafLedHome-{{ section.id }}" aria-labelledby="LeafLedHomeHeading-{{ section.id }}">
+{% liquid
+  assign led_collection = collections['pflanzenbeleuchtung']
+  assign led_base = led_collection.url | default: '/collections/pflanzenbeleuchtung'
+  assign led_scenarios = 'single,shelf,large,winter' | split: ','
+%}
+<section class="page-width leaf-led-home" id="LeafLedHome-{{ section.id }}" data-leaf-led-home aria-labelledby="LeafLedHomeHeading-{{ section.id }}">
   <div class="leaf-led-home__intro">
-    <p class="leaf-led-home__eyebrow">LEAF Lichtberater · Pflanzenbeleuchtung verstehen</p>
-    <h2 id="LeafLedHomeHeading-{{ section.id }}">Welches Pflanzenlicht passt zu dir?</h2>
-    <p>Finde den passenden Einstieg nach deinem Standort. Wir erklären Lichtbedarf, Beleuchtungsdauer und worauf du bei LED-Pflanzenlampen achten solltest.</p>
+    <p class="leaf-led-home__eyebrow">
+      {% if request.locale.iso_code == 'de' and led_collection.metafields.custom.homepage_eyebrow.value != blank %}
+        {{ led_collection.metafields.custom.homepage_eyebrow.value | escape }}
+      {% else %}
+        {{ 'led_home.eyebrow' | t }}
+      {% endif %}
+    </p>
+    <h2 id="LeafLedHomeHeading-{{ section.id }}">{{ 'led_home.heading' | t }}</h2>
+    <p>
+      {% if request.locale.iso_code == 'de' and led_collection.metafields.custom.homepage_intro.value != blank %}
+        {{ led_collection.metafields.custom.homepage_intro.value | escape }}
+      {% else %}
+        {{ 'led_home.intro' | t }}
+      {% endif %}
+    </p>
   </div>
-  <div class="leaf-led-home__choices" role="group" aria-label="Beleuchtungssituation wählen">
-    <button type="button" data-led-choice="single" aria-pressed="true">Einzelpflanze</button>
-    <button type="button" data-led-choice="shelf" aria-pressed="false">Pflanzenregal</button>
-    <button type="button" data-led-choice="large" aria-pressed="false">Große Fläche</button>
-    <button type="button" data-led-choice="winter" aria-pressed="false">Winter & wenig Tageslicht</button>
+  <div class="leaf-led-home__choices" role="group" aria-label="{{ 'led_home.choices_aria' | t | escape }}">
+    {% for scenario in led_scenarios %}
+      <button type="button" data-led-choice="{{ scenario }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
+        <span aria-hidden="true">
+          {% if scenario == 'single' %}{% render 'leaf-knowledge-icon', icon_key: 'pot' %}
+          {% elsif scenario == 'shelf' %}{% render 'leaf-knowledge-icon', icon_key: 'layers' %}
+          {% elsif scenario == 'large' %}{% render 'leaf-knowledge-icon', icon_key: 'room' %}
+          {% else %}{% render 'leaf-knowledge-icon', icon_key: 'light' %}{% endif %}
+        </span>
+        {{ 'led_home.' | append: scenario | t }}
+      </button>
+      <span hidden data-led-content="{{ scenario }}"
+        data-led-copy-title="{{ 'led_home.' | append: scenario | append: '_title' | t | escape }}"
+        data-led-copy-description="{{ 'led_home.' | append: scenario | append: '_text' | t | escape }}"></span>
+    {% endfor %}
   </div>
-  <div class="leaf-led-home__answer" aria-live="polite">
-    <h3 data-led-title>Gezieltes Licht für eine Einzelpflanze</h3>
-    <p data-led-text>Prüfe zunächst den verfügbaren Platz, den Abstand zur Pflanze und die Herstellerangaben zur Lichtintensität. Eine E27-Lampe oder ein Spot kann ein sinnvoller Einstieg sein.</p>
-    <a class="button" data-led-link href="{{ led_collection.url | default: '/collections/pflanzenbeleuchtung' }}#LedFinder">LED-Beratung und Produkte öffnen</a>
+  <div class="leaf-led-home__answer" aria-live="polite" aria-atomic="true">
+    <h3 data-led-output-title>{{ 'led_home.single_title' | t }}</h3>
+    <p data-led-output-text>{{ 'led_home.single_text' | t }}</p>
+    <a class="button" data-led-destination data-led-base="{{ led_base | escape }}"
+      href="{{ led_base | escape }}?led_use=single#LedFinder">
+      {% if request.locale.iso_code == 'de' and led_collection.metafields.custom.homepage_cta.value != blank %}
+        {{ led_collection.metafields.custom.homepage_cta.value | escape }}
+      {% else %}
+        {{ 'led_home.cta' | t }}
+      {% endif %}
+    </a>
   </div>
-  <details class="leaf-led-home__info"><summary>Was bedeuten PPFD und DLI?</summary><p>PPFD beschreibt die photosynthetisch wirksamen Photonen pro Quadratmeter und Sekunde. DLI beschreibt die gesamte Lichtmenge pro Tag. Für die Eignung einer Lampe sind Messabstand, beleuchtete Fläche und Beleuchtungsdauer entscheidend – Watt allein reicht nicht.</p></details>
+  <details class="leaf-led-home__info">
+    <summary>{% render 'leaf-knowledge-icon', icon_key: 'light' %} {{ 'led_home.info_title' | t }}</summary>
+    <p>{{ 'led_home.info_text' | t }}</p>
+  </details>
 </section>
-<style>
-.leaf-led-home{padding-block:clamp(2rem,5vw,4rem)}.leaf-led-home__intro{max-width:760px}.leaf-led-home__eyebrow{font-size:.8rem;letter-spacing:.09em;text-transform:uppercase}.leaf-led-home__choices{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.4rem 0}.leaf-led-home__choices button{padding:.8rem 1.1rem;border:1px solid currentColor;border-radius:999px;background:transparent;color:inherit;cursor:pointer;font:inherit}.leaf-led-home__choices button[aria-pressed=true]{background:#244d39;color:white;border-color:#244d39}.leaf-led-home__answer{padding:clamp(1.1rem,3vw,2rem);background:rgba(100,125,100,.09);border-radius:1rem;max-width:850px}.leaf-led-home__answer p{max-width:680px}.leaf-led-home__info{margin-top:1.2rem;max-width:850px}.leaf-led-home__info summary{cursor:pointer;font-weight:600}
-</style>
-<script>
-(()=>{const root=document.getElementById('LeafLedHome-{{ section.id }}');if(!root||root.dataset.ready)return;root.dataset.ready='1';const data={single:['Gezieltes Licht für eine Einzelpflanze','Prüfe Platz, Abstand und Herstellerangaben zur Lichtintensität. Eine E27-Lampe oder ein Spot kann ein sinnvoller Einstieg sein.'],shelf:['Gleichmäßiges Licht im Pflanzenregal','LED-Leisten können mehrere Pflanzen gleichmäßiger versorgen. Achte auf Regalbreite, Befestigung und den gemessenen Lichtwert auf Blatthöhe.'],large:['Eine größere Fläche beleuchten','Vergleiche die PPFD-Verteilung über die gesamte Fläche und nicht nur den höchsten Messwert in der Mitte. Montagehöhe und Wärmeabfuhr sind wichtig.'],winter:['Weniger Tageslicht gezielt ausgleichen','Im Winter kann Zusatzlicht helfen. Orientiere die Beleuchtungsdauer am vorhandenen Tageslicht und an der Pflanzenart; eine pauschale Stundenzahl passt nicht für alle Pflanzen.']};root.querySelectorAll('[data-led-choice]').forEach(btn=>btn.addEventListener('click',()=>{root.querySelectorAll('[data-led-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));const d=data[btn.dataset.ledChoice];root.querySelector('[data-led-title]').textContent=d[0];root.querySelector('[data-led-text]').textContent=d[1];}));})();
-</script>
+
+{% stylesheet %}
+.leaf-led-home{padding-block:clamp(2rem,5vw,4rem)}
+.leaf-led-home__intro{max-width:760px}
+.leaf-led-home__eyebrow{font-size:.8rem;letter-spacing:.09em;text-transform:uppercase}
+.leaf-led-home__choices{display:flex;flex-wrap:wrap;gap:.65rem;margin:1.4rem 0}
+.leaf-led-home__choices button{display:flex;align-items:center;gap:.5rem;min-height:48px;padding:.8rem 1.1rem;border:1px solid currentColor;border-radius:1rem;background:transparent;color:inherit;cursor:pointer;font:inherit}
+.leaf-led-home__choices button svg,.leaf-led-home__info svg{width:20px;height:20px;fill:none;stroke:currentColor}
+.leaf-led-home__choices button[aria-pressed=true]{background:#244d39;color:#fff;border-color:#244d39}
+.leaf-led-home__choices button:focus-visible,.leaf-led-home__info summary:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.leaf-led-home__answer{padding:clamp(1.1rem,3vw,2rem);background:rgba(100,125,100,.09);border-radius:1rem;max-width:850px}
+.leaf-led-home__answer p{max-width:680px}
+.leaf-led-home__info{margin-top:1.2rem;max-width:850px}
+.leaf-led-home__info summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.5rem;min-height:44px}
+.leaf-led-home__info p{line-height:1.6}
+@media(max-width:749px){.leaf-led-home__choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.leaf-led-home__choices button{padding:.75rem;font-size:.88rem}.leaf-led-home__answer .button{width:100%;text-align:center}}
+{% endstylesheet %}
+
+{% javascript %}
+(() => {
+  const hydrate = (scope) => {
+    scope.querySelectorAll('[data-leaf-led-home]').forEach((root) => {
+      if (root.dataset.ready === 'true') return;
+      root.dataset.ready = 'true';
+      const buttons = [...root.querySelectorAll('[data-led-choice]')];
+      const link = root.querySelector('[data-led-destination]');
+      const heading = root.querySelector('[data-led-output-title]');
+      const explanation = root.querySelector('[data-led-output-text]');
+      buttons.forEach((button) => button.addEventListener('click', () => {
+        const key = button.dataset.ledChoice;
+        const copy = root.querySelector('[data-led-content="' + key + '"]');
+        if (!copy || !link || !heading || !explanation) return;
+        buttons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+        heading.textContent = copy.dataset.ledCopyTitle || '';
+        explanation.textContent = copy.dataset.ledCopyDescription || '';
+        link.href = link.dataset.ledBase + '?led_use=' + encodeURIComponent(key) + '#LedFinder';
+      }));
+    });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => hydrate(document), { once: true });
+  else hydrate(document);
+  document.addEventListener('shopify:section:load', (event) => hydrate(event.target));
+})();
+{% endjavascript %}
+
 {% schema %}
 {"name":"LEAF LED Start-Berater","settings":[],"presets":[{"name":"LEAF LED Start-Berater"}]}
 {% endschema %}
