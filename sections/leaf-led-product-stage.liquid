@@ -1,0 +1,94 @@
+{% liquid
+  assign featured_ven = all_products['venso-sunlite-xl-25w-led-pflanzenlampe']
+  assign featured_neu = all_products['neusius-led-bloom-20w-3500k-pflanzenleuchte']
+%}
+<section class="leaf-led-stage" aria-label="Pflanzenlicht entdecken">
+  <div class="leaf-led-stage__intro">
+    <span class="leaf-led-stage__kicker">LEAF Lichtlabor</span>
+    <h2>Das richtige Licht. Sichtbar erklärt.</h2>
+    <p>Entdecke die Technik hinter deinem Pflanzenlicht – vom Einsatzbereich bis zur passenden Leuchte.</p>
+  </div>
+  {% for item in (1..2) %}
+    {% liquid
+      if item == 1
+        assign lamp = featured_ven
+        assign brand = 'Venso'
+        assign fallback = 'SUNLiTE XL'
+      else
+        assign lamp = featured_neu
+        assign brand = 'Neusius'
+        assign fallback = 'LED BLOOM'
+      endif
+    %}
+    {% if lamp != blank %}
+      <article class="leaf-led-stage__product" data-leaf-led-stage>
+        <div class="leaf-led-stage__scene">
+          <span class="leaf-led-stage__brand">{{ brand }}</span>
+          <div class="leaf-led-stage__visual" data-leaf-led-visual>
+            {% if lamp.featured_image != blank %}
+              {{ lamp.featured_image | image_url: width: 1100 | image_tag: widths: '360, 540, 750, 1100', sizes: '(max-width: 700px) 92vw, 520px', loading: 'lazy', alt: lamp.title }}
+            {% endif %}
+          </div>
+          <span class="leaf-led-stage__hint">Bewegen, um die Leuchte näher zu betrachten</span>
+          <label class="leaf-led-stage__control">
+            <span>Ansicht neigen</span>
+            <input type="range" min="-8" max="8" value="0" step="1" data-leaf-led-angle aria-label="Produktansicht leicht neigen">
+          </label>
+        </div>
+        <div class="leaf-led-stage__detail">
+          <span class="leaf-led-stage__kicker">Pflanzenlicht · {{ brand }}</span>
+          <h3>{{ lamp.title | default: fallback }}</h3>
+          {% if lamp.metafields.custom.short_description != blank %}
+            <p>{{ lamp.metafields.custom.short_description.value | escape }}</p>
+          {% else %}
+            <p>Entdecke Eigenschaften, Einsatzmöglichkeiten und die passenden Produktdetails.</p>
+          {% endif %}
+          <div class="leaf-led-stage__facts">
+            {% if lamp.metafields.custom.wattage != blank %}<span>Leistung <strong>{{ lamp.metafields.custom.wattage.value | escape }}</strong></span>{% endif %}
+            {% if lamp.metafields.custom.light_spectrum != blank %}<span>Lichtspektrum <strong>{{ lamp.metafields.custom.light_spectrum.value | escape }}</strong></span>{% endif %}
+            {% if lamp.metafields.custom.application != blank %}<span>Einsatz <strong>{{ lamp.metafields.custom.application.value | escape }}</strong></span>{% endif %}
+          </div>
+          <a class="leaf-led-stage__cta" href="{{ lamp.url }}">Leuchte und technische Details entdecken <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    {% endif %}
+  {% endfor %}
+</section>
+{% stylesheet %}
+.leaf-led-stage{background:#0d1714;color:#f4f7f2;padding:clamp(3rem,7vw,6rem) max(1rem,calc((100vw - 1320px)/2));overflow:hidden}
+.leaf-led-stage__intro{max-width:760px;margin:0 auto 3rem;text-align:center}
+.leaf-led-stage__kicker{color:#b3d9bb;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+.leaf-led-stage h2{font-size:clamp(2rem,5vw,4rem);letter-spacing:-.045em;line-height:1.08;margin:.75rem 0}
+.leaf-led-stage__intro p,.leaf-led-stage__detail p{color:#c8d5cc;line-height:1.65}
+.leaf-led-stage__product{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:clamp(1rem,5vw,5rem);padding:2rem 0 4rem;border-top:1px solid #32463b}
+.leaf-led-stage__scene{position:relative;min-width:0;min-height:460px;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(ellipse at 50% 42%,#314f3f 0%,#192b22 45%,#101c17 80%);border-radius:24px;overflow:hidden}
+.leaf-led-stage__brand{position:absolute;top:1.5rem;left:1.5rem;letter-spacing:.14em;text-transform:uppercase;font-size:.75rem;z-index:2}
+.leaf-led-stage__visual{width:85%;max-width:470px;aspect-ratio:1;display:grid;place-items:center;transform:perspective(1000px) rotateY(var(--leaf-angle,0deg)) scale(var(--leaf-scale,1));transition:transform .25s ease-out;will-change:transform}
+.leaf-led-stage__visual img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 24px 24px rgba(0,0,0,.22))}
+.leaf-led-stage__hint{font-size:.7rem;color:#d3dfd6;text-align:center;padding:0 1rem}
+.leaf-led-stage__control{display:flex;align-items:center;gap:1rem;font-size:.76rem;padding:1rem 1.5rem 1.5rem}
+.leaf-led-stage__control input{accent-color:#b9e4bf;min-width:110px}
+.leaf-led-stage__detail{padding:1rem}
+.leaf-led-stage h3{font-size:clamp(1.8rem,3.4vw,3rem);line-height:1.1;letter-spacing:-.04em;margin:.8rem 0 1.2rem}
+.leaf-led-stage__facts{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.4rem 0}
+.leaf-led-stage__facts span{border:1px solid #40584a;border-radius:10px;padding:.65rem .8rem;color:#c9d9cd;font-size:.8rem}
+.leaf-led-stage__facts strong{display:block;color:#fff;margin-top:.25rem}
+.leaf-led-stage__cta{display:inline-flex;align-items:center;gap:.8rem;min-height:48px;padding:.85rem 1.1rem;border-radius:12px;background:#d0eecf;color:#102319;text-decoration:none;font-weight:700}
+@media(max-width:700px){.leaf-led-stage{padding:3.2rem 1rem}.leaf-led-stage__intro{text-align:left;margin-bottom:2rem}.leaf-led-stage__product{grid-template-columns:1fr;gap:1rem;padding:1.4rem 0 3rem}.leaf-led-stage__scene{min-height:350px;border-radius:18px}.leaf-led-stage__visual{width:90%;max-width:340px}.leaf-led-stage__detail{padding:.5rem .25rem}.leaf-led-stage__cta{width:100%;justify-content:center;text-align:center}.leaf-led-stage__control{padding:.75rem 1rem 1.2rem}}
+@media(prefers-reduced-motion:reduce){.leaf-led-stage__visual{transition:none;will-change:auto}}
+{% endstylesheet %}
+{% javascript %}
+document.querySelectorAll('[data-leaf-led-stage]').forEach(function(stage){
+  var visual=stage.querySelector('[data-leaf-led-visual]');
+  var input=stage.querySelector('[data-leaf-led-angle]');
+  if(!visual||!input)return;
+  input.addEventListener('input',function(){visual.style.setProperty('--leaf-angle',input.value+'deg')});
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  if(!('IntersectionObserver' in window))return;
+  var observer=new IntersectionObserver(function(entries){entries.forEach(function(entry){visual.style.setProperty('--leaf-scale',entry.isIntersecting?'1.055':'1')})},{threshold:.4});
+  observer.observe(stage);
+});
+{% endjavascript %}
+{% schema %}
+{"name":"LED Produktbühne","settings":[],"presets":[{"name":"LED Produktbühne"}]}
+{% endschema %}
