@@ -88,6 +88,20 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
   assert.doesNotMatch(substrateWorld, /bis zu fünf auswählbare Komponenten/i);
 });
 
+test('mobile pro mixer keeps the pot above a readable vertical component list', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const potDesktop = liquid.indexOf('.leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }');
+  const responsive = liquid.indexOf('@media (max-width: 620px) {\n    .leafer-substrate__advanced-summary');
+  assert.ok(potDesktop > -1 && responsive > potDesktop, 'mobile pot sizing must override the desktop homepage rule');
+  const mobile = liquid.slice(responsive, liquid.indexOf('@media (max-width: 620px) and (max-height: 700px)', responsive));
+  assert.match(mobile, /customizer-grid \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-options \{[^}]*display: grid; grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-option \{[^}]*min-width: 0;[^}]*width: 100%/);
+  assert.doesNotMatch(mobile, /custom-options \{[^}]*overflow-x: auto/);
+  assert.match(mobile, /home-usp \.leafer-substrate__pot-slider \{[^}]*height: clamp\(165px, 26svh, 220px\)/);
+  assert.match(liquid, /The pot visualises loose substrate, never packaged product photography/);
+});
+
 test('layer reordering preserves shares while slider balancing stays at 100 percent', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
   let Selector;
