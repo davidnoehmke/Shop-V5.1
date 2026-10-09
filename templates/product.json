@@ -2,18 +2,8 @@
   "sections": {
     "main": {
       "type": "leaferservice-product",
-      "blocks": {
-        "shipping": {
-          "type": "detail",
-          "settings": {
-            "heading": "Versand & Hinweise",
-            "text": "<p>Sorgfältig verpackt. Produktspezifische Pflege- und Anwendungshinweise findest du in der Beschreibung.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "shipping"
-      ],
+      "blocks": {},
+      "block_order": [],
       "settings": {
         "show_vendor": true
       }
@@ -38,41 +28,6 @@
       "type": "product-recipe",
       "settings": {}
     },
-    "trust_master": {
-      "type": "trust-bar",
-      "blocks": {
-        "shipping": {
-          "type": "benefit",
-          "settings": {
-            "icon": "small_batches",
-            "heading": "Versand & Lieferung",
-            "text": "Versandkosten und verfügbare Optionen werden vor Abschluss der Bestellung angezeigt."
-          }
-        },
-        "knowledge": {
-          "type": "benefit",
-          "settings": {
-            "icon": "natural",
-            "heading": "Nachvollziehbare Produktdaten",
-            "text": "Eigenschaften, Anwendung und Rezepturen transparent erklärt."
-          }
-        },
-        "support": {
-          "type": "benefit",
-          "settings": {
-            "icon": "versatile",
-            "heading": "Persönliche Hilfe",
-            "text": "Bei Fragen zu Mischung oder Anwendung kannst du Unterstützung anfragen."
-          }
-        }
-      },
-      "block_order": [
-        "shipping",
-        "knowledge",
-        "support"
-      ],
-      "settings": {}
-    },
     "component_signature": {
       "type": "leaf-component-signature",
       "settings": {}
@@ -85,7 +40,6 @@
     "component_signature",
     "recipe",
     "seo_details",
-    "cross_sell",
-    "trust_master"
+    "cross_sell"
   ]
 }

@@ -1,0 +1,61 @@
+{% comment %}
+  Native LEAFerservice video gallery.
+  Replaces the former Section Store app carousel so the homepage has no runtime app dependency.
+{% endcomment %}
+<section class="leaf-video-gallery section-{{ section.id }}">
+  <div class="page-width">
+    {% if section.settings.heading != blank %}
+      <div class="leaf-video-gallery__header">
+        {% if section.settings.eyebrow != blank %}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    {% endif %}
+    <div class="leaf-video-gallery__grid">
+      {% for block in section.blocks %}
+        {% if block.settings.video != blank %}
+          <div class="leaf-video-gallery__item" {{ block.shopify_attributes }}>
+            {{ block.settings.video | video_tag: controls: true, autoplay: false, loop: false, muted: false, playsinline: true, preload: 'metadata' }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% style %}
+  .section-{{ section.id }} { padding: 24px 0 42px; border-top: 1px solid rgba(23,23,23,.12); }
+  .section-{{ section.id }} .leaf-video-gallery__header { margin-bottom: 18px; }
+  .section-{{ section.id }} .leaf-video-gallery__header h2 { margin: 0; }
+  .section-{{ section.id }} .leaf-video-gallery__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
+  .section-{{ section.id }} .leaf-video-gallery__item { min-width: 0; background: #000; overflow: hidden; }
+  .section-{{ section.id }} video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; }
+  @media (max-width: 749px) {
+    .section-{{ section.id }} { padding: 20px 0 34px; }
+    .section-{{ section.id }} .leaf-video-gallery__grid { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding-bottom: 2px; }
+    .section-{{ section.id }} .leaf-video-gallery__grid::-webkit-scrollbar { display: none; }
+    .section-{{ section.id }} .leaf-video-gallery__item { flex: 0 0 72vw; max-width: 290px; scroll-snap-align: start; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "LEAF Video Gallery",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Aus LEAFerservice" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Pflanzen, Substrate & Setups in Bewegung" }
+  ],
+  "blocks": [
+    {
+      "type": "video",
+      "name": "Video",
+      "settings": [
+        { "type": "video", "id": "video", "label": "Video" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "LEAF Video Gallery" }]
+}
+{% endschema %}

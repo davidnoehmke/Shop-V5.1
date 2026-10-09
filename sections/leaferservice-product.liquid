@@ -119,6 +119,63 @@
         </div>
       {% endif %}
 
+      {% liquid
+        assign decision_function = leafer_primary_function | default: custom_use_case
+        assign decision_spec = ''
+        if lighting_power != blank
+          capture decision_spec
+            echo lighting_power
+            echo ' W'
+            if lighting_cct != blank
+              echo ' · '
+              echo lighting_cct
+              echo ' K'
+            endif
+            if lighting_mounting != blank
+              echo ' · '
+              echo lighting_mounting | strip_html | truncatewords: 6
+            endif
+          endcapture
+        elsif leafer_mixing_ratio != blank
+          assign decision_spec = leafer_mixing_ratio | strip_html | strip
+        elsif leafer_difficulty != blank
+          assign decision_spec = leafer_difficulty
+        endif
+      %}
+      {% if decision_function != blank or leafer_suitable_for != blank or decision_spec != blank %}
+        <aside class="ls-product__decision" aria-labelledby="ProductDecisionHeading-{{ section.id }}">
+          <div class="ls-product__decision-head">
+            <p>{{ 'product.decision_summary.eyebrow' | t }}</p>
+            <h2 id="ProductDecisionHeading-{{ section.id }}">{{ 'product.decision_summary.heading' | t }}</h2>
+          </div>
+          <div class="ls-product__decision-grid">
+            {% if decision_function != blank %}
+              <div class="ls-product__decision-item">
+                <span>{{ 'product.decision_summary.function' | t }}</span>
+                <strong>{{ decision_function | escape }}</strong>
+              </div>
+            {% endif %}
+            {% if leafer_suitable_for != blank %}
+              <div class="ls-product__decision-item">
+                <span>{{ 'product.decision_summary.fit' | t }}</span>
+                <strong>
+                  {% for item in leafer_suitable_for limit: 2 %}
+                    {{ item | escape }}{% unless forloop.last %} · {% endunless %}
+                  {% endfor %}
+                </strong>
+              </div>
+            {% endif %}
+            {% if decision_spec != blank %}
+              <div class="ls-product__decision-item">
+                <span>{{ 'product.decision_summary.spec' | t }}</span>
+                <strong>{{ decision_spec | strip | escape }}</strong>
+              </div>
+            {% endif %}
+          </div>
+          <p class="ls-product__decision-note">{{ 'product.decision_summary.note' | t }}</p>
+        </aside>
+      {% endif %}
+
       <div class="ls-product__purchase">
         <div class="ls-product__price" data-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
 
@@ -198,7 +255,7 @@
 .ls-product__media-item img{width:100%;height:100%;object-fit:contain;object-position:center}
 .ls-product__info{position:sticky;top:98px;min-width:0;padding-left:clamp(24px,3vw,52px);border-left:1px solid var(--ls-line)}
 .ls-product__eyebrow{margin:0 0 10px;text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:800;color:var(--ls-muted)}
-.ls-product__title{font-size:clamp(2.6rem,4.6vw,4.8rem);line-height:.96;margin:0 0 18px;font-weight:500;letter-spacing:-.05em;overflow-wrap:anywhere}
+.ls-product__title{font-size:clamp(1.8rem,3.2vw,2.75rem);line-height:1.2;margin:0 0 18px;font-weight:500;letter-spacing:-.025em;overflow-wrap:anywhere}
 .ls-product__subtitle{max-width:52ch;margin:-4px 0 18px;color:var(--ls-muted);font-size:1rem;line-height:1.6}
 .ls-product__knowledge{margin:0 0 18px}
 .ls-product__knowledge .leaf-atoms{margin:0}
@@ -222,14 +279,23 @@
 .ls-product__fact-tags span{padding:.3rem .45rem;border:1px solid var(--ls-line);background:rgba(255,255,255,.24);color:var(--ls-ink);font-size:.7rem}
 .ls-product__fact-panel--technical{grid-template-columns:repeat(2,minmax(0,1fr))}
 .ls-product__fact-panel--technical p{padding:.45rem 0;border-bottom:1px solid var(--ls-line)}
-.ls-product__purchase{margin-top:1.4rem;padding:1.35rem 0;border-block:1px solid var(--ls-line)}
-.ls-product__price{font-size:1.55rem;font-weight:760;margin-bottom:24px}
+.ls-product__decision{margin:1.15rem 0 0;border:1px solid var(--ls-line);background:rgba(255,255,255,.22)}
+.ls-product__decision-head{display:grid;grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:1rem;align-items:end;padding:1rem 1rem .85rem;border-bottom:1px solid var(--ls-line)}
+.ls-product__decision-head p{margin:0;color:var(--ls-accent);font-size:.68rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}
+.ls-product__decision-head h2{margin:0;font-size:clamp(1.2rem,2vw,1.55rem);line-height:1.05;letter-spacing:-.025em}
+.ls-product__decision-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--ls-line)}
+.ls-product__decision-item{min-width:0;min-height:82px;display:flex;flex-direction:column;justify-content:center;gap:.35rem;background:var(--ls-cream);padding:.8rem .9rem}
+.ls-product__decision-item span{color:var(--ls-muted);font-size:.66rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}
+.ls-product__decision-item strong{font-size:.8rem;line-height:1.4}
+.ls-product__decision-note{margin:0;padding:.75rem 1rem;color:var(--ls-muted);font-size:.74rem;line-height:1.5}
+.ls-product__purchase{margin-top:1.1rem;padding:1.15rem 0;border-block:1px solid var(--ls-line)}
+.ls-product__price{font-size:1.55rem;font-weight:760;margin-bottom:18px}
 .ls-product__price s{font-size:.75em;color:var(--ls-muted);margin-left:8px;font-weight:500}
 .ls-product__option{border:0;padding:0;margin:0 0 22px}
 .ls-product__option legend{font-weight:750;margin-bottom:10px}
 .ls-product__choices{display:flex;flex-wrap:wrap;gap:7px}
 .ls-product__choice input{position:absolute;opacity:0;pointer-events:none}
-.ls-product__choice span{display:block;border:1px solid var(--ls-line);padding:10px 14px;cursor:pointer;background:rgba(255,255,255,.22);font-size:.8rem;font-weight:700}
+.ls-product__choice span{min-height:48px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ls-line);padding:10px 14px;cursor:pointer;background:rgba(255,255,255,.22);font-size:.8rem;font-weight:700;text-align:center}
 .ls-product__choice input:checked+span{background:var(--ls-ink);color:var(--ls-cream);border-color:var(--ls-ink)}
 .ls-product__choice input:focus-visible+span{outline:3px solid #9fbca6;outline-offset:3px}
 .ls-product__buy-row{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;margin-top:8px}
@@ -247,8 +313,9 @@
 .ls-product__details details{border-bottom:1px solid var(--ls-line);padding:16px 0}
 .ls-product__details summary{cursor:pointer;font-weight:700}
 .ls-product__details details>div{padding-top:12px;color:var(--ls-muted)}
-@media(max-width:980px){.ls-product__grid{grid-template-columns:1fr;gap:32px}.ls-product__media-item:first-child{max-height:520px}.ls-product__info{position:static;padding-left:0;border-left:0}.ls-product__title{font-size:clamp(2.4rem,7vw,4rem)}}
-@media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:12px}.ls-product__fact-deck{grid-template-columns:1fr}.ls-product__fact[open]{grid-column:auto}.ls-product__fact summary{min-height:58px}.ls-product__fact-panel--technical{grid-template-columns:1fr}.ls-product__grid{gap:26px;padding-left:16px;padding-right:16px}.ls-product__media{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -16px;padding:0 16px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 min(66vw,280px);aspect-ratio:1/1;max-height:min(46vh,280px);padding:.35rem;scroll-snap-align:center}.ls-product__title{font-size:2.25rem}.ls-product__usp-list{grid-template-columns:1fr}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:0;bottom:0;left:0;padding:9px 12px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--ls-line);background:rgba(244,240,230,.97);box-shadow:0 -12px 32px rgba(23,61,43,.12);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-height:46px;padding:0 14px;border-radius:0}}
+@media(max-width:980px){.ls-product__grid{grid-template-columns:1fr;gap:32px}.ls-product__media-item:first-child{max-height:520px}.ls-product__info{position:static;padding-left:0;border-left:0}.ls-product__title{font-size:clamp(1.8rem,3.2vw,2.75rem)}}
+@media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:10px}.ls-product__fact-deck{grid-template-columns:1fr}.ls-product__decision-head{grid-template-columns:1fr;gap:.35rem}.ls-product__decision-grid{grid-template-columns:1fr}.ls-product__decision-item{min-height:0}.ls-product__fact[open]{grid-column:auto}.ls-product__fact summary{min-height:58px}.ls-product__fact-panel--technical{grid-template-columns:1fr}.ls-product__grid{gap:22px;padding-left:14px;padding-right:14px}.ls-product__media{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -14px;padding:0 14px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 min(58vw,240px);aspect-ratio:1/1;max-height:min(38vh,240px);padding:.3rem;scroll-snap-align:center}.ls-product__title{font-size:clamp(1.8rem,3.2vw,2.75rem)}.ls-product__usp-list{grid-template-columns:1fr}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:0;bottom:0;left:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--ls-line);background:rgba(244,240,230,.97);box-shadow:0 -12px 32px rgba(23,61,43,.12);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-width:132px;min-height:50px;padding:0 16px;border-radius:0;font-size:.88rem}}
+@media(max-width:390px){.ls-product__mobile-buy{grid-template-columns:minmax(0,.8fr) minmax(142px,1.2fr)}.ls-product__mobile-buy span{display:none}.ls-product__mobile-buy strong{font-size:.82rem}.ls-product__mobile-buy button{width:100%;min-width:0}.ls-product__choice span{padding:9px 11px;font-size:.76rem}}
 @media(prefers-reduced-motion:reduce){.ls-product__media{scroll-behavior:auto}}
 {% endstyle %}
 

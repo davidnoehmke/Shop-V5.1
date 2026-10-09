@@ -1,0 +1,322 @@
+{% liquid
+  assign hero_product = blank
+  for product in collection.products
+    if product.vendor contains 'Venso' and product.featured_image != blank
+      assign hero_product = product
+      break
+    endif
+  endfor
+  if hero_product == blank
+    assign hero_product = collection.products.first
+  endif
+%}
+
+{% if collection.handle == 'pflanzenbeleuchtung' %}
+<section class="led-hub page-width" data-led-hub>
+  <header class="led-hub__hero">
+    <div class="led-hub__copy">
+      <p class="led-hub__eyebrow">{{ 'led_collection.eyebrow' | t }}</p>
+      <h1>{{ 'led_collection.heading' | t }}</h1>
+      <p class="led-hub__lead">{% if request.locale.iso_code == 'de' and collection.metafields.leafer.intro.value != blank %}{{ collection.metafields.leafer.intro.value | escape }}{% else %}{{ 'led_collection.intro' | t }}{% endif %}</p>
+
+      <details class="led-hub__info">
+        <summary><span aria-hidden="true">ⓘ</span>{{ 'led_collection.more_info' | t }}</summary>
+        <div>
+          <p>{% if request.locale.iso_code == 'de' and collection.metafields.leafer.expert_intro.value != blank %}{{ collection.metafields.leafer.expert_intro.value | escape }}{% else %}{{ 'led_collection.more_info_text' | t }}{% endif %}</p>
+          {% if collection.metafields.leafer.guide.value != blank %}
+            <p>{% if request.locale.iso_code == 'de' %}{{ collection.metafields.leafer.guide.value | escape }}{% else %}{{ 'led_collection.more_info_text' | t }}{% endif %}</p>
+          {% endif %}
+        </div>
+      </details>
+
+      <div class="led-hub__actions">
+        <a class="button" href="#LedFinder-{{ section.id }}">{{ 'led_collection.start_finder' | t }}</a>
+        <a class="button button--secondary" href="#CollectionProducts">{{ 'led_collection.view_all' | t }}</a>
+      </div>
+
+      <div class="led-hub__signals">
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'light' %}<b>{{ 'led_collection.signal_verified' | t }}</b></span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'room' %}<b>{{ 'led_collection.signal_room' | t }}</b></span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'care' %}<b>{{ 'led_collection.signal_distance' | t }}</b></span>
+      </div>
+    </div>
+
+    <div class="led-hub__hero-media">
+      {% if hero_product != blank and hero_product.featured_image != blank %}
+        {{ hero_product.featured_image | image_url: width: 1200 | image_tag: widths: '480,720,960,1200', sizes: '(min-width: 900px) 42vw, 92vw', loading: 'eager', fetchpriority: 'high', alt: hero_product.featured_image.alt | default: hero_product.title }}
+      {% endif %}
+      {% if hero_product != blank %}
+        <div class="led-hub__hero-caption"><span>{{ 'led_collection.visual_note' | t }}</span><strong>{{ hero_product.title | escape }}</strong></div>
+      {% endif %}
+    </div>
+  </header>
+
+  <section class="led-hub__finder" id="LedFinder" aria-labelledby="LedFinderHeading-{{ section.id }}">
+    <header class="led-hub__section-head">
+      <p class="led-hub__eyebrow">{{ 'led_collection.finder_eyebrow' | t }}</p>
+      <h2 id="LedFinderHeading-{{ section.id }}">{{ 'led_collection.finder_heading' | t }}</h2>
+      <p>{{ 'led_collection.finder_intro' | t }}</p>
+    </header>
+
+    <div class="led-hub__choices" role="group" aria-label="{{ 'led_collection.finder_aria' | t }}">
+      {% assign filter_keys = 'all,single,e27,shelf,large,winter' | split: ',' %}
+      {% for filter_key in filter_keys %}
+        <button type="button" class="led-hub__choice{% if forloop.first %} is-active{% endif %}" data-led-filter="{{ filter_key }}">
+          <span>{% if filter_key == 'shelf' %}{% render 'leaf-knowledge-icon', icon_key: 'layers' %}{% elsif filter_key == 'large' %}{% render 'leaf-knowledge-icon', icon_key: 'room' %}{% elsif filter_key == 'single' %}{% render 'leaf-knowledge-icon', icon_key: 'pot' %}{% else %}{% render 'leaf-knowledge-icon', icon_key: 'light' %}{% endif %}</span>
+          <strong>{{ 'led_collection.choice_' | append: filter_key | t }}</strong>
+          <small>{{ 'led_collection.choice_' | append: filter_key | append: '_help' | t }}</small>
+        </button>
+      {% endfor %}
+    </div>
+
+    <div class="led-hub__results">
+      {% for product in collection.products %}
+        {% liquid
+          assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
+          assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+          assign mounting = product.metafields.lighting.mounting.value | default: product.metafields.lighting.socket_connector.value
+          assign distance = product.metafields.lighting.recommended_distance.value
+          assign use_cases = product.metafields.lighting.use_cases.value
+          assign suitable_for = product.metafields.leafer.suitable_for.value
+          capture search_blob
+            echo product.title
+            echo ' '
+            echo product.type
+            echo ' '
+            echo product.tags
+            echo ' '
+            echo use_cases
+            echo ' '
+            echo suitable_for
+            echo ' '
+            echo mounting
+          endcapture
+          assign search_blob = search_blob | downcase
+          assign is_accessory = false
+          if product.type contains 'Zubehör' or product.type contains 'Ständer' or product.type contains 'Halterung' or product.title contains 'Controller' or product.title contains 'Netzteil'
+            assign is_accessory = true
+          endif
+          assign is_led = false
+          if is_accessory == false
+            if product.type contains 'LED-Pflanzen' or product.type contains 'Pflanzenleuchten-Set' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
+              assign is_led = true
+            endif
+          endif
+          assign approved_maker = false
+          if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
+            assign approved_maker = true
+          endif
+        %}
+        {% if is_led and approved_maker %}
+          <article class="led-hub__card" data-led-card data-search="{{ search_blob | escape }}" data-watts="{{ watts }}">
+            <a class="led-hub__media" href="{{ product.url }}">
+              {% if product.featured_image != blank %}
+                {{ product.featured_image | image_url: width: 760, height: 760, crop: 'center' | image_tag: loading: 'lazy', widths: '320,480,640,760', sizes: '(max-width: 749px) 72vw, 30vw', alt: product.featured_image.alt | default: product.title }}
+              {% endif %}
+            </a>
+            <div class="led-hub__card-body">
+              <div class="led-hub__meta"><span>{{ maker | escape }}</span><span>{{ product.price | money }}</span></div>
+              <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+              {% if product.metafields.leafer.primary_function.value != blank %}
+                <p>{{ product.metafields.leafer.primary_function.value | escape }}</p>
+              {% endif %}
+              <dl>
+                {% if watts > 0 %}<div><dt>{{ 'led_collection.power' | t }}</dt><dd>{{ watts }} W</dd></div>{% endif %}
+                {% if mounting != blank %}<div><dt>{{ 'led_collection.mounting' | t }}</dt><dd>{{ mounting | escape | truncatewords: 12 }}</dd></div>{% endif %}
+                {% if distance != blank %}<div><dt>{{ 'led_collection.distance' | t }}</dt><dd>{{ distance | escape | truncatewords: 12 }}</dd></div>{% endif %}
+              </dl>
+              <a class="led-hub__link" href="{{ product.url }}">{{ 'led_collection.product_details' | t }} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <p class="led-hub__empty" data-led-empty hidden>{{ 'led_collection.no_match' | t }}</p>
+  </section>
+
+  <section class="led-hub__compare" aria-labelledby="LedCompareHeading-{{ section.id }}">
+    <header class="led-hub__section-head">
+      <p class="led-hub__eyebrow">{{ 'led_collection.compare_eyebrow' | t }}</p>
+      <h2 id="LedCompareHeading-{{ section.id }}">{{ 'led_collection.compare_heading' | t }}</h2>
+      <p>{{ 'led_collection.compare_intro' | t }}</p>
+    </header>
+    <div class="led-hub__table-wrap" tabindex="0" role="region" aria-label="{{ 'led_collection.compare_table_aria' | t }}">
+      <table class="led-hub__table">
+        <thead><tr>
+          <th>{{ 'led_collection.table_product' | t }}</th>
+          <th>{{ 'led_collection.table_best_for' | t }}</th>
+          <th>{{ 'led_collection.table_power' | t }}</th>
+          <th>{{ 'led_collection.table_mounting' | t }}</th>
+          <th>{{ 'led_collection.table_distance' | t }}</th>
+          <th>{{ 'led_collection.table_price' | t }}</th>
+        </tr></thead>
+        <tbody>
+          {% assign venso_compare = 0 %}
+          {% assign neusius_compare = 0 %}
+          {% assign soltech_compare = 0 %}
+          {% for product in collection.products %}
+            {% liquid
+              assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
+              assign is_accessory = false
+              if product.type contains 'Zubehör' or product.type contains 'Ständer' or product.type contains 'Halterung' or product.title contains 'Controller' or product.title contains 'Netzteil'
+                assign is_accessory = true
+              endif
+              assign is_led = false
+              if is_accessory == false
+                if product.type contains 'LED-Pflanzen' or product.type contains 'Pflanzenleuchten-Set' or product.tags contains 'Pflanzenlicht' or product.tags contains 'Pflanzenbeleuchtung'
+                  assign is_led = true
+                endif
+              endif
+              assign approved_maker = false
+              if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
+                assign approved_maker = true
+              endif
+            %}
+            {% assign show_compare = false %}
+            {% if is_led and approved_maker %}
+              {% if maker contains 'Venso' and venso_compare < 3 %}
+                {% assign show_compare = true %}
+                {% assign venso_compare = venso_compare | plus: 1 %}
+              {% elsif maker contains 'NEUSIUS' or maker contains 'Neusius' %}
+                {% if neusius_compare < 3 %}
+                  {% assign show_compare = true %}
+                  {% assign neusius_compare = neusius_compare | plus: 1 %}
+                {% endif %}
+              {% elsif maker contains 'Soltech' and soltech_compare < 3 %}
+                {% assign show_compare = true %}
+                {% assign soltech_compare = soltech_compare | plus: 1 %}
+              {% endif %}
+            {% endif %}
+            {% if show_compare %}
+              {% assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0 %}
+              {% assign mounting = product.metafields.lighting.mounting.value | default: product.metafields.lighting.socket_connector.value %}
+              {% assign distance = product.metafields.lighting.recommended_distance.value %}
+              {% assign suitable_for = product.metafields.leafer.suitable_for.value %}
+              <tr>
+                <th scope="row"><a href="{{ product.url }}">{{ product.title }}</a><small>{{ maker | escape }}</small></th>
+                <td>{% if suitable_for != blank %}{{ suitable_for | join: ', ' | escape }}{% else %}{{ product.metafields.leafer.primary_function.value | escape }}{% endif %}</td>
+                <td>{% if watts > 0 %}{{ watts }} W{% else %}—{% endif %}</td>
+                <td>{{ mounting | default: '—' | escape }}</td>
+                <td>{{ distance | default: '—' | escape }}</td>
+                <td>{{ product.price | money }}</td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="led-hub__note">{{ 'led_collection.table_note' | t }}</p>
+  </section>
+
+  <section class="led-hub__decision" aria-labelledby="LedDecisionHeading-{{ section.id }}">
+    <header class="led-hub__section-head">
+      <p class="led-hub__eyebrow">{{ 'led_collection.decision_eyebrow' | t }}</p>
+      <h2 id="LedDecisionHeading-{{ section.id }}">{{ 'led_collection.decision_heading' | t }}</h2>
+    </header>
+    <div class="led-hub__decision-grid">
+      {% assign types = 'e27,t8,integrated,high_power' | split: ',' %}
+      {% for type in types %}
+        <article>
+          <span>{% if type == 't8' %}{% render 'leaf-knowledge-icon', icon_key: 'layers' %}{% elsif type == 'integrated' %}{% render 'leaf-knowledge-icon', icon_key: 'pot' %}{% elsif type == 'high_power' %}{% render 'leaf-knowledge-icon', icon_key: 'room' %}{% else %}{% render 'leaf-knowledge-icon', icon_key: 'light' %}{% endif %}</span>
+          <h3>{{ 'led_collection.' | append: type | append: '_title' | t }}</h3>
+          <p>{{ 'led_collection.' | append: type | append: '_text' | t }}</p>
+          <div class="led-hub__pc"><b>+</b><span>{{ 'led_collection.' | append: type | append: '_pro' | t }}</span></div>
+          <div class="led-hub__pc"><b>−</b><span>{{ 'led_collection.' | append: type | append: '_con' | t }}</span></div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="led-hub__knowledge" aria-labelledby="LedKnowledgeHeading-{{ section.id }}">
+    <header class="led-hub__section-head">
+      <p class="led-hub__eyebrow">{{ 'led_collection.knowledge_eyebrow' | t }}</p>
+      <h2 id="LedKnowledgeHeading-{{ section.id }}">{{ 'led_collection.knowledge_heading' | t }}</h2>
+      <p>{{ 'led_collection.knowledge_intro' | t }}</p>
+    </header>
+    <div class="led-hub__knowledge-list">
+      {% assign topics = 'watt,distance,spectrum,area' | split: ',' %}
+      {% for topic in topics %}
+        <details{% if forloop.first %} open{% endif %}>
+          <summary><span>{% render 'leaf-knowledge-icon', icon_key: 'light' %}</span><strong>{{ 'led_collection.knowledge_' | append: topic | append: '_title' | t }}</strong><i aria-hidden="true">+</i></summary>
+          <p>{{ 'led_collection.knowledge_' | append: topic | append: '_text' | t }}</p>
+        </details>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="led-hub__tips" aria-labelledby="LedTipsHeading-{{ section.id }}">
+    <header class="led-hub__section-head">
+      <p class="led-hub__eyebrow">{{ 'led_collection.tips_eyebrow' | t }}</p>
+      <h2 id="LedTipsHeading-{{ section.id }}">{{ 'led_collection.tips_heading' | t }}</h2>
+    </header>
+    <ol>
+      {% for n in (1..4) %}
+        <li><strong>0{{ n }}</strong><span>{{ 'led_collection.tip_' | append: n | t }}</span></li>
+      {% endfor %}
+    </ol>
+  </section>
+</section>
+
+<script>
+(() => {
+  const root = document.querySelector('[data-led-hub]');
+  if (!root) return;
+  const buttons = [...root.querySelectorAll('[data-led-filter]')];
+  const cards = [...root.querySelectorAll('[data-led-card]')];
+  const empty = root.querySelector('[data-led-empty]');
+  const matches = (card, filter) => {
+    if (filter === 'all') return true;
+    const text = (card.dataset.search || '').toLowerCase();
+    const watts = Number(card.dataset.watts || 0);
+    if (filter === 'single') return /einzel|topfpflanze|zimmerpflanze|solitär|sunlite/.test(text);
+    if (filter === 'e27') return text.includes('e27');
+    if (filter === 'shelf') return /regal|t8|röhre|leiste|linear|60cm|120cm/.test(text);
+    if (filter === 'large') return watts >= 25 || /große|gross|wall|floris|150w|pflanzenwand/.test(text);
+    if (filter === 'winter') return /überwinter|winter|mediterran|zitrus/.test(text);
+    return true;
+  };
+  const apply = (filter) => {
+    let visible = 0;
+    cards.forEach((card) => {
+      const matchesFilter = matches(card, filter);
+      const show = matchesFilter && visible < 6;
+      card.hidden = !show;
+      if (show) visible += 1;
+    });
+    buttons.forEach((button) => button.classList.toggle('is-active', button.dataset.ledFilter === filter));
+    if (empty) empty.hidden = visible !== 0;
+  };
+  buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.ledFilter || 'all')));
+  const requested = new URLSearchParams(window.location.search).get('led_use');
+  if (['single', 'shelf', 'large', 'winter'].includes(requested)) apply(requested);
+})();
+</script>
+{% endif %}
+
+{% stylesheet %}
+.led-hub{padding-block:1rem clamp(3rem,7vw,7rem)}
+.led-hub__hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);gap:clamp(2rem,6vw,6rem);align-items:center;padding:clamp(1.5rem,4vw,4rem) 0 clamp(2.5rem,5vw,5rem);border-bottom:1px solid var(--border)}
+.led-hub__eyebrow{margin:0 0 .6rem;color:var(--accent);font-size:.72rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.led-hub h1{margin:0;max-width:14ch;font-size:clamp(2rem,5vw,4.5rem);line-height:1.02;letter-spacing:-.045em}
+.led-hub__lead{max-width:64ch;margin:1.2rem 0 0;color:var(--muted);font-size:clamp(1rem,1.7vw,1.25rem);line-height:1.65}
+.led-hub__info{display:none;margin-top:1rem;border:1px solid var(--border);background:var(--surface)}
+.led-hub__info summary{min-height:48px;display:flex;gap:.55rem;align-items:center;padding:.75rem .9rem;cursor:pointer;font-weight:800;list-style:none}.led-hub__info summary::-webkit-details-marker{display:none}.led-hub__info>div{padding:0 .9rem .9rem;color:var(--muted);line-height:1.6}
+.led-hub__actions{display:flex;flex-wrap:wrap;gap:.7rem;margin-top:1.3rem}.led-hub__actions .button{min-height:46px}
+.led-hub__signals{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:1.3rem}.led-hub__signals span{min-height:56px;display:flex;align-items:center;gap:.6rem;padding:.7rem;border:1px solid var(--border);background:var(--surface);font-size:.75rem}.led-hub__signals svg,.led-hub__choice svg,.led-hub__decision-grid svg,.led-hub__knowledge-list svg{width:22px;fill:none;stroke:var(--accent);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.led-hub__hero-media{position:relative;min-height:420px;display:grid;place-items:center;border:1px solid var(--border);background:linear-gradient(145deg,var(--surface),var(--background));overflow:hidden}.led-hub__hero-media img{width:100%;height:100%;max-height:540px;object-fit:contain;padding:1rem}.led-hub__hero-caption{position:absolute;left:1rem;right:1rem;bottom:1rem;display:flex;justify-content:space-between;gap:1rem;padding:.7rem .8rem;background:color-mix(in srgb,var(--background),transparent 8%);backdrop-filter:blur(8px);font-size:.72rem}.led-hub__hero-caption span{color:var(--muted)}
+.led-hub__finder,.led-hub__compare,.led-hub__decision,.led-hub__knowledge,.led-hub__tips{padding-top:clamp(3rem,7vw,7rem)}
+.led-hub__section-head{max-width:820px;margin-bottom:1.4rem}.led-hub__section-head h2{margin:0;font-size:clamp(1.55rem,3vw,2.7rem);line-height:1.12;letter-spacing:-.035em}.led-hub__section-head>p:last-child{color:var(--muted);line-height:1.65}
+.led-hub__choices{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:.5rem;margin-bottom:1.25rem}.led-hub__choice{min-height:116px;display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;padding:.8rem;border:1px solid var(--border);background:var(--surface);color:var(--text);text-align:left;cursor:pointer}.led-hub__choice:hover,.led-hub__choice:focus-visible,.led-hub__choice.is-active{border-color:var(--accent);background:color-mix(in srgb,var(--accent),transparent 93%)}.led-hub__choice span{width:28px;height:28px;display:grid;place-items:center}.led-hub__choice small{color:var(--muted);line-height:1.35}
+.led-hub__results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.led-hub__card{border:1px solid var(--border);background:var(--surface);display:flex;flex-direction:column}.led-hub__card[hidden]{display:none}.led-hub__media{aspect-ratio:1;display:grid;place-items:center;background:var(--background)}.led-hub__media img{width:100%;height:100%;object-fit:contain;padding:.7rem}.led-hub__card-body{display:flex;flex-direction:column;gap:.5rem;padding:1rem;height:100%}.led-hub__meta{display:flex;justify-content:space-between;gap:1rem;color:var(--muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase}.led-hub__card h3{margin:0;font-size:1.08rem;line-height:1.25}.led-hub__card h3 a{color:inherit;text-decoration:none}.led-hub__card p{margin:0;color:var(--muted);font-size:.84rem;line-height:1.5}.led-hub__card dl{display:grid;grid-template-columns:1fr 1fr;margin:.3rem 0 0;border-top:1px solid var(--border)}.led-hub__card dl div{padding:.5rem 0;border-bottom:1px solid var(--border)}.led-hub__card dt{font-size:.61rem;color:var(--muted);font-weight:800;text-transform:uppercase}.led-hub__card dd{margin:.15rem 0 0;font-size:.78rem;line-height:1.35}.led-hub__link{margin-top:auto;color:var(--accent);font-size:.8rem;font-weight:800;text-decoration:none}
+.led-hub__table-wrap{overflow:auto;border:1px solid var(--border);background:var(--surface)}.led-hub__table{width:100%;min-width:980px;border-collapse:collapse;font-size:.8rem}.led-hub__table th,.led-hub__table td{padding:.75rem .8rem;border-bottom:1px solid var(--border);vertical-align:top;text-align:left}.led-hub__table thead th{font-size:.66rem;text-transform:uppercase;letter-spacing:.07em}.led-hub__table tbody th{min-width:220px}.led-hub__table tbody th a{display:block;color:inherit;text-decoration:none}.led-hub__table tbody th small{display:block;margin-top:.2rem;color:var(--muted);font-weight:500}.led-hub__note{color:var(--muted);font-size:.74rem}
+.led-hub__decision-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}.led-hub__decision-grid article{padding:1rem;border:1px solid var(--border);background:var(--surface)}.led-hub__decision-grid article>span{width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--border)}.led-hub__decision-grid h3{margin:.85rem 0 .45rem;font-size:1rem}.led-hub__decision-grid p{color:var(--muted);font-size:.82rem;line-height:1.5}.led-hub__pc{display:grid;grid-template-columns:22px 1fr;gap:.45rem;padding:.45rem 0;border-top:1px solid var(--border);font-size:.76rem;line-height:1.4}.led-hub__pc b{color:var(--accent)}
+.led-hub__knowledge-list{display:grid;grid-template-columns:1fr 1fr;gap:.55rem}.led-hub__knowledge-list details{border:1px solid var(--border);background:var(--surface)}.led-hub__knowledge-list summary{min-height:62px;display:grid;grid-template-columns:34px 1fr 28px;gap:.55rem;align-items:center;padding:.7rem .85rem;cursor:pointer;list-style:none}.led-hub__knowledge-list summary::-webkit-details-marker{display:none}.led-hub__knowledge-list i{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--border);font-style:normal}.led-hub__knowledge-list details[open] i{transform:rotate(45deg);background:var(--accent);color:#fff}.led-hub__knowledge-list p{margin:0;padding:0 .85rem .9rem 4rem;color:var(--muted);line-height:1.6}
+.led-hub__tips ol{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;padding:0;margin:0;list-style:none}.led-hub__tips li{display:grid;gap:.6rem;padding:1rem;border-top:3px solid var(--accent);background:var(--surface)}.led-hub__tips li strong{font-size:.7rem;color:var(--accent)}.led-hub__tips li span{font-size:.82rem;line-height:1.5}
+@media(max-width:1080px){.led-hub__choices{grid-template-columns:repeat(3,1fr)}.led-hub__decision-grid,.led-hub__tips ol{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.led-hub__hero{grid-template-columns:1fr}.led-hub__results{grid-template-columns:repeat(2,1fr)}.led-hub__knowledge-list{grid-template-columns:1fr}}
+@media(max-width:749px){.led-hub__hero{gap:1rem;padding-top:.6rem}.led-hub h1{font-size:clamp(2rem,11vw,3.2rem)}.led-hub__info{display:block}.led-hub__signals{grid-template-columns:1fr}.led-hub__hero-media{min-height:290px}.led-hub__choices{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.25rem}.led-hub__choice{min-width:150px;scroll-snap-align:start}.led-hub__results,.led-hub__decision-grid,.led-hub__tips ol{grid-template-columns:1fr}.led-hub__media{width:min(74vw,280px);margin:auto}.led-hub__knowledge-list p{padding-left:.85rem}.led-hub__actions .button{flex:1 1 100%}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"LED Kollektions-Landingpage","settings":[],"presets":[{"name":"LED Kollektions-Landingpage"}]}
+{% endschema %}

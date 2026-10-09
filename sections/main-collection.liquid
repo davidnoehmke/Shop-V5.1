@@ -39,6 +39,7 @@
 %}
 
 <section class="main-collection page-width">
+  {% unless section.settings.hide_hero or collection.handle == 'pflanzenbeleuchtung' %}
   <header class="main-collection__hero">
     <div class="main-collection__hero-copy">
       <p class="main-collection__eyebrow">
@@ -92,8 +93,22 @@
       </div>
     </div>
   </header>
+  {% endunless %}
+
+  {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
   {% if collection.handle == 'interieur-solutions' %}
+    {% assign interior_guide = articles['leafers-nice2know-blog/interieur-begruenung-led-gefaess-substrat-pflanzen'] %}
+    {% if interior_guide != blank %}
+      <p class="main-collection__intro"><a href="{{ interior_guide.url }}">{{ 'interior_guide.read' | t }}</a></p>
+    {% endif %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_builder_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_builder_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_builder_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
     <interieur-room-builder
       class="interieur-room-builder"
       data-cart-add-url="{{ routes.cart_add_url | append: '.js' }}"
@@ -243,9 +258,18 @@
         </div>
       </section>
     </interieur-room-builder>
+      </div>
+    </details>
   {% endif %}
 
   {% if collection.handle == 'interieur-solutions' %}
+    <details class="main-collection__advanced">
+      <summary>
+        <span>{{ 'collection.interieur.advanced_configurator_eyebrow' | t }}</span>
+        <strong>{{ 'collection.interieur.advanced_configurator_title' | t }}</strong>
+        <small>{{ 'collection.interieur.advanced_configurator_text' | t }}</small>
+      </summary>
+      <div class="main-collection__advanced-body">
     <interieur-solutions-configurator
     class="interieur-configurator"
     data-result-one="{{ 'collection.interieur.result_one' | t | escape }}"
@@ -388,6 +412,8 @@
       </div>
     </section>
   </interieur-solutions-configurator>
+      </div>
+    </details>
   {% endif %}
 
   <div{% if collection.handle == 'interieur-solutions' %} id="InterieurCatalog"{% endif %} class="main-collection__catalog{% if has_type_filters %} main-collection__catalog--filtered{% endif %}">
@@ -432,6 +458,30 @@
     {% endif %}
 
     <div class="main-collection__results">
+      <section class="main-collection__decision" aria-labelledby="CollectionDecisionHeading-{{ section.id }}">
+        <div class="main-collection__decision-head">
+          <p>{{ 'collection.decision.eyebrow' | t }}</p>
+          <h2 id="CollectionDecisionHeading-{{ section.id }}">{{ 'collection.decision.heading' | t }}</h2>
+        </div>
+        <div class="main-collection__decision-steps">
+          <div>
+            <span aria-hidden="true">01</span>
+            <strong>{{ 'collection.decision.use_title' | t }}</strong>
+            <p>{{ 'collection.decision.use_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">02</span>
+            <strong>{{ 'collection.decision.data_title' | t }}</strong>
+            <p>{{ 'collection.decision.data_text' | t }}</p>
+          </div>
+          <div>
+            <span aria-hidden="true">03</span>
+            <strong>{{ 'collection.decision.choose_title' | t }}</strong>
+            <p>{{ 'collection.decision.choose_text' | t }}</p>
+          </div>
+        </div>
+      </section>
+
       <div class="main-collection__tools">
         {% if has_type_filters %}
           <div class="main-collection__active-context" data-filter-context aria-live="polite">
@@ -453,6 +503,7 @@
       </div>
 
       {% paginate collection.products by 48 %}
+        {% if collection.handle == 'pflanzenbeleuchtung' %}<span id="CollectionProducts" class="visually-hidden" aria-hidden="true"></span>{% endif %}
         <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
           {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
         </div>
@@ -469,7 +520,7 @@
   .main-collection__eyebrow { display: inline-flex; align-items: center; gap: .55rem; margin: 0 0 1rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .main-collection__eyebrow-icon { width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); }
   .main-collection__eyebrow-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-  .main-collection h1 { max-width: 14ch; margin: 0; font-size: clamp(3rem, 5.4vw, 5.6rem); line-height: .94; letter-spacing: -.065em; overflow-wrap: anywhere; }
+  .main-collection h1 { max-width: 28ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; overflow-wrap: anywhere; }
   .main-collection__intro { max-width: 62ch; margin: 1.25rem 0 0; color: var(--muted); font-size: clamp(1rem, 1.35vw, 1.15rem); line-height: 1.65; }
   .main-collection__knowledge { max-width: 760px; margin-top: 1.25rem; }
   .main-collection__knowledge .leaf-atoms { margin: 0; }
@@ -504,7 +555,26 @@
   .main-collection__filter-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__filters button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
   .main-collection__filters button[aria-pressed="true"] .main-collection__filter-icon { border-color: color-mix(in srgb, white, transparent 55%); }
+  .main-collection__advanced { margin: 1rem 0; border: 1px solid var(--border); background: var(--background); }
+  .main-collection__advanced > summary { list-style: none; display: grid; grid-template-columns: minmax(120px,.35fr) minmax(0,.65fr) auto; gap: .25rem 1rem; align-items: center; min-height: 72px; padding: .9rem 1rem; cursor: pointer; }
+  .main-collection__advanced > summary::-webkit-details-marker { display: none; }
+  .main-collection__advanced > summary::after { content: '+'; grid-column: 3; grid-row: 1 / span 2; font-size: 1.3rem; color: var(--accent); }
+  .main-collection__advanced[open] > summary::after { content: '−'; }
+  .main-collection__advanced > summary span { color: var(--accent); font-size: .66rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
+  .main-collection__advanced > summary strong { font-size: .88rem; }
+  .main-collection__advanced > summary small { grid-column: 2; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .main-collection__advanced-body { border-top: 1px solid var(--border); }
+  .main-collection__advanced-body > * { margin-top: 0; }
   .main-collection__results { min-width: 0; }
+  .main-collection__decision { margin-bottom: 1.2rem; border: 1px solid var(--border); background: color-mix(in srgb, var(--surface), var(--background) 35%); }
+  .main-collection__decision-head { display: grid; grid-template-columns: minmax(150px,.45fr) minmax(0,1.55fr); gap: 1rem; align-items: end; padding: 1rem 1.1rem .9rem; border-bottom: 1px solid var(--border); }
+  .main-collection__decision-head p { margin: 0; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-collection__decision-head h2 { margin: 0; font-size: clamp(1.35rem, 2.2vw, 1.9rem); line-height: 1.05; letter-spacing: -.03em; }
+  .main-collection__decision-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1px; background: var(--border); }
+  .main-collection__decision-steps > div { min-width: 0; min-height: 118px; display: grid; grid-template-columns: 34px minmax(0,1fr); align-content: center; gap: .25rem .65rem; padding: .9rem 1rem; background: var(--background); }
+  .main-collection__decision-steps > div > span { grid-row: 1 / span 2; width: 30px; height: 30px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .65rem; font-weight: 850; }
+  .main-collection__decision-steps strong { font-size: .78rem; }
+  .main-collection__decision-steps p { margin: 0; color: var(--muted); font-size: .72rem; line-height: 1.45; }
   .main-collection__tools { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1.2rem; padding-block: .8rem; border-block: 1px solid var(--border); }
   .main-collection__sort { display: flex; align-items: center; gap: .7rem; margin-left: auto; }
   .main-collection__sort label { font-size: .75rem; font-weight: 800; }
@@ -532,15 +602,24 @@
     .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 900px) {
+    .main-collection__advanced > summary { grid-template-columns: 1fr auto; gap: .2rem .7rem; }
+    .main-collection__advanced > summary span, .main-collection__advanced > summary strong, .main-collection__advanced > summary small { grid-column: 1; }
+    .main-collection__advanced > summary::after { grid-column: 2; grid-row: 1 / span 3; }
+    .main-collection__decision-head { grid-template-columns: 1fr; gap: .35rem; }
+    .main-collection__decision-steps { grid-template-columns: 1fr; }
+    .main-collection__decision-steps > div { min-height: 0; }
     .main-collection__hero { grid-template-columns: 1fr; }
     .main-collection__hero-copy { padding-bottom: 0; }
     .main-collection__hero-media { aspect-ratio: 16 / 9; max-height: 280px; }
     .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
-    .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.7rem; }
   }
   @media (max-width: 620px) {
-    .main-collection { padding-top: .8rem; }
-    .main-collection h1 { font-size: clamp(2.6rem, 13vw, 4.2rem); line-height: .94; }
+    .main-collection { padding-top: .6rem; }
+    .main-collection__sidebar { position: sticky; z-index: 12; top: 64px; margin-inline: -.55rem; padding: .55rem .55rem .65rem; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 2%); backdrop-filter: blur(12px); }
+    .main-collection__filters { scrollbar-width:none; }
+    .main-collection__filters::-webkit-scrollbar { display:none; }
+    .main-collection h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; overflow-wrap: normal; word-break: normal; hyphens: auto; }
     .main-collection__intro { font-size: .95rem; }
     .main-collection__signals { display: none; }
     .main-collection__hero-media { aspect-ratio: 2 / 1; max-height: 190px; }
@@ -550,8 +629,8 @@
     .main-collection__active-context { width: 100%; min-width: 0; }
     .main-collection__sort { width: 100%; justify-content: stretch; margin-left: 0; }
     .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    .main-collection__filters { grid-auto-columns: minmax(150px, 64vw); }
-    .main-collection__filter { min-height: 54px; }
+    .main-collection__filters { grid-auto-columns: minmax(148px, 58vw); scroll-padding-inline:.2rem; }
+    .main-collection__filter { min-height: 50px; padding-inline:.8rem; }
     .main-collection__sort select { width: 100%; min-width: 0; }
     .main-collection__catalog--filtered .main-collection__grid, .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
   }
@@ -562,7 +641,7 @@
     .interieur-room-builder__section { border-block: 1px solid var(--border); padding-block: clamp(3rem, 5vw, 5rem); }
     .interieur-room-builder__head { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(360px, .85fr); gap: clamp(2rem, 6vw, 6rem); align-items: end; margin-bottom: 1.5rem; }
     .interieur-room-builder__eyebrow { margin: 0 0 .6rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-    .interieur-room-builder__head h2 { max-width: 11ch; margin: 0; font-size: clamp(2.8rem, 5vw, 5.5rem); line-height: .94; letter-spacing: -.055em; }
+    .interieur-room-builder__head h2 { max-width: 11ch; margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
     .interieur-room-builder__head p:not(.interieur-room-builder__eyebrow) { max-width: 68ch; margin: 1rem 0 0; color: var(--muted); font-size: 1.05rem; line-height: 1.65; }
     .interieur-room-builder__steps { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: .5rem; }
     .interieur-room-builder__steps span { min-height: 64px; display: flex; align-items: flex-end; border-top: 3px solid var(--accent); padding: .65rem .4rem; color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
@@ -1461,6 +1540,7 @@
   "name": "t:sections.main_collection.name",
   "settings": [
     { "type": "checkbox", "id": "show_type_filters", "label": "Produkttyp-Filter anzeigen", "default": true },
+    { "type": "checkbox", "id": "hide_hero", "label": "Kollektions-Hero ausblenden", "default": false },
     { "type": "image_picker", "id": "brand_logo", "label": "t:sections.header.logo" }
   ]
 }

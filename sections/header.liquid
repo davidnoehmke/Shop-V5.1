@@ -19,12 +19,12 @@
                 {% if link.links != blank %}
                   <details class="site-header__mobile-disclosure">
                     <summary>
-                      <span>{{ link.title }}</span>
+                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span>
                       <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                     </summary>
                     <div class="site-header__mobile-submenu">
-                      <a class="site-header__mobile-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
-                        <span>{{ link.title }}</span>
+                      <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>
+                        <span>{% render 'leaf-localized-label', text: link.title %}</span>
                         <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
                       </a>
                       <ul>
@@ -33,23 +33,23 @@
                             {% if child_link.links != blank %}
                               <details class="site-header__mobile-disclosure site-header__mobile-disclosure--nested">
                                 <summary>
-                                  <span>{{ child_link.title }}</span>
+                                  <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
                                   <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
                                 </summary>
                                 <div class="site-header__mobile-submenu site-header__mobile-submenu--nested">
-                                  <a class="site-header__mobile-overview" href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>
-                                    <span>{{ child_link.title }}</span>
+                                  <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>
+                                    <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
                                     <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
                                   </a>
                                   <ul>
                                     {% for grandchild_link in child_link.links %}
-                                      <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title }}</a></li>
+                                      <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
                                     {% endfor %}
                                   </ul>
                                 </div>
                               </details>
                             {% else %}
-                              <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title }}</a>
+                              <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
                             {% endif %}
                           </li>
                         {% endfor %}
@@ -57,7 +57,7 @@
                     </div>
                   </details>
                 {% else %}
-                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>
+                  <a class="site-header__mobile-link" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}><span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span></a>
                 {% endif %}
               </li>
             {% endfor %}
@@ -66,40 +66,76 @@
       </details>
     {% endif %}
     <a class="site-header__brand" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
-      {% if section.settings.logo != blank %}
-        {{ section.settings.logo | image_url: width: 480 | image_tag: widths: '160, 240, 320, 480', loading: 'eager', alt: 'LEAFerservice' }}
-        <sup class="site-header__tm" aria-hidden="true">™</sup>
-      {% else %}
-        <svg viewBox="0 0 38 42" aria-hidden="true"><path d="M19 39V18M19 29C10 28 5 22 5 12c9 0 14 5 14 14M19 22c7-1 12-6 13-15-8 0-13 5-13 12M13 15C13 9 16 5 21 2c3 6 2 11-2 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <span>{{ shop.name }}</span>
-      {% endif %}
+      <span class="site-header__wordmark">LEAFerservice</span><sup class="site-header__tm" aria-hidden="true">™</sup>
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
-        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a>{% endfor %}
+        <ul class="site-header__desktop-list">
+          {% for link in section.settings.menu.links %}
+            <li>
+              {% if link.links != blank %}
+                <details class="site-header__desktop-disclosure" data-desktop-menu>
+                  <summary>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
+                  <div class="site-header__desktop-panel">
+                    <a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: link.title %} <span aria-hidden="true">→</span></a>
+                    <ul>
+                      {% for child_link in link.links %}
+                        <li>
+                          <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
+                          {% if child_link.links != blank %}
+                            <ul class="site-header__desktop-nested">
+                              {% for grandchild_link in child_link.links %}
+                                <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
+                              {% endfor %}
+                            </ul>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </details>
+              {% else %}
+                <a href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></a>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
       </nav>
     {% endif %}
     <div class="site-header__actions">
-      <a href="{{ routes.search_url }}" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><span class="site-header__action-label">{{ 'header.search' | t }}</span></a>
-      <a class="site-header__account" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg><span class="site-header__action-label">{{ 'header.account' | t }}</span></a>
-      <a class="site-header__cart" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg><span class="site-header__action-label">{{ 'cart.title' | t }}</span>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
+      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search" data-header-search>
+        <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'header.search' | t }}</label>
+        <input id="HeaderSearch-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search' | t }}" autocomplete="off">
+        <button type="submit" aria-label="{{ 'header.search' | t }}" data-search-toggle><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+      </form>
+      <a class="site-header__account site-header__icon-action" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
+      <a class="site-header__cart site-header__icon-action" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
     </div>
   </div>
 </header>
 
 {% stylesheet %}
   .site-header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 3%); backdrop-filter: blur(14px); }
-  .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(180px, .8fr) auto minmax(280px, .8fr); align-items: center; gap: clamp(1rem, 2vw, 2.5rem); }
+  .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(210px, .72fr) minmax(0, 1.55fr) minmax(250px, .73fr); align-items: center; gap: clamp(1rem, 2vw, 2.5rem); }
   .site-header__brand { width: min(100%, var(--logo-width)); display: inline-flex; align-items: center; gap: .55rem; font-family: var(--heading-font); font-size: 1.45rem; font-weight: 600; text-decoration: none; }
   .site-header__brand > svg { width: 34px; flex: 0 0 auto; }
+  .site-header__wordmark { font-family: var(--heading-font); font-size: clamp(1.35rem, 1.5vw, 1.8rem); font-weight: 700; letter-spacing: -.035em; line-height: 1; }
   .site-header__brand img { width: 100%; height: auto; }
-  .site-header__tm { align-self: flex-start; margin: .22rem 0 0 -.35rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .56rem; font-weight: 800; line-height: 1; }
-  .site-header__desktop { display: flex; justify-content: center; gap: clamp(1rem, 2.4vw, 2.6rem); white-space: nowrap; }
-  .site-header__desktop a { position: relative; font-size: .87rem; font-weight: 650; text-decoration: none; }
+  .site-header__tm { align-self: flex-start; margin: .22rem 0 0 -.35rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .88rem; font-weight: 900; line-height: 1; text-shadow: 0 0 1px currentColor; }
+  .site-header__desktop { display: flex; justify-content: center; gap: clamp(.85rem, 1.45vw, 1.7rem); white-space: nowrap; }
+  .site-header__desktop a { position: relative; min-height: 44px; display: inline-flex; align-items: center; gap: .42rem; font-size: .84rem; font-weight: 680; text-decoration: none; }
+  .site-header__nav-icon { width: 17px; height: 17px; display: inline-grid; place-items: center; flex: 0 0 auto; color: var(--accent); }
+  .site-header__nav-icon svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+  .site-header__mobile-title { display: inline-flex; align-items: center; gap: .65rem; min-width: 0; }
   .site-header__desktop a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -.45rem; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .25s var(--ease-out); }
   .site-header__desktop a:hover::after { transform: scaleX(1); transform-origin: left; }
   .site-header__desktop a:hover { color: var(--accent); }
-  .site-header__actions { justify-self: end; display: flex; align-items: stretch; gap: .35rem; }
+  .site-header__actions { justify-self: end; display: flex; align-items: center; gap: .35rem; }
+  .site-header__search { width: clamp(170px, 15vw, 250px); min-height: 42px; display: grid; grid-template-columns: 1fr 42px; align-items: center; border: 1px solid var(--border); background: var(--background); }
+  .site-header__search input { width: 100%; min-width: 0; height: 40px; padding: 0 .75rem; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: .82rem; }
+  .site-header__search button { width: 42px; height: 40px; display: grid; place-items: center; border: 0; border-left: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; }
+  .site-header__search button:hover, .site-header__search button:focus-visible { background: var(--surface); color: var(--accent); }
+  .site-header__icon-action { width: 44px; justify-content: center; padding-inline: 0 !important; }
   .site-header__actions > a { position: relative; min-height: 42px; display: inline-flex; align-items: center; gap: .5rem; padding: .45rem .7rem; border: 1px solid transparent; color: var(--text); text-decoration: none; transition: border-color .2s ease, background-color .2s ease, color .2s ease; }
   .site-header__actions > a:hover, .site-header__actions > a:focus-visible { border-color: var(--border); background: var(--surface); color: var(--accent); }
   .site-header__mobile > summary { position: relative; display: grid; place-items: center; width: 44px; height: 44px; cursor: pointer; }
@@ -133,13 +169,75 @@
   .site-header__mobile-panel [aria-current="page"] { color: var(--accent); }
   html.site-header-menu-open, html.site-header-menu-open body { overflow: hidden; overscroll-behavior: none; }
   html.site-header-menu-open body { padding-inline-end: var(--site-header-scrollbar-width, 0px); }
-  @media (max-width: 1050px) { .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
-  @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
+  .site-header__desktop-list, .site-header__desktop-panel ul { list-style: none; margin: 0; padding: 0; }
+  .site-header__desktop-list { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem 1.25rem; width: 100%; }
+  .site-header__desktop-list > li { min-width: 0; }
+  .site-header__desktop-disclosure > summary { display: flex; align-items: center; gap: .42rem; min-height: 48px; cursor: pointer; list-style: none; font-size: .88rem; font-weight: 680; }
+  .site-header__desktop-disclosure > summary::-webkit-details-marker { display: none; }
+  .site-header__desktop-disclosure .site-header__chevron { width: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .site-header__desktop-disclosure[open] > summary .site-header__chevron { transform: rotate(180deg); }
+  .site-header__desktop-panel { position: absolute; z-index: 35; top: 100%; inset-inline: 0; max-height: 68dvh; overflow-y: auto; overscroll-behavior: contain; padding: 1.1rem; border: 1px solid var(--border); border-top: 2px solid var(--accent); background: color-mix(in srgb, var(--background), var(--surface) 18%); box-shadow: var(--shadow-soft); white-space: normal; }
+  .site-header .site-header__desktop-panel a { display: flex; min-height: 46px; padding: .65rem .7rem; font-size: .9rem; overflow-wrap: normal; text-wrap: pretty; }
+  .site-header__desktop-panel a::after { display: none; }
+  .site-header__desktop-overview { justify-content: space-between; margin-bottom: .8rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); background: color-mix(in srgb, var(--accent), transparent 95%); color: var(--accent); font-weight: 820; }
+  .site-header__desktop-panel > ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+  .site-header__desktop-panel > ul > li { min-width: 0; border: 1px solid var(--border); background: var(--background); }
+  .site-header__desktop-panel > ul > li > a { min-height: 50px; font-weight: 800; }
+  .site-header__desktop-nested { display: grid; gap: .15rem; padding: 0 .7rem .7rem !important; }
+  .site-header .site-header__desktop-nested a { min-height: 38px; padding: .35rem 0; color: var(--muted); font-size: .78rem; }
+  .site-header .site-header__desktop-nested a:hover, .site-header .site-header__desktop-nested a:focus-visible { color: var(--accent); }
+  .site-header__desktop-disclosure[open] > summary { color: var(--accent); }
+  .site-header__desktop a:focus-visible, .site-header__desktop summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .site-header__desktop [aria-current="page"], .site-header__desktop summary:hover { color: var(--accent); }
+  @media (min-width: 1241px) {
+    .site-header .site-header__inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand actions" "nav nav"; gap: 0 2rem; padding-top: .65rem; }
+    .site-header__brand { grid-area: brand; width: max-content; max-width: 100%; white-space: nowrap; min-height: 48px; }
+    .site-header__actions { grid-area: actions; }
+    .site-header__desktop { position: relative; grid-area: nav; min-width: 0; display: block; border-top: 1px solid var(--border); margin-top: .5rem; padding-bottom: .25rem; white-space: normal; }
+    .site-header__desktop-list { gap: .15rem clamp(.9rem, 1.8vw, 1.6rem); }
+    .site-header .site-header__desktop-list > li > a { min-height: 48px; font-size: .86rem; }
+    .site-header__desktop-panel > ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (max-width: 1240px) { .site-header__search { width: 48px; min-height:48px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { width:48px;height:48px;border: 0; } .site-header__search.is-open { position:absolute; z-index:40; inset-inline:0; top:100%; width:auto; min-height:62px; padding:.55rem max(.7rem,calc((100vw - var(--page-width))/2)); display:grid; grid-template-columns:minmax(0,1fr) 50px; border-block:1px solid var(--border); background:var(--background); box-shadow:0 16px 34px rgba(30,45,37,.12); } .site-header__search.is-open input { display:block; height:48px; padding:0 1rem; border:1px solid var(--border); background:var(--surface); font-size:16px; } .site-header__search.is-open button { width:50px;height:48px;border:1px solid var(--border);border-left:0;background:var(--surface); } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
+  @media (max-width: 520px) { .site-header { padding-top: env(safe-area-inset-top); } .site-header__inner { min-height: 64px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__wordmark { font-size: 1.15rem; white-space: nowrap; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 64px - env(safe-area-inset-top))); padding-bottom:calc(1rem + env(safe-area-inset-bottom)); } }
 {% endstylesheet %}
 
 {% javascript %}
   (() => {
-    const desktopBreakpoint = 1050;
+    const desktopBreakpoint = 1240;
+
+    const initDesktopMenu = (header) => {
+      if (header.desktopMenuController) return;
+      const nav = header.querySelector('.site-header__desktop');
+      if (!nav) return;
+      const controller = new AbortController();
+      header.desktopMenuController = controller;
+      const { signal } = controller;
+      const menus = [...nav.querySelectorAll('[data-desktop-menu]')];
+      const closeMenus = (except) => menus.forEach((menu) => {
+        if (menu !== except) menu.open = false;
+      });
+      menus.forEach((menu) => menu.addEventListener('toggle', () => {
+        if (menu.open) closeMenus(menu);
+      }, { signal }));
+      document.addEventListener('pointerdown', (event) => {
+        if (!nav.contains(event.target)) closeMenus();
+      }, { signal });
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const openMenu = menus.find((menu) => menu.open);
+        if (openMenu) {
+          closeMenus();
+          openMenu.querySelector('summary').focus();
+        }
+      }, { signal });
+      nav.addEventListener('focusout', (event) => {
+        if (!nav.contains(event.relatedTarget)) closeMenus();
+      }, { signal });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= desktopBreakpoint) closeMenus();
+      }, { signal });
+    };
 
     const initMobileMenu = (header) => {
       if (header.dataset.mobileMenuReady === 'true') return;
@@ -218,8 +316,53 @@
       window.visualViewport?.addEventListener('resize', setPanelHeight, { signal });
     };
 
+    const initMobileSearch = (header) => {
+      if (header.dataset.mobileSearchReady === 'true') return;
+      const form = header.querySelector('[data-header-search]');
+      const input = form?.querySelector('input[type="search"]');
+      const toggle = form?.querySelector('[data-search-toggle]');
+      if (!form || !input || !toggle) return;
+
+      header.dataset.mobileSearchReady = 'true';
+
+      const closeSearch = () => {
+        form.classList.remove('is-open');
+        input.blur();
+      };
+
+      toggle.addEventListener('click', (event) => {
+        if (window.innerWidth > desktopBreakpoint) return;
+        if (!form.classList.contains('is-open')) {
+          event.preventDefault();
+          header.querySelector('[data-mobile-menu]')?.removeAttribute('open');
+          document.documentElement.classList.remove('site-header-menu-open');
+          form.classList.add('is-open');
+          requestAnimationFrame(() => input.focus());
+          return;
+        }
+        if (!input.value.trim()) {
+          event.preventDefault();
+          closeSearch();
+        }
+      });
+
+      document.addEventListener('pointerdown', (event) => {
+        if (form.classList.contains('is-open') && !form.contains(event.target)) closeSearch();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && form.classList.contains('is-open')) closeSearch();
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > desktopBreakpoint) closeSearch();
+      });
+    };
+
     const initAllMobileMenus = (root = document) => {
-      root.querySelectorAll('[data-site-header]').forEach(initMobileMenu);
+      root.querySelectorAll('[data-site-header]').forEach((header) => {
+        initDesktopMenu(header);
+        initMobileMenu(header);
+        initMobileSearch(header);
+      });
     };
 
     initAllMobileMenus();
@@ -228,6 +371,7 @@
       const header = event.target.querySelector('[data-site-header]');
       if (!header) return;
       header.mobileMenuController?.abort();
+      header.desktopMenuController?.abort();
       document.documentElement.classList.remove('site-header-menu-open');
       document.documentElement.style.removeProperty('--site-header-scrollbar-width');
     });
@@ -244,3 +388,4 @@
   ]
 }
 {% endschema %}
+
