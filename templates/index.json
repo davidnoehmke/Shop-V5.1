@@ -467,6 +467,10 @@
     "led_home_finder": {
       "type": "leaf-led-home-finder",
       "settings": {}
+    },
+    "led_product_stage": {
+      "type": "leaf-led-product-stage",
+      "settings": {}
     }
   },
   "order": [
@@ -474,6 +478,7 @@
     "substrate_configurator",
     "home_collection_journey",
     "trust",
+    "led_product_stage",
     "led_home_finder",
     "home_guides",
     "faq",
