@@ -1,12 +1,38 @@
 {% liquid
   assign featured_ven = all_products['venso-sunlite-xl-25w-led-pflanzenlampe']
-  assign featured_neu = all_products['neusius-led-bloom-20w-3500k-pflanzenleuchte']
+  assign featured_neu = all_products['neusius-led-bloom-20w-3500k-pflanzenleuchte']\n  assign featured_regal = all_products['neusius-aurora-76-cm-led-pflanzenleuchte-15w']
 %}
 <section class="leaf-led-stage" aria-label="Pflanzenlicht entdecken">
   <div class="leaf-led-stage__intro">
     <span class="leaf-led-stage__kicker">LEAF Lichtlabor</span>
     <h2>Das richtige Licht. Sichtbar erklärt.</h2>
     <p>Entdecke die Technik hinter deinem Pflanzenlicht – vom Einsatzbereich bis zur passenden Leuchte.</p>
+  </div>
+  <div class="leaf-led-advisor" data-leaf-led-advisor>
+    <h3>Welche Lichtsituation möchtest du lösen?</h3>
+    <div class="leaf-led-advisor__choices" role="group" aria-label="Beleuchtungssituation auswählen">
+      <button type="button" data-leaf-choice="large" aria-pressed="true">Große Zimmerpflanze</button>
+      <button type="button" data-leaf-choice="small" aria-pressed="false">Kräuter & kleine Pflanzengruppe</button>
+      <button type="button" data-leaf-choice="shelf" aria-pressed="false">Pflanzenregal</button>
+    </div>
+    <div class="leaf-led-advisor__results" aria-live="polite">
+      <div data-leaf-result="large">
+        <p><strong>Warum?</strong> Große Solitärpflanzen benötigen eine zur Blattfläche und zum Standort passende Zusatzbeleuchtung. Eine verstellbare Positionierung erleichtert die Anpassung.</p>
+        <p><strong>Direkte Lösung:</strong> {{ featured_ven.metafields.custom.short_description.value | default: featured_ven.title | escape }}</p>
+        {% if featured_ven != blank %}<a href="{{ featured_ven.url }}">Passende Venso-Leuchte ansehen →</a>{% endif %}
+      </div>
+      <div data-leaf-result="small" hidden>
+        <p><strong>Warum?</strong> Für Küchenkräuter und kleine Pflanzengruppen ist eine kompakte Zusatzbeleuchtung häufig praktischer als eine große Grow-Anlage.</p>
+        <p><strong>Direkte Lösung:</strong> {{ featured_neu.metafields.custom.short_description.value | default: featured_neu.title | escape }}</p>
+        {% if featured_neu != blank %}<a href="{{ featured_neu.url }}">Passende Neusius-Leuchte ansehen →</a>{% endif %}
+      </div>
+      <div data-leaf-result="shelf" hidden>
+        <p><strong>Warum?</strong> Für längliche Pflanzengruppen kann eine lineare Leuchte eine gleichmäßigere Anordnung ermöglichen als eine einzelne Punktlichtquelle.</p>
+        <p><strong>Direkte Lösung:</strong> {{ featured_regal.metafields.custom.short_description.value | default: featured_regal.title | escape }}</p>
+        {% if featured_regal != blank %}<a href="{{ featured_regal.url }}">Passende Regal-Leuchte ansehen →</a>{% endif %}
+      </div>
+    </div>
+    <p class="leaf-led-advisor__note">Die endgültige Eignung hängt von Pflanzenart, Standort, Abstand und Herstellerdaten ab. Eine konkrete PPFD-Empfehlung erfolgt nur bei verifizierten Messwerten.</p>
   </div>
   {% for item in (1..2) %}
     {% liquid
@@ -55,6 +81,17 @@
   {% endfor %}
 </section>
 {% stylesheet %}
+.leaf-led-advisor{max-width:960px;margin:0 auto 3rem;padding:clamp(1.25rem,3vw,2.5rem);border:1px solid #476452;border-radius:22px;background:linear-gradient(135deg,#1d3629,#13251d)}
+.leaf-led-advisor h3{font-size:clamp(1.35rem,3vw,2rem);margin:0 0 1.2rem}
+.leaf-led-advisor__choices{display:flex;flex-wrap:wrap;gap:.65rem}
+.leaf-led-advisor__choices button{cursor:pointer;min-height:48px;padding:.75rem 1rem;border:1px solid #718b78;border-radius:12px;background:transparent;color:#fff;font:inherit}
+.leaf-led-advisor__choices button[aria-pressed="true"]{background:#d0eecf;color:#12251a;border-color:#d0eecf;font-weight:700}
+.leaf-led-advisor__results{padding-top:1.2rem}
+.leaf-led-advisor__results p{color:#dbe6dc;line-height:1.6}
+.leaf-led-advisor__results a{display:inline-flex;min-height:48px;align-items:center;color:#d0eecf;font-weight:700}
+.leaf-led-advisor__note{font-size:.78rem;color:#b6c9ba;margin:1.4rem 0 0}
+@media(max-width:700px){.leaf-led-advisor__choices{display:grid;grid-template-columns:1fr}.leaf-led-advisor__choices button{text-align:left}}
+
 .leaf-led-stage{background:#0d1714;color:#f4f7f2;padding:clamp(3rem,7vw,6rem) max(1rem,calc((100vw - 1320px)/2));overflow:hidden}
 .leaf-led-stage__intro{max-width:760px;margin:0 auto 3rem;text-align:center}
 .leaf-led-stage__kicker{color:#b3d9bb;font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
@@ -78,6 +115,18 @@
 @media(prefers-reduced-motion:reduce){.leaf-led-stage__visual{transition:none;will-change:auto}}
 {% endstylesheet %}
 {% javascript %}
+document.querySelectorAll('[data-leaf-led-advisor]').forEach(function(advisor){
+  var buttons=advisor.querySelectorAll('[data-leaf-choice]');
+  var results=advisor.querySelectorAll('[data-leaf-result]');
+  buttons.forEach(function(button){
+    button.addEventListener('click',function(){
+      var selected=button.getAttribute('data-leaf-choice');
+      buttons.forEach(function(b){b.setAttribute('aria-pressed',String(b===button))});
+      results.forEach(function(result){result.hidden=result.getAttribute('data-leaf-result')!==selected});
+    });
+  });
+});
+
 document.querySelectorAll('[data-leaf-led-stage]').forEach(function(stage){
   var visual=stage.querySelector('[data-leaf-led-visual]');
   var input=stage.querySelector('[data-leaf-led-angle]');
