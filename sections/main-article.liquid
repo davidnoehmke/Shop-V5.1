@@ -41,7 +41,6 @@
   assign cta_heading = section.settings.cta_heading | default: cta_heading_default
   assign cta_label = section.settings.cta_label | default: cta_label_default
   assign article_alt = article.image.alt | default: article.title
-  assign article_care_profile = article.metafields.leafer.care_profile.value
   assign article_knowledge_atoms = article.metafields.leafer.knowledge_atoms.value
   assign article_solution_links = article.metafields.leafer.solution_links.value
   assign article_related_products = article.metafields.leafer.related_products.value
@@ -133,7 +132,15 @@
       </div>
       <div class="main-article__solutions-grid">
         {% for solution in article_solution_links %}
-          <a class="main-article__solution-card" href="{{ solution.url }}">
+          {% liquid
+            assign solution_url = solution.url
+            assign solution_prefix = solution_url | slice: 0, 1
+            assign solution_locale_prefix = solution_url | slice: 0, routes.root_url.size
+            if routes.root_url != '/' and solution_prefix == '/' and solution_locale_prefix != routes.root_url
+              assign solution_url = solution_url | prepend: routes.root_url
+            endif
+          %}
+          <a class="main-article__solution-card" href="{{ solution_url | escape }}">
             <span>{{ solution.problem | escape }}</span>
             <strong>{{ solution.label | escape }}</strong>
             <em aria-hidden="true">→</em>
@@ -151,15 +158,17 @@
       </div>
       <div class="main-article__products-grid">
         {% for linked_product in article_related_products limit: 8 %}
+          {% if linked_product.url == blank or linked_product.title == blank %}{% continue %}{% endif %}
+          {% assign linked_product_alt = linked_product.featured_image.alt | default: linked_product.title %}
           <article class="main-article__product-card">
             <a class="main-article__product-media" href="{{ linked_product.url }}">
               {% if linked_product.featured_image != blank %}
-                {{ linked_product.featured_image | image_url: width: 720 | image_tag: widths: '260, 420, 560, 720', sizes: '(min-width: 900px) 25vw, 50vw', loading: 'lazy', alt: linked_product.featured_image.alt | default: linked_product.title }}
+                {{ linked_product.featured_image | image_url: width: 720 | image_tag: widths: '260, 420, 560, 720', sizes: '(max-width: 620px) 100vw, (max-width: 900px) 50vw, 25vw', loading: 'lazy', alt: linked_product_alt }}
               {% endif %}
             </a>
             <div>
               <h3><a href="{{ linked_product.url }}">{{ linked_product.title | escape }}</a></h3>
-              {% if linked_product.metafields.leafer.intro.value != blank %}<p>{{ linked_product.metafields.leafer.intro.value | escape | truncate: 150 }}</p>{% endif %}
+              {% if linked_product.metafields.leafer.intro.value != blank %}<p>{{ linked_product.metafields.leafer.intro.value | truncate: 150 | escape }}</p>{% endif %}
               <a href="{{ linked_product.url }}">{% if request.locale.iso_code == 'de' %}Lösung ansehen{% else %}View solution{% endif %} <span aria-hidden="true">→</span></a>
             </div>
           </article>
@@ -296,6 +305,8 @@
   .main-article__knowledge-head > p, .main-article__solutions-head > p, .main-article__products-head > p { margin: 0 0 .65rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .main-article__knowledge-head h2, .main-article__solutions-head h2, .main-article__products-head h2 { margin: 0 0 1.25rem; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; }
   .main-article__knowledge-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+  .main-article__knowledge-card, .main-article__solution-card, .main-article__product-card { min-width: 0; overflow-wrap: anywhere; }
+  .main-article__solution-card:focus-visible, .main-article__product-card a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .main-article__knowledge-card { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
   .main-article__knowledge-card strong { display: block; margin-bottom: .4rem; color: var(--accent); font-size: .82rem; }
   .main-article__knowledge-card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.55; }
