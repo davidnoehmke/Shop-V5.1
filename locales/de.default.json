@@ -1190,5 +1190,40 @@
     "cta": "LED-Beratung und Produkte entdecken",
     "info_title": "Was bedeuten PPFD und DLI?",
     "info_text": "PPFD beschreibt die photosynthetisch wirksame Lichtintensität am Blatt. DLI beschreibt die über den Tag erhaltene Lichtmenge. Watt allein verrät nicht, wie viel Licht die Pflanze erreicht."
+  },
+  "blog_topics": {
+    "heading": "Nach Themen entdecken",
+    "intro": "Wissen für dein Pflanzenprojekt: Wähle ein Themengebiet und finde passende Grundlagen, Vergleiche und praktische Anleitungen.",
+    "all": "Alle Ratgeber",
+    "reset": "Alle Themen anzeigen",
+    "count": "{{ count }} Beiträge",
+    "substrate_wurzeln": {
+      "title": "Substrate & Wurzeln",
+      "description": "Substrat verstehen, Bestandteile vergleichen und eigene Mischungen planen."
+    },
+    "pflanzenpflege_arten": {
+      "title": "Pflanzenpflege & Arten",
+      "description": "Monstera, Alocasia und andere Pflanzen nach Standort und Pflegebedarf einordnen."
+    },
+    "pflanzenlicht_leds": {
+      "title": "Pflanzenlicht & LEDs",
+      "description": "Pflanzenlampen, Lichtwerte, Abstand und Beleuchtungsdauer verständlich erklärt."
+    },
+    "pflanzgefasse_rankhilfen": {
+      "title": "Pflanzgefäße & Rankhilfen",
+      "description": "Den passenden Topf, Selbstbewässerung und Kletterhilfen auswählen."
+    },
+    "anzucht_aussaat": {
+      "title": "Anzucht & Aussaat",
+      "description": "Samen aussäen, Keimung verstehen und Obst oder Gemüse vorziehen."
+    },
+    "interieur_pflanzenwelten": {
+      "title": "Interieur & Pflanzenwelten",
+      "description": "Pflanzen, Licht, Gefäß und Substrat zu einem stimmigen Raumkonzept verbinden."
+    },
+    "leaferservice_hilfe": {
+      "title": "LEAFerservice & Hilfe",
+      "description": "Neuigkeiten, Orientierung im Shop und Hilfe zur barrierefreien Bedienung."
+    }
   }
 }

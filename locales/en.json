@@ -1190,5 +1190,40 @@
     "cta": "Explore LED advice and products",
     "info_title": "What do PPFD and DLI mean?",
     "info_text": "PPFD measures photosynthetically useful photon flux reaching the leaves per second. DLI measures the total amount received during a day. Electrical wattage alone does not tell you how much light reaches the plant."
+  },
+  "blog_topics": {
+    "heading": "Explore by topic",
+    "intro": "Knowledge for your plant project: choose a topic to find relevant basics, comparisons and practical guides.",
+    "all": "All guides",
+    "reset": "Show all topics",
+    "count": "{{ count }} articles",
+    "substrate_wurzeln": {
+      "title": "Substrates & roots",
+      "description": "Understand substrates, compare ingredients and plan your own mixes."
+    },
+    "pflanzenpflege_arten": {
+      "title": "Plant care & species",
+      "description": "Explore Monstera, Alocasia and other plants by location and care needs."
+    },
+    "pflanzenlicht_leds": {
+      "title": "Plant lighting & LEDs",
+      "description": "Understand grow lights, light output, distance and lighting duration."
+    },
+    "pflanzgefasse_rankhilfen": {
+      "title": "Planters & climbing supports",
+      "description": "Choose suitable pots, self-watering systems and climbing supports."
+    },
+    "anzucht_aussaat": {
+      "title": "Propagation & sowing",
+      "description": "Sow seeds, understand germination and start fruit or vegetable plants."
+    },
+    "interieur_pflanzenwelten": {
+      "title": "Interiors & plant spaces",
+      "description": "Combine plants, lighting, pots and substrates into a coherent room design."
+    },
+    "leaferservice_hilfe": {
+      "title": "LEAFerservice & help",
+      "description": "Find news, shop navigation and guidance on accessible use."
+    }
   }
 }

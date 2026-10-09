@@ -1,19 +1,28 @@
 {% liquid
   if request.locale.iso_code == 'de'
     assign blog_eyebrow = 'LEAFerservice Ratgeber'
-    assign article_count_label = 'veröffentlichte Beiträge'
     assign featured_label = 'Neu im Ratgeber'
     assign read_label = 'Ratgeber lesen'
     assign empty_title = 'Noch keine Beiträge veröffentlicht'
     assign empty_text = 'Sobald neue Ratgeber verfügbar sind, findest du sie an dieser Stelle.'
   else
     assign blog_eyebrow = 'LEAFerservice guides'
-    assign article_count_label = 'published articles'
     assign featured_label = 'New in the guides'
     assign read_label = 'Read guide'
     assign empty_title = 'No articles published yet'
     assign empty_text = 'New guides will appear here as soon as they are available.'
   endif
+  assign selected_topic_title = blank
+  for topic_block in section.blocks
+    if current_tags contains topic_block.settings.tag
+      assign selected_topic_key = topic_block.settings.tag | handleize | replace: '-', '_' | prepend: 'blog_topics.' | append: '.title'
+      assign selected_topic_title = selected_topic_key | t
+      if request.locale.iso_code == 'de' and topic_block.settings.title != blank
+        assign selected_topic_title = topic_block.settings.title
+      endif
+      break
+    endif
+  endfor
 %}
 
 <section class="main-blog page-width" aria-labelledby="MainBlogHeading-{{ section.id }}">
@@ -23,12 +32,69 @@
       <h1 id="MainBlogHeading-{{ section.id }}">{{ blog.title | escape }}</h1>
       {% if section.settings.intro != blank %}
         <div class="main-blog__intro rte">{{ section.settings.intro }}</div>
+      {% else %}
+        <p class="main-blog__intro">{{ 'blog_topics.intro' | t }}</p>
       {% endif %}
     </div>
-    <p class="main-blog__count">{{ blog.articles_count }} {{ article_count_label }}</p>
   </header>
 
+  {% if section.blocks.size > 0 %}
+    <nav class="main-blog__topics" aria-labelledby="BlogTopicsHeading-{{ section.id }}">
+      <div class="main-blog__topics-heading">
+        <h2 id="BlogTopicsHeading-{{ section.id }}">{{ 'blog_topics.heading' | t }}</h2>
+        <a class="main-blog__all" href="{{ blog.url }}"{% if current_tags == blank %} aria-current="page"{% endif %}>{{ 'blog_topics.all' | t }}</a>
+      </div>
+      <div class="main-blog__topic-grid">
+        {% for block in section.blocks %}
+          {% liquid
+            assign topic_tag = block.settings.tag
+            assign topic_slug = topic_tag | handleize
+            assign topic_key = topic_slug | replace: '-', '_' | prepend: 'blog_topics.'
+            assign title_key = topic_key | append: '.title'
+            assign description_key = topic_key | append: '.description'
+            assign topic_title = title_key | t
+            assign topic_description = description_key | t
+            if request.locale.iso_code == 'de'
+              if block.settings.title != blank
+                assign topic_title = block.settings.title
+              endif
+              if block.settings.description != blank
+                assign topic_description = block.settings.description
+              endif
+            endif
+            assign topic_icon = 'layers'
+            case topic_slug
+              when 'pflanzenpflege-arten'
+                assign topic_icon = 'leaf'
+              when 'pflanzenlicht-leds'
+                assign topic_icon = 'light'
+              when 'pflanzgefasse-rankhilfen'
+                assign topic_icon = 'pot'
+              when 'anzucht-aussaat'
+                assign topic_icon = 'sprout'
+              when 'interieur-pflanzenwelten'
+                assign topic_icon = 'room'
+              when 'leaferservice-hilfe'
+                assign topic_icon = 'info'
+            endcase
+            assign topic_url = blog.url | append: '/tagged/' | append: topic_slug
+          %}
+          <a class="main-blog__topic{% if current_tags contains topic_tag %} main-blog__topic--active{% endif %}" href="{{ topic_url }}"{% if current_tags contains topic_tag %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
+            <span class="main-blog__topic-icon">{% render 'leaf-knowledge-icon', icon_key: topic_icon %}</span>
+            <span class="main-blog__topic-copy"><strong>{{ topic_title | escape }}</strong><span>{{ topic_description | escape }}</span></span>
+            <span class="main-blog__topic-arrow" aria-hidden="true">→</span>
+          </a>
+        {% endfor %}
+      </div>
+    </nav>
+  {% endif %}
+
   {% paginate blog.articles by section.settings.articles_per_page %}
+    <div class="main-blog__results" id="BlogArticles-{{ section.id }}">
+      <h2>{% if selected_topic_title != blank %}{{ selected_topic_title | escape }}{% elsif current_tags != blank %}{% render 'leaf-localized-label', text: current_tags.first %}{% else %}{{ 'blog_topics.all' | t }}{% endif %}</h2>
+      <p class="main-blog__count">{{ 'blog_topics.count' | t: count: paginate.items }}</p>
+      {% if current_tags != blank %}<a class="main-blog__link" href="{{ blog.url }}">{{ 'blog_topics.reset' | t }}</a>{% endif %}
+    </div>
     {% if blog.articles.size > 0 %}
       {% liquid
         assign featured_article = blank
@@ -70,6 +136,20 @@
             {% liquid
               assign article_alt = article.image.alt | default: article.title
               assign article_excerpt = article.excerpt_or_content | strip_html | strip | truncate: 175
+              assign article_topic_tag = blank
+              assign article_topic_title = blank
+              for topic_block in section.blocks
+                if article.tags contains topic_block.settings.tag
+                  assign article_topic_tag = topic_block.settings.tag
+                  assign article_topic_slug = article_topic_tag | handleize
+                  assign article_topic_key = article_topic_slug | replace: '-', '_' | prepend: 'blog_topics.' | append: '.title'
+                  assign article_topic_title = article_topic_key | t
+                  if request.locale.iso_code == 'de' and topic_block.settings.title != blank
+                    assign article_topic_title = topic_block.settings.title
+                  endif
+                  break
+                endif
+              endfor
             %}
             <article class="main-blog__card">
               <a class="main-blog__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
@@ -81,7 +161,7 @@
               </a>
               <div class="main-blog__card-body">
                 <div class="main-blog__meta">
-                  {% if article.tags.first != blank %}<span>{% render 'leaf-localized-label', text: article.tags.first %}</span>{% endif %}
+                  {% if article_topic_tag != blank %}<a class="main-blog__topic-badge" href="{{ blog.url }}/tagged/{{ article_topic_slug }}">{{ article_topic_title | escape }}</a>{% elsif article.tags.first != blank %}<span>{% render 'leaf-localized-label', text: article.tags.first %}</span>{% endif %}
                   {% if section.settings.show_date %}
                     <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
                       {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
@@ -117,6 +197,24 @@
   .main-blog h1 { margin: 0; max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .main-blog__intro { max-width: 68ch; margin-top: 1.2rem; color: var(--muted); font-size: clamp(1rem, 1.7vw, 1.2rem); }
   .main-blog__count { flex: 0 0 auto; margin: 0; color: var(--muted); font-size: .82rem; }
+  .main-blog__topics { margin-bottom: clamp(2rem, 5vw, 4rem); }
+  .main-blog__topics-heading, .main-blog__results { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+  .main-blog__topics-heading { justify-content: space-between; }
+  .main-blog__topics-heading h2, .main-blog__results h2 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.6rem); line-height: 1.3; }
+  .main-blog__all { padding: .65rem .9rem; border: 1px solid var(--border); border-radius: var(--radius-large); color: var(--accent); font-weight: 750; text-decoration: none; }
+  .main-blog__all[aria-current] { background: var(--accent-soft); }
+  .main-blog__topic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; }
+  .main-blog__topic { display: flex; align-items: start; gap: .85rem; padding: 1.2rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); color: inherit; text-decoration: none; }
+  .main-blog__topic--active { border: 2px solid var(--accent); background: var(--accent-soft); padding: calc(1.2rem - 1px); }
+  .main-blog__topic-icon { flex: 0 0 1.6rem; color: var(--accent); }
+  .main-blog__topic-icon svg { display: block; width: 1.6rem; height: 1.6rem; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .main-blog__topic-copy { display: grid; gap: .4rem; min-width: 0; }
+  .main-blog__topic-copy strong { font-size: 1rem; line-height: 1.4; }
+  .main-blog__topic-copy > span { color: var(--muted); font-size: .86rem; line-height: 1.55; }
+  .main-blog__topic-arrow { margin-left: auto; color: var(--accent); }
+  .main-blog__results { margin-bottom: 1.5rem; }
+  .main-blog__topic-badge { color: var(--accent); font-weight: 750; text-decoration: none; }
+  .main-blog__topic:focus-visible, .main-blog__all:focus-visible, .main-blog__topic-badge:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
   .main-blog__featured { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr); overflow: hidden; margin-bottom: clamp(2.5rem, 6vw, 5rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
   .main-blog__featured-media, .main-blog__media { display: block; overflow: hidden; background: color-mix(in srgb, var(--accent-soft), transparent 30%); }
   .main-blog__featured-media { min-height: 440px; }
@@ -149,12 +247,14 @@
   @media (max-width: 980px) {
     .main-blog__featured { grid-template-columns: 1fr; }
     .main-blog__featured-media { min-height: 0; aspect-ratio: 16 / 10; }
-    .main-blog__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-blog__grid, .main-blog__topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 650px) {
     .main-blog { padding-block: 2.5rem; }
     .main-blog__header { align-items: start; flex-direction: column; }
-    .main-blog__grid { grid-template-columns: 1fr; }
+    .main-blog__grid, .main-blog__topic-grid { grid-template-columns: 1fr; }
+    .main-blog__topic { padding: 1rem; }
+    .main-blog__topic--active { padding: calc(1rem - 1px); }
     .main-blog__featured-copy { padding: 1.25rem; }
   }
 {% endstylesheet %}
@@ -163,11 +263,95 @@
 {
   "name": "Blog-Übersicht",
   "settings": [
-    { "type": "richtext", "id": "intro", "label": "Einleitung" },
-    { "type": "checkbox", "id": "show_featured", "label": "Ersten Beitrag hervorheben", "default": true },
-    { "type": "checkbox", "id": "show_excerpt", "label": "Kurztexte anzeigen", "default": true },
-    { "type": "checkbox", "id": "show_date", "label": "Datum anzeigen", "default": true },
-    { "type": "range", "id": "articles_per_page", "label": "Beiträge pro Seite", "min": 6, "max": 18, "step": 2, "default": 10 }
+    {
+      "type": "richtext",
+      "id": "intro",
+      "label": "Einleitung"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_featured",
+      "label": "Ersten Beitrag hervorheben",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Kurztexte anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Datum anzeigen",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "articles_per_page",
+      "label": "Beiträge pro Seite",
+      "min": 6,
+      "max": 18,
+      "step": 2,
+      "default": 10
+    }
+  ],
+  "max_blocks": 7,
+  "blocks": [
+    {
+      "type": "topic",
+      "name": "Themengebiet",
+      "settings": [
+        {
+          "type": "select",
+          "id": "tag",
+          "label": "Themengebiet",
+          "options": [
+            {
+              "value": "Substrate & Wurzeln",
+              "label": "Substrate & Wurzeln"
+            },
+            {
+              "value": "Pflanzenpflege & Arten",
+              "label": "Pflanzenpflege & Arten"
+            },
+            {
+              "value": "Pflanzenlicht & LEDs",
+              "label": "Pflanzenlicht & LEDs"
+            },
+            {
+              "value": "Pflanzgefäße & Rankhilfen",
+              "label": "Pflanzgefäße & Rankhilfen"
+            },
+            {
+              "value": "Anzucht & Aussaat",
+              "label": "Anzucht & Aussaat"
+            },
+            {
+              "value": "Interieur & Pflanzenwelten",
+              "label": "Interieur & Pflanzenwelten"
+            },
+            {
+              "value": "LEAFerservice & Hilfe",
+              "label": "LEAFerservice & Hilfe"
+            }
+          ],
+          "default": "Substrate & Wurzeln"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Eigener deutscher Titel",
+          "info": "Leer lassen für die automatische Themenbezeichnung."
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Eigene deutsche Kurzbeschreibung",
+          "info": "Leer lassen für die automatische Beschreibung."
+        }
+      ]
+    }
   ]
 }
 {% endschema %}
