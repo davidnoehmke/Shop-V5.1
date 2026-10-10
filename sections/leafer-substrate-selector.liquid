@@ -1348,6 +1348,13 @@
       return materials.find((entry) => entry.match.test(label))?.color || '#958570';
     }
 
+    materialTextColor(hex) {
+      const channels = hex.slice(1).match(/.{2}/g)?.map((channel) => parseInt(channel, 16) / 255) || [0, 0, 0];
+      const linear = channels.map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+      const luminance = 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+      return luminance > 0.179 ? '#000000' : '#ffffff';
+    }
+
     updateCustomSegmentVisuals() {
       this.customSegments.forEach((segment) => {
         const share = Number(segment.dataset.share) || 0;
@@ -1356,7 +1363,9 @@
         segment.textContent = share ? `${this.translateIngredient(segment.dataset.name).split(/\s+[–—-]\s+/)[0].trim()} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
         // The pot visualises loose substrate, never packaged product photography.
-        segment.style.backgroundColor = this.materialColor(segment.dataset.name);
+        const color = this.materialColor(segment.dataset.name);
+        segment.style.backgroundColor = color;
+        segment.style.color = this.materialTextColor(color);
         segment.style.removeProperty('background-image');
         segment.style.removeProperty('background-size');
         segment.style.removeProperty('background-position');
