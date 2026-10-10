@@ -34,13 +34,13 @@ WITH pilot(slug,target_sets) AS (
         ('sukkulenten-trio-set',1)
 )
 UPDATE public.product_bundles b SET
- merchandising=coalesce(b.merchandising,'{}'::jsonb) ||
- jsonb_build_object('pilot',jsonb_build_object(
+ merchandising=jsonb_set(coalesce(b.merchandising,'{}'::jsonb), '{pilot}',
+  coalesce(b.merchandising->'pilot','{}'::jsonb) || jsonb_build_object(
    'campaign','bundle_only_pilot_2026_10',
    'target_sets',pilot.target_sets,'period_days',90,'started_on','2026-10-11',
    'not_a_stock_reservation',true,'component_costs_verified',false,
    'checkout_and_inventory_audit','pending','shopify_prices_preserved',true
- )),
+  ), true),
  updated_at=now()
 FROM pilot
 WHERE b.slug=pilot.slug AND b.merchandising#>>'{pilot,checkout_and_inventory_audit}' IS DISTINCT FROM 'passed';
