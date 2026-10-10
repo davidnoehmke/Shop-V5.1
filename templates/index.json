@@ -491,6 +491,9 @@
       "settings": {
         "link": "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
       }
+    "led_home_finder": {
+      "type": "leaf-led-home-finder",
+      "settings": {}
     }
   },
   "order": [
@@ -499,6 +502,7 @@
     "substrate_configurator",
     "home_collection_journey",
     "trust",
+    "led_home_finder",
     "home_guides",
     "faq",
     "community",

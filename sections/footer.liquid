@@ -10,7 +10,7 @@
       <p>{% if request.locale.iso_code == 'de' %}Dynamische Pflanzenlösungen mit transparenten Inhalts- und Produktdaten.{% else %}Dynamic plant solutions with transparent product and ingredient data.{% endif %}</p>
     </div>
     {% if section.settings.menu != blank %}
-      <nav aria-label="{{ 'accessibility.footer_menu' | t }}">{% for link in section.settings.menu.links %}<a href="{% render 'leaf-localized-url', url: link.url %}">{% render 'leaf-localized-label', text: link.title %}</a>{% endfor %}<a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}policies/legal-notice">{% if request.locale.iso_code == 'de' %}Impressum{% else %}Legal notice{% endif %}</a></nav>
+      <nav aria-label="{{ 'accessibility.footer_menu' | t }}">{% for link in section.settings.menu.links %}<a href="{% render 'leaf-localized-url', url: link.url %}">{% render 'leaf-localized-label', text: link.title %}</a>{% endfor %}</nav>
     {% endif %}
     <small>{{ 'footer.copyright' | t: year: current_year, shop: shop.name }}</small>
   </div>

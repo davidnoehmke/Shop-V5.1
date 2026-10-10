@@ -970,11 +970,18 @@
     "addition_root": "Support for the root environment"
   },
   "shop_assistant": {
+    "voice_speaking": "LEAF is answering …",
+    "photo": "Add plant photo",
+    "photo_remove": "Remove photo",
+    "photo_ready": "Photo ready for analysis",
+    "photo_too_large": "Please use a JPG, PNG or WebP up to 10 MB.",
+    "photo_message": "Plant photo sent for analysis",
     "voice_speaking": "I am speaking. You can interrupt me at any time.",
     "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
     "eyebrow": "LEAF Shop Assistant",
     "heading": "What would you like to clarify for your plant project?",
+    "intro": "I can help with plant questions, products and use. You can type, talk, or send a plant photo.",
     "intro": "Ask me about your plants or your project. In the live voice conversation, you can interrupt me and we will continue from there.",
     "close": "Close assistant",
     "suggestions": "Quick questions",
@@ -984,9 +991,11 @@
     "suggestion_light_prompt": "How do I find the right plant light for my location?",
     "suggestion_care": "Ask about a product",
     "suggestion_care_prompt": "Help me understand a product in the LEAFerservice range.",
+    "suggestion_map": "Shop map",
     "assistant_name": "LEAF",
     "user_name": "You",
-    "welcome": "Hi, I am LEAF, your AI plant assistant. How can I help you with your plant or project?",
+    "welcome": "Hi! I’m LEAF. Ask me about substrate, plant lighting, planters, products, or send me a plant photo.",
+    "welcome": "Hi, I am LEAF, your AI plant assistant. If you want to get oriented first, I can also show you our shop map. How can I help you with your plant or project?",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
     "advisor": "Open LEAF Planner",
@@ -996,6 +1005,14 @@
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice conversation",
     "voice_stop": "End voice conversation",
+    "voice_listening": "I’m listening …",
+    "speak": "Read answer aloud",
+    "voice_greeting": "Hi! Nice to have you here. Just tell me what you would like help with for your plant.",
+    "actions": "LEAF Assistant actions",
+    "action_chat": "Open chat",
+    "action_voice": "Voice conversation",
+    "action_photo": "Plant photo",
+    "action_advisor": "LEAF Planner"
     "voice_listening": "Listening …",
     "speak": "Read answer aloud",
     "voice_connecting": "Connecting your voice conversation…",
@@ -1036,7 +1053,7 @@
     "support": "Customer service",
     "support_help": "Contact and support",
     "sphagnum": "Sphagnum moss – for cuttings & aroids"
-},
+  },
   "lighting_configurator": {
     "eyebrow": "Plant lighting as a system",
     "heading": "Choose plant lighting to suit your plants, room and setup.",
@@ -1066,8 +1083,7 @@
     "details": "Details & buying options",
     "empty": "No product currently matches your selection.",
     "empty_help": "Change a filter or reset your selection."
-  }
-,
+  },
   "led_collection": {
     "eyebrow": "Choose plant lighting with confidence",
     "heading": "LED grow lights for houseplants, shelves and darker rooms",
@@ -1153,8 +1169,7 @@
     "upsell_for": "Works with",
     "upsell_details": "View details",
     "upsell_note": "Always check compatibility on the specific product. Accessories are not standalone light sources."
-  }
-,
+  },
   "led_article": {
     "dynamic_eyebrow": "Current product selection",
     "technical_heading": "Technical examples from the current plant-lighting range",
@@ -1178,5 +1193,60 @@
     "details_label": "Why we are changing this",
     "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
     "link_label": "Explore substrates"
+  "led_home": {
+    "eyebrow": "LEAF lighting advisor · Understand grow lights",
+    "heading": "Which grow light fits your space?",
+    "intro": "Choose your lighting setup and learn how to match plant needs, coverage and location with a suitable grow light.",
+    "choices_aria": "Choose your lighting situation",
+    "single": "Single plant",
+    "shelf": "Plant shelf",
+    "large": "Large area",
+    "winter": "Winter and low daylight",
+    "single_title": "Targeted light for a single plant",
+    "single_text": "A spotlight or an E27 grow bulb may supplement one plant. Check light coverage, manufacturer-recommended distance and secure mounting.",
+    "shelf_title": "Even light across a plant shelf",
+    "shelf_text": "Linear LED bars often suit long shelving spaces. Shelf width, leaf height and documented light measurements matter most.",
+    "large_title": "Cover a larger growing area",
+    "large_text": "For larger growing areas, consider the distribution of light intensity across the entire area, not only the brightest point in the center.",
+    "winter_title": "Supplement light in winter",
+    "winter_text": "Additional light can compensate for reduced daylight. The right duration depends on the plant, location and available window light.",
+    "cta": "Explore LED advice and products",
+    "info_title": "What do PPFD and DLI mean?",
+    "info_text": "PPFD measures photosynthetically useful photon flux reaching the leaves per second. DLI measures the total amount received during a day. Electrical wattage alone does not tell you how much light reaches the plant."
+  },
+  "blog_topics": {
+    "heading": "Explore by topic",
+    "intro": "Knowledge for your plant project: choose a topic to find relevant basics, comparisons and practical guides.",
+    "all": "All guides",
+    "reset": "Show all topics",
+    "count": "{{ count }} articles",
+    "substrate_wurzeln": {
+      "title": "Substrates & roots",
+      "description": "Understand substrates, compare ingredients and plan your own mixes."
+    },
+    "pflanzenpflege_arten": {
+      "title": "Plant care & species",
+      "description": "Explore Monstera, Alocasia and other plants by location and care needs."
+    },
+    "pflanzenlicht_leds": {
+      "title": "Plant lighting & LEDs",
+      "description": "Understand grow lights, light output, distance and lighting duration."
+    },
+    "pflanzgefasse_rankhilfen": {
+      "title": "Planters & climbing supports",
+      "description": "Choose suitable pots, self-watering systems and climbing supports."
+    },
+    "anzucht_aussaat": {
+      "title": "Propagation & sowing",
+      "description": "Sow seeds, understand germination and start fruit or vegetable plants."
+    },
+    "interieur_pflanzenwelten": {
+      "title": "Interiors & plant spaces",
+      "description": "Combine plants, lighting, pots and substrates into a coherent room design."
+    },
+    "leaferservice_hilfe": {
+      "title": "LEAFerservice & help",
+      "description": "Find news, shop navigation and guidance on accessible use."
+    }
   }
 }

@@ -90,6 +90,20 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
   assert.doesNotMatch(substrateWorld, /bis zu fünf auswählbare Komponenten/i);
 });
 
+test('mobile pro mixer keeps the pot above a readable vertical component list', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const potDesktop = liquid.indexOf('.leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }');
+  const responsive = liquid.indexOf('@media (max-width: 620px) {\n    .leafer-substrate__advanced-summary');
+  assert.ok(potDesktop > -1 && responsive > potDesktop, 'mobile pot sizing must override the desktop homepage rule');
+  const mobile = liquid.slice(responsive, liquid.indexOf('@media (max-width: 620px) and (max-height: 700px)', responsive));
+  assert.match(mobile, /customizer-grid \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-options \{[^}]*display: grid; grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-option \{[^}]*min-width: 0;[^}]*width: 100%/);
+  assert.doesNotMatch(mobile, /custom-options \{[^}]*overflow-x: auto/);
+  assert.match(mobile, /home-usp \.leafer-substrate__pot-slider \{[^}]*height: clamp\(165px, 26svh, 220px\)/);
+  assert.match(liquid, /The pot visualises loose substrate, never packaged product photography/);
+});
+
 test('layer reordering preserves shares while slider balancing stays at 100 percent', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
   let Selector;
@@ -205,6 +219,92 @@ test('interior zone transitions decode translated entities before safe text outp
 
 test('shop assistant keeps photo upload unavailable while voice remains accessible', () => {
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(liquid, /data-assistant-photo-input/);
+  assert.match(liquid, /accept="image\/jpeg,image\/png,image\/webp"/);
+  assert.match(liquid, /canvas\.toDataURL\('image\/jpeg', \.82\)/);
+  assert.match(liquid, /utterance\.rate = utterance\.lang\.startsWith\('de'\) \? \.82 : \.86/);
+  assert.match(liquid, /payload\.speech/);
+  assert.match(liquid, /this\.resumeVoice\(\)/);
   assert.doesNotMatch(liquid, /data-assistant-photo|type="file"/);
   assert.match(liquid, /data-assistant-voice/);
+});
+
+
+test('desktop assistant exposes hover actions and keeps the collapsed launcher away from the corner', () => {
+  const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(liquid, /data-assistant-action-chat/);
+  assert.match(liquid, /data-assistant-action-voice/);
+  assert.match(liquid, /data-assistant-action-photo/);
+  assert.match(liquid, /@media \(min-width: 701px\)[\s\S]*leaf-shop-assistant:hover[\s\S]*leaf-shop-assistant__quick-actions/);
+  assert.match(liquid, /right: max\(1\.5rem, env\(safe-area-inset-right\)\)/);
+  assert.match(liquid, /bottom: max\(1\.5rem, env\(safe-area-inset-bottom\)\)/);
+  assert.match(liquid, /leaf-shop-assistant\.is-open \.leaf-shop-assistant__quick-actions/);
+});
+
+test('voice assistant greets first, speaks slower and resumes listening after speech', () => {
+  const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(liquid, /data-voice-greeting=/);
+  assert.match(liquid, /startVoiceConversation\(\)/);
+  assert.match(liquid, /utterance\.rate = utterance\.lang\.startsWith\('de'\) \? \.82 : \.86/);
+  assert.match(liquid, /preferredVoice\(utterance\.lang\)/);
+  assert.match(liquid, /utterance\.onend[\s\S]*setTimeout\(\(\) => this\.resumeVoice\(\), 400\)/);
+  assert.match(liquid, /voice: Boolean\(speakResponse\)/);
+});
+
+test('assistant locale parity includes desktop actions and a spoken greeting', () => {
+  const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  const de = parseShopifyJson('locales/de.default.json').shop_assistant;
+  const en = parseShopifyJson('locales/en.json').shop_assistant;
+  for (const key of ['actions', 'action_chat', 'action_voice', 'action_photo', 'action_advisor', 'voice_greeting']) {
+    assert.equal(typeof de[key], 'string');
+    assert.equal(typeof en[key], 'string');
+    assert.ok(de[key].length > 0);
+    assert.ok(en[key].length > 0);
+  }
+});
+
+test('spoken assistant requests use conversational server instructions', () => {
+  const assistant = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8');
+  assert.match(assistant, /const voiceMode = body\?\.voice === true/);
+  assert.match(assistant, /This is an active spoken conversation/);
+  assert.match(assistant, /warm, natural and human/);
+});
+
+
+test('assistant product links encode verified handles and preserve the storefront locale', () => {
+  assert.equal(scope.productHref('soltech-grove™-led-grow-light', 'de'), '/products/soltech-grove%E2%84%A2-led-grow-light');
+  assert.equal(scope.productHref('soltech-grove™-led-grow-light', 'en'), '/en/products/soltech-grove%E2%84%A2-led-grow-light');
+  assert.equal(scope.productHref('../outside', 'de'), '');
+  assert.equal(scope.productHref('bad/handle', 'de'), '');
+  const links = scope.productLinks([{ canonical_title: 'Soltech Grove™ LED Grow Light', handle: 'soltech-grove™-led-grow-light' }], 'en');
+  assert.deepEqual(JSON.parse(JSON.stringify(links)), [{
+    label: 'Soltech Grove™ LED Grow Light',
+    href: '/en/products/soltech-grove%E2%84%A2-led-grow-light'
+  }]);
+});
+
+test('assistant frontend accepts only same-origin encoded product links', () => {
+  const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(liquid, /new URL\(link\.href, location\.origin\)/);
+  assert.match(liquid, /target\.origin !== location\.origin/);
+  assert.match(liquid, /\^\\\/\(\?:en\\\/\)\?products\\\/\[\^\/\?\#\]\+\$/);
+  assert.doesNotMatch(liquid, /\^\\\/products\\\/\[a-z0-9-\]\+\$/i);
+});
+
+
+test('assistant excludes products with fact-critical readiness blockers', () => {
+  assert.equal(scope.hasCriticalProductBlocker([{ rule: 'identity_confirmed' }]), true);
+  assert.equal(scope.hasCriticalProductBlocker([{ rule: 'supplier_confirmed' }]), true);
+  assert.equal(scope.hasCriticalProductBlocker([{ rule: 'safety_reviewed' }]), true);
+  assert.equal(scope.hasCriticalProductBlocker([{ rule: 'content_evidence_present' }]), true);
+  assert.equal(scope.hasCriticalProductBlocker([{ rule: 'seo_title_present' }, { rule: 'media_present' }, { rule: 'inventory_sellable' }]), false);
+  assert.equal(scope.hasCriticalProductBlocker([]), false);
+});
+
+
+test('assistant factual context requires sourced approved knowledge and sourced articles', () => {
+  const assistant = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8');
+  assert.match(assistant, /refs\.length > 0 && Number\(row\.factuality_score \|\| 0\) >= 0\.9/);
+  assert.match(assistant, /Array\.isArray\(row\.source_citations\) && row\.source_citations\.length > 0/);
+  assert.doesNotMatch(assistant, /if \(!hasImage\) return true;/);
 });
