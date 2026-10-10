@@ -896,6 +896,7 @@
     "segment_percent": "[name], [share] Prozent",
     "drag_hint": "Schichten im Topf ziehen, um nur die Ansicht zu sortieren. Die Prozentwerte bleiben unverändert.",
     "choose_components": "Komponenten auswählen",
+    "component_scroll_hint": "Scrolle nach unten, um weitere Komponenten auszuwählen.",
     "component_role": "Rezepturbestandteil",
     "fallback_components": "Kokosfasern|Pinienrinde|Perlite|Bims|Lavagranulat|Sphagnum-Moos|Wurmhumus|Pflanzenkohle|Blähton|Algenkalk|Mykorrhiza|Aktivierter Biokohle-Kompost",
     "hint_empty": "Wähle mindestens eine Komponente, um deine eigene Verteilung zu starten.",
@@ -998,7 +999,7 @@
     "action_chat": "Chat öffnen",
     "action_voice": "Sprachgespräch",
     "action_photo": "Pflanzenfoto",
-    "action_advisor": "LEAF Planer"
+    "action_advisor": "LEAF Planer",
     "voice_listening": "Ich höre zu …",
     "speak": "Antwort vorlesen",
     "voice_connecting": "Ich verbinde deinen Sprachdialog …",
