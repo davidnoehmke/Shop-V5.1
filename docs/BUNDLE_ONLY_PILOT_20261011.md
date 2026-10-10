@@ -69,3 +69,20 @@ Do **not** rely on CSS, Liquid, the product status, a variant metafield, or a hi
 - Confirm whether Blumat is available under a wholesale/supplier agreement (and define the actual kit/reservoir SKU).
 - Confirm reliable physical stock, component procurement prices, logistics and product photo rights.
 - Do not run a bulk product status change, auto-publish new products, turn on inventory tracking, or merge code with red CI to force rollout.
+
+## Shopify Admin GraphQL bundle verification (2026-10-11)
+
+Read-only data: `ProductVariant.requiresComponents`, `availableForSale`, `inventoryQuantity` and `Product.bundleComponents`.
+
+| Live Shopify bundle | requiresComponents | Shopify components shown | API says availableForSale | Follow-up |
+| --- | --- | ---: | --- | --- |
+| Anzucht Starter Set | true | 4, matching SSOT | true | Cart/order and inventory verification still needed |
+| Anzucht Pro Set | true | 5, matching SSOT | true | Cart/order and inventory verification still needed |
+| Aroid Umtopf-Set | true | **0** | true | Investigate why bundle components are absent in Admin API readback |
+| Efeutute Hänge-Set | true | **0** | true | Investigate why bundle components are absent in Admin API readback |
+| Sukkulenten Trio Set | true | **0** | true | Investigate why bundle components are absent in Admin API readback |
+
+Each inspected Shopify parent variant reports `inventoryQuantity=0` and `inventoryPolicy=CONTINUE`. This does not prove a real physical stock quantity. `availableForSale=true` is not an end-to-end checkout or fulfillment test. Components reported as zero in the Admin API might reflect an incomplete native-bundle definition or a different bundle integration; investigate before deciding to rebuild or change a production offer.
+
+The live readback is stored in SSOT `product_bundles.merchandising.pilot.shopify_native_bundle_readback`, with checkout and automated inventory test explicitly `not_performed`. Do not auto-reconcile or auto-replace an active bundle merely because the API field is empty.
+
