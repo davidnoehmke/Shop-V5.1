@@ -159,7 +159,7 @@ test('retrieval includes explanations beyond a full database page', async () => 
 });
 
 test('relevant article passages after the old 1800-character prefix remain available', async () => {
-  const app = runtime('', '', { content_articles: [{ id: 'a1', title: 'Lichtplanung', handle: 'licht', status: 'published', body_html: `<p>${'Einleitung ohne die konkrete Antwort. '.repeat(90)}</p><p>Alocasia braucht eine Standortprüfung und passende Beleuchtung; mehr Gießen ersetzt kein Licht.</p>` }] });
+  const app = runtime('', '', { content_articles: [{ id: 'a1', title: 'Lichtplanung', handle: 'licht', status: 'published', source_citations: ['https://example.test/lighting'], body_html: `<p>${'Einleitung ohne die konkrete Antwort. '.repeat(90)}</p><p>Alocasia braucht eine Standortprüfung und passende Beleuchtung; mehr Gießen ersetzt kein Licht.</p>` }] });
   const body = await (await app.send({ message: 'Was bedeutet Beleuchtung für Alocasia?' })).json();
   assert.match(body.answer, /mehr Gießen ersetzt kein Licht/);
 });
@@ -189,7 +189,7 @@ function assistant(extra = {}) {
 }
 
 test('browser speech is slower and does not listen until the greeting ends', async () => {
-  const { instance, window } = assistant();
+  const { instance, window, timers } = assistant();
   let resumes = 0;
   instance.resumeVoice = () => { resumes++; };
   await instance.startVoice();
@@ -197,6 +197,8 @@ test('browser speech is slower and does not listen until the greeting ends', asy
   assert.equal(instance.voiceFallback, true);
   assert.equal(resumes, 0);
   window.lastSpeech.onend();
+  assert.equal(resumes, 0);
+  timers.get(instance.voiceRestartTimer)();
   assert.equal(resumes, 1);
 });
 
@@ -314,4 +316,22 @@ test('WebRTC setup uses only the store backend and starts listening without repl
   const serialized = JSON.stringify(context);
   assert.match(serialized, /Bims lockert die Mischung/);
   assert.doesNotMatch(serialized, /internal-strategy|private-review|private-timestamp/);
+});
+
+
+test('unsourced and low-confidence knowledge stays out of model and fallback context', async () => {
+  const app = runtime('key', '', {
+    knowledge_qa: [
+      { id: 'qa1', question: 'Bims Quellen', answer: 'Approved sourced answer.', approval_status: 'approved', source_refs: ['https://example.test/bims'], factuality_score: .95 },
+      { id: 'qa2', question: 'Bims Quellen', answer: 'UNSOURCED', approval_status: 'approved', source_refs: [], factuality_score: 1 },
+      { id: 'qa3', question: 'Bims Quellen', answer: 'LOW-CONFIDENCE', approval_status: 'approved', source_refs: ['https://example.test/bims'], factuality_score: .5 }
+    ],
+    content_articles: [
+      { id: 'a1', title: 'Bims', body_html: '<p>UNSOURCED-ARTICLE</p>', status: 'published', source_citations: [] }
+    ]
+  });
+  const response = await app.send({ message: 'Bims Quellen', locale: 'de' });
+  assert.equal(response.status, 200);
+  assert.match(app.requests[0].instructions, /Approved sourced answer/);
+  assert.doesNotMatch(app.requests[0].instructions, /UNSOURCED|LOW-CONFIDENCE/);
 });

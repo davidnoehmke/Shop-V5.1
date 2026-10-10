@@ -758,9 +758,9 @@
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     },
     "solution": {
-      "eyebrow": "LEAFerservice · custom substrate · lighting · planters · plants",
+      "eyebrow": "Custom substrate",
       "heading": "Your plant. Your substrate mix.",
-      "text": "Build your recipe live in the pot: adjust proportions with sliders, move layers for a clearer visual overview and add the finished custom mix directly to cart. Explore plant lighting, planters, houseplants, propagation and care for complete setups.",
+      "text": "Build your substrate mix: choose ingredients, adjust proportions with sliders and order your custom recipe.",
       "primary": "Build your own mix",
       "secondary": "Plan a plant project",
       "world_heading": "The product worlds around your plant project",
@@ -904,6 +904,7 @@
     "segment_percent": "[name], [share] percent",
     "drag_hint": "Drag layers in the pot to reorder the visual display only. Percentages stay unchanged.",
     "choose_components": "Choose components",
+    "component_scroll_hint": "Scroll down to choose more components.",
     "component_role": "Recipe component",
     "fallback_components": "Coconut fibre|Pine bark|Perlite|Pumice|Lava granules|Sphagnum moss|Worm castings|Biochar|Expanded clay|Algae lime|Mycorrhiza|Activated biochar compost",
     "hint_empty": "Choose at least one component to start your custom distribution.",
@@ -971,11 +972,6 @@
   },
   "shop_assistant": {
     "voice_speaking": "LEAF is answering …",
-    "photo": "Add plant photo",
-    "photo_remove": "Remove photo",
-    "photo_ready": "Photo ready for analysis",
-    "photo_too_large": "Please use a JPG, PNG or WebP up to 10 MB.",
-    "photo_message": "Plant photo sent for analysis",
     "voice_speaking": "I am speaking. You can interrupt me at any time.",
     "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
@@ -1012,7 +1008,7 @@
     "action_chat": "Open chat",
     "action_voice": "Voice conversation",
     "action_photo": "Plant photo",
-    "action_advisor": "LEAF Planner"
+    "action_advisor": "LEAF Planner",
     "voice_listening": "Listening …",
     "speak": "Read answer aloud",
     "voice_connecting": "Connecting your voice conversation…",
