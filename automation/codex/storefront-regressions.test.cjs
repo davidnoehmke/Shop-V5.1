@@ -242,10 +242,7 @@ test('interior zone transitions decode translated entities before safe text outp
 
 test('shop assistant keeps photo upload unavailable while voice remains accessible', () => {
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
-  assert.match(liquid, /data-assistant-photo-input/);
-  assert.match(liquid, /accept="image\/jpeg,image\/png,image\/webp"/);
-  assert.match(liquid, /canvas\.toDataURL\('image\/jpeg', \.82\)/);
-  assert.match(liquid, /utterance\.rate = utterance\.lang\.startsWith\('de'\) \? \.82 : \.86/);
+  assert.match(liquid, /utterance\.rate = \.78/);
   assert.match(liquid, /payload\.speech/);
   assert.match(liquid, /this\.resumeVoice\(\)/);
   assert.doesNotMatch(liquid, /data-assistant-photo|type="file"/);
@@ -257,7 +254,6 @@ test('desktop assistant exposes hover actions and keeps the collapsed launcher a
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /data-assistant-action-chat/);
   assert.match(liquid, /data-assistant-action-voice/);
-  assert.match(liquid, /data-assistant-action-photo/);
   assert.match(liquid, /@media \(min-width: 701px\)[\s\S]*leaf-shop-assistant:hover[\s\S]*leaf-shop-assistant__quick-actions/);
   assert.match(liquid, /right: max\(1\.5rem, env\(safe-area-inset-right\)\)/);
   assert.match(liquid, /bottom: max\(1\.5rem, env\(safe-area-inset-bottom\)\)/);
@@ -268,7 +264,7 @@ test('voice assistant greets first, speaks slower and resumes listening after sp
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /data-voice-greeting=/);
   assert.match(liquid, /startVoiceConversation\(\)/);
-  assert.match(liquid, /utterance\.rate = utterance\.lang\.startsWith\('de'\) \? \.82 : \.86/);
+  assert.match(liquid, /utterance\.rate = \.78/);
   assert.match(liquid, /preferredVoice\(utterance\.lang\)/);
   assert.match(liquid, /utterance\.onend[\s\S]*setTimeout\(\(\) => this\.resumeVoice\(\), 400\)/);
   assert.match(liquid, /voice: Boolean\(speakResponse\)/);

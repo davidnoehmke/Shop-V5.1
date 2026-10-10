@@ -972,11 +972,6 @@
   },
   "shop_assistant": {
     "voice_speaking": "LEAF is answering …",
-    "photo": "Add plant photo",
-    "photo_remove": "Remove photo",
-    "photo_ready": "Photo ready for analysis",
-    "photo_too_large": "Please use a JPG, PNG or WebP up to 10 MB.",
-    "photo_message": "Plant photo sent for analysis",
     "voice_speaking": "I am speaking. You can interrupt me at any time.",
     "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
