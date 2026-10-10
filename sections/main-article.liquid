@@ -41,6 +41,9 @@
   assign cta_heading = section.settings.cta_heading | default: cta_heading_default
   assign cta_label = section.settings.cta_label | default: cta_label_default
   assign article_alt = article.image.alt | default: article.title
+  assign article_knowledge_atoms = article.metafields.leafer.knowledge_atoms.value
+  assign article_solution_links = article.metafields.leafer.solution_links.value
+  assign article_related_products = article.metafields.leafer.related_products.value
 %}
 
 <article class="main-article">
@@ -90,8 +93,25 @@
     </nav>
   </section>
 
+  {% if article_knowledge_atoms != blank %}
+    <section class="main-article__knowledge page-width" aria-labelledby="ArticleKnowledge-{{ section.id }}">
+      <div class="main-article__knowledge-head">
+        <p>{% if request.locale.iso_code == 'de' %}Wissensprofil{% else %}Knowledge profile{% endif %}</p>
+        <h2 id="ArticleKnowledge-{{ section.id }}">{% if request.locale.iso_code == 'de' %}Die wichtigsten Faktoren auf einen Blick{% else %}The key factors at a glance{% endif %}</h2>
+      </div>
+      <div class="main-article__knowledge-grid">
+        {% for atom in article_knowledge_atoms %}
+          <article class="main-article__knowledge-card">
+            <strong>{{ atom.label | escape }}</strong>
+            <p>{{ atom.value | escape }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
   <div class="main-article__layout page-width">
-    {% assign article_body = article.content | replace: 'href="/en/collections/pflanzenbeleuchtung"', 'href="/en/collections/interieur-solutions"' | replace: 'href="/collections/pflanzenbeleuchtung"', 'href="/collections/interieur-solutions"' %}
+    {% assign article_body = article.content %}
     <div class="main-article__body rte" data-article-body>{{ article_body }}</div>
 
     <aside class="main-article__rail">
@@ -103,6 +123,59 @@
       {% endif %}
     </aside>
   </div>
+
+  {% if article_solution_links != blank %}
+    <section class="main-article__solutions page-width" aria-labelledby="ArticleSolutions-{{ section.id }}">
+      <div class="main-article__solutions-head">
+        <p>{% if request.locale.iso_code == 'de' %}Problem → Lösung{% else %}Problem → solution{% endif %}</p>
+        <h2 id="ArticleSolutions-{{ section.id }}">{% if request.locale.iso_code == 'de' %}Passende nächste Schritte{% else %}Practical next steps{% endif %}</h2>
+      </div>
+      <div class="main-article__solutions-grid">
+        {% for solution in article_solution_links %}
+          {% liquid
+            assign solution_url = solution.url
+            assign solution_prefix = solution_url | slice: 0, 1
+            assign solution_locale_prefix = solution_url | slice: 0, routes.root_url.size
+            if routes.root_url != '/' and solution_prefix == '/' and solution_locale_prefix != routes.root_url
+              assign solution_url = solution_url | prepend: routes.root_url
+            endif
+          %}
+          <a class="main-article__solution-card" href="{{ solution_url | escape }}">
+            <span>{{ solution.problem | escape }}</span>
+            <strong>{{ solution.label | escape }}</strong>
+            <em aria-hidden="true">→</em>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if article_related_products != blank %}
+    <section class="main-article__products page-width" aria-labelledby="ArticleProducts-{{ section.id }}">
+      <div class="main-article__products-head">
+        <p>{% if request.locale.iso_code == 'de' %}Verknüpfte Lösungen{% else %}Linked solutions{% endif %}</p>
+        <h2 id="ArticleProducts-{{ section.id }}">{% if request.locale.iso_code == 'de' %}Produkte aus diesem Ratgeber{% else %}Products from this guide{% endif %}</h2>
+      </div>
+      <div class="main-article__products-grid">
+        {% for linked_product in article_related_products limit: 8 %}
+          {% if linked_product.url == blank or linked_product.title == blank %}{% continue %}{% endif %}
+          {% assign linked_product_alt = linked_product.featured_image.alt | default: linked_product.title %}
+          <article class="main-article__product-card">
+            <a class="main-article__product-media" href="{{ linked_product.url }}">
+              {% if linked_product.featured_image != blank %}
+                {{ linked_product.featured_image | image_url: width: 720 | image_tag: widths: '260, 420, 560, 720', sizes: '(max-width: 620px) 100vw, (max-width: 900px) 50vw, 25vw', loading: 'lazy', alt: linked_product_alt }}
+              {% endif %}
+            </a>
+            <div>
+              <h3><a href="{{ linked_product.url }}">{{ linked_product.title | escape }}</a></h3>
+              {% if linked_product.metafields.leafer.intro.value != blank %}<p>{{ linked_product.metafields.leafer.intro.value | truncate: 150 | escape }}</p>{% endif %}
+              <a href="{{ linked_product.url }}">{% if request.locale.iso_code == 'de' %}Lösung ansehen{% else %}View solution{% endif %} <span aria-hidden="true">→</span></a>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 
   {% if section.settings.show_cta %}
     <section class="main-article__cta page-width" aria-labelledby="ArticleCta-{{ section.id }}">
@@ -228,6 +301,38 @@
   .main-article__back { display: inline-flex; align-items: center; gap: .45rem; color: var(--accent); font-weight: 800; text-decoration: none; }
   .main-article__tags { display: flex; flex-wrap: wrap; gap: .45rem; }
   .main-article__tags span { padding: .4rem .65rem; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: .72rem; }
+  .main-article__knowledge, .main-article__solutions, .main-article__products { margin-top: clamp(2.5rem, 6vw, 5rem); }
+  .main-article__knowledge-head > p, .main-article__solutions-head > p, .main-article__products-head > p { margin: 0 0 .65rem; color: var(--accent); font-size: .75rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+  .main-article__knowledge-head h2, .main-article__solutions-head h2, .main-article__products-head h2 { margin: 0 0 1.25rem; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; }
+  .main-article__knowledge-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .85rem; }
+  .main-article__knowledge-card, .main-article__solution-card, .main-article__product-card { min-width: 0; overflow-wrap: anywhere; }
+  .main-article__solution-card:focus-visible, .main-article__product-card a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .main-article__knowledge-card { padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-article__knowledge-card strong { display: block; margin-bottom: .4rem; color: var(--accent); font-size: .82rem; }
+  .main-article__knowledge-card p { margin: 0; color: var(--muted); font-size: .9rem; line-height: 1.55; }
+  .main-article__solutions-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; }
+  .main-article__solution-card { display: grid; grid-template-columns: 1fr auto; gap: .25rem 1rem; padding: 1rem 1.1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); color: inherit; text-decoration: none; }
+  .main-article__solution-card span { grid-column: 1 / -1; color: var(--muted); font-size: .78rem; }
+  .main-article__solution-card strong { font-size: .96rem; }
+  .main-article__solution-card em { color: var(--accent); font-style: normal; font-weight: 900; }
+  .main-article__products-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .85rem; }
+  .main-article__product-card { overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
+  .main-article__product-media { display: block; aspect-ratio: 1 / 1; overflow: hidden; background: var(--accent-soft); }
+  .main-article__product-media img { width: 100%; height: 100%; object-fit: cover; }
+  .main-article__product-card > div { padding: .95rem; }
+  .main-article__product-card h3 { margin: 0; font-size: 1rem; line-height: 1.25; }
+  .main-article__product-card h3 a, .main-article__product-card > div > a { color: inherit; text-decoration: none; }
+  .main-article__product-card p { margin: .55rem 0; color: var(--muted); font-size: .82rem; line-height: 1.5; }
+  .main-article__product-card > div > a { color: var(--accent); font-size: .8rem; font-weight: 800; }
+  .main-article__body .article-data-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1.2rem 0 2rem; }
+  .main-article__body .article-data-grid > div { padding: .9rem 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); }
+  .main-article__body .article-data-grid strong, .main-article__body .article-data-grid span { display: block; }
+  .main-article__body .article-data-grid strong { margin-bottom: .25rem; color: var(--accent); }
+  .main-article__body .article-data-grid span { color: var(--muted); font-size: .88rem; }
+  .main-article__body figure { margin: 1.75rem 0; }
+  .main-article__body figcaption { margin-top: .55rem; color: var(--muted); font-size: .8rem; line-height: 1.5; }
+  .main-article__body .article-solution-stack { display: grid; gap: .75rem; }
+  .main-article__body .article-solution-stack p { margin: 0; padding: .95rem 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); }
   .main-article__cta { display: flex; align-items: center; justify-content: space-between; gap: clamp(1.5rem, 5vw, 4rem); margin-top: var(--space-section); padding: clamp(1.5rem, 5vw, 4rem); border-radius: var(--radius-large); background: var(--text); color: var(--background); }
   .main-article__cta > div { max-width: 760px; }
   .main-article__cta > div > p:first-child { color: var(--accent-soft); }
@@ -289,11 +394,14 @@
     .main-article__rail { position: static; grid-row: 1; }
     .main-article__cta { align-items: flex-start; flex-direction: column; }
     .main-article__related-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-article__knowledge-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .main-article__products-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   }
   @media (max-width: 620px) {
     .main-article__related-grid { grid-template-columns: 1fr; }
     .main-article__comment-fields { grid-template-columns: 1fr; }
     .main-article__cta .button { width: 100%; }
+    .main-article__knowledge-grid, .main-article__solutions-grid, .main-article__products-grid, .main-article__body .article-data-grid { grid-template-columns: 1fr; }
   }
   .main-article__body .interior-guide__steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; padding: 0; list-style: none; }
   .interior-guide__steps li, .interior-guide__note, .interior-guide__scenarios section { padding: 1rem; border: 1px solid var(--border); background: var(--surface); }

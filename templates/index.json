@@ -449,27 +449,6 @@
         "archive_link": ""
       }
     },
-    "loox_reviews": {
-      "type": "apps",
-      "blocks": {
-        "loox_reviews_home": {
-          "type": "shopify://apps/loox-reviews/blocks/loox-agg-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
-          "settings": {
-            "only_photos": false,
-            "hide_thumbnails": false,
-            "product_handle": "",
-            "aggregated": true,
-            "data-limit": 6,
-            "maxwidth": 1280,
-            "is_sample": false
-          }
-        }
-      },
-      "block_order": [
-        "loox_reviews_home"
-      ],
-      "settings": {}
-    },
     "brand_story": {
       "type": "brand-story",
       "settings": {
@@ -484,6 +463,10 @@
         "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
         "button_label": "Rückruf anfragen"
       }
+    },
+    "led_home_finder": {
+      "type": "leaf-led-home-finder",
+      "settings": {}
     }
   },
   "order": [
@@ -491,10 +474,10 @@
     "substrate_configurator",
     "home_collection_journey",
     "trust",
+    "led_home_finder",
     "home_guides",
     "faq",
     "community",
-    "loox_reviews",
     "brand_story",
     "phone_call"
   ]

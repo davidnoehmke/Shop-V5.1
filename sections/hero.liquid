@@ -150,7 +150,29 @@
     .hero__benefits { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-top: 1.4rem; }
   }
 
-  @media (max-width: 420px) { .hero { min-height: clamp(680px, 92svh, 730px); } .hero__image { height: 34%; } .hero__content { padding-top: 29svh; } }
+  @media (max-width: 700px) {
+    .hero { min-height: auto; background: #101f19; color: #f5f7f1; isolation: isolate; }
+    .hero__image { height: 100%; object-position: 58% 24%; opacity: .56; }
+    .hero__shade { background: linear-gradient(180deg, rgba(10,28,21,.12) 0%, rgba(10,28,21,.55) 25%, #101f19 68%); }
+    .hero__inner { min-height: 640px; padding-block: clamp(7rem, 22svh, 12rem) 1.4rem; align-content: end; }
+    .hero__content { padding-top: 0; }
+    .hero__eyebrow { color: #b8e4b9; letter-spacing: .16em; font-size: .7rem; }
+    .hero h1 { max-width: 17ch; color: #fff; font-size: clamp(2.05rem, 8vw, 3.2rem); line-height: 1.08; letter-spacing: -.045em; text-wrap: balance; }
+    .hero__text { color: #e2eae3; font-size: .95rem; line-height: 1.55; }
+    .hero__buttons { grid-template-columns: 1fr; }
+    .hero__buttons .button { min-height: 50px; border-radius: 14px; justify-content: center; }
+    .hero .button { background: #d4f1cc; border-color: #d4f1cc; color: #12261b; }
+    .hero .button--secondary { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.5); color: #fff; backdrop-filter: blur(10px); }
+    .hero__benefits { gap: .65rem; margin-top: 1.25rem; }
+    .hero__benefit { min-width: 0; max-width: none; padding: .75rem; border: 1px solid rgba(255,255,255,.17); border-radius: 12px; background: rgba(255,255,255,.055); }
+    .hero__benefit svg { width: 24px; }
+    .hero__benefit strong { font-size: .75rem; }
+    .hero__benefit span { color: #d2ded4; font-size: .69rem; }
+    .hero__brand-lockup { max-width: 170px; }
+    .hero__brand-lockup img { max-height: 50px; object-fit: contain; object-position: left center; }
+  }
+  @media (max-width: 420px) { .hero { min-height: auto; } .hero__image { height: 100%; } .hero__content { padding-top: 0; } .hero__inner { min-height: 650px; } }
+  @media (prefers-reduced-motion: reduce) { .hero__image { animation: none; transform: none; } }
 {% endstylesheet %}
 
 {% schema %}

@@ -65,10 +65,20 @@
     "leaf_guide": {
       "type": "leaf-collection-guide",
       "settings": {}
+    },
+    "led_landing": {
+      "type": "led-collection-landing",
+      "settings": {}
+    },
+    "led_accessories": {
+      "type": "led-accessory-upsell",
+      "settings": {}
     }
   },
   "order": [
     "breadcrumbs",
+    "led_landing",
+    "led_accessories",
     "main",
     "trust",
     "leaf_guide",

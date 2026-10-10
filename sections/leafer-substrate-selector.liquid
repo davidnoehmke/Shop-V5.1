@@ -147,8 +147,10 @@
                   {% for option_value in profile_option.values %}
                     {% liquid
                       assign matched_profile_block = blank
+                      assign option_key = option_value | strip | handleize
                       for profile_block in profile_blocks
-                        if profile_block.settings.option_value == option_value
+                        assign profile_key = profile_block.settings.option_value | strip | handleize
+                        if profile_key == option_key
                           assign matched_profile_block = profile_block
                           break
                         endif
@@ -366,6 +368,14 @@
 
             <p class="leafer-substrate__availability" data-availability data-state="{% if selected_variant.available %}available{% else %}unavailable{% endif %}" aria-live="polite">
               {% if selected_variant.available %}{{ section.settings.available_label | escape }}{% else %}{{ section.settings.unavailable_label | escape }}{% endif %}
+            </p>
+
+            <p class="leafer-substrate__packing-note" role="note">
+              {% if request.locale.iso_code == 'de' %}
+                <strong>Einzeln verpackte Bestandteile:</strong> Deine ausgewählten Substratkomponenten werden getrennt portioniert und verpackt geliefert – nicht fertig vorgemischt. Du mischst sie selbst nach deiner Rezeptur. Je nach Umfang deiner Bestellung erfolgt der Versand in einem oder mehreren Paketen.
+              {% else %}
+                <strong>Individually packed ingredients:</strong> Your selected substrate components are portioned and packed separately, not pre-mixed. Combine them yourself using your recipe. Depending on the size of your order, delivery may consist of one or more parcels.
+              {% endif %}
             </p>
 
             <div class="leafer-substrate__buy-row">
@@ -609,7 +619,7 @@
   .leafer-substrate__hero-media { aspect-ratio: 5 / 4; display: grid; place-items: center; overflow: hidden; padding: clamp(1rem, 4vw, 3rem); border: 1px solid var(--border); border-radius: var(--radius-large); background: #f3efe5; }
   .leafer-substrate__hero-media img, .leafer-substrate__hero-media svg { width: 100%; height: 100%; object-fit: contain; object-position: center; }
 
-  .leafer-substrate__commerce { margin-top: clamp(3rem, 8vw, 7rem); display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr); gap: clamp(1rem, 3vw, 2rem); align-items: start; }
+  .leafer-substrate__commerce { margin-top: clamp(3rem, 8vw, 7rem); display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); gap: clamp(1rem, 3vw, 2rem); align-items: start; }
   .leafer-substrate__purchase-panel, .leafer-substrate__recipe-panel { min-width: 0; padding: clamp(1.25rem, 3vw, 2.25rem); border: 1px solid var(--border); border-radius: var(--radius-large); }
   .leafer-substrate__purchase-panel { background: var(--surface); }
   .leafer-substrate__recipe-panel { position: sticky; top: 1rem; background: linear-gradient(145deg, var(--text), color-mix(in srgb, var(--text), var(--accent) 18%)); color: var(--background); box-shadow: 0 18px 48px color-mix(in srgb, var(--text), transparent 82%); }
@@ -633,10 +643,10 @@
   .leafer-substrate__options--volumes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .leafer-substrate__choice { position: relative; min-width: 0; }
   .leafer-substrate__choice input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
-  .leafer-substrate__choice label { min-height: 116px; display: flex; flex-direction: column; justify-content: center; gap: .28rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+  .leafer-substrate__choice label { min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: .38rem; padding: .85rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
   .leafer-substrate__choice label small { color: var(--accent); font-size: .64rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
   .leafer-substrate__choice label strong { font-size: .92rem; line-height: 1.2; }
-  .leafer-substrate__choice label span { color: var(--muted); font-size: .75rem; line-height: 1.4; }
+  .leafer-substrate__choice label span { display: block; color: var(--muted); font-size: .8rem; line-height: 1.45; }
   .leafer-substrate__choice input:checked + label { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 93%); box-shadow: inset 0 0 0 1px var(--accent); }
   .leafer-substrate__choice input:focus-visible + label { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: 3px; }
   .leafer-substrate__choice--volume label { min-height: 58px; align-items: center; padding: .75rem; text-align: center; }
@@ -716,7 +726,7 @@
   .leafer-substrate__pot-slider { position: relative; width: min(100%, 220px); height: 300px; margin-inline: auto; padding: 1rem 1.05rem 1.15rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 0; clip-path: polygon(4% 0, 96% 0, 82% 100%, 18% 100%); background: linear-gradient(90deg, color-mix(in srgb, var(--text), transparent 82%), color-mix(in srgb, var(--background), var(--text) 7%) 16% 84%, color-mix(in srgb, var(--text), transparent 80%)); box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--text), transparent 14%), inset 0 0 28px color-mix(in srgb, var(--text), transparent 72%), 0 18px 34px color-mix(in srgb, var(--text), transparent 84%); isolation: isolate; }
   .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
   .leafer-substrate__pot-rim { position: absolute; z-index: 4; top: .35rem; right: 7%; left: 7%; height: 18px; border: 3px solid color-mix(in srgb, var(--text), transparent 18%); border-radius: 50%; background: color-mix(in srgb, var(--background), var(--text) 10%); box-shadow: inset 0 3px 7px color-mix(in srgb, var(--text), transparent 82%); pointer-events: none; }
-  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: .68rem; font-weight: 850; text-align: left; text-shadow: 0 1px 3px rgba(0,0,0,.55); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: clamp(.85rem, 1.1vw, 1rem); font-weight: 850; text-align: center; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 0 8px rgba(0,0,0,.7); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
   .leafer-substrate__pot-segment:nth-child(2n) { background-color: #667056; }
   .leafer-substrate__pot-segment:nth-child(3n) { background-color: #9a8665; }
   .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
@@ -756,47 +766,49 @@
   .leafer-substrate__pro-metrics { margin-top: .6rem; display: flex; flex-wrap: wrap; gap: .35rem; }
   .leafer-substrate__pro-metrics span { padding: .3rem .45rem; border-radius: 999px; background: color-mix(in srgb, var(--accent), transparent 91%); font-weight: 800; }
   .leafer-substrate__pro-feedback small { margin-top: .55rem; display: block; color: var(--muted); }
+  .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }
   @media (max-width: 620px) {
     .leafer-substrate__advanced-summary { min-height: 60px; padding: .72rem .8rem; }
     .leafer-substrate__advanced-summary em { display: none; }
     .leafer-substrate__advanced-body { padding: 0 .45rem .5rem; }
-    .leafer-substrate__customizer { padding: .62rem; border-radius: 14px; }
-    .leafer-substrate__customizer-head { display: grid; gap: .2rem; }
-    .leafer-substrate__customizer-head h2 { font-size: 1.08rem; }
+    .leafer-substrate__customizer { padding: .8rem; border-radius: 14px; }
+    .leafer-substrate__customizer-head { display: grid; gap: .25rem; }
+    .leafer-substrate__customizer-head h2 { font-size: clamp(1.05rem, 4.4vw, 1.35rem); line-height: 1.25; overflow-wrap: anywhere; }
     .leafer-substrate__customizer-head > p { display: none; }
-    .leafer-substrate__customizer-grid { margin-top: .55rem; grid-template-columns: minmax(104px, .4fr) minmax(0, .6fr); gap: .5rem; align-items: start; }
+    /* Restore the proven mobile flow: pot first, full-width ingredient list below. */
+    .leafer-substrate__customizer-grid { margin-top: .8rem; grid-template-columns: minmax(0, 1fr); gap: 1rem; align-items: start; }
     .leafer-substrate__pot-slider,
-    .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: 100%; height: min(31svh, 220px); min-height: 180px; padding: .72rem .6rem .78rem; }
-    .leafer-substrate__pot-segment { padding-inline: .25rem; font-size: .56rem; }
-    .leafer-substrate__customizer-total { margin-top: .3rem; font-size: .68rem; }
+    .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 185px); height: clamp(165px, 26svh, 220px); min-height: 0; padding: .72rem .6rem .78rem; }
+    .leafer-substrate__pot-segment { padding-inline: .25rem; font-size: .8rem; }
+    .leafer-substrate__customizer-total { margin-top: .3rem; font-size: .76rem; }
     .leafer-substrate__pot-drag-hint { display: none; }
-    .leafer-substrate__component-picker { align-self: start; }
-    .leafer-substrate__component-picker-head { margin-bottom: .3rem; font-size: .68rem; }
-    .leafer-substrate__custom-options { display: flex; gap: .35rem; max-height: 62px; overflow-x: auto; overflow-y: hidden; padding: 0 0 .15rem; scroll-snap-type: x proximity; scrollbar-width: none; }
-    .leafer-substrate__custom-options::-webkit-scrollbar { display: none; }
-    .leafer-substrate__custom-option { min-width: 124px; min-height: 56px; flex: 0 0 124px; grid-template-columns: 38px minmax(0, 1fr) auto; gap: .38rem; padding: .35rem; scroll-snap-align: start; }
-    .leafer-substrate__material-thumb { width: 38px; height: 38px; }
+    .leafer-substrate__component-picker { min-width: 0; align-self: stretch; }
+    .leafer-substrate__component-picker-head { margin-bottom: .55rem; font-size: .82rem; }
+    .leafer-substrate__custom-options { display: grid; grid-template-columns: minmax(0, 1fr); gap: .5rem; max-height: none; overflow: visible; padding: 0; }
+    .leafer-substrate__custom-option { min-width: 0; min-height: 62px; width: 100%; grid-template-columns: 42px minmax(0, 1fr) 28px; gap: .7rem; padding: .55rem .65rem; }
+    .leafer-substrate__material-thumb { width: 42px; height: 42px; }
+    .leafer-substrate__custom-option strong { font-size: .82rem; line-height: 1.3; overflow-wrap: anywhere; }
     .leafer-substrate__custom-option small { display: none; }
-    .leafer-substrate__slider-list { margin-top: .35rem; gap: .25rem; max-height: none; overflow: visible; padding-right: 0; }
-    .leafer-substrate__mix-slider { min-height: 38px; padding: .28rem .38rem; grid-template-columns: minmax(0, 1fr) auto; gap: .12rem .38rem; }
+    .leafer-substrate__slider-list { margin-top: .8rem; gap: .5rem; max-height: none; overflow: visible; padding-right: 0; }
+    .leafer-substrate__mix-slider { min-height: 66px; padding: .55rem .65rem; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .5rem; }
     .leafer-substrate__mix-slider-thumb { display: none; }
-    .leafer-substrate__mix-slider-name { font-size: .65rem; }
-    .leafer-substrate__mix-slider output { font-size: .66rem; }
-    .leafer-substrate__mix-slider input { grid-column: 1 / -1; min-height: 24px; }
-    .leafer-substrate__customizer-hint { margin-top: .3rem; font-size: .62rem; line-height: 1.3; }
-    .leafer-substrate__pro-feedback { max-height: 68px; overflow: auto; margin-top: .35rem; padding: .45rem; }
+    .leafer-substrate__mix-slider-name { font-size: .78rem; white-space: normal; overflow-wrap: anywhere; }
+    .leafer-substrate__mix-slider output { font-size: .78rem; }
+    .leafer-substrate__mix-slider input { grid-column: 1 / -1; min-height: 30px; }
+    .leafer-substrate__customizer-hint { margin-top: .55rem; font-size: .76rem; line-height: 1.4; }
+    .leafer-substrate__pro-feedback { max-height: none; overflow: visible; margin-top: .55rem; padding: .65rem; }
   }
 
   @media (max-width: 620px) and (max-height: 700px) {
     .leafer-substrate__pot-slider,
-    .leafer-substrate--home-usp .leafer-substrate__pot-slider { height: 26svh; min-height: 158px; }
+    .leafer-substrate--home-usp .leafer-substrate__pot-slider { height: 160px; min-height: 0; }
     .leafer-substrate__customizer-head .leafer-substrate__eyebrow { display: none; }
     .leafer-substrate__customizer-grid { margin-top: .4rem; }
   }
 
   .leafer-substrate--home-usp { border-block: 1px solid color-mix(in srgb, var(--accent), transparent 72%); background: linear-gradient(180deg, color-mix(in srgb, var(--accent), transparent 96%), var(--background) 32%, color-mix(in srgb, var(--surface), var(--background) 35%)); }
   .leafer-substrate--home-usp .leafer-substrate__hero,
-  .leafer-substrate--home-usp .leafer-substrate__commerce { width: min(calc(100% - 2rem), 1500px); max-width: 1500px; }
+  .leafer-substrate__commerce { width: min(calc(100% - 2rem), 1500px); max-width: 1500px; }
   .leafer-substrate--home-usp .leafer-substrate__hero { grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr); align-items: center; }
   .leafer-substrate--home-usp .leafer-substrate__commerce { margin-top: clamp(1.8rem, 4vw, 3.4rem); grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); }
   .leafer-substrate--home-usp .leafer-substrate__purchase-panel { border-width: 2px; box-shadow: 0 24px 60px color-mix(in srgb, var(--text), transparent 91%); }
@@ -804,7 +816,6 @@
   .leafer-substrate--home-usp .leafer-substrate__advanced-summary { min-height: 84px; background: linear-gradient(90deg, color-mix(in srgb, var(--accent), transparent 92%), transparent); }
   .leafer-substrate--home-usp .leafer-substrate__advanced-summary strong { font-size: 1.08rem; }
   .leafer-substrate--home-usp .leafer-substrate__customizer { border-radius: 18px; }
-  .leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }
 
   .leafer-substrate__steps, .leafer-substrate__details, .leafer-substrate__faq, .leafer-substrate__components { margin-top: var(--space-section); }
   .leafer-substrate__section-head { max-width: 800px; margin-bottom: 2rem; }
@@ -849,7 +860,7 @@
     .leafer-substrate__hero h1, .leafer-substrate__hero h2 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
     .leafer-substrate__hero-media { padding: .75rem; }
     .leafer-substrate__options--profiles { grid-template-columns: 1fr; }
-    .leafer-substrate__choice label { min-height: 96px; }
+    .leafer-substrate__choice label { min-height: 0; }
     .leafer-substrate__choice--volume label { min-height: 52px; }
     .leafer-substrate__purchase-panel, .leafer-substrate__recipe-panel { padding: 1rem; }
     .leafer-substrate__selection-summary { align-items: start; flex-direction: column; }
@@ -1315,25 +1326,45 @@
       this.updateProFeedback();
     }
 
+    materialTexture(name = '') {
+      const label = String(name).toLowerCase();
+      // Material-specific, repeatable grain textures. No product image URLs in the pot.
+      const materials = [
+        { match: /perlit/, color: '#e9e7df', grain: 8 },
+        { match: /bims|pumice/, color: '#b7b2a4', grain: 14 },
+        { match: /lava/, color: '#544a43', grain: 12 },
+        { match: /seramis|tonbruch|blähton|blaehton/, color: '#a75e42', grain: 13 },
+        { match: /pinien|rinde|bark/, color: '#745039', grain: 19 },
+        { match: /sphagnum|moos|moss/, color: '#8a8351', grain: 11 },
+        { match: /kokos|coco/, color: '#896a50', grain: 10 },
+        { match: /wurmhumus|kompost|humus|erde/, color: '#433b31', grain: 6 },
+        { match: /kohle|biochar/, color: '#383735', grain: 8 },
+        { match: /zeolith/, color: '#a1a79b', grain: 11 },
+        { match: /sand|quarz/, color: '#c8b999', grain: 5 }
+      ];
+      const match = materials.find((entry) => entry.match.test(label)) || { color: '#958570', grain: 10 };
+      const grain = match.grain;
+      return {
+        color: match.color,
+        size: `${grain}px ${grain}px, ${Math.round(grain * 1.6)}px ${Math.round(grain * 1.6)}px, auto`,
+        pattern: 'radial-gradient(ellipse at 25% 28%, rgba(255,255,255,.48) 0 16%, transparent 20%), radial-gradient(ellipse at 68% 72%, rgba(0,0,0,.28) 0 21%, transparent 24%), linear-gradient(135deg, rgba(255,255,255,.12), rgba(0,0,0,.12))'
+      };
+    }
+
     updateCustomSegmentVisuals() {
       this.customSegments.forEach((segment) => {
         const share = Number(segment.dataset.share) || 0;
         segment.style.height = share ? `${share}%` : '';
         segment.style.order = String(Number(segment.dataset.order) || 0);
-        segment.textContent = share ? `${segment.dataset.name} · ${share}%` : '';
+        segment.textContent = share ? `${this.translateIngredient(segment.dataset.name).split(/\s+[–—-]\s+/)[0].trim()} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
-        if (segment.dataset.image) {
-          const image = segment.dataset.image.replace(/"/g, '%22');
-          segment.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .18), rgba(24, 29, 20, .18)), url("${image}")`;
-          segment.style.backgroundSize = 'cover';
-          segment.style.backgroundPosition = 'center';
-          segment.style.backgroundBlendMode = 'multiply';
-        } else {
-          segment.style.removeProperty('background-image');
-          segment.style.removeProperty('background-size');
-          segment.style.removeProperty('background-position');
-          segment.style.removeProperty('background-blend-mode');
-        }
+        // The pot visualises loose substrate, never packaged product photography.
+        const material = this.materialTexture(segment.dataset.name);
+        segment.style.backgroundColor = material.color;
+        segment.style.backgroundImage = material.pattern;
+        segment.style.backgroundSize = material.size;
+        segment.style.backgroundPosition = 'center';
+        segment.style.removeProperty('background-blend-mode');
       });
     }
 
@@ -1349,12 +1380,10 @@
         const thumb = document.createElement('span');
         thumb.className = 'leafer-substrate__mix-slider-thumb';
         thumb.setAttribute('aria-hidden', 'true');
-        if (segment.dataset.image) {
-          const image = segment.dataset.image.replace(/"/g, '%22');
-          thumb.style.backgroundImage = `linear-gradient(rgba(24, 29, 20, .1), rgba(24, 29, 20, .1)), url("${image}")`;
-          thumb.style.backgroundSize = 'cover';
-          thumb.style.backgroundPosition = 'center';
-        }
+        const material = this.materialTexture(segment.dataset.name);
+        thumb.style.backgroundColor = material.color;
+        thumb.style.backgroundImage = material.pattern;
+        thumb.style.backgroundSize = material.size;
 
         const name = document.createElement('strong');
         name.className = 'leafer-substrate__mix-slider-name';

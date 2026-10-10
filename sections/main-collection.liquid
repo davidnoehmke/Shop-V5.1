@@ -39,6 +39,7 @@
 %}
 
 <section class="main-collection page-width">
+  {% unless section.settings.hide_hero or collection.handle == 'pflanzenbeleuchtung' %}
   <header class="main-collection__hero">
     <div class="main-collection__hero-copy">
       <p class="main-collection__eyebrow">
@@ -92,6 +93,7 @@
       </div>
     </div>
   </header>
+  {% endunless %}
 
   {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
@@ -501,6 +503,7 @@
       </div>
 
       {% paginate collection.products by 48 %}
+        {% if collection.handle == 'pflanzenbeleuchtung' %}<span id="CollectionProducts" class="visually-hidden" aria-hidden="true"></span>{% endif %}
         <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
           {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
         </div>
@@ -1537,6 +1540,7 @@
   "name": "t:sections.main_collection.name",
   "settings": [
     { "type": "checkbox", "id": "show_type_filters", "label": "Produkttyp-Filter anzeigen", "default": true },
+    { "type": "checkbox", "id": "hide_hero", "label": "Kollektions-Hero ausblenden", "default": false },
     { "type": "image_picker", "id": "brand_logo", "label": "t:sections.header.logo" }
   ]
 }

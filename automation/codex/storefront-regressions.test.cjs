@@ -8,7 +8,7 @@ const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts
 const helpers = source.slice(source.indexOf('function clean('), source.indexOf('async function contextFor('))
   + source.slice(source.indexOf('function fallbackAnswer('), source.indexOf('function outputText('));
 const scope = vm.createContext({});
-vm.runInContext('const MAX_IMAGE_BYTES = 2800000;\n' + stripTypeScriptTypes(helpers), scope);
+vm.runInContext(stripTypeScriptTypes(helpers), scope);
 
 test('Bims question excludes generic question words and matches the ingredient', () => {
   const needles = scope.tokens('Was macht Bims im Substrat?');
@@ -22,7 +22,7 @@ test('Bims question excludes generic question words and matches the ingredient',
 
 test('approved knowledge answers precede a product advertisement', () => {
   assert.equal(scope.fallbackAnswer({ knowledge: [{ answer: 'Bims lockert die Mischung.' }], products: [{ canonical_title: 'Umtopfmatte', intro: 'Wasserdicht' }] }, 'de'), 'Bims lockert die Mischung.');
-  assert.match(scope.fallbackAnswer({ knowledge: [], products: [] }, 'de'), /keine ausreichend verifizierte/);
+  assert.match(scope.fallbackAnswer({ knowledge: [], products: [] }, 'de'), /möchte ich dir nichts Falsches sagen/);
 });
 
 test('pro recipe and volume are enabled on the submitted product form', () => {
@@ -86,6 +86,20 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
   assert.match(en.configurator.advanced.intro, /four components/i);
   assert.match(index, /bis zu vier Bestandteile/i);
   assert.doesNotMatch(substrateWorld, /bis zu fünf auswählbare Komponenten/i);
+});
+
+test('mobile pro mixer keeps the pot above a readable vertical component list', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const potDesktop = liquid.indexOf('.leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }');
+  const responsive = liquid.indexOf('@media (max-width: 620px) {\n    .leafer-substrate__advanced-summary');
+  assert.ok(potDesktop > -1 && responsive > potDesktop, 'mobile pot sizing must override the desktop homepage rule');
+  const mobile = liquid.slice(responsive, liquid.indexOf('@media (max-width: 620px) and (max-height: 700px)', responsive));
+  assert.match(mobile, /customizer-grid \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-options \{[^}]*display: grid; grid-template-columns: minmax\(0, 1fr\)/);
+  assert.match(mobile, /custom-option \{[^}]*min-width: 0;[^}]*width: 100%/);
+  assert.doesNotMatch(mobile, /custom-options \{[^}]*overflow-x: auto/);
+  assert.match(mobile, /home-usp \.leafer-substrate__pot-slider \{[^}]*height: clamp\(165px, 26svh, 220px\)/);
+  assert.match(liquid, /The pot visualises loose substrate, never packaged product photography/);
 });
 
 test('layer reordering preserves shares while slider balancing stays at 100 percent', () => {
@@ -201,21 +215,7 @@ test('interior zone transitions decode translated entities before safe text outp
 });
 
 
-test('plant photo diagnosis accepts bounded images and uses verified multimodal context', () => {
-  const valid = 'data:image/jpeg;base64,' + Buffer.from('leaf-photo').toString('base64');
-  assert.equal(scope.parseImageDataUrl(valid).mimeType, 'image/jpeg');
-  assert.equal(scope.parseImageDataUrl('data:text/plain;base64,SGVsbG8='), null);
-  assert.equal(scope.parseImageDataUrl('data:image/jpeg;base64,' + 'A'.repeat(4_000_000)), null);
-
-  const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8');
-  assert.match(source, /type: "input_image"/);
-  assert.match(source, /source_citations/);
-  assert.match(source, /Beobachtung\\nEinordnung\\nWahrscheinliche Ursachen/);
-  assert.match(source, /Confidence section must explicitly say low, medium or high/);
-  assert.match(source, /max_output_tokens: image \? 1200 : 850/);
-});
-
-test('shop assistant exposes photo upload and calmer continuous voice', () => {
+test('shop assistant keeps photo upload unavailable while voice remains accessible', () => {
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /data-assistant-photo-input/);
   assert.match(liquid, /accept="image\/jpeg,image\/png,image\/webp"/);
@@ -223,6 +223,8 @@ test('shop assistant exposes photo upload and calmer continuous voice', () => {
   assert.match(liquid, /utterance\.rate = utterance\.lang\.startsWith\('de'\) \? \.82 : \.86/);
   assert.match(liquid, /payload\.speech/);
   assert.match(liquid, /this\.resumeVoice\(\)/);
+  assert.doesNotMatch(liquid, /data-assistant-photo|type="file"/);
+  assert.match(liquid, /data-assistant-voice/);
 });
 
 

@@ -23,11 +23,11 @@ function findings(path, status, finalUrl, html) {
 }
 async function get(url) {
   let error;
-  for (let attempt = 0; attempt < 3; attempt++) {
+  for (let attempt = 0; attempt < 5; attempt++) {
     await new Promise(resolve => setTimeout(resolve, 1000));
     try {
-      const r = await fetch(url, {signal: AbortSignal.timeout(25000)}); const html = await r.text();
-      if ((r.status === 429 || r.status >= 500) && attempt < 2) {
+      const r = await fetch(url, {signal: AbortSignal.timeout(25000), headers: {'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}}); const html = await r.text();
+      if ((r.status === 429 || r.status >= 500) && attempt < 4) {
         const header = r.headers.get('retry-after');
         const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
         if (seconds > 60) return {status:r.status, url:r.url, html};
@@ -52,7 +52,7 @@ async function main() {
   }
   const seen = new Set(), results = [], sources = new Map();
   while (true) {
-    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 1); if (!batch.length) break;
+    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 4); if (!batch.length) break;
     if (seen.size + batch.length > 1800) throw new Error('Crawl bound reached; verification incomplete');
     batch.forEach(p => seen.add(p));
     await Promise.all(batch.map(async path => {
