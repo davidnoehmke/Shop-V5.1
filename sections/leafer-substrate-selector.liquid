@@ -237,7 +237,7 @@
                     <strong>{{ 'substrate_selector.choose_components' | t }}</strong>
                     <span><b data-customizer-count>0</b>/4</span>
                   </div>
-                  <div class="leafer-substrate__custom-options">
+                  <div class="leafer-substrate__custom-options" role="region" tabindex="0" aria-label="{{ 'substrate_selector.choose_components' | t | escape }}">
                     {% assign custom_rendered_components = 0 %}
                     {% for component_product in component_products %}
                       {% if component_product.available and component_product.id != selector_product.id %}
@@ -322,6 +322,7 @@
                       {% endfor %}
                     {% endif %}
                   </div>
+                  <p class="leafer-substrate__component-scroll-hint">{{ 'substrate_selector.component_scroll_hint' | t }}</p>
                   <div class="leafer-substrate__slider-list" data-custom-slider-list></div>
                   <p class="leafer-substrate__customizer-hint" data-customizer-hint>{{ 'substrate_selector.hint_empty' | t }}</p>
                   <div class="leafer-substrate__pro-feedback" data-pro-feedback hidden aria-live="polite"></div>
@@ -723,27 +724,29 @@
   .leafer-substrate__customizer-head h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leafer-substrate__customizer-head > p { max-width: 34ch; margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.45; }
   .leafer-substrate__customizer-grid { margin-top: 1.25rem; display: grid; grid-template-columns: minmax(150px, .7fr) minmax(0, 1.3fr); gap: 1.25rem; align-items: center; }
-  .leafer-substrate__pot-slider { position: relative; width: min(100%, 220px); height: 300px; margin-inline: auto; padding: 1rem 1.05rem 1.15rem; display: flex; flex-direction: column-reverse; overflow: hidden; border: 0; clip-path: polygon(4% 0, 96% 0, 82% 100%, 18% 100%); background: linear-gradient(90deg, color-mix(in srgb, var(--text), transparent 82%), color-mix(in srgb, var(--background), var(--text) 7%) 16% 84%, color-mix(in srgb, var(--text), transparent 80%)); box-shadow: inset 0 0 0 4px color-mix(in srgb, var(--text), transparent 14%), inset 0 0 28px color-mix(in srgb, var(--text), transparent 72%), 0 18px 34px color-mix(in srgb, var(--text), transparent 84%); isolation: isolate; }
-  .leafer-substrate__pot-slider::after { position: absolute; right: 9%; bottom: 4%; left: 9%; height: 9px; border-radius: 50%; background: color-mix(in srgb, var(--text), transparent 78%); content: ''; pointer-events: none; }
-  .leafer-substrate__pot-rim { position: absolute; z-index: 4; top: .35rem; right: 7%; left: 7%; height: 18px; border: 3px solid color-mix(in srgb, var(--text), transparent 18%); border-radius: 50%; background: color-mix(in srgb, var(--background), var(--text) 10%); box-shadow: inset 0 3px 7px color-mix(in srgb, var(--text), transparent 82%); pointer-events: none; }
-  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 18px; flex: 0 0 auto; width: 100%; padding: 0 .55rem; overflow: hidden; border: 0; border-top: 1px solid color-mix(in srgb, var(--background), transparent 38%); background-color: #75624b; background-image: radial-gradient(circle at 20% 28%, rgba(255,255,255,.28) 0 8%, transparent 9%), radial-gradient(circle at 72% 66%, rgba(32,25,17,.26) 0 11%, transparent 12%), linear-gradient(135deg, rgba(255,255,255,.08), rgba(0,0,0,.16)); background-position: 0 0, 8px 7px, center; background-size: 24px 24px, 34px 34px, auto; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: clamp(.85rem, 1.1vw, 1rem); font-weight: 850; text-align: center; line-height: 1.25; text-shadow: 0 1px 3px rgba(0,0,0,.95), 0 0 8px rgba(0,0,0,.7); transition: height .25s ease, filter .2s ease, box-shadow .2s ease, transform .12s ease; }
+  .leafer-substrate__pot-slider { position: relative; width: min(100%, 220px); height: 300px; margin-inline: auto; padding: 0; display: flex; flex-direction: column-reverse; overflow: hidden; border: 0; border-radius: 24px 24px 40px 40px; clip-path: none; background: var(--surface); box-shadow: none; isolation: isolate; -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M13 0 H87 Q99 0 96 13 L84 92 Q82 100 73 100 H27 Q18 100 16 92 L4 13 Q1 0 13 0 Z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M13 0 H87 Q99 0 96 13 L84 92 Q82 100 73 100 H27 Q18 100 16 92 L4 13 Q1 0 13 0 Z'/%3E%3C/svg%3E"); -webkit-mask-size: 100% 100%; mask-size: 100% 100%; }
+  .leafer-substrate__pot-slider::after { content: none; }
+  .leafer-substrate__pot-rim { position: absolute; z-index: 4; top: 0; right: 5%; left: 5%; height: 5px; border: 0; border-radius: 0 0 8px 8px; background: var(--text); pointer-events: none; }
+  .leafer-substrate__pot-segment { position: relative; z-index: 1; min-height: 0; flex: 0 0 auto; width: 100%; padding: 0 .45rem; overflow: hidden; border: 0; border-top: 2px solid color-mix(in srgb, var(--background), transparent 40%); background-color: #75624b; background-image: none; color: #fff; cursor: grab; touch-action: none; user-select: none; font-size: clamp(.78rem, 1.1vw, .94rem); font-weight: 800; text-align: center; line-height: 1.2; text-shadow: none; transition: height .25s ease, filter .2s ease, transform .12s ease; }
   .leafer-substrate__pot-segment:nth-child(2n) { background-color: #667056; }
   .leafer-substrate__pot-segment:nth-child(3n) { background-color: #9a8665; }
-  .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.12); box-shadow: inset 0 0 0 3px var(--accent-soft); }
-  .leafer-substrate__pot-segment.is-dragging { z-index: 6; cursor: grabbing; filter: brightness(1.12) saturate(1.05); box-shadow: 0 14px 24px rgba(0,0,0,.28), inset 0 0 0 3px var(--accent-soft); }
+  .leafer-substrate__pot-segment:hover, .leafer-substrate__pot-segment.is-selected { filter: brightness(1.1); outline: 3px solid var(--accent-soft); outline-offset: -3px; }
+  .leafer-substrate__pot-segment.is-dragging { z-index: 6; cursor: grabbing; filter: brightness(1.1); outline: 3px solid var(--accent-soft); outline-offset: -3px; }
   .leafer-substrate__pot-segment[hidden] { display: none; }
   .leafer-substrate__customizer-total { margin: .7rem 0 0; color: var(--muted); font-size: .78rem; font-weight: 800; text-align: center; }
   .leafer-substrate__pot-drag-hint { max-width: 220px; margin: .35rem auto 0; color: var(--muted); font-size: .66rem; line-height: 1.35; text-align: center; }
   .leafer-substrate__component-picker { min-width: 0; }
   .leafer-substrate__slider-list { margin-top: .85rem; display: grid; gap: .55rem; }
   .leafer-substrate__mix-slider { padding: .65rem .75rem .7rem; display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; gap: .35rem .7rem; align-items: center; border: 1px solid var(--border); border-radius: 12px; background: color-mix(in srgb, var(--background), var(--accent) 2%); }
-  .leafer-substrate__mix-slider-thumb { width: 46px; height: 46px; grid-row: 1 / span 2; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border), var(--text) 8%); border-radius: 10px; background-color: #80705a; background-image: radial-gradient(circle at 30% 30%, rgba(255,255,255,.26) 0 9%, transparent 10%), radial-gradient(circle at 72% 68%, rgba(0,0,0,.18) 0 12%, transparent 13%); background-size: 18px 18px, 27px 27px; background-position: center; }
+  .leafer-substrate__mix-slider-thumb { width: 46px; height: 46px; grid-row: 1 / span 2; overflow: hidden; border: 1px solid var(--border); border-radius: 10px; background-color: #80705a; background-image: none; }
   .leafer-substrate__mix-slider-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .76rem; }
   .leafer-substrate__mix-slider output { color: var(--text); font-size: .75rem; font-weight: 850; font-variant-numeric: tabular-nums; }
   .leafer-substrate__mix-slider input { grid-column: 2 / -1; width: 100%; min-height: 28px; margin: 0; accent-color: var(--accent); cursor: ew-resize; }
   .leafer-substrate__mix-slider input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent), white 35%); outline-offset: 3px; border-radius: 999px; }
   .leafer-substrate__component-picker-head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: .65rem; font-size: .78rem; }
   .leafer-substrate__component-picker-head > span { color: var(--muted); }
+  .leafer-substrate__component-scroll-hint { display: none; margin: .4rem 0 0; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+  .leafer-substrate__custom-options:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
   .leafer-substrate__custom-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; max-height: 340px; overflow: auto; padding-right: .2rem; }
   .leafer-substrate__custom-option { width: 100%; min-height: 68px; padding: .55rem .6rem; display: grid; grid-template-columns: 54px minmax(0, 1fr) auto; align-items: center; gap: .65rem; border: 1px solid var(--border); border-radius: 12px; background: var(--background); color: var(--text); cursor: pointer; text-align: left; transition: border-color .2s ease, background-color .2s ease, transform .2s ease, box-shadow .2s ease; }
   .leafer-substrate__custom-option:hover { transform: translateY(-1px); border-color: var(--accent); box-shadow: 0 8px 18px color-mix(in srgb, var(--text), transparent 93%); }
@@ -751,7 +754,7 @@
   .leafer-substrate__custom-option[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 90%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent), transparent 25%); }
   .leafer-substrate__material-thumb { width: 54px; height: 54px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border), var(--text) 8%); border-radius: 10px; background: #83745d; }
   .leafer-substrate__material-thumb img { width: 100%; height: 100%; display: block; object-fit: cover; filter: saturate(.9) contrast(1.04); }
-  .leafer-substrate__material-pattern { width: 100%; height: 100%; display: block; background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,.34) 0 9%, transparent 10%), radial-gradient(circle at 72% 66%, rgba(0,0,0,.2) 0 13%, transparent 14%), linear-gradient(135deg, #927b5f, #5f674d); background-size: 18px 18px, 28px 28px, auto; }
+  .leafer-substrate__material-pattern { width: 100%; height: 100%; display: block; background-color: #83745d; background-image: none; }
   .leafer-substrate__custom-option-copy { min-width: 0; }
   .leafer-substrate__custom-option-check { width: 1.5rem; height: 1.5rem; display: grid; place-items: center; flex: 0 0 auto; border: 1px solid var(--border); border-radius: 50%; color: var(--accent); font-size: 1.1rem; line-height: 1; }
   .leafer-substrate__custom-option[aria-pressed="true"] .leafer-substrate__custom-option-check { background: var(--accent); color: var(--background); }
@@ -784,17 +787,18 @@
     .leafer-substrate__pot-drag-hint { display: none; }
     .leafer-substrate__component-picker { min-width: 0; align-self: stretch; }
     .leafer-substrate__component-picker-head { margin-bottom: .55rem; font-size: .82rem; }
-    .leafer-substrate__custom-options { display: grid; grid-template-columns: minmax(0, 1fr); gap: .5rem; max-height: none; overflow: visible; padding: 0; }
-    .leafer-substrate__custom-option { min-width: 0; min-height: 62px; width: 100%; grid-template-columns: 42px minmax(0, 1fr) 28px; gap: .7rem; padding: .55rem .65rem; }
+    .leafer-substrate__custom-options { display: grid; grid-template-columns: minmax(0, 1fr); gap: .5rem; max-height: clamp(230px, 40svh, 330px); overflow-x: hidden; overflow-y: auto; overscroll-behavior-y: contain; scroll-snap-type: y proximity; touch-action: pan-y; scrollbar-width: thin; padding: .15rem .35rem .35rem .15rem; }
+    .leafer-substrate__custom-option { min-width: 0; min-height: 62px; width: 100%; grid-template-columns: 42px minmax(0, 1fr) 28px; gap: .7rem; padding: .55rem .65rem; scroll-snap-align: start; }
     .leafer-substrate__material-thumb { width: 42px; height: 42px; }
     .leafer-substrate__custom-option strong { font-size: .82rem; line-height: 1.3; overflow-wrap: anywhere; }
     .leafer-substrate__custom-option small { display: none; }
+    .leafer-substrate__component-scroll-hint { display: block; }
     .leafer-substrate__slider-list { margin-top: .8rem; gap: .5rem; max-height: none; overflow: visible; padding-right: 0; }
-    .leafer-substrate__mix-slider { min-height: 66px; padding: .55rem .65rem; grid-template-columns: minmax(0, 1fr) auto; gap: .25rem .5rem; }
+    .leafer-substrate__mix-slider { min-height: 128px; padding: .7rem .8rem; grid-template-columns: minmax(0, 1fr) 48px; grid-template-rows: auto 1fr; gap: .35rem .65rem; align-items: start; }
     .leafer-substrate__mix-slider-thumb { display: none; }
     .leafer-substrate__mix-slider-name { font-size: .78rem; white-space: normal; overflow-wrap: anywhere; }
-    .leafer-substrate__mix-slider output { font-size: .78rem; }
-    .leafer-substrate__mix-slider input { grid-column: 1 / -1; min-height: 30px; }
+    .leafer-substrate__mix-slider output { grid-column: 1; grid-row: 2; font-size: .82rem; align-self: center; }
+    .leafer-substrate__mix-slider input { grid-column: 2; grid-row: 1 / span 2; justify-self: center; align-self: center; width: 36px; height: 106px; min-height: 0; margin: 0; writing-mode: vertical-lr; direction: ltr; cursor: ns-resize; touch-action: none; }
     .leafer-substrate__customizer-hint { margin-top: .55rem; font-size: .76rem; line-height: 1.4; }
     .leafer-substrate__pro-feedback { max-height: none; overflow: visible; margin-top: .55rem; padding: .65rem; }
   }
@@ -1168,7 +1172,7 @@
       if (Math.abs(delta) > 5) state.moved = true;
       if (!state.moved) return;
       event.preventDefault();
-      segment.style.transform = `translateY(${delta}px) scale(1.015)`;
+      segment.style.transform = `translateY(${delta}px)`;
     }
 
     endCustomDrag(event, segment) {
@@ -1326,29 +1330,22 @@
       this.updateProFeedback();
     }
 
-    materialTexture(name = '') {
+    materialColor(name = '') {
       const label = String(name).toLowerCase();
-      // Material-specific, repeatable grain textures. No product image URLs in the pot.
       const materials = [
-        { match: /perlit/, color: '#e9e7df', grain: 8 },
-        { match: /bims|pumice/, color: '#b7b2a4', grain: 14 },
-        { match: /lava/, color: '#544a43', grain: 12 },
-        { match: /seramis|tonbruch|blähton|blaehton/, color: '#a75e42', grain: 13 },
-        { match: /pinien|rinde|bark/, color: '#745039', grain: 19 },
-        { match: /sphagnum|moos|moss/, color: '#8a8351', grain: 11 },
-        { match: /kokos|coco/, color: '#896a50', grain: 10 },
-        { match: /wurmhumus|kompost|humus|erde/, color: '#433b31', grain: 6 },
-        { match: /kohle|biochar/, color: '#383735', grain: 8 },
-        { match: /zeolith/, color: '#a1a79b', grain: 11 },
-        { match: /sand|quarz/, color: '#c8b999', grain: 5 }
+        { match: /perlit/, color: '#e9e7df' },
+        { match: /bims|pumice/, color: '#b7b2a4' },
+        { match: /lava/, color: '#544a43' },
+        { match: /seramis|tonbruch|blähton|blaehton/, color: '#a75e42' },
+        { match: /pinien|rinde|bark/, color: '#745039' },
+        { match: /sphagnum|moos|moss/, color: '#8a8351' },
+        { match: /kokos|coco/, color: '#896a50' },
+        { match: /wurmhumus|kompost|humus|erde/, color: '#433b31' },
+        { match: /kohle|biochar/, color: '#383735' },
+        { match: /zeolith/, color: '#a1a79b' },
+        { match: /sand|quarz/, color: '#c8b999' }
       ];
-      const match = materials.find((entry) => entry.match.test(label)) || { color: '#958570', grain: 10 };
-      const grain = match.grain;
-      return {
-        color: match.color,
-        size: `${grain}px ${grain}px, ${Math.round(grain * 1.6)}px ${Math.round(grain * 1.6)}px, auto`,
-        pattern: 'radial-gradient(ellipse at 25% 28%, rgba(255,255,255,.48) 0 16%, transparent 20%), radial-gradient(ellipse at 68% 72%, rgba(0,0,0,.28) 0 21%, transparent 24%), linear-gradient(135deg, rgba(255,255,255,.12), rgba(0,0,0,.12))'
-      };
+      return materials.find((entry) => entry.match.test(label))?.color || '#958570';
     }
 
     updateCustomSegmentVisuals() {
@@ -1359,11 +1356,10 @@
         segment.textContent = share ? `${this.translateIngredient(segment.dataset.name).split(/\s+[–—-]\s+/)[0].trim()} · ${share}%` : '';
         segment.setAttribute('aria-label', share ? this.formatText('segment_percent', { name: segment.dataset.name, share }) : this.t('free_segment'));
         // The pot visualises loose substrate, never packaged product photography.
-        const material = this.materialTexture(segment.dataset.name);
-        segment.style.backgroundColor = material.color;
-        segment.style.backgroundImage = material.pattern;
-        segment.style.backgroundSize = material.size;
-        segment.style.backgroundPosition = 'center';
+        segment.style.backgroundColor = this.materialColor(segment.dataset.name);
+        segment.style.removeProperty('background-image');
+        segment.style.removeProperty('background-size');
+        segment.style.removeProperty('background-position');
         segment.style.removeProperty('background-blend-mode');
       });
     }
@@ -1380,10 +1376,7 @@
         const thumb = document.createElement('span');
         thumb.className = 'leafer-substrate__mix-slider-thumb';
         thumb.setAttribute('aria-hidden', 'true');
-        const material = this.materialTexture(segment.dataset.name);
-        thumb.style.backgroundColor = material.color;
-        thumb.style.backgroundImage = material.pattern;
-        thumb.style.backgroundSize = material.size;
+        thumb.style.backgroundColor = this.materialColor(segment.dataset.name);
 
         const name = document.createElement('strong');
         name.className = 'leafer-substrate__mix-slider-name';
