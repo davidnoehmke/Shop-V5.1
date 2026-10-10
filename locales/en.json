@@ -904,6 +904,7 @@
     "segment_percent": "[name], [share] percent",
     "drag_hint": "Drag layers in the pot to reorder the visual display only. Percentages stay unchanged.",
     "choose_components": "Choose components",
+    "component_scroll_hint": "Scroll down to choose more components.",
     "component_role": "Recipe component",
     "fallback_components": "Coconut fibre|Pine bark|Perlite|Pumice|Lava granules|Sphagnum moss|Worm castings|Biochar|Expanded clay|Algae lime|Mycorrhiza|Activated biochar compost",
     "hint_empty": "Choose at least one component to start your custom distribution.",
@@ -1012,7 +1013,7 @@
     "action_chat": "Open chat",
     "action_voice": "Voice conversation",
     "action_photo": "Plant photo",
-    "action_advisor": "LEAF Planner"
+    "action_advisor": "LEAF Planner",
     "voice_listening": "Listening …",
     "speak": "Read answer aloud",
     "voice_connecting": "Connecting your voice conversation…",
