@@ -35,7 +35,7 @@
     --space-section: clamp(2rem, 5vw, 2.65rem);
   }
 
-  #MainContent :is(.rte, .main-product__description, .home-guides__intro, .leaf-project__head > div > p:last-child, .hero__text, .hero__content > p) {
+  #MainContent :is(.rte, .main-product__description, .home-guides__intro, .home-guides__body > p, .home-journey__body > p:not(.home-journey__eyebrow), .leaf-project__head > div > p:last-child, .hero__text, .hero__content > p) {
     font-size: 1rem;
     line-height: 1.55;
     overflow-wrap: break-word;
@@ -48,6 +48,43 @@
 
   #MainContent :is(.home-guides__intro, .leaf-page-heading__intro, .leafer-substrate__section-head > p, .leafer-substrate__panel-head .rte) {
     margin-top: .55rem;
+  }
+
+  #MainContent .trust-bar__inner {
+    padding: .85rem 1rem;
+    gap: .65rem;
+  }
+
+  #MainContent .trust-bar__item {
+    gap: .6rem;
+  }
+
+  #MainContent .trust-bar__item svg {
+    width: 26px;
+  }
+
+  #MainContent .home-journey {
+    padding-block: var(--space-section);
+  }
+
+  #MainContent .home-journey__body,
+  #MainContent .home-guides__body {
+    padding: .9rem;
+  }
+
+  #MainContent .home-journey__media,
+  #MainContent .home-journey__card--featured .home-journey__media {
+    aspect-ratio: auto;
+    height: clamp(148px, 38vw, 185px);
+  }
+
+  #MainContent .home-guides__media {
+    aspect-ratio: auto;
+    height: clamp(150px, 34vw, 190px);
+  }
+
+  #MainContent .category-grid__card {
+    min-height: 160px;
   }
 
   #MainContent .leaf-project__grid {
