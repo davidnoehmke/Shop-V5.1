@@ -24,7 +24,9 @@
     "home": "Startseite",
     "search": "Suche",
     "account": "Kundenkonto",
-    "cart": "Warenkorb ({{ count }})"
+    "cart": "Warenkorb ({{ count }})",
+    "language": "Sprache",
+    "apply_language": "Anwenden"
   },
   "announcement": {
     "label": "Shop-Vorteile",

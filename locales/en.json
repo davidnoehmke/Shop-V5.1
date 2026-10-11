@@ -24,7 +24,9 @@
     "home": "Home",
     "search": "Search",
     "account": "Account",
-    "cart": "Cart ({{ count }})"
+    "cart": "Cart ({{ count }})",
+    "language": "Language",
+    "apply_language": "Apply"
   },
   "announcement": {
     "label": "Store benefits",
