@@ -64,7 +64,9 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /100 - othersMax/);
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
-  assert.deepEqual(index.order.slice(0, 4), ['hero', 'substrate_configurator', 'home_collection_journey', 'trust']);
+  assert.deepEqual(index.order.slice(0, 5), ['hero', 'leaf_listening', 'substrate_configurator', 'home_collection_journey', 'trust']);
+  assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
+  assert.equal(index.sections.loox_reviews.disabled, true);
   assert.match(index.sections.home_collection_journey.settings.heading, /Wurzelraum/);
   assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
 });

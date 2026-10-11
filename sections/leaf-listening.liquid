@@ -1,0 +1,29 @@
+<section class="leaf-listening page-width" aria-labelledby="LeafListening-{{ section.id }}">
+  <div class="leaf-listening__content">
+    <p class="leaf-listening__eyebrow">{{ 'leaf_listening.eyebrow' | t }}</p>
+    <h2 id="LeafListening-{{ section.id }}">{{ 'leaf_listening.heading' | t }}</h2>
+    <p class="leaf-listening__intro">{{ 'leaf_listening.intro' | t }}</p>
+    <details class="leaf-listening__details">
+      <summary>{{ 'leaf_listening.details_label' | t }}</summary>
+      <p>{{ 'leaf_listening.details_text' | t }}</p>
+    </details>
+    <a class="leaf-listening__link" href="{{ section.settings.link | default: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' }}">
+      {{ 'leaf_listening.link_label' | t }} <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+{% stylesheet %}
+.leaf-listening{margin-block:clamp(1.25rem,3vw,3rem);padding-block:clamp(1.3rem,3vw,2.5rem);border-block:1px solid var(--border, #d8ded8)}
+.leaf-listening__content{max-width:940px;margin-inline:auto}
+.leaf-listening__eyebrow{margin:0 0 .6rem;font-size:.78rem;font-weight:750;letter-spacing:.09em;text-transform:uppercase;color:var(--accent, #35553b)}
+.leaf-listening h2{font-size:clamp(1.4rem,2.8vw,2.1rem);line-height:1.22;letter-spacing:-.025em;margin:0 0 .9rem}
+.leaf-listening__intro,.leaf-listening__details p{line-height:1.7;max-width:75ch;color:var(--muted, #414b43);margin:0 0 1rem}
+.leaf-listening__details{margin-block:1rem 1.3rem}
+.leaf-listening__details summary{cursor:pointer;font-weight:650;min-height:44px;display:flex;align-items:center}
+.leaf-listening__details summary:focus-visible,.leaf-listening__link:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.leaf-listening__details[open] p{margin:.5rem 0 0}
+.leaf-listening__link{display:inline-flex;align-items:center;gap:.65rem;min-height:44px;font-weight:700;text-underline-offset:4px;color:var(--accent, #35553b)}
+{% endstylesheet %}
+{% schema %}
+{"name":"Kundenfeedback & Lernen","settings":[{"type":"url","id":"link","label":"Link zur Substratwelt"}],"presets":[{"name":"Kundenfeedback & Lernen"}]}
+{% endschema %}
