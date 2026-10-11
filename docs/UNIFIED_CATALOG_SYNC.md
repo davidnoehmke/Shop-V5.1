@@ -47,3 +47,33 @@ A current manual Shopify readback captured 145 products and 15 collections with 
 ## Tests
 
 automation/catalog-sync/core.test.mjs validates HMAC, complete pagination, field version protection, Supabase canonical ownership, image rights/hash approvals and protected status changes. Do not deploy until the worker and production integration are implemented and independently exercised.
+
+## User-selected entrypoints: Shopify + ChatGPT + Supabase (11 October 2026)
+
+**All three are supported editing surfaces, NOT three competing sources of truth.** Supabase remains the canonical revision/audit store. The user's explicit change to their requirements supersedes any earlier assumption that only Shopify and ChatGPT accept edits.
+
+| User edits in | Input / user experience | How the common engine handles it |
+| --- | --- | --- |
+| Shopify Admin | User directly edits existing product, variant, price, HTML, SEO, images, alt text or metafields. | Shopify saves normally. Verified webhook + complete current Admin readback produces a versioned event. Fields owned by Supabase are compared against the approved canonical revision and go to review where conflicting; no rollback by stale snapshots. |
+| ChatGPT | User explicitly asks for changes; ChatGPT uses authorized connected Shopify/Supabase tools. | Resolve exact product/variant GID and typed field, record actor and user authorization plus expected version; stage one idempotent change request; protected changes and images need review gates. Never assume conversational intent alone approved sales-channel publication or unlicensed imagery. |
+| Supabase / LEAFerOS | Authorized admin edits canonical fields, evidence, product metadata, or media approval through an admin tool. | Server-verified admin identity, validation and revision change. Project only approved, changed fields to Shopify after a live version readback; no blanket re-import. Raw table writes without event logging are not a substitute for an admin edit-command service. |
+
+### Shared edit command contract
+
+The new module automation/catalog-sync/edit-surfaces.mjs provides createEditIntent and routeEditIntent. Each command requires:
+- Origin channel: shopify, chatgpt or supabase.
+- Verified server-side auth context (Shopify webhook HMAC + complete readback, connected ChatGPT user action, or authorized Supabase admin).
+- Immutable product/variant/collection GID and explicit field name; typed metafield keys must be registered.
+- Unique idempotency changeId; expected base version; author provenance; explicit value.
+- Field-wise conflict guard; no automatic status/publication/inventory-policy changes.
+- Media additions, removals, alt changes and ordering require photo rights and exact product evidence; source URLs alone are not a license.
+- One worker writes a durable old/new/hash audit and confirms the Shopify readback.
+
+**Implementation status:** the common pure command contract, 12 unit tests, and Supabase policy row catalog_edit_surfaces are now present. The actual authenticated edit-command endpoint, background inbound webhook consumer, outbound mutation worker and media binary backup do not yet exist in production. No automatic three-way sync is represented as live. Draft PR only, pending CI and integration validation.
+
+### Conflict examples
+
+- Shopify price is changed by its owner: store the Shopify observation immediately. If canonical SSOT differs, create one versioned reconciliation candidate; do not silently reapply older canonical price and do not reverse the merchant's live edit.
+- ChatGPT edits an HTML description: resolve the precise GID, fetch Shopify live and Supabase canonical revisions, stage a typed patch; reject if someone edited the same field in the interim.
+- Supabase admin approves a new FAQ/metafield: compare Shopify's current value before writing only the approved namespace/key, then read back.
+- Shopify image changes: record new media IDs, order, alt, URL and dimensions in the readback; do not replace a verified or licensed media file from a historical manifest without explicit approval.
