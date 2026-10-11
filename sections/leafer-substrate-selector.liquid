@@ -89,6 +89,15 @@
       endif
     %}
 
+    {% if request.page_type == 'index' %}
+      <details class="leafer-substrate__disclosure" data-configurator-disclosure>
+        <summary class="leafer-substrate__disclosure-summary page-width">
+          <span><strong>{{ 'substrate_selector.disclosure_heading' | t }}</strong><small>{{ 'substrate_selector.disclosure_intro' | t }}</small></span>
+          <span class="leafer-substrate__disclosure-open">{{ 'substrate_selector.disclosure_open' | t }}</span>
+          <span class="leafer-substrate__disclosure-close">{{ 'substrate_selector.disclosure_close' | t }}</span>
+          <span class="leafer-substrate__disclosure-icon" aria-hidden="true">⌄</span>
+        </summary>
+    {% endif %}
     <div class="leafer-substrate__page" aria-labelledby="LeaferSubstrateHeading-{{ section.id }}">
       <div class="leafer-substrate__hero page-width">
         <div class="leafer-substrate__hero-copy">
@@ -531,6 +540,13 @@
       {% endif %}
     </div>
 
+    {% if request.page_type == 'index' %}
+        <div class="page-width leafer-substrate__disclosure-footer">
+          <button type="button" class="button button--secondary" data-configurator-collapse>{{ 'substrate_selector.disclosure_close' | t }}</button>
+        </div>
+      </details>
+    {% endif %}
+
     <script type="application/json" data-variants>
       [
         {% for variant in selector_product.variants %}
@@ -603,6 +619,19 @@
 
 {% stylesheet %}
   .leafer-substrate { display: block; background: var(--background); color: var(--text); }
+  .leafer-substrate__disclosure-summary { display: flex; align-items: center; gap: 1rem; min-height: 64px; padding-block: 1.25rem; cursor: pointer; list-style: none; }
+  .leafer-substrate__disclosure-summary::-webkit-details-marker { display: none; }
+  .leafer-substrate__disclosure-summary > span:first-child { flex: 1; min-width: 0; }
+  .leafer-substrate__disclosure-summary strong { display: block; font-size: clamp(1.1rem, 2.2vw, 1.5rem); line-height: 1.25; }
+  .leafer-substrate__disclosure-summary small { display: block; margin-top: .4rem; color: var(--muted); line-height: 1.5; }
+  .leafer-substrate__disclosure-open, .leafer-substrate__disclosure-close { font-size: .85rem; font-weight: 700; }
+  .leafer-substrate__disclosure-icon { font-size: 1.5rem; }
+  .leafer-substrate__disclosure-close, .leafer-substrate__disclosure[open] > summary .leafer-substrate__disclosure-open { display: none; }
+  .leafer-substrate__disclosure[open] > summary .leafer-substrate__disclosure-close { display: inline; }
+  .leafer-substrate__disclosure[open] > summary .leafer-substrate__disclosure-icon { transform: rotate(180deg); }
+  .leafer-substrate__disclosure-summary:focus-visible { outline: 3px solid var(--accent); outline-offset: -3px; }
+  .leafer-substrate__disclosure-footer { padding-bottom: 1.5rem; }
+  @media (max-width: 480px) { .leafer-substrate__disclosure-summary { flex-wrap: wrap; gap: .5rem; } .leafer-substrate__disclosure-summary > span:first-child { flex-basis: 100%; } }
   .leafer-substrate__page { padding-block: var(--leafer-selector-top) var(--leafer-selector-bottom); }
   .leafer-substrate__empty { padding-block: clamp(4rem, 10vw, 8rem); }
   .leafer-substrate__empty h1, .leafer-substrate__empty h2 { max-width: 28ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
@@ -884,7 +913,10 @@
 {% javascript %}
   class LeaferSubstrateSelector extends HTMLElement {
     connectedCallback() {
-      if (this.dataset.initialized === 'true') return;
+      if (this.dataset.initialized === 'true') {
+        if (this.openLinkedConfigurator) window.addEventListener('hashchange', this.openLinkedConfigurator);
+        return;
+      }
       this.dataset.initialized = 'true';
 
       this.nativeSelect = this.querySelector('[data-variant-select]');
@@ -907,7 +939,21 @@
       this.advancedDetails = this.querySelector('[data-substrate-advanced]');
       this.initCustomizer();
 
-      if (this.advancedDetails && window.location.hash === '#Profi-Konfigurator') this.advancedDetails.open = true;
+      this.disclosure = this.querySelector('[data-configurator-disclosure]');
+      const openLinkedConfigurator = () => {
+        if (!['#Substrat-Konfigurator', '#Profi-Konfigurator'].includes(window.location.hash)) return;
+        if (this.disclosure) this.disclosure.open = true;
+        if (this.advancedDetails && window.location.hash === '#Profi-Konfigurator') this.advancedDetails.open = true;
+      };
+      openLinkedConfigurator();
+      if (this.disclosure) {
+        window.addEventListener('hashchange', openLinkedConfigurator);
+        this.querySelector('[data-configurator-collapse]')?.addEventListener('click', () => {
+          this.disclosure.open = false;
+          this.disclosure.querySelector('summary')?.focus();
+        });
+        this.openLinkedConfigurator = openLinkedConfigurator;
+      }
 
       if (!this.nativeSelect || !this.variants.length) return;
 
@@ -930,6 +976,10 @@
 
       const initialVariant = this.variantById(this.nativeSelect.value) || this.variants.find((variant) => variant.available) || this.variants[0];
       this.updateVariant(initialVariant, false);
+    }
+
+    disconnectedCallback() {
+      if (this.openLinkedConfigurator) window.removeEventListener('hashchange', this.openLinkedConfigurator);
     }
 
     parseData(selector, fallback) {

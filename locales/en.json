@@ -879,6 +879,10 @@
     }
   },
   "substrate_selector": {
+    "disclosure_heading": "Configure your substrate mix",
+    "disclosure_intro": "Choose a plant profile and volume, or mix up to four components yourself.",
+    "disclosure_open": "Open configurator",
+    "disclosure_close": "Collapse configurator",
     "empty_config": "Select the Shopify product for the substrate configurator in the theme editor.",
     "signals_label": "Decision aids",
     "signal_profiles": "Six plant profiles",

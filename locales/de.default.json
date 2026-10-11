@@ -871,6 +871,10 @@
     }
   },
   "substrate_selector": {
+    "disclosure_heading": "Deine Substratmischung konfigurieren",
+    "disclosure_intro": "Pflanzenprofil und Menge wählen oder bis zu vier Bestandteile selbst mischen.",
+    "disclosure_open": "Konfigurator öffnen",
+    "disclosure_close": "Konfigurator einklappen",
     "empty_config": "Wähle im Theme-Editor das Shopify-Produkt für den Substrat-Konfigurator aus.",
     "signals_label": "Entscheidungshilfen",
     "signal_profiles": "Sechs Pflanzenprofile",
