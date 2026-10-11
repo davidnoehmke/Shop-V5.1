@@ -1,0 +1,149 @@
+:root {
+  --leaf-heading-page: clamp(1.75rem, 2.7vw, 2.25rem);
+  --leaf-heading-section: clamp(1.35rem, 2.1vw, 1.7rem);
+  --leaf-heading-detail: clamp(1.05rem, 1.6vw, 1.25rem);
+}
+
+#MainContent h1 {
+  font-size: var(--leaf-heading-page);
+  line-height: 1.19;
+  letter-spacing: -.025em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+#MainContent h2 {
+  font-size: var(--leaf-heading-section);
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+#MainContent h3 {
+  font-size: var(--leaf-heading-detail);
+  line-height: 1.3;
+  letter-spacing: -.015em;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --leaf-heading-page: clamp(1.42rem, 5vw, 1.72rem);
+    --leaf-heading-section: clamp(1.18rem, 4vw, 1.38rem);
+    --leaf-heading-detail: clamp(1.04rem, 3.6vw, 1.16rem);
+    --space-section: clamp(2rem, 5vw, 2.65rem);
+  }
+
+  #MainContent :is(.rte, .main-product__description, .home-guides__intro, .home-guides__body > p, .home-journey__body > p:not(.home-journey__eyebrow), .leaf-project__head > div > p:last-child, .hero__text, .hero__content > p) {
+    font-size: 1rem;
+    line-height: 1.55;
+    overflow-wrap: break-word;
+  }
+
+  #MainContent :is(.featured__header, .home-guides__header, .faq__header, .grow-creator__header) {
+    margin-bottom: 1rem;
+    gap: .7rem;
+  }
+
+  #MainContent :is(.home-guides__intro, .leaf-page-heading__intro, .leafer-substrate__section-head > p, .leafer-substrate__panel-head .rte) {
+    margin-top: .55rem;
+  }
+
+  #MainContent .trust-bar__inner {
+    padding: .85rem 1rem;
+    gap: .65rem;
+  }
+
+  #MainContent .trust-bar__item {
+    gap: .6rem;
+  }
+
+  #MainContent .trust-bar__item svg {
+    width: 26px;
+  }
+
+  #MainContent .home-journey {
+    padding-block: var(--space-section);
+  }
+
+  #MainContent .home-journey__body,
+  #MainContent .home-guides__body {
+    padding: .9rem;
+  }
+
+  #MainContent .home-journey__media,
+  #MainContent .home-journey__card--featured .home-journey__media {
+    aspect-ratio: auto;
+    height: clamp(148px, 38vw, 185px);
+  }
+
+  #MainContent .home-guides__media {
+    aspect-ratio: auto;
+    height: clamp(150px, 34vw, 190px);
+  }
+
+  #MainContent .category-grid__card {
+    min-height: 160px;
+  }
+
+  #MainContent .leaf-project__grid {
+    margin-top: 1.25rem;
+  }
+
+  #MainContent .leafer-substrate__commerce {
+    margin-top: 2rem;
+  }
+
+  #MainContent .leafer-substrate__purchase-panel,
+  #MainContent .leafer-substrate__recipe-panel {
+    padding: 1rem;
+  }
+
+  body.template-index #MainContent .hero {
+    min-height: clamp(535px, 68svh, 610px);
+  }
+
+  body.template-index #MainContent .hero__inner {
+    min-height: inherit;
+    padding-block: clamp(5.8rem, 18svh, 8.5rem) 1.15rem;
+  }
+
+  body.template-index #MainContent .hero__content {
+    padding-top: 0;
+  }
+
+  body.template-index #MainContent .hero__eyebrow {
+    margin-bottom: .4rem;
+  }
+
+  body.template-index #MainContent .hero h1 {
+    max-width: 25ch;
+    margin-bottom: .55rem;
+    line-height: 1.2;
+  }
+
+  body.template-index #MainContent .hero__buttons {
+    margin-top: .75rem;
+  }
+
+  body.template-index #MainContent .hero__benefits {
+    margin-top: .75rem;
+  }
+
+  #MainContent :is(button, .button, input, select, textarea) {
+    min-height: 48px;
+  }
+}
+
+@media (max-width: 420px) {
+  body.template-index #MainContent .hero {
+    min-height: clamp(540px, 70svh, 595px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

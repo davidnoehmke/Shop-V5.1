@@ -1,3 +1,9 @@
+{%- liquid
+  assign feedback_href = section.settings.link | default: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'
+  if request.locale.iso_code == 'en' and feedback_href contains '/collections/'
+    assign feedback_href = '/en' | append: feedback_href
+  endif
+-%}
 <section class="leaf-listening page-width" aria-labelledby="LeafListening-{{ section.id }}">
   <div class="leaf-listening__content">
     <p class="leaf-listening__eyebrow">{{ 'leaf_listening.eyebrow' | t }}</p>
@@ -7,7 +13,7 @@
       <summary>{{ 'leaf_listening.details_label' | t }}</summary>
       <p>{{ 'leaf_listening.details_text' | t }}</p>
     </details>
-    <a class="leaf-listening__link" href="{{ section.settings.link | default: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' }}">
+    <a class="leaf-listening__link" href="{{ feedback_href }}">
       {{ 'leaf_listening.link_label' | t }} <span aria-hidden="true">→</span>
     </a>
   </div>
