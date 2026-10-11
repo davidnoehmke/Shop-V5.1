@@ -163,6 +163,7 @@
       @media (prefers-reduced-motion: no-preference) { ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: var(--ease-out); } }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
     </style>
+    {{ 'leaf-compact-content.css' | asset_url | stylesheet_tag }}
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
