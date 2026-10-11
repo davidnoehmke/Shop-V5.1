@@ -33,9 +33,8 @@
   <div class="page-width hero__inner">
     <div class="hero__content" data-leaf-reveal>
       {% if section.settings.show_brand_logo and section.settings.brand_logo != blank %}
-        <div class="hero__brand-lockup" style="--hero-brand-width: {{ section.settings.brand_logo_width }}px" aria-label="LEAFerservice™">
+        <div class="hero__brand-lockup" style="--hero-brand-width: {{ section.settings.brand_logo_width }}px" aria-label="LEAFerservice">
           {{ section.settings.brand_logo | image_url: width: 700 | image_tag: widths: '220, 320, 480, 700', sizes: '(min-width: 700px) 260px, 210px', loading: 'eager', alt: 'LEAFerservice' }}
-          <sup class="hero__brand-tm" aria-hidden="true">™</sup>
         </div>
       {% endif %}
       {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape }}</p>{% endif %}
@@ -91,7 +90,6 @@
   .hero__content { max-width: 720px; }
   .hero__brand-lockup { position: relative; width: min(100%, var(--hero-brand-width)); margin: 0 0 1rem; }
   .hero__brand-lockup img { width: 100%; height: auto; }
-  .hero__brand-tm { position: absolute; top: -.12rem; right: -.75rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem; font-weight: 800; line-height: 1; }
   .hero__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
   .hero h1 { max-width: 28ch; margin: 0 0 1rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .hero__text, .hero__content > p { max-width: 600px; font-size: clamp(1rem, 1.5vw, 1.16rem); }
@@ -120,7 +118,6 @@
     .hero__inner { width: min(100% - 6rem, 1480px); padding-block: clamp(4.5rem, 7vh, 6.5rem) 2.5rem; }
     .hero__content { max-width: 760px; padding: clamp(1.5rem, 2.4vw, 2.5rem) clamp(1.5rem, 2.8vw, 3rem) clamp(1.5rem, 2.4vw, 2.5rem) 0; }
     .hero__brand-lockup { width: min(100%, max(var(--hero-brand-width), 280px)); margin-bottom: 1.25rem; }
-    .hero__brand-tm { top: -.22rem; right: -1rem; font-size: .9rem; font-weight: 900; text-shadow: 0 0 1px currentColor; }
     .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
     .hero__text, .hero__content > p { max-width: 55ch; font-size: clamp(1.05rem, 1.15vw, 1.2rem); line-height: 1.65; }
     .hero__buttons { gap: .8rem; margin-top: 2rem; }
@@ -142,7 +139,6 @@
     .hero__inner { align-content: end; padding-block: 2rem 1.25rem; }
     .hero__content { padding-top: 34svh; }
     .hero__brand-lockup { width: min(210px, 72vw); margin-bottom: .65rem; }
-    .hero__brand-tm { right: -.6rem; font-size: .6rem; }
     .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
     .hero__content > p, .hero__text { font-size: 1rem; line-height: 1.55; }
     .hero__buttons { display: grid; grid-template-columns: 1fr; gap: .65rem; margin-top: 1.2rem; }
