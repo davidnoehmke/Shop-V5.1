@@ -467,10 +467,17 @@
     "led_home_finder": {
       "type": "leaf-led-home-finder",
       "settings": {}
+    },
+    "leaf_listening": {
+      "type": "leaf-listening",
+      "settings": {
+        "link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+      }
     }
   },
   "order": [
     "hero",
+    "leaf_listening",
     "substrate_configurator",
     "home_collection_journey",
     "trust",

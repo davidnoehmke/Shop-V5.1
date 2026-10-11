@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -971,13 +962,11 @@
     "addition_root": "Support for the root environment"
   },
   "shop_assistant": {
-    "voice_speaking": "LEAF is answering …",
     "voice_speaking": "I am speaking. You can interrupt me at any time.",
     "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
     "eyebrow": "LEAF Shop Assistant",
     "heading": "What would you like to clarify for your plant project?",
-    "intro": "I can help with plant questions, products and use. You can type, talk, or send a plant photo.",
     "intro": "Ask me about your plants or your project. In the live voice conversation, you can interrupt me and we will continue from there.",
     "close": "Close assistant",
     "suggestions": "Quick questions",
@@ -990,7 +979,6 @@
     "suggestion_map": "Shop map",
     "assistant_name": "LEAF",
     "user_name": "You",
-    "welcome": "Hi! I’m LEAF. Ask me about substrate, plant lighting, planters, products, or send me a plant photo.",
     "welcome": "Hi, I am LEAF, your AI plant assistant. If you want to get oriented first, I can also show you our shop map. How can I help you with your plant or project?",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
@@ -1001,7 +989,7 @@
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice conversation",
     "voice_stop": "End voice conversation",
-    "voice_listening": "I’m listening …",
+    "voice_listening": "Listening …",
     "speak": "Read answer aloud",
     "voice_greeting": "Hi! Nice to have you here. Just tell me what you would like help with for your plant.",
     "actions": "LEAF Assistant actions",
@@ -1009,8 +997,6 @@
     "action_voice": "Voice conversation",
     "action_photo": "Plant photo",
     "action_advisor": "LEAF Planner",
-    "voice_listening": "Listening …",
-    "speak": "Read answer aloud",
     "voice_connecting": "Connecting your voice conversation…",
     "voice_unavailable": "The live voice conversation is currently unavailable. You can still write your question.",
     "voice_fallback": "Browser voice mode: use the microphone button to stop the answer.",
@@ -1237,5 +1223,13 @@
       "title": "LEAFerservice & help",
       "description": "Find news, shop navigation and guidance on accessible use."
     }
+  },
+  "leaf_listening": {
+    "eyebrow": "We listened",
+    "heading": "Your feedback is shaping our substrate range.",
+    "intro": "We are updating how we present and ship our carefully selected substrate recipes. Going forward, recipe kits will be clearly labelled as separately portioned components for mixing at home, rather than pre-mixed substrates. Until the transition is complete, the delivery format shown on each product page applies.",
+    "details_label": "Why we are changing this",
+    "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
+    "link_label": "Explore substrates"
   }
 }
