@@ -29,11 +29,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-voice-fallback="{{ 'shop_assistant.voice_fallback' | t | escape }}"
   data-voice-speaking-label="{{ 'shop_assistant.voice_speaking' | t | escape }}"
   data-voice-greeting="{{ 'shop_assistant.voice_greeting' | t | escape }}"
-  data-photo-label="{{ 'shop_assistant.photo' | t | escape }}"
-  data-photo-remove-label="{{ 'shop_assistant.photo_remove' | t | escape }}"
-  data-photo-ready="{{ 'shop_assistant.photo_ready' | t | escape }}"
-  data-photo-too-large="{{ 'shop_assistant.photo_too_large' | t | escape }}"
-  data-photo-message="{{ 'shop_assistant.photo_message' | t | escape }}"
   data-welcome="{{ 'shop_assistant.welcome' | t | escape }}"
   data-storage-key="leafer-assistant-session-v1"
 >
@@ -59,11 +54,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   <div class="leaf-shop-assistant__quick-actions" aria-label="{{ 'shop_assistant.actions' | t | escape }}">
     <button type="button" data-assistant-action-chat>{{ 'shop_assistant.action_chat' | t }}</button>
     <button type="button" data-assistant-action-voice hidden>{{ 'shop_assistant.action_voice' | t }}</button>
-    <button type="button" data-assistant-action-photo>{{ 'shop_assistant.action_photo' | t }}</button>
     <a href="{{ assistant_advisor_href }}">{{ 'shop_assistant.action_advisor' | t }}</a>
-  <div class="leaf-shop-assistant__quick-actions" aria-label="{{ 'shop_assistant.suggestions' | t | escape }}">
-    <button type="button" data-assistant-quick="voice">{{ 'shop_assistant.voice' | t }}</button>
-    <button type="button" data-assistant-quick="text">{{ 'shop_assistant.suggestion_care' | t }}</button>
   </div>
 
   <button class="leaf-shop-assistant__voice-stop" type="button" data-assistant-voice-stop hidden aria-label="{{ 'shop_assistant.voice_stop' | t | escape }}" title="{{ 'shop_assistant.voice_stop' | t | escape }}">
@@ -560,13 +551,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.voiceButton = this.querySelector('[data-assistant-voice]');
         this.chatAction = this.querySelector('[data-assistant-action-chat]');
         this.voiceAction = this.querySelector('[data-assistant-action-voice]');
-        this.photoAction = this.querySelector('[data-assistant-action-photo]');
-        this.photoButton = this.querySelector('[data-assistant-photo]');
-        this.photoInput = this.querySelector('[data-assistant-photo-input]');
-        this.photoPreview = this.querySelector('[data-assistant-photo-preview]');
-        this.photoImage = this.querySelector('[data-assistant-photo-image]');
-        this.photoName = this.querySelector('[data-assistant-photo-name]');
-        this.photoRemove = this.querySelector('[data-assistant-photo-remove]');
         this.voiceStopButton = this.querySelector('[data-assistant-voice-stop]');
         this.voiceStopButton?.addEventListener('click', () => this.stopVoice());
         this.voiceStatus = this.querySelector('[data-assistant-voice-status]');
@@ -578,10 +562,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.trigger?.addEventListener('click', () => this.open());
         this.chatAction?.addEventListener('click', () => this.open());
         this.voiceAction?.addEventListener('click', () => this.startVoiceConversation());
-        this.photoAction?.addEventListener('click', () => {
-          this.open(false);
-          this.photoInput?.click();
-        });
         this.closeButton?.addEventListener('click', () => this.close());
         this.minimizeButton?.addEventListener('click', () => this.close());
         this.setupDrag();
@@ -694,7 +674,10 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       setupVoice() {
         const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         this.realtimeSupported = Boolean(window.RTCPeerConnection && navigator.mediaDevices?.getUserMedia);
-        if (this.realtimeSupported && this.voiceButton) this.voiceButton.hidden = false;
+        if (this.realtimeSupported) {
+          if (this.voiceButton) this.voiceButton.hidden = false;
+          if (this.voiceAction) this.voiceAction.hidden = false;
+        }
         if (!this.voiceButton) return;
         this.voiceButton.addEventListener('click', () => {
           if (this.voiceMode) this.stopVoice();
@@ -709,14 +692,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.recognition.continuous = false;
         this.recognition.maxAlternatives = 1;
         this.updateVoiceButton();
-        this.voiceButton.addEventListener('click', () => {
-          if (!this.dialog?.open) return;
-          if (this.voiceMode) {
-            this.stopVoice();
-            return;
-          }
-          this.startVoiceConversation();
-        });
         this.recognition.addEventListener('start', () => {
           if (!this.voiceMode || !this.voiceActive) {
             this.recognition.abort();
@@ -775,22 +750,10 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       }
 
       startVoiceConversation() {
-        if (this.submit?.disabled || !this.recognition) return;
         if (!this.dialog?.open) this.open(false);
-        this.voiceMode = true;
-        this.voiceActive = false;
-        this.voiceSubmitted = true;
-        this.updateVoiceButton();
-        const greeting = (this.dataset.voiceGreeting || '').trim();
-        if (greeting && 'speechSynthesis' in window) {
-          this.speak(greeting, true);
-          return;
-        }
-        this.resumeVoice();
+        return this.startVoice();
       }
 
-      resumeVoice() {
-        if (!this.voiceMode || !this.recognition || !this.isConnected || this.voiceActive || this.voiceSpeaking || this.voiceSending || this.submit?.disabled) return;
       async startVoice() {
         if (this.submit?.disabled || this.voiceMode) return;
         if (this.realtimeSupported) {
@@ -809,7 +772,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.voiceFallback = true;
         this.voiceMode = true;
         this.updateVoiceButton();
-        if ('speechSynthesis' in window && this.dataset.welcome) this.speak(this.dataset.welcome, true);
+        const greeting = this.dataset.voiceGreeting || this.dataset.welcome;
+        if ('speechSynthesis' in window && greeting && !this.history.length) this.speak(greeting, true);
         else this.resumeVoice();
       }
 
@@ -1046,18 +1010,11 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         if (!spokenText) return;
         const utterance = new SpeechSynthesisUtterance(spokenText);
         utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
-        utterance.rate = utterance.lang.startsWith('de') ? .82 : .86;
-        utterance.pitch = .97;
-        utterance.volume = 1;
-        const voice = this.preferredVoice(utterance.lang);
-        if (voice) utterance.voice = voice;
         utterance.rate = .78;
         utterance.pitch = 1;
         utterance.volume = 1;
-        const language = utterance.lang.slice(0, 2);
-        const voices = window.speechSynthesis.getVoices().filter((voice) => voice.lang.toLowerCase().startsWith(language));
-        const preferred = voices.find((voice) => /natural|premium|neural|anna|samantha/i.test(voice.name)) || voices.find((voice) => voice.default) || voices[0];
-        if (preferred) utterance.voice = preferred;
+        const voice = this.preferredVoice(utterance.lang);
+        if (voice) utterance.voice = voice;
         if (continueVoice) {
           this.voiceSpeaking = true;
           if (this.voiceStatus) this.voiceStatus.textContent = (this.voiceFallback ? this.dataset.voiceFallback : this.dataset.voiceSpeakingLabel) || '';

@@ -119,8 +119,8 @@
             "@type": "ImageObject",
             "url": {{ article_image | image_url: width: 1600 | prepend: 'https:' | json }}
           }{% endif %},
-          "datePublished": {{ article.published_at | date_to_xmlschema | json }},
-          "dateModified": {{ article.updated_at | date_to_xmlschema | json }}
+          "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%:z' | json }},
+          "dateModified": {{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S%:z' | json }}
         }
       </script>
       {% render 'article-faq-structured-data', article: article, canonical_url: canonical_url %}
@@ -163,6 +163,7 @@
       @media (prefers-reduced-motion: no-preference) { ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: var(--ease-out); } }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
     </style>
+    {{ 'leaf-compact-content.css' | asset_url | stylesheet_tag }}
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
@@ -190,8 +191,11 @@
     {% render 'leaf-shop-assistant' %}
     {% sections 'footer-group' %}
     <script src="{{ 'cart-forms.js' | asset_url }}" defer></script>
-    <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
+    {% if request.page_type == 'index' %}
+      <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
+    {% endif %}
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
+    <script src="{{ 'leaf-language-switch.js' | asset_url }}" defer></script>
     <script>
       (() => {
         const sentinel = 'EMPTY DOM REMOVE PROTECTOR';
@@ -204,7 +208,6 @@
           stale.forEach((node) => node.remove());
         };
         clean();
-        new MutationObserver(() => clean()).observe(document.body, { childList: true, subtree: true });
       })();
     </script>
   </body>

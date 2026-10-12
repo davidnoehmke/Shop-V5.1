@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -33,7 +24,9 @@
     "home": "Home",
     "search": "Search",
     "account": "Account",
-    "cart": "Cart ({{ count }})"
+    "cart": "Cart ({{ count }})",
+    "language": "Language",
+    "apply_language": "Apply"
   },
   "announcement": {
     "label": "Store benefits",
@@ -521,7 +514,7 @@
     "planters": {
       "heading": "Planters, fabric pots and watering systems matched to the root zone",
       "lead": "Volume, material, drainage and water reservoirs change how quickly a substrate dries and how much oxygen reaches the roots.",
-      "body": "LEAFerservice brings together breathable fabric pots, decorative planters and proven LECHUZA watering systems. Choose size based on the existing root ball rather than foliage alone, leaving room to grow without creating an oversized volume that stays wet for too long.",
+      "body": "LEAFerservice brings together breathable fabric pots and decorative planters. Choose size based on the existing root ball rather than foliage alone, leaving room to grow without creating an oversized volume that stays wet for too long.",
       "question_one": "Which pot size should I choose when repotting?",
       "answer_one": "The next practical size above the current root ball is usually enough. A much larger pot dries more slowly and can create persistently wet areas.",
       "question_two": "Does a fabric pot need a saucer?",
@@ -758,9 +751,9 @@
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     },
     "solution": {
-      "eyebrow": "LEAFerservice · custom substrate · lighting · planters · plants",
+      "eyebrow": "Custom substrate",
       "heading": "Your plant. Your substrate mix.",
-      "text": "Build your recipe live in the pot: adjust proportions with sliders, move layers for a clearer visual overview and add the finished custom mix directly to cart. Explore plant lighting, planters, houseplants, propagation and care for complete setups.",
+      "text": "Build your substrate mix: choose ingredients, adjust proportions with sliders and order your custom recipe.",
       "primary": "Build your own mix",
       "secondary": "Plan a plant project",
       "world_heading": "The product worlds around your plant project",
@@ -886,6 +879,10 @@
     }
   },
   "substrate_selector": {
+    "disclosure_heading": "Configure your substrate mix",
+    "disclosure_intro": "Choose a plant profile and volume, or mix up to four components yourself.",
+    "disclosure_open": "Open configurator",
+    "disclosure_close": "Collapse configurator",
     "empty_config": "Select the Shopify product for the substrate configurator in the theme editor.",
     "signals_label": "Decision aids",
     "signal_profiles": "Six plant profiles",
@@ -904,6 +901,7 @@
     "segment_percent": "[name], [share] percent",
     "drag_hint": "Drag layers in the pot to reorder the visual display only. Percentages stay unchanged.",
     "choose_components": "Choose components",
+    "component_scroll_hint": "Scroll down to choose more components.",
     "component_role": "Recipe component",
     "fallback_components": "Coconut fibre|Pine bark|Perlite|Pumice|Lava granules|Sphagnum moss|Worm castings|Biochar|Expanded clay|Algae lime|Mycorrhiza|Activated biochar compost",
     "hint_empty": "Choose at least one component to start your custom distribution.",
@@ -970,18 +968,11 @@
     "addition_root": "Support for the root environment"
   },
   "shop_assistant": {
-    "voice_speaking": "LEAF is answering …",
-    "photo": "Add plant photo",
-    "photo_remove": "Remove photo",
-    "photo_ready": "Photo ready for analysis",
-    "photo_too_large": "Please use a JPG, PNG or WebP up to 10 MB.",
-    "photo_message": "Plant photo sent for analysis",
     "voice_speaking": "I am speaking. You can interrupt me at any time.",
     "minimize": "Minimize assistant",
     "open": "LEAF Assistant",
     "eyebrow": "LEAF Shop Assistant",
     "heading": "What would you like to clarify for your plant project?",
-    "intro": "I can help with plant questions, products and use. You can type, talk, or send a plant photo.",
     "intro": "Ask me about your plants or your project. In the live voice conversation, you can interrupt me and we will continue from there.",
     "close": "Close assistant",
     "suggestions": "Quick questions",
@@ -994,7 +985,6 @@
     "suggestion_map": "Shop map",
     "assistant_name": "LEAF",
     "user_name": "You",
-    "welcome": "Hi! I’m LEAF. Ask me about substrate, plant lighting, planters, products, or send me a plant photo.",
     "welcome": "Hi, I am LEAF, your AI plant assistant. If you want to get oriented first, I can also show you our shop map. How can I help you with your plant or project?",
     "input_label": "Your question",
     "placeholder": "e.g. Which substrate suits my Alocasia?",
@@ -1005,16 +995,14 @@
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice conversation",
     "voice_stop": "End voice conversation",
-    "voice_listening": "I’m listening …",
+    "voice_listening": "Listening …",
     "speak": "Read answer aloud",
     "voice_greeting": "Hi! Nice to have you here. Just tell me what you would like help with for your plant.",
     "actions": "LEAF Assistant actions",
     "action_chat": "Open chat",
     "action_voice": "Voice conversation",
     "action_photo": "Plant photo",
-    "action_advisor": "LEAF Planner"
-    "voice_listening": "Listening …",
-    "speak": "Read answer aloud",
+    "action_advisor": "LEAF Planner",
     "voice_connecting": "Connecting your voice conversation…",
     "voice_unavailable": "The live voice conversation is currently unavailable. You can still write your question.",
     "voice_fallback": "Browser voice mode: use the microphone button to stop the answer.",
@@ -1186,13 +1174,6 @@
     "dynamic_note": "These cards are dynamic orientation, not a universal ranking. Plant needs, area, distance and mounting still matter.",
     "collection_cta": "Compare all plant lights"
   },
-  "leaf_listening": {
-    "eyebrow": "We listened",
-    "heading": "Your feedback is shaping our substrate range.",
-    "intro": "We are updating how we present and ship our carefully selected substrate recipes. Going forward, recipe kits will be clearly labelled as separately portioned components for mixing at home, rather than pre-mixed substrates. Until the transition is complete, the delivery format shown on each product page applies.",
-    "details_label": "Why we are changing this",
-    "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
-    "link_label": "Explore substrates"
   "led_home": {
     "eyebrow": "LEAF lighting advisor · Understand grow lights",
     "heading": "Which grow light fits your space?",
@@ -1248,5 +1229,13 @@
       "title": "LEAFerservice & help",
       "description": "Find news, shop navigation and guidance on accessible use."
     }
+  },
+  "leaf_listening": {
+    "eyebrow": "We listened",
+    "heading": "Your feedback is shaping our substrate range.",
+    "intro": "We are updating how we present and ship our carefully selected substrate recipes. Going forward, recipe kits will be clearly labelled as separately portioned components for mixing at home, rather than pre-mixed substrates. Until the transition is complete, the delivery format shown on each product page applies.",
+    "details_label": "Why we are changing this",
+    "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
+    "link_label": "Explore substrates"
   }
 }

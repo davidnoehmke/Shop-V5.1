@@ -38,21 +38,24 @@ html.leaf-motion-ready .template-index [data-leaf-reveal].is-visible { opacity: 
 
 /* Mobile-first hero: keep proposition + CTA in the first viewport. */
 @media (max-width: 700px) {
-  .template-index .hero { min-height: clamp(560px, 72svh, 650px); }
-  .template-index .hero__image { height: 39%; object-position: center 38%; }
+  /* Keep the light photographic hero and its text in the same contrast palette. */
+  .template-index .hero { min-height: clamp(560px, 72svh, 650px); background: #e8e2d5; color: #17372a; }
+  .template-index .hero__image { height: 39%; object-position: center 38%; opacity: 1; }
   .template-index .hero__shade { background: linear-gradient(0deg, rgba(232,226,213,1) 0 60%, rgba(232,226,213,.78) 72%, rgba(232,226,213,.08) 100%); }
   .template-index .hero__inner { padding-block: 1rem 1.05rem; }
   .template-index .hero__content { padding-top: 29svh; }
-  .template-index .hero__eyebrow { margin-bottom: .45rem; font-size: .68rem; }
-  .template-index .hero h1 { max-width: 28ch; margin-bottom: .65rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
-  .template-index .hero__text, .template-index .hero__content > p { font-size: .93rem; line-height: 1.45; }
+  .template-index .hero__eyebrow { margin-bottom: .45rem; color: #24583c; font-size: .73rem; font-weight: 850; letter-spacing: .10em; }
+  .template-index .hero h1 { max-width: 28ch; margin-bottom: .65rem; color: #163727; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
+  .template-index .hero__text, .template-index .hero__text p, .template-index .hero__content > p { color: #283d31; font-size: .98rem; line-height: 1.5; }
+  .template-index .hero .button { background: #20563a; border-color: #20563a; color: #fff; }
+  .template-index .hero .button--secondary { background: rgba(255,255,255,.80); border-color: #20563a; color: #17372a; backdrop-filter: none; }
   .template-index .hero__buttons { gap: .5rem; margin-top: .85rem; }
   .template-index .hero__buttons .button { min-height: 46px; padding-block: .65rem; }
   .template-index .hero__benefits { gap: .55rem .75rem; margin-top: .8rem; }
-  .template-index .hero__benefit { gap: .5rem; }
+  .template-index .hero__benefit { gap: .5rem; color: #17372a; border-color: rgba(23,55,42,.22); background: rgba(255,255,255,.7); }
   .template-index .hero__benefit svg { width: 25px; }
   .template-index .hero__benefit strong { font-size: .75rem; }
-  .template-index .hero__benefit span { font-size: .68rem; }
+  .template-index .hero__benefit span { color: #334b3e; font-size: .68rem; }
 
   .template-index .featured__header { align-items: stretch; flex-direction: column; }
   .template-index .featured__header > a { width: 100%; }

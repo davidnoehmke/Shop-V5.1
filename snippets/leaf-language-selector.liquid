@@ -1,0 +1,30 @@
+{% doc %}
+  Renders Shopify's native DE/EN language selector.
+  @param {string} input_id - Unique ID for the language select control.
+  @param {string} placement - CSS class for responsive placement.
+{% enddoc %}
+{%- liquid
+  assign leaf_has_de = false
+  assign leaf_has_en = false
+  for leaf_language in localization.available_languages
+    if leaf_language.iso_code == 'de'
+      assign leaf_has_de = true
+    elsif leaf_language.iso_code == 'en'
+      assign leaf_has_en = true
+    endif
+  endfor
+-%}
+{%- if leaf_has_de and leaf_has_en -%}
+  {%- assign leaf_form_id = 'LeafLanguage-' | append: input_id -%}
+  {% form 'localization', id: leaf_form_id, class: placement %}
+    <label for="{{ input_id }}" class="visually-hidden">{{ 'header.language' | t }}</label>
+    <select id="{{ input_id }}" name="language_code" aria-label="{{ 'header.language' | t | escape }}">
+      {%- for leaf_language in localization.available_languages -%}
+        {%- if leaf_language.iso_code == 'de' or leaf_language.iso_code == 'en' -%}
+          <option value="{{ leaf_language.iso_code }}" {% if localization.language.iso_code == leaf_language.iso_code %}selected{% endif %} title="{{ leaf_language.endonym_name | escape }}">{{ leaf_language.iso_code | upcase }}</option>
+        {%- endif -%}
+      {%- endfor -%}
+    </select>
+    <noscript><button type="submit">{{ 'header.apply_language' | t }}</button></noscript>
+  {% endform %}
+{%- endif -%}
