@@ -18,12 +18,14 @@ function previewUrl(url, preview) {
   return result;
 }
 async function fetchStorefrontPage(url, options = {}, fetchImpl = fetch) {
+  const {beforeRequest, ...fetchOptions} = options;
   let current = new URL(url);
   const origin = current.origin, cookies = new Map();
   for (let redirects = 0; redirects <= 10; redirects++) {
-    const headers = new Headers(options.headers);
+    const headers = new Headers(fetchOptions.headers);
     if (cookies.size) headers.set('cookie', [...cookies].map(([key, value]) => `${key}=${value}`).join('; '));
-    const response = await fetchImpl(current.href, {...options, headers, redirect: 'manual'});
+    if (beforeRequest) await beforeRequest();
+    const response = await fetchImpl(current.href, {...fetchOptions, headers, redirect: 'manual'});
     for (const cookie of response.headers.getSetCookie()) {
       const pair = cookie.split(';', 1)[0], separator = pair.indexOf('=');
       if (separator > 0) cookies.set(pair.slice(0, separator), pair.slice(separator + 1));
