@@ -458,7 +458,7 @@ jobs:
       - name: Check controller and browser-script syntax
         run: |
           for file in automation/codex/*.cjs; do node --check "$file"; done
-      - name: Run policy and delivery unit tests
+      - name: Run policy, delivery and DE/EN configurator regression tests
         run: node --test automation/codex/*.test.cjs
       - name: Validate workflow syntax and expressions
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -color

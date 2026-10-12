@@ -50,6 +50,12 @@
       assign component_products = selector_product.metafields.bundle.component_products.value
       assign hero_image = section.settings.image | default: selector_product.featured_image
       assign hero_alt = section.settings.image_alt | default: hero_image.alt | default: selector_product.title
+      assign hero_loading = 'lazy'
+      assign hero_priority = 'auto'
+      if section.index == 1
+        assign hero_loading = 'eager'
+        assign hero_priority = 'high'
+      endif
       assign product_subtitle = selector_product.metafields.leafer.subtitle.value
       assign product_intro = selector_product.metafields.leafer.intro.value
       assign usp_1 = selector_product.metafields.leafer.usp_1.value
@@ -126,7 +132,7 @@
 
         <div class="leafer-substrate__hero-media">
           {% if hero_image != blank %}
-            {{ hero_image | image_url: width: 1600 | image_tag: widths: '520, 760, 1000, 1300, 1600', sizes: '(min-width: 990px) 46vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: hero_alt }}
+            {{ hero_image | image_url: width: 1600 | image_tag: widths: '520, 760, 1000, 1300, 1600', sizes: '(min-width: 990px) 46vw, 100vw', loading: hero_loading, fetchpriority: hero_priority, alt: hero_alt }}
           {% else %}
             {{ 'product-1' | placeholder_svg_tag }}
           {% endif %}

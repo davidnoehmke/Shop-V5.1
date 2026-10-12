@@ -1,7 +1,21 @@
 :root {
+  --leaf-body-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --leaf-heading-page: clamp(1.75rem, 2.7vw, 2.25rem);
   --leaf-heading-section: clamp(1.35rem, 2.1vw, 1.7rem);
   --leaf-heading-detail: clamp(1.05rem, 1.6vw, 1.25rem);
+}
+
+body {
+  font-family: var(--leaf-body-font);
+}
+
+body :is(button, input, select, textarea) {
+  font-family: inherit;
+}
+
+#MainContent :is(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--leaf-body-font);
+  font-weight: 600;
 }
 
 #MainContent h1 {
