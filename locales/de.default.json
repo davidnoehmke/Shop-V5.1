@@ -967,7 +967,6 @@
     "open": "LEAF Assistent",
     "eyebrow": "LEAF Shop-Assistent",
     "heading": "Was möchtest du für dein Pflanzenprojekt klären?",
-    "intro": "Ich helfe dir bei Pflanzenfragen, Produkten und Anwendung. Du kannst schreiben, sprechen oder ein Pflanzenfoto schicken.",
     "intro": "Frag mich zu deinen Pflanzen oder deinem Projekt. Im Echtzeit-Sprachdialog kannst du dazwischenreden – wir machen dann dort weiter.",
     "close": "Assistent schließen",
     "suggestions": "Schnelle Fragen",
@@ -980,7 +979,6 @@
     "suggestion_map": "Shoplandkarte",
     "assistant_name": "LEAF",
     "user_name": "Du",
-    "welcome": "Hallo! Ich bin LEAF. Frag mich gern zu Substrat, Pflanzenlicht, Gefäßen, Produkten oder schick mir ein Pflanzenfoto.",
     "welcome": "Hallo, ich bin LEAF, dein KI-Pflanzenberater. Wenn du dich erst orientieren möchtest, kann ich dir auch unsere Shoplandkarte zeigen. Wie kann ich dir mit deiner Pflanze oder deinem Projekt helfen?",
     "input_label": "Deine Frage",
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
@@ -991,14 +989,6 @@
     "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Planer oder das Sortiment.",
     "voice": "Sprachunterhaltung starten",
     "voice_stop": "Sprachunterhaltung beenden",
-    "voice_listening": "Ich höre dir zu …",
-    "speak": "Antwort vorlesen",
-    "voice_greeting": "Hallo! Schön, dass du da bist. Sag mir einfach, wobei ich dir mit deiner Pflanze helfen kann.",
-    "actions": "Aktionen für den LEAF Assistenten",
-    "action_chat": "Chat öffnen",
-    "action_voice": "Sprachgespräch",
-    "action_photo": "Pflanzenfoto",
-    "action_advisor": "LEAF Planer"
     "voice_listening": "Ich höre zu …",
     "speak": "Antwort vorlesen",
     "voice_connecting": "Ich verbinde deinen Sprachdialog …",
@@ -1180,13 +1170,6 @@
     "dynamic_note": "Die Karten sind eine dynamische Orientierung, keine pauschale Rangliste. Entscheidend bleiben Pflanzenbedarf, Fläche, Abstand und Montage.",
     "collection_cta": "Alle Pflanzenleuchten vergleichen"
   },
-  "leaf_listening": {
-    "eyebrow": "Wir haben zugehört",
-    "heading": "Euer Feedback verändert unsere Substratwelt.",
-    "intro": "Wir überarbeiten die Darstellung und Lieferung unserer abgestimmten Substratrezepturen. Künftig sollen Rezeptur-Sets klar als einzeln portionierte Bestandteile zum Selbstmischen gekennzeichnet sein – statt als bereits fertig vermischtes Substrat. Bis die Umstellung abgeschlossen ist, gilt die Lieferform auf der jeweiligen Produktseite.",
-    "details_label": "Warum wir das ändern",
-    "details_text": "Ehrliche Rückmeldungen zu Verpackung und Produktdarstellung helfen uns, unsere Angebote verständlicher und den Versand kontrollierbarer zu gestalten. Wir prüfen unsere Abläufe und passen Produkttexte und Abbildungen an, bevor wir die neue Lieferform anbieten.",
-    "link_label": "Substratwelt entdecken"
   "led_home": {
     "eyebrow": "LEAF Lichtberater · Pflanzenbeleuchtung verstehen",
     "heading": "Welches Pflanzenlicht passt zu dir?",
