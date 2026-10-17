@@ -113,6 +113,10 @@
     padding-top: 0;
   }
 
+  body.template-index #MainContent .hero :is(h1, .hero__eyebrow, .hero__text, .hero__text p, .hero__content > p, .button--secondary) {
+    color: #173d2b;
+  }
+
   body.template-index #MainContent .hero__eyebrow {
     margin-bottom: .4rem;
   }
