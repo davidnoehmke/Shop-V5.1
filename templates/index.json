@@ -212,28 +212,28 @@
         "profile_aroids": {
           "type": "profile",
           "settings": {
-            "option_value": "Aroiden",
-            "badge": "Luftig & stabil",
-            "title": "Aroiden",
-            "description": "Luftige, strukturstabile Mischung für wachsende, feuchte Wurzelräume."
+            "option_value": "Aroids / Tropical",
+            "badge": "Luftig & strukturstabil",
+            "title": "Aroids / Tropical",
+            "description": "Lockere Struktur für die Wurzeln von Monstera, Philodendron und Alocasia."
           }
         },
         "profile_herbs": {
           "type": "profile",
           "settings": {
-            "option_value": "Kräuter",
-            "badge": "Ausgewogen & fein",
+            "option_value": "Kräuter & Balkon",
+            "badge": "Ausgewogen & durchlässig",
             "title": "Kräuter & Balkon",
-            "description": "Ausgewogene Basis für ertragreiche, leicht feuchte Bedingungen."
+            "description": "Für Kräuter und Balkonpflanzen mit gleichmäßiger Feuchtigkeit und gutem Wasserabzug."
           }
         },
         "profile_cactus": {
           "type": "profile",
           "settings": {
-            "option_value": "Kakteen",
-            "badge": "Drainage & trocken",
+            "option_value": "Kakteen & Sukkulenten",
+            "badge": "Mineralisch & durchlässig",
             "title": "Kakteen & Sukkulenten",
-            "description": "Schnell durchlässig mit hoher Drainage und trockeneren Schichten."
+            "description": "Für trockenheitsliebende Pflanzen, deren Wurzeln zwischen dem Gießen abtrocknen sollen."
           }
         },
         "profile_orchid": {
@@ -248,19 +248,19 @@
         "profile_palms": {
           "type": "profile",
           "settings": {
-            "option_value": "Palmen",
-            "badge": "Nährstoffreich & locker",
-            "title": "Palmen",
-            "description": "Balance zwischen Feuchtespeicher und freier Wurzelbewegung."
+            "option_value": "Palmen & Grünpflanzen",
+            "badge": "Stabil & ausgewogen",
+            "title": "Palmen & Grünpflanzen",
+            "description": "Für kräftigen Wurzelhalt und eine ausgewogene Versorgung mit Wasser und Luft."
           }
         },
         "profile_seedlings": {
           "type": "profile",
           "settings": {
-            "option_value": "Anzucht",
-            "badge": "Fein und locker",
+            "option_value": "Anzucht & Jungpflanzen",
+            "badge": "Fein & gleichmäßig",
             "title": "Anzucht & Jungpflanzen",
-            "description": "Feinere, lockere Basis für Aussaat, Keimlinge und Jungpflanzen."
+            "description": "Feine Struktur für die Aussaat und die Entwicklung junger Wurzeln."
           }
         }
       },
