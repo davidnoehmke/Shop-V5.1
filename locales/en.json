@@ -1240,5 +1240,21 @@
     "details_label": "Why we are changing this",
     "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
     "link_label": "Explore substrates"
-  }
+  },
+  "led_highlights": {
+    "jump": "Jump to a plant light",
+    "from": "From",
+    "details": "Specifications & use",
+    "choose": "Choose options",
+    "tax": "Including VAT",
+    "shipping": "Shipping",
+    "description": "Description & included items",
+    "spectrum": "Spectrum",
+    "control": "Controls",
+    "coverage": "Coverage",
+    "voltage": "Voltage",
+    "connector": "Socket / connection",
+    "protection": "IP rating",
+    "use": "Suitable for"
+}
 }
