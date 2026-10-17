@@ -1,0 +1,90 @@
+{% doc %}
+Renders a plant light as a full-width product highlight.
+@param {product} product - The collection product
+@param {string} section_id - Parent section ID
+@param {number} index - Product position
+{% enddoc %}
+{% liquid
+  assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
+  assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+  assign mounting = product.metafields.lighting.mounting
+  assign cct = product.metafields.lighting.cct_k.value
+  assign purpose = product.metafields.leafer.primary_function.value
+  assign intro = product.description | strip_html | truncatewords: 32
+  if request.locale.iso_code == 'de'
+    assign intro = product.metafields.leafer.intro.value | default: purpose | default: intro
+  endif
+  assign image_alt = product.featured_image.alt | default: product.title
+  assign product_anchor = 'LedProduct-' | append: section_id | append: '-' | append: product.id
+  assign form_id = product_anchor | append: '-form'
+  capture search_blob
+    echo product.title
+    echo ' '
+    echo product.type
+    echo ' '
+    echo product.tags | join: ' '
+    echo ' '
+    echo product.metafields.lighting.use_cases.value | join: ' '
+    echo ' '
+    echo product.metafields.leafer.suitable_for.value | join: ' '
+    echo ' '
+    echo purpose
+    echo ' '
+    echo mounting.value
+  endcapture
+  assign search_blob = search_blob | downcase | strip_newlines
+%}
+<article class="led-highlight" id="{{ product_anchor }}" aria-labelledby="{{ product_anchor }}-title" data-led-card data-search="{{ search_blob | escape }}" data-watts="{{ watts }}">
+  <a class="led-highlight__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+    {% if product.featured_image != blank %}
+      {{ product.featured_image | image_url: width: 1200 | image_tag: widths: '360,540,720,960,1200', sizes: '(min-width: 901px) 46vw, 92vw', loading: 'lazy', alt: image_alt }}
+    {% endif %}
+  </a>
+  <div class="led-highlight__body">
+    <p class="led-highlight__maker"><span>{{ maker | escape }}</span><span aria-hidden="true">{% if index < 10 %}0{% endif %}{{ index }}</span></p>
+    <h3 id="{{ product_anchor }}-title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+    {% if intro != blank %}<p class="led-highlight__intro">{{ intro | strip_html | escape }}</p>{% endif %}
+    <dl class="led-highlight__facts">
+      {% if watts > 0 %}<div><dt>{{ 'led_collection.power' | t }}</dt><dd>{{ watts }} W</dd></div>{% endif %}
+      {% if cct != blank %}<div><dt>{{ 'led_highlights.spectrum' | t }}</dt><dd>{{ cct | escape }} K</dd></div>{% endif %}
+      {% if mounting.value != blank %}<div><dt>{{ 'led_collection.mounting' | t }}</dt><dd>{% render 'leaf-metafield-value', field: mounting %}</dd></div>{% endif %}
+    </dl>
+    <p class="led-highlight__price">{% if product.price_varies %}{{ 'led_highlights.from' | t }} {% endif %}{{ product.price | money }}</p>
+    <p class="led-highlight__tax">{% if cart.taxes_included %}{{ 'led_highlights.tax' | t }} · {% endif %}{% if shop.shipping_policy.url != blank %}<a href="{{ shop.shipping_policy.url }}">{{ 'led_highlights.shipping' | t }}</a>{% endif %}</p>
+    <div class="led-highlight__actions">
+      {% if product.available %}
+        {% if product.has_only_default_variant and product.requires_selling_plan == false %}
+          {% form 'product', product, id: form_id %}
+            {{ form.errors | default_errors }}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button class="button" type="submit" name="add">{{ 'product.add_to_cart' | t }}</button>
+          {% endform %}
+          <a class="button button--secondary" href="{{ product.url }}">{{ 'led_collection.product_details' | t }}</a>
+        {% else %}
+          <a class="button" href="{{ product.url }}">{{ 'led_highlights.choose' | t }}</a>
+        {% endif %}
+      {% else %}
+        <a class="button button--secondary" href="{{ product.url }}">{{ 'product.sold_out' | t }} · {{ 'led_collection.product_details' | t }}</a>
+      {% endif %}
+    </div>
+    <details class="led-highlight__details">
+      <summary>{{ 'led_highlights.details' | t }}</summary>
+      <dl>
+        {% assign definitions = 'recommended_distance|led_collection.distance,spectrum|led_highlights.spectrum,coverage_guidance|led_highlights.coverage,timer_control|led_highlights.control,socket_connector|led_highlights.connector,voltage|led_highlights.voltage,ip_rating|led_highlights.protection,use_cases|led_highlights.use' | split: ',' %}
+        {% for definition in definitions %}
+          {% assign parts = definition | split: '|' %}
+          {% assign field = product.metafields.lighting[parts[0]] %}
+          {% if field.value != blank %}<div><dt>{{ parts[1] | t }}</dt><dd>{% render 'leaf-metafield-value', field: field %}</dd></div>{% endif %}
+        {% endfor %}
+      </dl>
+      <a class="led-hub__link" href="{{ product.url }}">{{ 'led_collection.product_details' | t }} <span aria-hidden="true">→</span></a>
+    </details>
+    {% if product.description != blank %}
+      <details class="led-highlight__details">
+        <summary>{{ 'led_highlights.description' | t }}</summary>
+        <div class="led-highlight__description">{{ product.description }}</div>
+      </details>
+    {% endif %}
+  </div>
+</article>

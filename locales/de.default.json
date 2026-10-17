@@ -1240,5 +1240,21 @@
     "details_label": "Warum wir das ändern",
     "details_text": "Ehrliche Rückmeldungen zu Verpackung und Produktdarstellung helfen uns, unsere Angebote verständlicher und den Versand kontrollierbarer zu gestalten. Wir prüfen unsere Abläufe und passen Produkttexte und Abbildungen an, bevor wir die neue Lieferform anbieten.",
     "link_label": "Substratwelt entdecken"
-  }
+  },
+  "led_highlights": {
+    "jump": "Direkt zur passenden Pflanzenleuchte",
+    "from": "Ab",
+    "details": "Technik & Anwendung",
+    "choose": "Varianten auswählen",
+    "tax": "Inkl. MwSt.",
+    "shipping": "Versand",
+    "description": "Beschreibung & Lieferumfang",
+    "spectrum": "Spektrum",
+    "control": "Steuerung",
+    "coverage": "Ausleuchtung",
+    "voltage": "Spannung",
+    "connector": "Sockel / Anschluss",
+    "protection": "Schutzart",
+    "use": "Geeignet für"
+}
 }

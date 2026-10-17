@@ -38,6 +38,7 @@
   endif
 %}
 
+{% unless collection.handle == 'pflanzenbeleuchtung' %}
 <section class="main-collection page-width">
   {% unless section.settings.hide_hero or collection.handle == 'pflanzenbeleuchtung' %}
   <header class="main-collection__hero">
@@ -512,6 +513,7 @@
     </div>
   </div>
 </section>
+{% endunless %}
 
 {% stylesheet %}
   .main-collection { padding-block: clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem); }
