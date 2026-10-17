@@ -1256,5 +1256,24 @@
     "connector": "Sockel / Anschluss",
     "protection": "Schutzart",
     "use": "Geeignet für"
+},
+  "mix_highlights": {
+    "eyebrow": "Fertige Rezepturen von LEAFerservice",
+    "heading": "Fertige Substratmischungen für deine Pflanzen",
+    "intro": "Wähle die passende Mischung für deine Pflanzen. Jede Rezeptur wird hier einzeln vorgestellt – mit Einsatzbereich, Zusammensetzung und verfügbaren Größen.",
+    "jump": "Direkt zur passenden Substratmischung",
+    "ready": "Fertigmischung",
+    "suitable": "Geeignet für",
+    "ingredients": "Zusammensetzung & Rezeptur",
+    "application": "Anwendung & Pflege",
+    "description": "Alle Produktdetails",
+    "size": "Größe & Preis wählen",
+    "choose": "Mischung auswählen",
+    "configure_heading": "Du möchtest eine eigene Mischung?",
+    "configure_text": "Im separaten Substrat-Konfigurator stellst du dein Substrat individuell zusammen.",
+    "configure_cta": "Eigene Mischung konfigurieren",
+    "components_cta": "Einzelne Bestandteile entdecken",
+    "cart_error": "Die Mischung konnte nicht hinzugefügt werden. Bitte versuche es erneut.",
+    "details": "Produktdetails ansehen"
 }
 }

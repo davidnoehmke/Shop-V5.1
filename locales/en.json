@@ -1256,5 +1256,24 @@
     "connector": "Socket / connection",
     "protection": "IP rating",
     "use": "Suitable for"
+},
+  "mix_highlights": {
+    "eyebrow": "Ready-made recipes by LEAFerservice",
+    "heading": "Ready-made growing mixes for your plants",
+    "intro": "Find a mix for your plants. Explore each recipe with its uses, ingredients and available sizes.",
+    "jump": "Jump to a growing mix",
+    "ready": "Ready-made mix",
+    "suitable": "Suitable for",
+    "ingredients": "Ingredients & recipe",
+    "application": "Use & care",
+    "description": "Full product details",
+    "size": "Choose size & price",
+    "choose": "Choose a mix",
+    "configure_heading": "Would you like your own mix?",
+    "configure_text": "Use the separate substrate configurator to create your individual growing mix.",
+    "configure_cta": "Configure your own mix",
+    "components_cta": "Explore individual ingredients",
+    "cart_error": "This mix could not be added. Please try again.",
+    "details": "View product details"
 }
 }
