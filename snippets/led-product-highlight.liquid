@@ -46,14 +46,14 @@ Renders a plant light as a full-width product highlight.
     {% if intro != blank %}<p class="led-highlight__intro">{{ intro | strip_html | escape }}</p>{% endif %}
     <dl class="led-highlight__facts">
       {% if watts > 0 %}<div><dt>{{ 'led_collection.power' | t }}</dt><dd>{{ watts }} W</dd></div>{% endif %}
-      {% if cct != blank %}<div><dt>{{ 'led_highlights.spectrum' | t }}</dt><dd>{{ cct | escape }} K</dd></div>{% endif %}
+      {% if cct != blank %}<div><dt>{{ 'lighting_configurator.cct' | t }}</dt><dd>{{ cct | escape }} K</dd></div>{% endif %}
       {% if mounting.value != blank %}<div><dt>{{ 'led_collection.mounting' | t }}</dt><dd>{% render 'leaf-metafield-value', field: mounting %}</dd></div>{% endif %}
     </dl>
     <p class="led-highlight__price">{% if product.price_varies %}{{ 'led_highlights.from' | t }} {% endif %}{{ product.price | money }}</p>
     <p class="led-highlight__tax">{% if cart.taxes_included %}{{ 'led_highlights.tax' | t }} · {% endif %}{% if shop.shipping_policy.url != blank %}<a href="{{ shop.shipping_policy.url }}">{{ 'led_highlights.shipping' | t }}</a>{% endif %}</p>
     <div class="led-highlight__actions">
       {% if product.available %}
-        {% if product.has_only_default_variant and product.requires_selling_plan == false %}
+        {% if product.variants.size == 1 and product.requires_selling_plan == false %}
           {% form 'product', product, id: form_id %}
             {{ form.errors | default_errors }}
             <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
