@@ -21,25 +21,46 @@ function findings(path, status, finalUrl, html) {
   if (/Liquid (?:error|syntax error)|Translation missing:/i.test(visible)) issues.push('Rendering error');
   return issues;
 }
-async function get(url) {
+function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve => setTimeout(resolve, ms)), interval = 1000} = {}) {
+  let queue = Promise.resolve();
+  const request = (url) => {
+    const next = queue.then(async () => {
+      await pause(interval);
+      return fetchImpl(url, {redirect:'manual', signal:AbortSignal.timeout(25000), headers:{'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}});
+    });
+    queue = next.then(() => undefined, () => undefined);
+    return next;
+  };
+  return async function get(url) {
   let error;
   for (let attempt = 0; attempt < 5; attempt++) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
     try {
-      const r = await fetch(url, {signal: AbortSignal.timeout(25000), headers: {'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}}); const html = await r.text();
+      let target = new URL(url), r;
+      for (let redirects = 0; ; redirects++) {
+        r = await request(target);
+        if (![301,302,303,307,308].includes(r.status)) break;
+        const location = r.headers.get('location');
+        await r.text();
+        if (!location || redirects >= 10) throw new Error('Invalid or excessive redirects');
+        target = new URL(location, target);
+        if (target.origin !== origin) throw new Error('External redirect');
+      }
+      const html = await r.text();
       if ((r.status === 429 || r.status >= 500) && attempt < 4) {
         const header = r.headers.get('retry-after');
         const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
-        if (seconds > 60) return {status:r.status, url:r.url, html};
-        await new Promise(resolve => setTimeout(resolve, Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000)));
+        if (seconds > 60) return {status:r.status, url:target.href, html};
+        await pause(Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000));
         continue;
       }
-      return {status:r.status, url:r.url, html};
+      return {status:r.status, url:target.href, html};
     }
     catch (e) { error = e; }
   }
   throw error;
+  };
 }
+const get = createRequester();
 async function main() {
   const todo = new Set(['/', '/en/', '/cart', '/en/cart', '/search', '/en/search']);
   const sitemap = await get(`${origin}/sitemap.xml`);
@@ -52,7 +73,7 @@ async function main() {
   }
   const seen = new Set(), results = [], sources = new Map();
   while (true) {
-    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 4); if (!batch.length) break;
+    const batch = [...todo].filter(p => !seen.has(p)).slice(0, 1); if (!batch.length) break;
     if (seen.size + batch.length > 1800) throw new Error('Crawl bound reached; verification incomplete');
     batch.forEach(p => seen.add(p));
     await Promise.all(batch.map(async path => {
@@ -65,10 +86,10 @@ async function main() {
     if (seen.size % 50 === 0) console.log(`Verified ${seen.size} public routes`);
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
-  const report = {checked:results.length,failures,results};
+  const report = {checked:results.length,complete:!results.some(r=>r.status===0||r.status===429||r.status>=500),failures,results};
   fs.writeFileSync(process.env.LINK_REPORT || '/tmp/leaf-live-links.json',JSON.stringify(report,null,2));
   console.log(JSON.stringify({checked:results.length,failures},null,2));
   if (failures.length) process.exitCode = 1;
 }
-module.exports = {route,links,findings};
+module.exports = {route,links,findings,createRequester};
 if (require.main === module) main().catch(e => { console.error(e.message); process.exitCode=1; });

@@ -32,7 +32,7 @@ jobs:
         shell: bash
         env:
           STAGING_THEME_ID: ${{ vars.SHOPIFY_STAGING_THEME_ID }}
-          FALLBACK_STAGING_THEME_ID: '190367662465'
+          FALLBACK_STAGING_THEME_ID: '190712709505'
         run: |
           set -euo pipefail
           resolved_theme_id="${STAGING_THEME_ID:-$FALLBACK_STAGING_THEME_ID}"
@@ -66,8 +66,13 @@ jobs:
           THEME_ID: ${{ steps.meta.outputs.theme_id }}
         run: |
           set -euo pipefail
-          test -n "$SHOPIFY_STORE"
-          test -n "$SHOPIFY_CLI_THEME_TOKEN"
+          missing=()
+          [ -n "$SHOPIFY_STORE" ] || missing+=(SHOPIFY_STORE)
+          [ -n "$SHOPIFY_CLI_THEME_TOKEN" ] || missing+=(SHOPIFY_CLI_THEME_TOKEN)
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::Configure shopify-preview environment secrets: ${missing[*]}"
+            exit 1
+          fi
           theme_json=$(shopify theme list --id "$THEME_ID" --role unpublished --json --store "$SHOPIFY_STORE" --password "$SHOPIFY_CLI_THEME_TOKEN")
           printf '%s' "$theme_json" | jq -e --arg id "$THEME_ID" '
             type == "array"

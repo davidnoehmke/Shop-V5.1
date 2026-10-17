@@ -25,60 +25,33 @@ jobs:
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           persist-credentials: false
-      - name: Wait for Shopify native sync and verify live storefront
-        shell: bash
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+      - name: Verify delivered German and English product worlds
         env:
           VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
-          set -euo pipefail
-          base='https://leaferservice.com'
-          critical_routes=(
-            '/'
-            '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'
-            '/collections/interieur-solutions'
-            '/collections/zimmerpflanzen-1'
-            '/collections/anzucht-aussaat'
-            '/collections/pflanzgefasse'
-            '/collections/pflanzenpflege-werkzeuge'
-            '/blogs/leafers-nice2know-blog'
-            '/pages/individuelles-substrat'
-            '/products/leafer-alocasia-mix'
-          )
-
-          ok=0
-          for attempt in $(seq 1 24); do
-            probe="${VERIFIED_SHA}-${attempt}"
-            if curl -fsSL -H 'Cache-Control: no-cache' "${base}/?release_probe=${probe}" -o /tmp/home.html; then
-              route_ok=1
-              for route in "${critical_routes[@]}"; do
-                if ! curl -fsSL -o /dev/null -H 'Cache-Control: no-cache' "${base}${route}?release_probe=${probe}"; then
-                  route_ok=0
-                  break
-                fi
-              done
-
-              if [ "$route_ok" -eq 1 ]                 && ! grep -Fq 'Liquid error' /tmp/home.html                 && ! grep -Fq 'Translation missing' /tmp/home.html                 && grep -Fq 'Deine Pflanze. Deine Substratmischung.' /tmp/home.html                 && grep -Fq '<leaf-guided-advisor' /tmp/home.html                 && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html; then
-                curl -fsSL -H 'Cache-Control: no-cache' "${base}/products/leafer-alocasia-mix?release_probe=${probe}" -o /tmp/product.html
-                status_404=$(curl -sSL -o /tmp/404.html -w '%{http_code}' "${base}/this-page-must-not-exist-${probe}")
-
-                if grep -Fq 'leaf-ingredient-info' /tmp/product.html                   && grep -Fq 'Bestandteile verstehen' /tmp/product.html                   && [ "$status_404" = '404' ]                   && grep -Fq 'LEAF Planer' /tmp/404.html; then
-                  response=$(curl -fsSL -X POST                     -H 'Origin: https://leaferservice.com'                     -H 'Content-Type: application/json'                     --data '{"message":"Was macht Bims im Substrat?","locale":"de","path":"/"}'                     'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant')
-                  if echo "$response" | jq -e '.answer | type == "string" and length > 20' >/dev/null; then
-                    ok=1
-                    break
-                  fi
-                fi
-              fi
-            fi
-            sleep 10
+          for attempt in 1 2 3; do
+            if node automation/codex/storefront-release.cjs; then exit 0; fi
+            if [ "$attempt" -lt 3 ]; then sleep 10; fi
           done
+          exit 1
 
-          if [ "$ok" -ne 1 ]; then
-            echo 'Live storefront did not converge to the verified main release within the allowed sync window.' >&2
-            exit 1
-          fi
+      - name: Verify live assistant response
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          response=$(curl --max-time 45 -fsSL -X POST \
+            -H 'Origin: https://leaferservice.com' \
+            -H 'Content-Type: application/json' \
+            --data '{"message":"Was macht Bims im Substrat?","locale":"de","path":"/"}' \
+            'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant')
+          echo "$response" | jq -e '.answer | type == "string" and length > 20' >/dev/null
 
       - name: Verify legacy redirects remain canonical
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
@@ -97,4 +70,15 @@ jobs:
           esac
 
       - name: Crawl public sitemap and internal German and English links
+        if: always()
         run: node automation/codex/live-links.cjs
+
+      - name: Preserve verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-de-en-verification
+          path: |
+            /tmp/leaf-release.json
+            /tmp/leaf-live-links.json
+          if-no-files-found: warn
