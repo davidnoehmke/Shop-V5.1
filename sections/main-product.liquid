@@ -1,5 +1,21 @@
 {% liquid
   assign selected_variant = product.selected_or_first_available_variant
+  comment
+    A variant is bundle-only only after server-side checkout protection is verified.
+    Never use the intent-only SSOT flag to disable a live SKU.
+  endcomment
+  if selected_variant.metafields.leafer.bundle_only_enforced.value == true
+    for candidate in product.variants
+      if candidate.available and candidate.metafields.leafer.bundle_only_enforced.value != true
+        assign selected_variant = candidate
+        break
+      endif
+    endfor
+  endif
+  assign selected_bundle_only = false
+  if selected_variant.metafields.leafer.bundle_only_enforced.value == true
+    assign selected_bundle_only = true
+  endif
   assign product_form_id = 'product-form-' | append: section.id
   assign product_subtitle = product.metafields.leafer.subtitle.value
   assign selected_on_sale = false
@@ -61,6 +77,7 @@
     class="main-product__details"
     data-add-label="{{ 'product.add_to_cart' | t | escape }}"
     data-sold-out-label="{{ 'product.sold_out' | t | escape }}"
+    data-bundle-only-label="{% if request.locale.iso_code == 'de' %}Nur im Set erhältlich{% else %}Available in a set only{% endif %}"
     data-available-label="{{ available_label | escape }}"
     data-unavailable-label="{{ unavailable_label | escape }}"
   >
@@ -72,7 +89,7 @@
       <s class="main-product__compare" data-product-compare{% unless selected_on_sale %} hidden{% endunless %}>{% if selected_on_sale %}{{ selected_variant.compare_at_price | money }}{% endif %}</s>
     </div>
     <p class="main-product__unit-price" data-product-unit-price{% if selected_unit_price == blank %} hidden{% endif %}>{{ selected_unit_price }}</p>
-    <p class="main-product__availability{% unless selected_variant.available %} is-unavailable{% endunless %}" data-product-availability aria-live="polite">{% if selected_variant.available %}{{ available_label }}{% else %}{{ unavailable_label }}{% endif %}</p>
+    <p class="main-product__availability{% if selected_bundle_only or selected_variant.available == false %} is-unavailable{% endif %}" data-product-availability aria-live="polite">{% if selected_bundle_only %}{% if request.locale.iso_code == 'de' %}Nur im Set erhältlich{% else %}Available in a set only{% endif %}{% elsif selected_variant.available %}{{ available_label }}{% else %}{{ unavailable_label }}{% endif %}</p>
     <p class="main-product__sku" data-product-sku-row{% if selected_variant.sku == blank %} hidden{% endif %}><span>{{ sku_label }}:</span> <b data-product-sku>{{ selected_variant.sku | escape }}</b></p>
 
     {% form 'product', product, id: product_form_id, class: 'main-product__form' %}
@@ -100,11 +117,12 @@
               data-compare-at="{% if variant_on_sale %}{{ variant.compare_at_price | money | escape }}{% endif %}"
               data-unit-price="{{ variant_unit_price | strip | escape }}"
               data-available="{{ variant.available }}"
+              data-bundle-only="{% if variant.metafields.leafer.bundle_only_enforced.value == true %}true{% else %}false{% endif %}"
               data-sku="{{ variant.sku | escape }}"
               data-pass-url="{% if variant.metafields.leafer.product_pass_pdf.value != blank %}{{ variant.metafields.leafer.product_pass_pdf.value.url }}{% endif %}"
               {% if variant == selected_variant %}selected{% endif %}
             >
-              {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.sold_out' | t }}{% endunless %}
+              {{ variant.title | escape }} · {{ variant.price | money }}{% if variant.metafields.leafer.bundle_only_enforced.value == true %} · {% if request.locale.iso_code == 'de' %}Nur im Set{% else %}Set only{% endif %}{% elsif variant.available == false %} · {{ 'product.sold_out' | t }}{% endif %}
             </option>
           {% endfor %}
         </select>
@@ -127,9 +145,10 @@
       <label for="Quantity-{{ section.id }}">{{ 'product.quantity' | t }}</label>
       <input id="Quantity-{{ section.id }}" type="number" name="quantity" min="1" value="1" inputmode="numeric">
 
-      <button type="submit" name="add" data-product-submit{% unless selected_variant.available %} disabled{% endunless %}>
-        {% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
+      <button type="submit" name="add" data-product-submit{% if selected_bundle_only or selected_variant.available == false %} disabled{% endif %}>
+        {% if selected_bundle_only %}{% if request.locale.iso_code == 'de' %}Nur im Set{% else %}Set only{% endif %}{% elsif selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
       </button>
+      <p class="main-product__bundle-only-note" data-product-bundle-only-note{% unless selected_bundle_only %} hidden{% endunless %}>{% if request.locale.iso_code == 'de' %}Diese Variante ist ausschließlich als Bestandteil eines passenden Sets erhältlich.{% else %}This option is available only as part of a compatible bundle.{% endif %}</p>
       <p class="main-product__purchase-note">{{ purchase_note }}</p>
     {% endform %}
 
@@ -150,7 +169,7 @@
 
   <div class="main-product__dock" aria-label="{{ product.title | escape }}">
     <div><small>{{ product.title | truncate: 42 | escape }}</small><strong data-product-price>{{ selected_variant.price | money }}</strong></div>
-    <button type="submit" form="{{ product_form_id }}" name="add" data-product-submit{% unless selected_variant.available %} disabled{% endunless %}>{% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+    <button type="submit" form="{{ product_form_id }}" name="add" data-product-submit{% if selected_bundle_only or selected_variant.available == false %} disabled{% endif %}>{% if selected_bundle_only %}{% if request.locale.iso_code == 'de' %}Nur im Set{% else %}Set only{% endif %}{% elsif selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
   </div>
 </section>
 
@@ -185,6 +204,7 @@
   .main-product__form > button { width: 100%; margin-top: .4rem; }
   .main-product button[disabled] { cursor: not-allowed; opacity: .48; transform: none; box-shadow: none; }
   .main-product__purchase-note { margin: 0; color: var(--muted); font-size: .72rem; text-align: center; }
+  .main-product__bundle-only-note { margin: 0; font-size: .86rem; line-height: 1.45; color: var(--muted); }
   .main-product__errors { padding: .9rem 1rem; border: 1px solid #9e493c; border-radius: var(--radius); background: #fff2ef; color: #6c2d24; }
   .main-product__errors ul { margin-bottom: 0; }
   .main-product__reassurance { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: 1rem 0 1.4rem; border-block: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
@@ -234,6 +254,8 @@
       if (!option || !section) return;
 
       const available = option.dataset.available === 'true';
+      const bundleOnly = option.dataset.bundleOnly === 'true';
+      const purchasable = available && !bundleOnly;
       const compareAt = option.dataset.compareAt || '';
       const unitPrice = option.dataset.unitPrice || '';
       const sku = option.dataset.sku || '';
@@ -251,8 +273,8 @@
       section.querySelectorAll('[data-product-sku-row]').forEach((element) => { element.hidden = !sku; });
 
       section.querySelectorAll('[data-product-availability]').forEach((element) => {
-        element.textContent = available ? this.dataset.availableLabel : this.dataset.unavailableLabel;
-        element.classList.toggle('is-unavailable', !available);
+        element.textContent = bundleOnly ? this.dataset.bundleOnlyLabel : (available ? this.dataset.availableLabel : this.dataset.unavailableLabel);
+        element.classList.toggle('is-unavailable', !purchasable);
       });
 
       const passDownload = section.querySelector('[data-product-pass-download]');
@@ -264,9 +286,12 @@
       }
 
       section.querySelectorAll('[data-product-submit]').forEach((button) => {
-        button.disabled = !available;
-        button.setAttribute('aria-disabled', String(!available));
-        button.textContent = available ? this.dataset.addLabel : this.dataset.soldOutLabel;
+        button.disabled = !purchasable;
+        button.setAttribute('aria-disabled', String(!purchasable));
+        button.textContent = bundleOnly ? this.dataset.bundleOnlyLabel : (available ? this.dataset.addLabel : this.dataset.soldOutLabel);
+      });
+      section.querySelectorAll('[data-product-bundle-only-note]').forEach((note) => {
+        note.hidden = !bundleOnly;
       });
 
       if (updateUrl) {
@@ -277,7 +302,7 @@
 
       this.dispatchEvent(new CustomEvent('product:variant-change', {
         bubbles: true,
-        detail: { variantId: option.value, available }
+        detail: { variantId: option.value, available: purchasable, bundleOnly }
       }));
     }
   }
