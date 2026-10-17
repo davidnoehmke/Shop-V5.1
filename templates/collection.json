@@ -73,12 +73,17 @@
     "led_accessories": {
       "type": "led-accessory-upsell",
       "settings": {}
+    },
+    "mix_highlights": {
+      "type": "substrate-mix-highlights",
+      "settings": {}
     }
   },
   "order": [
     "breadcrumbs",
     "led_landing",
     "led_accessories",
+    "mix_highlights",
     "main",
     "trust",
     "leaf_guide",
