@@ -75,6 +75,7 @@
         <a href="#LedProduct-{{ section.id }}-{{ product.id }}" data-led-jump="LedProduct-{{ section.id }}-{{ product.id }}">{{ product.metafields.lighting.model.value | default: product.title | escape }}</a>
       {% endfor %}
     </nav>
+    <span id="CollectionProducts-{{ section.id }}" class="visually-hidden" aria-hidden="true"></span>
     <div class="led-hub__results" id="LedHighlights-{{ section.id }}">
       {% for product in collection.products %}
         {% render 'led-product-highlight', product: product, section_id: section.id, index: forloop.index %}
@@ -83,6 +84,8 @@
     {% if paginate.pages > 1 %}<nav aria-label="{{ 'general.pagination' | t | escape }}">{{ paginate | default_pagination }}</nav>{% endif %}
     <p class="led-hub__empty" data-led-empty hidden>{{ 'led_collection.no_match' | t }}</p>
   </section>
+
+  {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
   <section class="led-hub__compare" aria-labelledby="LedCompareHeading-{{ section.id }}">
     <header class="led-hub__section-head">
