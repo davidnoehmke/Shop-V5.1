@@ -1256,7 +1256,7 @@
     "connector": "Socket / connection",
     "protection": "IP rating",
     "use": "Suitable for"
-},
+  },
   "mix_highlights": {
     "eyebrow": "Ready-made recipes by LEAFerservice",
     "heading": "Ready-made growing mixes for your plants",
@@ -1275,5 +1275,37 @@
     "components_cta": "Explore individual ingredients",
     "cart_error": "This mix could not be added. Please try again.",
     "details": "View product details"
-}
+  },
+  "substrate_profiles": {
+    "aroids": {
+      "title": "Aroids / Tropical",
+      "badge": "Airy & structure-stable",
+      "description": "Loose structure for the roots of Monstera, Philodendron and Alocasia."
+    },
+    "herbs": {
+      "title": "Herbs & Balcony",
+      "badge": "Balanced & free-draining",
+      "description": "For herbs and balcony plants that need even moisture and good drainage."
+    },
+    "cactus": {
+      "title": "Cacti & Succulents",
+      "badge": "Mineral & free-draining",
+      "description": "For drought-loving plants whose roots need to dry between waterings."
+    },
+    "orchid": {
+      "title": "Orchids",
+      "badge": "Porous & airy",
+      "description": "Open and airy for fine-rooted epiphytes."
+    },
+    "palms": {
+      "title": "Palms & Green Plants",
+      "badge": "Stable & balanced",
+      "description": "For firm root support and a balanced supply of water and air."
+    },
+    "seedlings": {
+      "title": "Seed Starting & Seedlings",
+      "badge": "Fine & even",
+      "description": "Fine structure for sowing and the development of young roots."
+    }
+  }
 }
