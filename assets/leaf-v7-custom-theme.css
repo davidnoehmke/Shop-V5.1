@@ -276,6 +276,19 @@ textarea {
   color: var(--text);
 }
 
+/* Images and media stay geometrically straight across the storefront. */
+img,
+picture,
+.product-card__media,
+.main-product__image,
+.main-cart__image,
+.home-journey__media,
+.brand-story__portrait,
+.collection-product-card__media,
+.featured__media {
+  border-radius: 0 !important;
+}
+
 
 /* Desktop canvas: deliberate 85% content width with an upper cap for very large displays. */
 @media (min-width: 1051px) {
