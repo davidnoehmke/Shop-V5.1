@@ -217,6 +217,7 @@ body,
   color: inherit !important;
 }
 
+#MainContent .home-journey__card--featured .home-journey__media,
 #MainContent :is(.fruit-guide__media, .led-accessories__media, .home-discovery__media, .product-card__media, .main-product__image, .ls-product__media-item, .ls-product__media-empty, .led-highlight__media, .mix-highlight__media, .leaf-lighting__media, .led-hub__hero-media, .led-hub__media, .main-collection__hero-media, .planter-world__image, .interieur-solutions-path__image, .substrate-world__card-media, .home-journey__media, .home-guides__media, .home-choice__media, .main-blog__media, .main-blog__featured-media, .main-article__product-media, .plant-world__hero-media, .category-grid__card, .starter-showcase__card, .community__item) {
   aspect-ratio: 1 / 1;
   height: auto;
