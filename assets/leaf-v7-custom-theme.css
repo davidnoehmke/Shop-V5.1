@@ -105,3 +105,102 @@
   .main-product__image img { transform: scale(.96); }
   .main-product__image { min-width: min(86vw, 360px) !important; }
 }
+
+
+/* V7 motion system: editorial, restrained, performance-safe. */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .template-index .hero {
+    background-image: var(--leaf-v7-hero-image);
+    background-size: cover;
+    background-position: 64% center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .template-index .hero__image {
+    opacity: 0;
+  }
+
+  .template-index .hero__content {
+    transform: translateY(0);
+    transition: transform .45s var(--ease-out);
+  }
+}
+
+/* Product imagery: quiet motion, stronger feedback only while the user interacts. */
+.product-card__media,
+.main-product__image {
+  cursor: zoom-in;
+}
+
+.product-card__media img,
+.main-product__image img {
+  will-change: transform;
+  transition: transform .45s var(--ease-out), filter .3s ease;
+}
+
+.product-card__media:active img,
+.main-product__image:active img {
+  transform: scale(1.075) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .main-product__image:hover img {
+    transform: scale(.965);
+  }
+}
+
+/* Mobile hero: still cinematic, but no longer consumes the whole first screen. */
+@media (max-width: 700px) {
+  .template-index .hero {
+    min-height: clamp(520px, 74svh, 590px) !important;
+  }
+
+  .template-index .hero__inner {
+    min-height: clamp(520px, 74svh, 590px) !important;
+    padding-top: clamp(5rem, 15svh, 7.5rem) !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .template-index .hero h1 {
+    max-width: 18ch;
+    font-size: clamp(1.9rem, 7.4vw, 2.8rem);
+  }
+
+  .template-index .hero__text {
+    max-width: 36ch;
+  }
+
+  .template-index .hero__benefits {
+    display: none;
+  }
+
+  .template-index .hero__image {
+    transform: scale(1.03);
+    transition: transform .9s var(--ease-out);
+  }
+
+  .template-index .hero:active .hero__image {
+    transform: scale(1.065);
+  }
+}
+
+@media (max-width: 420px) {
+  .template-index .hero,
+  .template-index .hero__inner {
+    min-height: 535px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .template-index .hero {
+    background-attachment: scroll;
+  }
+
+  .product-card__media img,
+  .main-product__image img,
+  .template-index .hero__image {
+    transition: none !important;
+    transform: none !important;
+  }
+}
