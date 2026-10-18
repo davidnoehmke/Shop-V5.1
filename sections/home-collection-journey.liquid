@@ -169,6 +169,27 @@
                 <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
                 {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape }}</p>{% endif %}
                 {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ section.settings.product_label | escape }}</span>{% endif %}
+
+                {% if request.locale.iso_code == 'de' %}
+                  {% case selected_collection.handle %}
+                    {% when 'pflanzsubstrate-mischungen' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Substrat-Ratgeber">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/monstera-substrat">Monstera-Substrat verstehen</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/anthurium-substrat">Anthurium-Wurzelraum verstehen</a>
+                      </nav>
+                    {% when 'substrate-verbesserer' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Ratgeber zu Substratbestandteilen">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/leafers-substratbestandteile">Substratbestandteile verstehen</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/bims-oder-perlit-unterschiede-pflanzsubstrat">Bims oder Perlit?</a>
+                      </nav>
+                    {% when 'interieur-solutions' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Ratgeber zu Pflanzenlicht">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/e27-t8-high-power-pflanzenlampe-vergleich">E27, T8 oder Vollspektrum-LED?</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/pflanzenlampe-watt-ppf-ppfd-abstand-flaeche">Watt, PPF, PPFD & Abstand</a>
+                      </nav>
+                  {% endcase %}
+                {% endif %}
+
                 <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape }} <span aria-hidden="true">→</span></a>
               </div>
             </article>
@@ -248,6 +269,9 @@
   .home-journey h3 a { text-decoration: none; }
   .home-journey__body > p:not(.home-journey__eyebrow) { margin: 0 0 .8rem; color: var(--muted); font-size: .86rem; line-height: 1.55; }
   .home-journey__count { margin-top: auto; color: var(--muted); font-size: .72rem; font-weight: 750; }
+  .home-journey__topic-links { display: flex; flex-wrap: wrap; gap: .35rem .75rem; margin-top: .8rem; }
+  .home-journey__topic-links a { color: var(--muted); font-size: .72rem; font-weight: 720; line-height: 1.35; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .home-journey__topic-links a:hover, .home-journey__topic-links a:focus-visible { color: var(--accent); }
   .home-journey__link { width: 100%; min-height: 44px; margin-top: 1rem; padding-inline: .9rem; gap: .45rem; font-size: .78rem; }
   .home-journey__link span, .home-journey__footer .button span { transition: transform .25s var(--ease-out); }
   .home-journey__link:hover span, .home-journey__footer .button:hover span { transform: translateX(.2rem); }
