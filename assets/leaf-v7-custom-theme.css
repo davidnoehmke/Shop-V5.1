@@ -204,3 +204,74 @@
     transform: none !important;
   }
 }
+
+
+/* V7 global design contract: one typographic and control language across the theme. */
+:root {
+  --heading-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --leaf-v7-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --radius: 0px;
+  --radius-large: 0px;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+summary,
+.button,
+.shopify-payment-button__button,
+.product-card,
+.main-product,
+.main-cart {
+  font-family: var(--leaf-v7-font) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--leaf-v7-font) !important;
+  letter-spacing: -.025em;
+}
+
+button,
+.button,
+input,
+select,
+textarea,
+.shopify-payment-button__button,
+.main-product__dock,
+.main-product__errors,
+.product-card,
+.collection-product-card,
+.featured__product {
+  border-radius: 0 !important;
+}
+
+/* Keep semantic circular elements circular: icons, dots and the studio floor shadow. */
+.home-journey__icon,
+.main-product__availability::before,
+.product-card__media::after,
+.main-product__image::after {
+  border-radius: 50%;
+}
+
+/* Remove pill-style Shopify controls while preserving clear focus and tap targets. */
+.hero__buttons .button,
+.home-journey__filter,
+.home-journey__badge,
+.skip-link {
+  border-radius: 0 !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--background);
+  color: var(--text);
+}
