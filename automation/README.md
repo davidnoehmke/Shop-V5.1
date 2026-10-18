@@ -26,8 +26,8 @@ Railway, Notion, Google Sheets oder LEAF-OS.
 - `codex/`: Policy-, Prüf- und Delivery-Helfer, die von CI-Tests verwendet werden. Kein eigenständiger Scheduler.
 - `supabase/migrations/`: versionierte Datenbank-/Policy-Änderungen; Supabase bleibt Laufzeit-SSOT.
 
-Die primäre CI-Action ist `.github/workflows/ci.yml`; zusätzlich markiert
-`.github/workflows/freeze-stable.yml` ausschließlich bereits CI-grüne und live verifizierte Beststände.
+Die primäre CI-Action ist `.github/workflows/ci.yml`; zusätzlich prüft
+`.github/workflows/live-storefront-verify.yml` den Storefront nach erfolgreicher CI auf `main`.
 Die CI validiert Repository, Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
 aktiviert keine externe Legacy-Verbindung.
 
@@ -40,11 +40,10 @@ Search Console/Analytics, eine zwingende technische/rechtliche Anforderung oder 
 explizite Owner-Freigabe vorliegt.
 
 
-## Verifizierter Beststand
+## Live-Verifikation
 
-`.github/workflows/freeze-stable.yml` läuft erst nach einem erfolgreichen `LEAF CI`-Push auf
-`main`. Der Workflow wartet auf die native Shopify-Synchronisierung und prüft die reale
-Storefront auf Liquid-Fehler sowie die zentralen Berater-/Assistent-Invarianten. Nur ein bestandener Live-Smoke-Test **und eine erfolgreiche echte Antwort des globalen Shop-Assistenten**
-erzeugen einen unveränderlichen `freeze/verified-<sha>`-Tag. Zusätzlich zeigt der Branch
-`freeze/best-verified` immer auf den zuletzt vollständig verifizierten Stand. Damit bleibt jeder
-bestätigte Beststand reproduzierbar, ohne einen fehlerhaften Merge automatisch als stabil zu deklarieren.
+`.github/workflows/live-storefront-verify.yml` läuft nach einem erfolgreichen
+`LEAF CI`-Push auf `main`. Der Workflow wartet auf die native Shopify-Synchronisierung
+und prüft zentrale Routen, Liquid-Fehler, Berater, eine echte Antwort des globalen
+Shop-Assistenten und öffentliche DE-/EN-Links. Der Actions-Lauf dokumentiert das
+Ergebnis. Der Workflow erzeugt keine Freeze-Tags oder Beststand-Branches.

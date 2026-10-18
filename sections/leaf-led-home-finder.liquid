@@ -23,6 +23,11 @@
   </div>
   <div class="leaf-led-home__choices" role="group" aria-label="{{ 'led_home.choices_aria' | t | escape }}">
     {% for scenario in led_scenarios %}
+      {% liquid
+        assign scenario_label_key = 'led_home.' | append: scenario
+        assign scenario_title_key = scenario_label_key | append: '_title'
+        assign scenario_text_key = scenario_label_key | append: '_text'
+      %}
       <button type="button" data-led-choice="{{ scenario }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">
         <span aria-hidden="true">
           {% if scenario == 'single' %}{% render 'leaf-knowledge-icon', icon_key: 'pot' %}
@@ -30,11 +35,11 @@
           {% elsif scenario == 'large' %}{% render 'leaf-knowledge-icon', icon_key: 'room' %}
           {% else %}{% render 'leaf-knowledge-icon', icon_key: 'light' %}{% endif %}
         </span>
-        {{ 'led_home.' | append: scenario | t }}
+        {{ scenario_label_key | t }}
       </button>
       <span hidden data-led-content="{{ scenario }}"
-        data-led-copy-title="{{ 'led_home.' | append: scenario | append: '_title' | t | escape }}"
-        data-led-copy-description="{{ 'led_home.' | append: scenario | append: '_text' | t | escape }}"></span>
+        data-led-copy-title="{{ scenario_title_key | t | escape }}"
+        data-led-copy-description="{{ scenario_text_key | t | escape }}"></span>
     {% endfor %}
   </div>
   <div class="leaf-led-home__answer" aria-live="polite" aria-atomic="true">

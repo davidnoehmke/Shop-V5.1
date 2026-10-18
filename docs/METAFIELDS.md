@@ -106,4 +106,19 @@ Metafeld-Inhalte, Produktbilder, Collection-Zuordnungen, Navigation und Überset
 
 `storefront_product_content` ist die kanonische Quelle für sichtbaren Produkt-Content. Der Projektor schreibt registry-freigegebene Felder in `shopify_metafield_state`; Änderungen werden als `dirty_for_shopify` markiert und nur nach erfolgreichem Shopify-Write als synchronisiert bestätigt.
 
+Die Produktprojektion benötigt `verified_at` und nicht leere `evidence`.
+`storefront_schema.publication_blocked = true` sperrt neue Projektionen. Bereits
+ausgelieferte Inhalte werden dadurch nicht entfernt. Ausstehende Änderungen ohne
+diese Voraussetzungen werden als ungültig angehalten. Änderungen an Freigabe,
+Quellen und Verifikationsdatum prüfen die Projektion erneut; eine spätere
+Freigabe stellt angehaltene Inhalte wieder zur Synchronisierung bereit.
+JSON-Werte werden strukturell verglichen; reine Formatierungsunterschiede lösen
+keine erneute Synchronisierung aus.
+
+`custom.faq` verwendet ein Array vollständiger `question`-/`answer`-Paare.
+Der Renderer unterstützt auch ältere `q`-/`a`-Paare. Sobald ein gültiges kanonisches
+Paar vorhanden ist, werden ausschließlich die kanonischen FAQ ausgegeben. Die
+alten `leafer.faq_1`–`faq_4` und Vitals-Felder dienen nur als Fallback ohne gültige
+kanonische FAQ. Sichtbare FAQ und JSON-LD verwenden denselben Renderer.
+
 `collection_content` wird analog in `shopify_collection_metafield_state` projiziert. Die Tabelle ist interner Sync-Zustand mit RLS und ohne Zugriff für `anon` oder `authenticated`. Shopify bleibt die Storefront-Projektion; redaktionelle Änderungen werden nicht zurück zum SSOT erhoben.
