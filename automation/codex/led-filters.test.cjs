@@ -13,7 +13,7 @@ function fixture(search = '', hash = '') {
   const buttons = ['all','e27','shelf','winter'].map(ledFilter => node({ ledFilter }));
   const formats = ['all','bulb','fixture','set','other'].map(ledFormatFilter => node({ ledFormatFilter }));
   const jumps = cards.map(c => node({ ledJump: c.id }));
-  const count = node({ template: '[count] Produkte angezeigt' });
+  const count = node({ template: 'Angezeigte Produkte: [count]' });
   const empty = node(), formatGroup = node();
   const details = node({}, 'delivery'); details.isDetails = true; details.card = cards[1];
   const delivery = node(); delivery.hash = '#delivery';
@@ -29,7 +29,7 @@ test('format and usage filters intersect, update navigation, count and accessibl
   const f = fixture(); f.formats[1].click(); f.buttons[1].click();
   assert.deepEqual(f.cards.map(c=>!c.hidden), [true,false,false]);
   assert.deepEqual(f.jumps.map(c=>!c.hidden), [true,false,false]);
-  assert.equal(f.count.textContent,'1 Produkte angezeigt');
+  assert.equal(f.count.textContent,'Angezeigte Produkte: 1');
   assert.equal(f.formats[1].attrs['aria-pressed'],'true');
   f.formats[3].click(); assert.equal(f.empty.hidden,false);
   f.buttons[0].click(); assert.deepEqual(f.cards.map(c=>!c.hidden),[false,true,false]);

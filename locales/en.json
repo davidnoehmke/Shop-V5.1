@@ -1268,7 +1268,7 @@
     "format_fixture": "Light fixture",
     "format_set": "Set",
     "format_other": "Other products",
-    "result_count": "[count] products shown",
+    "result_count": "Products shown: [count]",
     "scope_bulb": "Bulb for a suitable light fixture, required separately.",
     "scope_tube": "T8 tube with replacement starter. A suitable fitting is required separately.",
     "scope_tube_set": "Tube(s) and fitting included. Power connection cable not included; intended for fixed installation.",

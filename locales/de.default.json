@@ -1268,7 +1268,7 @@
     "format_fixture": "Leuchte",
     "format_set": "Set",
     "format_other": "Weitere Produkte",
-    "result_count": "[count] Produkte angezeigt",
+    "result_count": "Angezeigte Produkte: [count]",
     "scope_bulb": "Leuchtmittel für eine passende, separat benötigte Leuchte.",
     "scope_tube": "T8-Röhre mit Ersatzstarter. Eine geeignete Fassung wird separat benötigt.",
     "scope_tube_set": "Röhre(n) und Fassung enthalten. Anschlusskabel zur Stromquelle nicht enthalten; zur Festinstallation vorgesehen.",
