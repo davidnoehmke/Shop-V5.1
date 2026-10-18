@@ -750,13 +750,19 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "Substrat nach Maß",
-      "heading": "Deine Pflanze. Deine Substratmischung.",
-      "text": "Stelle deine Substratmischung selbst zusammen: Komponenten wählen, Anteile per Slider abstimmen und die Rezeptur direkt bestellen.",
+      "eyebrow": "Substrat & Pflanzenlicht",
+      "heading": "Die passende Basis für deine Pflanzen.",
+      "text": "Fertige Substratmischung wählen, eine eigene Rezeptur bauen oder Pflanzenlicht finden.",
       "primary": "Eigene Mischung bauen",
       "secondary": "Pflanzenprojekt planen",
       "world_heading": "Das Sortiment rund um dein Pflanzenprojekt",
-      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten."
+      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten.",
+      "paths_label": "Direkt zum passenden Angebot",
+      "ready": "Fertigmischungen kaufen",
+      "ready_help": "Passende Rezeptur direkt auswählen.",
+      "custom_help": "Bestandteile und Anteile selbst bestimmen.",
+      "light": "Pflanzenlicht finden",
+      "light_help": "Leuchtmittel, Leuchten und Sets entdecken."
     },
     "knowledge_links": {
       "label": "Direkt weiterlernen",
@@ -1255,7 +1261,23 @@
     "voltage": "Spannung",
     "connector": "Sockel / Anschluss",
     "protection": "Schutzart",
-    "use": "Geeignet für"
+    "use": "Geeignet für",
+    "format_label": "Produktart auswählen",
+    "format_all": "Alle Produktarten",
+    "format_bulb": "Nur Leuchtmittel",
+    "format_fixture": "Leuchte",
+    "format_set": "Set",
+    "format_other": "Weitere Produkte",
+    "result_count": "[count] Produkte angezeigt",
+    "scope_bulb": "Leuchtmittel für eine passende, separat benötigte Leuchte.",
+    "scope_tube": "T8-Röhre mit Ersatzstarter. Eine geeignete Fassung wird separat benötigt.",
+    "scope_tube_set": "Röhre(n) und Fassung enthalten. Anschlusskabel zur Stromquelle nicht enthalten; zur Festinstallation vorgesehen.",
+    "scope_pendant_set": "Vita-Leuchtmittel und Pendelfassung mit Stoffkabel enthalten. Kein zusätzlicher Lampenschirm.",
+    "scope_set": "Set aus Pflanzenleuchte und Halterung bzw. Standfuß. Ausführung und Zubehör siehe Lieferumfang.",
+    "scope_fixture": "Pflanzenleuchte. Montage, Anschluss und Zubehör siehe Lieferumfang.",
+    "scope_bar": "LED-Leiste und kleines Netzteil enthalten. Controller optional.",
+    "scope_other": "Ausführung, Anschluss und enthaltenes Zubehör bitte im Lieferumfang prüfen.",
+    "scope_link": "Lieferumfang ansehen"
   },
   "mix_highlights": {
     "eyebrow": "Fertige Rezepturen von LEAFerservice",
