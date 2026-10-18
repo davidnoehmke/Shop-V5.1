@@ -216,6 +216,10 @@
       "fit": "Suitable for",
       "spec": "Key specification",
       "note": "If these points match your use case, choose the suitable variant below."
+    },
+    "editorial": {
+      "difficulty": "Care difficulty",
+      "cart_error": "This product could not be added. Please try again."
     }
   },
   "product_variant_guide": {
@@ -796,6 +800,25 @@
       "a5": "Yes. Start in the LEAF Planner with your goal, room and plant needs. The shortlist then leads into relevant product worlds, individual products and coordinated sets where available.",
       "q6": "When do I need an advanced configurator?",
       "a6": "Only when you intentionally want to fine-tune proportions or technical parameters yourself. For most projects the central LEAF Planner is the simpler starting point; specialist tools remain optional deeper steps."
+    },
+    "worlds": {
+      "ready_mix_title": "Ready-made substrate mixes",
+      "ready_mix_eyebrow": "Ready-made recipes",
+      "ready_mix_copy": "Compare ready-made recipes for different plant profiles and choose your mix directly.",
+      "ready_mix_cta": "Explore mixes",
+      "components_title": "Substrate components",
+      "components_eyebrow": "Mix your own",
+      "components_copy": "Choose individual materials and combine them for your own substrate mixes.",
+      "components_cta": "Explore components",
+      "planters_title": "Plant pots & growing systems",
+      "planters_eyebrow": "Plant pots",
+      "planters_copy": "Choose containers by size, material and planting needs.",
+      "planters_cta": "Explore plant pots",
+      "lighting_title": "LEDs & grow lighting",
+      "lighting_eyebrow": "Plant lighting",
+      "lighting_copy": "Bulbs, fixtures and sets for individual plants, shelves and larger areas.",
+      "lighting_cta": "Explore grow lighting",
+      "products": "Products"
     }
   },
   "plant_world": {

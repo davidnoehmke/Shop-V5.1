@@ -1,20 +1,46 @@
+{% doc %}
+  Renders a collection highlight with decision facts and a native purchase form.
+  @param {product} product - Product to display
+  @param {string} section_id - Parent section identifier
+{% enddoc %}
 {% liquid
-assign selected_variant = product.selected_or_first_available_variant
-assign intro = product.metafields.leafer.intro.value | default: product.description | strip_html | truncatewords: 55
-assign form_id = 'Editorial-' | append: section_id | append: '-' | append: product.id
+  assign selected_variant = product.selected_or_first_available_variant
+  assign intro = product.metafields.leafer.intro.value | default: product.description | strip_html | truncatewords: 55
+  assign image_alt = product.featured_image.alt | default: product.title
+  assign form_id = 'Editorial-' | append: section_id | append: '-' | append: product.id
+  assign needs_product_page = false
+  if product.handle contains 'konfigurator' or product.metafields.leafer.recipe_matrix.value != blank or product.requires_selling_plan
+    assign needs_product_page = true
+  endif
 %}
 <article class="leaf-editorial" id="Product-{{ section_id }}-{{ product.id }}">
-<div class="leaf-editorial__media"><a href="{{ product.url }}">{% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 1200 | image_tag: widths: '360,540,760,960,1200', sizes: '(min-width: 761px) 45vw, 94vw', loading: 'lazy', alt: product.featured_image.alt | default: product.title }}{% else %}{{ 'product-1' | placeholder_svg_tag }}{% endif %}</a></div>
-<div class="leaf-editorial__content">
-<p>{{ product.type | default: product.vendor | escape }}</p><h2><a href="{{ product.url }}">{{ product.title | escape }}</a></h2>
-{% if intro != blank %}<p>{{ intro | escape }}</p>{% endif %}
-{% if product.metafields.leafer.suitable_for.value != blank %}<p>{{ product.metafields.leafer.suitable_for.value | escape }}</p>{% endif %}
-{% form 'product', product, id: form_id, class: 'leaf-editorial__form' %}
-{% if product.variants.size > 1 %}
-<label for="Variant-{{ form_id }}">{% if request.locale.iso_code == 'en' %}Choose option{% else %}Variante wählen{% endif %}</label>
-<select id="Variant-{{ form_id }}" name="id">{% for variant in product.variants %}<option value="{{ variant.id }}"{% if variant.id == selected_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {% if request.locale.iso_code == 'en' %}Unavailable{% else %}Nicht verfügbar{% endif %}{% endunless %}</option>{% endfor %}</select>
-{% else %}<input type="hidden" name="id" value="{{ selected_variant.id }}">{% endif %}
-<div class="leaf-editorial__purchase"><strong>{% if product.price_varies %}{% if request.locale.iso_code == 'en' %}From{% else %}Ab{% endif %} {% endif %}{{ product.price_min | money }}</strong><button type="submit"{% unless product.available %} disabled{% endunless %}>{% if product.available %}{% if request.locale.iso_code == 'en' %}Add to cart{% else %}In den Warenkorb{% endif %}{% else %}{% if request.locale.iso_code == 'en' %}Sold out{% else %}Ausverkauft{% endif %}{% endif %}</button></div>
-{% endform %}
-<a href="{{ product.url }}">{% if request.locale.iso_code == 'en' %}Product details and suitability{% else %}Produktdetails und Eignung{% endif %} →</a>
-</div></article>
+  <div class="leaf-editorial__media"><a href="{{ product.url }}">{% if product.featured_image != blank %}{{ product.featured_image | image_url: width: 1200 | image_tag: widths: '360,540,760,960,1200', sizes: '(min-width: 761px) 45vw, 94vw', loading: 'lazy', alt: image_alt }}{% else %}{{ 'product-1' | placeholder_svg_tag }}{% endif %}</a></div>
+  <div class="leaf-editorial__content">
+    <p>{{ product.type | default: product.vendor | escape }}</p>
+    <h2><a href="{{ product.url }}">{{ product.title | escape }}</a></h2>
+    {% if intro != blank %}<p>{{ intro | escape }}</p>{% endif %}
+    <dl class="leaf-editorial__facts">
+      {% if product.metafields.leafer.primary_function.value != blank %}<div><dt>{{ 'product.decision.function' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.primary_function %}</dd></div>{% endif %}
+      {% if product.metafields.leafer.suitable_for.value != blank %}<div><dt>{{ 'product.decision.suitable_for' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for %}</dd></div>{% endif %}
+      {% if product.metafields.leafer.difficulty.value != blank %}<div><dt>{{ 'product.editorial.difficulty' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.difficulty %}</dd></div>{% endif %}
+      {% if product.metafields.lighting.rated_power_w.value != blank %}<div><dt>{{ 'led_collection.power' | t }}</dt><dd>{{ product.metafields.lighting.rated_power_w.value | escape }} W</dd></div>{% endif %}
+      {% if product.metafields.lighting.cct_k.value != blank %}<div><dt>{{ 'lighting_configurator.cct' | t }}</dt><dd>{{ product.metafields.lighting.cct_k.value | escape }} K</dd></div>{% endif %}
+      {% if product.metafields.lighting.mounting.value != blank %}<div><dt>{{ 'led_collection.mounting' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.lighting.mounting %}</dd></div>{% endif %}
+    </dl>
+    {% unless needs_product_page %}
+      {% form 'product', product, id: form_id, class: 'leaf-editorial__form js-leafer-cart-form' %}
+        {{ form.errors | default_errors }}
+        {% if product.variants.size > 1 %}
+          <label for="Variant-{{ form_id }}">{{ 'product.choose_options' | t }}</label>
+          <select id="Variant-{{ form_id }}" name="id" data-editorial-variant>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}"{% if variant.id == selected_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.unavailable' | t }}{% endunless %}</option>{% endfor %}</select>
+        {% else %}<input type="hidden" name="id" value="{{ selected_variant.id }}">{% endif %}
+        <div class="leaf-editorial__purchase">
+          <strong data-editorial-price aria-live="polite">{{ selected_variant.price | money }}</strong>
+          <button type="submit" name="add"{% unless selected_variant.available %} disabled{% endunless %}>{% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+        </div>
+        <p data-cart-error role="alert" hidden>{{ 'product.editorial.cart_error' | t }}</p>
+      {% endform %}
+    {% endunless %}
+    <a href="{{ product.url }}">{{ 'product.card.view_details' | t }} →</a>
+  </div>
+</article>

@@ -216,6 +216,10 @@
       "mix_text": "Grundrezeptur verstehen und bei Bedarf im Profi-Modus fein abstimmen.",
       "knowledge": "LEAFers nice2know",
       "knowledge_text": "Praxiswissen, Hintergründe und häufige Pflanzenfragen vertiefen."
+    },
+    "editorial": {
+      "difficulty": "Pflegeaufwand",
+      "cart_error": "Dieses Produkt konnte nicht hinzugefügt werden. Bitte versuche es erneut."
     }
   },
   "product_variant_guide": {
@@ -788,6 +792,25 @@
       "a5": "Ja. Starte im LEAF Planer mit Ziel, Raum und Pflanzenbedarf. Die Vorauswahl führt anschließend zu passenden Produktwelten, Einzelprodukten und – sofern vorhanden – abgestimmten Sets.",
       "q6": "Wann brauche ich einen Profi-Konfigurator?",
       "a6": "Nur wenn du Anteile oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte ist der zentrale LEAF Planer der einfachere Start; Spezialwerkzeuge bleiben als optionaler Vertiefungsschritt erhalten."
+    },
+    "worlds": {
+      "ready_mix_title": "Fertige Substratmischungen",
+      "ready_mix_eyebrow": "Fertige Rezepturen",
+      "ready_mix_copy": "Fertige Rezepturen für verschiedene Pflanzenprofile – direkt vergleichbar und ohne Umweg kaufbar.",
+      "ready_mix_cta": "Mischungen entdecken",
+      "components_title": "Substratbestandteile",
+      "components_eyebrow": "Selbst mischen",
+      "components_copy": "Einzelne Materialien gezielt auswählen und für eigene Mischungen kombinieren.",
+      "components_cta": "Bestandteile entdecken",
+      "planters_title": "Pflanzgefäße & Pflanzsysteme",
+      "planters_eyebrow": "Gefäße",
+      "planters_copy": "Gefäße nach Größe, Material und Pflanzsituation auswählen.",
+      "planters_cta": "Gefäße entdecken",
+      "lighting_title": "LEDs & Pflanzenbeleuchtung",
+      "lighting_eyebrow": "Pflanzenlicht",
+      "lighting_copy": "Leuchtmittel, Leuchten und Sets für einzelne Pflanzen, Regale und größere Flächen.",
+      "lighting_cta": "Pflanzenlicht entdecken",
+      "products": "Produkte"
     }
   },
   "plant_world": {

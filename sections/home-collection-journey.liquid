@@ -1,6 +1,7 @@
 {% liquid
   assign section_heading = section.settings.heading
   assign section_intro = section.settings.intro
+  assign journey_categories = section.blocks | map: 'settings' | map: 'category'
   assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
 
   if request.page_type == 'index'
@@ -32,8 +33,12 @@
       <button type="button" class="home-journey__filter is-active" data-journey-filter="all" aria-pressed="true">{{ section.settings.filter_all | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="substrate" aria-pressed="false">{{ section.settings.filter_substrate | escape }}</button>
       <button type="button" class="home-journey__filter" data-journey-filter="interieur" aria-pressed="false">{{ section.settings.filter_interieur | escape }}</button>
+      {% if journey_categories contains 'bundle' %}
       <button type="button" class="home-journey__filter" data-journey-filter="bundle" aria-pressed="false">{{ filter_bundle | escape }}</button>
+      {% endif %}
+      {% if journey_categories contains 'grow' %}
       <button type="button" class="home-journey__filter" data-journey-filter="grow" aria-pressed="false">{{ section.settings.filter_grow | escape }}</button>
+      {% endif %}
       <button type="button" class="home-journey__filter" data-journey-filter="equipment" aria-pressed="false">{{ section.settings.filter_equipment | escape }}</button>
     </div>
 
@@ -112,6 +117,40 @@
               endcase
             endif
 
+            if request.page_type == 'index'
+              assign world_handle = selected_collection.handle | default: block.settings.fallback_link | split: '/' | last
+              assign world_name = ''
+              case world_handle
+                when 'pflanzsubstrate-mischungen'
+                  assign world_name = 'ready_mix'
+                when 'substrate-verbesserer'
+                  assign world_name = 'components'
+                when 'pflanzgefasse'
+                  assign world_name = 'planters'
+                when 'interieur-solutions', 'pflanzenbeleuchtung'
+                  assign world_name = 'lighting'
+              endcase
+              if world_name != blank
+                  assign world_key = 'home.worlds.' | append: world_name
+                  assign label_key = world_key | append: '_title'
+                  assign card_title = label_key | t
+                  assign label_key = world_key | append: '_eyebrow'
+                  assign card_eyebrow = label_key | t
+                  assign label_key = world_key | append: '_copy'
+                  assign card_copy = label_key | t
+                  assign label_key = world_key | append: '_cta'
+                  assign card_cta = label_key | t
+                  assign card_badge = ''
+                  if selected_collection != blank
+                    capture card_badge
+                      echo selected_collection.products_count
+                      echo ' '
+                      echo 'home.worlds.products' | t
+                    endcapture
+                  endif
+              endif
+            endif
+
             assign card_image_alt = card_title
             if selected_collection.featured_image.alt != blank
               assign card_image_alt = selected_collection.featured_image.alt
@@ -160,7 +199,7 @@
                 {% if card_eyebrow != blank %}<p class="home-journey__eyebrow">{{ card_eyebrow | escape }}</p>{% endif %}
                 <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
                 {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape }}</p>{% endif %}
-                {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ section.settings.product_label | escape }}</span>{% endif %}
+                {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ 'home.worlds.products' | t }}</span>{% endif %}
 
                 {% if request.locale.iso_code == 'de' %}
                   {% case selected_collection.handle %}
