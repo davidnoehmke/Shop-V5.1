@@ -151,3 +151,143 @@
     scroll-behavior: auto;
   }
 }
+
+:root {
+  --leaf-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --leaf-ink: #173d2b;
+  --heading-font: var(--leaf-font);
+  --font-body-family: var(--leaf-font);
+  --font-heading-family: var(--leaf-font);
+  --text: var(--leaf-ink);
+  --muted: var(--leaf-ink);
+  --accent: var(--leaf-ink);
+}
+
+body,
+.site-header,
+.site-footer,
+#MainContent {
+  font-family: var(--leaf-font);
+}
+
+:is(.site-header, .site-footer, #MainContent) :is(h1, h2, h3, h4, h5, h6, p, a, li, label, summary, button, input, select, textarea, figcaption, blockquote, dt, dd, span, strong, small) {
+  font-family: var(--leaf-font) !important;
+}
+
+#MainContent h1 {
+  font-size: var(--leaf-heading-page) !important;
+  line-height: 1.2 !important;
+}
+
+#MainContent h2 {
+  font-size: var(--leaf-heading-section) !important;
+  line-height: 1.25 !important;
+}
+
+#MainContent h3 {
+  font-size: var(--leaf-heading-detail) !important;
+  line-height: 1.3 !important;
+}
+
+#MainContent :is(.led-hub, .mix-showcase, .ls-product, .main-product, .main-collection, .planter-world, .interieur-solutions-guide) {
+  --ls-ink: var(--leaf-ink);
+  --ls-muted: var(--leaf-ink);
+  --ls-accent: var(--leaf-ink);
+  color: var(--leaf-ink);
+}
+
+#MainContent :is(.led-highlight, .mix-highlight, .product-card, .home-guides__body, .home-journey__body, .main-blog__card-body, .main-blog__featured-copy, .planter-world__body, .interieur-solutions-path__body, .main-page__content, .main-article__body) {
+  color: var(--leaf-ink);
+}
+
+#MainContent :is(.led-highlight, .mix-highlight, .planter-world__body, .interieur-solutions-path__body) :is(h2, h3, p, dt, dd, small),
+#MainContent :is(.main-page__content, .main-article__body) :is(h1, h2, h3, p, figcaption) {
+  color: inherit !important;
+}
+
+#MainContent :is(.planter-world__eyebrow, .planter-world__intro > p, .planter-world__facts span, .planter-world__example, .planter-world__link, .interieur-solutions-guide__eyebrow, .interieur-solutions-guide__text, .interieur-solutions-path__tagline, .interieur-solutions-path__meta, .interieur-solutions-path__link, .interieur-solutions-path__compare, .interieur-solutions-path__benefits span) {
+  color: var(--leaf-ink);
+}
+
+#MainContent :is(.planter-world__method, .interieur-solutions-guide__project) {
+  color: #fff;
+}
+
+#MainContent :is(.planter-world__method, .interieur-solutions-guide__project) :is(p, h3, a) {
+  color: inherit !important;
+}
+
+#MainContent :is(.fruit-guide__media, .led-accessories__media, .home-discovery__media, .product-card__media, .main-product__image, .ls-product__media-item, .ls-product__media-empty, .led-highlight__media, .mix-highlight__media, .leaf-lighting__media, .led-hub__hero-media, .led-hub__media, .main-collection__hero-media, .planter-world__image, .interieur-solutions-path__image, .substrate-world__card-media, .home-journey__media, .home-guides__media, .home-choice__media, .main-blog__media, .main-blog__featured-media, .main-article__product-media, .plant-world__hero-media, .category-grid__card, .starter-showcase__card, .community__item) {
+  aspect-ratio: 1 / 1;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: hidden;
+  align-self: start;
+}
+
+#MainContent :is(.fruit-guide__media, .led-accessories__media, .home-discovery__media, .product-card__media, .main-product__image, .ls-product__media-item, .led-highlight__media, .mix-highlight__media, .leaf-lighting__media, .led-hub__hero-media, .led-hub__media, .main-collection__hero-media, .main-article__product-media) img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  object-fit: contain;
+  object-position: center;
+  max-height: none;
+}
+
+#MainContent :is(.planter-world__image, .interieur-solutions-path__image, .substrate-world__card-media, .home-journey__media, .home-guides__media, .home-choice__media, .main-blog__media, .main-blog__featured-media, .plant-world__hero-media, .category-grid__card, .starter-showcase__card, .community__item) img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center;
+  max-height: none;
+}
+
+#MainContent :is(.main-page__content, .main-article__body, .main-article__hero, .plant-world__gallery-grid) img {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  min-height: 0;
+  max-height: none !important;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 0;
+  border-radius: 0 !important;
+  object-fit: contain;
+}
+
+#MainContent :is(.product-card, .home-guides__card, .home-journey__card, .main-blog__card, .main-blog__featured, .planter-world__card, .interieur-solutions-path, .home-choice__inner, .home-discovery__product, .fruit-guide__card) {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+@media (max-width: 1240px) {
+  .site-header .site-header__mobile-panel :is(.site-header__mobile-link, .site-header__mobile-disclosure > summary) {
+    min-height: 48px;
+    padding-block: .65rem;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+
+  .site-header .site-header__mobile-submenu a {
+    min-height: 44px;
+    font-size: .9375rem;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0;
+  }
+}
