@@ -275,3 +275,21 @@ textarea {
   background: var(--background);
   color: var(--text);
 }
+
+
+/* Desktop canvas: deliberate 85% content width with an upper cap for very large displays. */
+@media (min-width: 1051px) {
+  .page-width {
+    width: min(85vw, 1560px) !important;
+    max-width: none !important;
+    margin-inline: auto;
+  }
+
+  .template-index .hero__inner {
+    width: min(85vw, 1560px) !important;
+  }
+
+  .main-product {
+    width: min(85vw, 1560px) !important;
+  }
+}
