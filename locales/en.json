@@ -120,7 +120,7 @@
       "label": "Product benefits"
     },
     "availability": {
-      "available": "In stock · ready to ship",
+      "available": "Available to order",
       "unavailable": "This variant is currently unavailable.",
       "unavailable_short": "Unavailable",
       "invalid_combination": "Combination unavailable",
@@ -216,6 +216,26 @@
       "fit": "Suitable for",
       "spec": "Key specification",
       "note": "If these points match your use case, choose the suitable variant below."
+    },
+    "content": {
+      "label": "Product information",
+      "description": "Description",
+      "application": "How to use",
+      "faq": "Frequently asked questions",
+      "function": "Purpose",
+      "suitable_for": "Suitable for",
+      "water_behavior": "Water behaviour",
+      "use_as": "Use as:",
+      "mounting": "Installation:",
+      "care_tip": "Care tip:",
+      "notice": "Note:",
+      "safety": "Safety:",
+      "variant_check": "Before ordering, ask us to confirm the dimensions and recommended plant distance for your selected variant.",
+      "manufacturer_information": "View manufacturer information",
+      "howto_name": "How to use {{ product }}",
+      "guides": "Related guides",
+      "details_eyebrow": "Product details",
+      "details_heading": "Specifications"
     }
   },
   "product_variant_guide": {
@@ -401,10 +421,11 @@
   "recipe": {
     "eyebrow": "Transparently mixed",
     "heading": "Recipe and ingredients",
-    "intro": "The composition is loaded from maintained product data for consistent information across every product page.",
+    "intro": "The ingredients in this mix and their proportions.",
     "ratio": "Mixing ratio",
     "ingredients": "Ingredients",
-    "note": "Volume shares are guidelines. Plant, pot, location and watering habits may require adjustments."
+    "note": "Volume shares are guidelines. Plant, pot, location and watering habits may require adjustments.",
+    "chart_label": "Composition of {{ product }}"
   },
   "cross_sell": {
     "eyebrow": "Useful additions",
@@ -758,13 +779,13 @@
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     },
     "solution": {
-      "eyebrow": "Custom substrate",
-      "heading": "Your plant. Your substrate mix.",
-      "text": "Build your substrate mix: choose ingredients, adjust proportions with sliders and order your custom recipe.",
-      "primary": "Build your own mix",
-      "secondary": "Plan a plant project",
+      "eyebrow": "Substrates · plant lighting",
+      "heading": "Good roots. Good light.",
+      "text": "Ready-to-use substrates and plant lighting for your home.",
+      "primary": "Shop substrates",
+      "secondary": "Shop plant lights",
       "world_heading": "The product worlds around your plant project",
-      "world_intro": "Custom substrate remains the core, complemented by plant lighting and interiors, planters, houseplants, propagation, bundles and care as connected product worlds."
+      "world_intro": "Ready-made mixes for Alocasia, cacti, palms and propagation. LED plant lighting for individual plants, shelves and your home."
     },
     "knowledge_links": {
       "label": "Keep learning",
@@ -790,6 +811,17 @@
       "a5": "Yes. Start in the LEAF Planner with your goal, room and plant needs. The shortlist then leads into relevant product worlds, individual products and coordinated sets where available.",
       "q6": "When do I need an advanced configurator?",
       "a6": "Only when you intentionally want to fine-tune proportions or technical parameters yourself. For most projects the central LEAF Planner is the simpler starting point; specialist tools remain optional deeper steps."
+    },
+    "shop": {
+      "substrates_heading": "Your substrate. Ready to grow.",
+      "substrates_text": "Ready-made mixes for Alocasia, cacti, palms and propagation.",
+      "substrates_link": "View all substrates",
+      "substrates_help": "Prefer to mix your own?",
+      "lighting_heading": "More light for your plants.",
+      "lighting_text": "LED plant lighting for individual plants, shelves and your home.",
+      "lighting_link": "View all lighting",
+      "lighting_help": "Find the right plant light",
+      "empty": "Explore currently available products in this collection."
     }
   },
   "plant_world": {

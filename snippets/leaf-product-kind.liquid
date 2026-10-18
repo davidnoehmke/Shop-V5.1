@@ -1,0 +1,27 @@
+{% doc %}
+  Classifies products from explicit product types and existing catalog fields.
+  Returns mix, component, light, plant, or no output for an unknown category.
+  @param {product} product - Current product.
+{% enddoc %}
+{%- liquid
+  assign product_type = product.type | downcase
+  assign mix_type = product.metafields.leafer.mix_type.value | downcase
+  assign component_type = product.metafields.leafer.component_type.value | downcase
+  case product_type
+    when 'set & bundle', 'substrat-konfigurator', 'luftpflanze', 'netzteil', 'led-netzteil', 'lichtsteuerung', 'beleuchtungszubehör'
+    when 'substrat-mischung', 'substratmischung', 'substrate mix'
+      echo 'mix'
+    when 'substratbestandteil', 'substratzusatz', 'substrate constituent'
+      echo 'component'
+    when 'led-pflanzenlampe', 'led-pflanzenleuchte', 'led-pflanzenlicht-röhre', 'pflanzenleuchten-set', 'pflanzenlampe', 'pflanzenleuchte'
+      echo 'light'
+    when 'zimmerpflanze', 'zimmerpflanzen', 'lebende sukkulente'
+      echo 'plant'
+    else
+      if mix_type == 'fertigmischung' or component_type == 'mischung'
+        echo 'mix'
+      elsif component_type == 'substratbestandteil'
+        echo 'component'
+      endif
+  endcase
+-%}

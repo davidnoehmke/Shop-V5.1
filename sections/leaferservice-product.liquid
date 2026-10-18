@@ -1,35 +1,9 @@
 {% liquid
   assign current_variant = product.selected_or_first_available_variant
   assign form_id = 'LeaferserviceProductForm-' | append: section.id
-  assign custom_use_case = product.metafields.custom.use_case.value
-  assign custom_light_style = product.metafields.custom.light_style.value
-  assign custom_lighting_position = product.metafields.custom.lighting_position.value
-  assign custom_recommended_rooms = product.metafields.custom.recommended_room.value
-  assign leafer_subtitle = product.metafields.leafer.subtitle.value
-  assign leafer_intro = product.metafields.leafer.intro.value
-  assign leafer_usp_1 = product.metafields.leafer.usp_1.value
-  assign leafer_usp_2 = product.metafields.leafer.usp_2.value
-  assign leafer_usp_3 = product.metafields.leafer.usp_3.value
-  assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
-  assign leafer_primary_function = product.metafields.leafer.primary_function.value
-  assign leafer_suitable_for = product.metafields.leafer.suitable_for.value
-  assign leafer_ingredients = product.metafields.leafer.ingredients.value
-  assign leafer_application_steps = product.metafields.leafer.application_steps.value
-  assign leafer_mixing_ratio = product.metafields.leafer.mixing_ratio.value
-  assign leafer_care_tip = product.metafields.leafer.care_tip.value
-  assign leafer_difficulty = product.metafields.leafer.difficulty.value
-  assign lighting_power = product.metafields.lighting.rated_power_w.value
-  assign lighting_cct = product.metafields.lighting.cct_k.value
-  assign lighting_spectrum = product.metafields.lighting.spectrum.value
-  assign lighting_ppf = product.metafields.lighting.ppf_umol_s.value
-  assign lighting_ppfd = product.metafields.lighting.ppfd_reference.value
-  assign lighting_mounting = product.metafields.lighting.mounting.value
-  assign lighting_distance = product.metafields.lighting.recommended_distance.value
-  assign lighting_coverage = product.metafields.lighting.coverage_guidance.value
-  assign lighting_ip = product.metafields.lighting.ip_rating.value
-  assign lighting_socket = product.metafields.lighting.socket_connector.value
-  assign hero_summary = custom_use_case | default: leafer_intro | default: product.description | strip_html | strip | truncatewords: 32
 %}
+{{ 'leaf-image-viewer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'leaf-image-viewer.js' | asset_url }}" defer></script>
 <section class="ls-product" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="ls-product__grid page-width">
     <div class="ls-product__media" aria-label="{{ 'product.media.label' | t }}">
@@ -43,11 +17,13 @@
             endif
           %}
           <div class="ls-product__media-item{% if forloop.first %} is-active{% endif %}" data-media-id="{{ media.id }}">
+            <button type="button" class="leaf-image-open" data-leaf-image-open data-leaf-image-full="{{ media | image_url: width: 2200 }}" data-leaf-image-alt="{{ media.alt | default: product.title | escape }}" aria-label="{{ media.alt | default: product.title | escape }} – Bild in voller Größe öffnen">
             {% if forloop.first %}
               {{ media | image_url: width: 1400 | image_tag: loading: 'eager', fetchpriority: 'high', widths: '320, 480, 640, 800, 1000, 1200, 1400', sizes: media_sizes, alt: media.alt | default: product.title }}
             {% else %}
               {{ media | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '320, 480, 640, 800, 1000, 1200', sizes: media_sizes, alt: media.alt | default: product.title }}
             {% endif %}
+            </button>
           </div>
         {% endfor %}
       {% else %}
@@ -58,123 +34,7 @@
     <div class="ls-product__info">
       {% if section.settings.show_vendor and product.vendor != blank %}<p class="ls-product__eyebrow">{{ product.vendor }}</p>{% endif %}
       <h1 class="ls-product__title">{{ product.title }}</h1>
-      {% if leafer_subtitle != blank %}<p class="ls-product__subtitle">{{ leafer_subtitle | escape }}</p>{% endif %}
-      {% if knowledge_atoms != blank %}
-        <div class="ls-product__knowledge">
-          {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'chips', limit: 3 %}
-        </div>
-      {% endif %}
-      {% if leafer_usp_1 != blank or leafer_usp_2 != blank or leafer_usp_3 != blank %}<ul class="ls-product__usp-list" aria-label="{{ 'product.usps.label' | t }}">{% if leafer_usp_1 != blank %}<li>{{ leafer_usp_1 | escape }}</li>{% endif %}{% if leafer_usp_2 != blank %}<li>{{ leafer_usp_2 | escape }}</li>{% endif %}{% if leafer_usp_3 != blank %}<li>{{ leafer_usp_3 | escape }}</li>{% endif %}</ul>{% endif %}
-
-      {% if leafer_primary_function != blank or custom_use_case != blank or leafer_suitable_for != blank or leafer_ingredients != blank or leafer_mixing_ratio != blank or leafer_application_steps != blank or lighting_power != blank or lighting_cct != blank or lighting_spectrum != blank or lighting_mounting != blank %}
-        <div class="ls-product__fact-deck" data-fact-deck>
-          {% if leafer_primary_function != blank or custom_use_case != blank or leafer_suitable_for != blank or leafer_care_tip != blank %}
-            <details class="ls-product__fact">
-              <summary>
-                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg></span>
-                <span>{% if leafer_primary_function != blank %}{{ leafer_primary_function | escape }}{% elsif custom_use_case != blank %}{{ custom_use_case | escape }}{% else %}{{ leafer_suitable_for | first | escape }}{% endif %}</span>
-                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
-              </summary>
-              <div class="ls-product__fact-panel">
-                {% if leafer_suitable_for != blank %}<p>{{ leafer_suitable_for | join: ' · ' | escape }}</p>{% endif %}
-                {% if leafer_care_tip != blank %}<p>{{ leafer_care_tip | escape }}</p>{% endif %}
-                {% if leafer_difficulty != blank %}<p>{{ leafer_difficulty | escape }}</p>{% endif %}
-              </div>
-            </details>
-          {% endif %}
-
-          {% if leafer_ingredients != blank or leafer_mixing_ratio != blank or leafer_application_steps != blank %}
-            <details class="ls-product__fact">
-              <summary>
-                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg></span>
-                <span>{% if leafer_mixing_ratio != blank %}{{ leafer_mixing_ratio | strip_html | truncatewords: 6 | escape }}{% elsif leafer_ingredients != blank %}{{ leafer_ingredients | first | escape }}{% else %}{{ leafer_application_steps | first | escape }}{% endif %}</span>
-                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
-              </summary>
-              <div class="ls-product__fact-panel">
-                {% if leafer_ingredients != blank %}<div class="ls-product__fact-tags">{% for ingredient in leafer_ingredients limit: 6 %}<span>{{ ingredient | escape }}</span>{% endfor %}</div>{% endif %}
-                {% if leafer_mixing_ratio != blank %}<p>{{ leafer_mixing_ratio | escape }}</p>{% endif %}
-                {% if leafer_application_steps != blank %}<ol>{% for step in leafer_application_steps limit: 5 %}<li>{{ step | escape }}</li>{% endfor %}</ol>{% endif %}
-              </div>
-            </details>
-          {% endif %}
-
-          {% if lighting_power != blank or lighting_cct != blank or lighting_spectrum != blank or lighting_ppf != blank or lighting_ppfd != blank or lighting_mounting != blank or lighting_distance != blank or lighting_coverage != blank or lighting_ip != blank or lighting_socket != blank %}
-            <details class="ls-product__fact">
-              <summary>
-                <span class="ls-product__fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg></span>
-                <span>{% if lighting_power != blank %}{{ lighting_power }} W{% endif %}{% if lighting_power != blank and lighting_cct != blank %} · {% endif %}{% if lighting_cct != blank %}{{ lighting_cct }} K{% endif %}{% if lighting_power == blank and lighting_cct == blank and lighting_socket != blank %}{{ lighting_socket | escape }}{% endif %}</span>
-                <span class="ls-product__fact-toggle" aria-hidden="true">+</span>
-              </summary>
-              <div class="ls-product__fact-panel ls-product__fact-panel--technical">
-                {% if lighting_spectrum != blank %}<p>{{ lighting_spectrum | escape }}</p>{% endif %}
-                {% if lighting_ppf != blank %}<p><strong>PPF</strong> {{ lighting_ppf }} µmol/s</p>{% endif %}
-                {% if lighting_ppfd != blank %}<p><strong>PPFD</strong> {{ lighting_ppfd | escape }}</p>{% endif %}
-                {% if lighting_mounting != blank %}<p>{{ lighting_mounting | escape }}</p>{% endif %}
-                {% if lighting_distance != blank %}<p>{{ lighting_distance | escape }}</p>{% endif %}
-                {% if lighting_coverage != blank %}<p>{{ lighting_coverage | escape }}</p>{% endif %}
-                {% if lighting_ip != blank or lighting_socket != blank %}<p>{% if lighting_ip != blank %}{{ lighting_ip | escape }}{% endif %}{% if lighting_ip != blank and lighting_socket != blank %} · {% endif %}{% if lighting_socket != blank %}{{ lighting_socket | escape }}{% endif %}</p>{% endif %}
-              </div>
-            </details>
-          {% endif %}
-        </div>
-      {% endif %}
-
-      {% liquid
-        assign decision_function = leafer_primary_function | default: custom_use_case
-        assign decision_spec = ''
-        if lighting_power != blank
-          capture decision_spec
-            echo lighting_power
-            echo ' W'
-            if lighting_cct != blank
-              echo ' · '
-              echo lighting_cct
-              echo ' K'
-            endif
-            if lighting_mounting != blank
-              echo ' · '
-              echo lighting_mounting | strip_html | truncatewords: 6
-            endif
-          endcapture
-        elsif leafer_mixing_ratio != blank
-          assign decision_spec = leafer_mixing_ratio | strip_html | strip
-        elsif leafer_difficulty != blank
-          assign decision_spec = leafer_difficulty
-        endif
-      %}
-      {% if decision_function != blank or leafer_suitable_for != blank or decision_spec != blank %}
-        <aside class="ls-product__decision" aria-labelledby="ProductDecisionHeading-{{ section.id }}">
-          <div class="ls-product__decision-head">
-            <p>{{ 'product.decision_summary.eyebrow' | t }}</p>
-            <h2 id="ProductDecisionHeading-{{ section.id }}">{{ 'product.decision_summary.heading' | t }}</h2>
-          </div>
-          <div class="ls-product__decision-grid">
-            {% if decision_function != blank %}
-              <div class="ls-product__decision-item">
-                <span>{{ 'product.decision_summary.function' | t }}</span>
-                <strong>{{ decision_function | escape }}</strong>
-              </div>
-            {% endif %}
-            {% if leafer_suitable_for != blank %}
-              <div class="ls-product__decision-item">
-                <span>{{ 'product.decision_summary.fit' | t }}</span>
-                <strong>
-                  {% for item in leafer_suitable_for limit: 2 %}
-                    {{ item | escape }}{% unless forloop.last %} · {% endunless %}
-                  {% endfor %}
-                </strong>
-              </div>
-            {% endif %}
-            {% if decision_spec != blank %}
-              <div class="ls-product__decision-item">
-                <span>{{ 'product.decision_summary.spec' | t }}</span>
-                <strong>{{ decision_spec | strip | escape }}</strong>
-              </div>
-            {% endif %}
-          </div>
-          <p class="ls-product__decision-note">{{ 'product.decision_summary.note' | t }}</p>
-        </aside>
-      {% endif %}
+      {% render 'leaf-product-summary', product: product %}
 
       <div class="ls-product__purchase">
         <div class="ls-product__price" data-price>{{ current_variant.price | money }}{% if current_variant.compare_at_price > current_variant.price %}<s>{{ current_variant.compare_at_price | money }}</s>{% endif %}</div>
@@ -212,19 +72,6 @@
         </div>
         {% endform %}
       </div>
-
-      {% if hero_summary != blank or custom_light_style != blank or custom_lighting_position != blank %}
-        <div class="ls-product__description rte">
-          {% if hero_summary != blank %}<p>{{ hero_summary | escape }}</p>{% endif %}
-          {% if custom_light_style != blank or custom_lighting_position != blank %}
-            <p class="ls-product__description-meta">
-              {% if custom_light_style != blank %}<strong>{{ custom_light_style | escape }}</strong>{% endif %}
-              {% if custom_light_style != blank and custom_lighting_position != blank %}<span aria-hidden="true"> · </span>{% endif %}
-              {% if custom_lighting_position != blank %}{{ custom_lighting_position | escape }}{% endif %}
-            </p>
-          {% endif %}
-        </div>
-      {% endif %}
 
       <div class="ls-product__details">
         {% for block in section.blocks %}
@@ -317,6 +164,21 @@
 @media(max-width:749px){#LeaferserviceProduct-{{ section.id }}{padding-top:10px}.ls-product__fact-deck{grid-template-columns:1fr}.ls-product__decision-head{grid-template-columns:1fr;gap:.35rem}.ls-product__decision-grid{grid-template-columns:1fr}.ls-product__decision-item{min-height:0}.ls-product__fact[open]{grid-column:auto}.ls-product__fact summary{min-height:58px}.ls-product__fact-panel--technical{grid-template-columns:1fr}.ls-product__grid{gap:22px;padding-left:14px;padding-right:14px}.ls-product__media{display:flex;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scroll-padding-inline:16px;gap:10px;margin:0 -14px;padding:0 14px;scrollbar-width:none}.ls-product__media::-webkit-scrollbar{display:none}.ls-product__media-item,.ls-product__media-item:first-child{flex:0 0 min(58vw,240px);aspect-ratio:1/1;max-height:min(38vh,240px);padding:.3rem;scroll-snap-align:center}.ls-product__title{font-size:clamp(1.8rem,3.2vw,2.75rem)}.ls-product__usp-list{grid-template-columns:1fr}.ls-product__buy-row{grid-template-columns:82px 1fr}.ls-product__cta{min-height:54px}.ls-product__description{font-size:.96rem}.ls-product__mobile-buy{position:fixed;z-index:50;right:0;bottom:0;left:0;padding:9px 12px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border-top:1px solid var(--ls-line);background:rgba(244,240,230,.97);box-shadow:0 -12px 32px rgba(23,61,43,.12);backdrop-filter:blur(12px)}.ls-product__mobile-buy[hidden]{display:none}.ls-product__mobile-buy span,.ls-product__mobile-buy strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ls-product__mobile-buy span{font-size:.72rem;color:var(--ls-muted)}.ls-product__mobile-buy strong{font-size:.9rem}.ls-product__mobile-buy button{min-width:132px;min-height:50px;padding:0 16px;border-radius:0;font-size:.88rem}}
 @media(max-width:390px){.ls-product__mobile-buy{grid-template-columns:minmax(0,.8fr) minmax(142px,1.2fr)}.ls-product__mobile-buy span{display:none}.ls-product__mobile-buy strong{font-size:.82rem}.ls-product__mobile-buy button{width:100%;min-width:0}.ls-product__choice span{padding:9px 11px;font-size:.76rem}}
 @media(prefers-reduced-motion:reduce){.ls-product__media{scroll-behavior:auto}}
+
+/* No-card visual language and deliberately compact mobile thumbnails */
+#LeaferserviceProduct-{{ section.id }}{--ls-cream:#faf9f6;--ls-line:rgba(24,49,33,.13)}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media{gap:clamp(8px,1.4vw,16px)}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media-item{background:transparent;border:0;border-radius:0;padding:0;aspect-ratio:1/1}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media-item:first-child{aspect-ratio:4/3;max-height:clamp(300px,46vw,610px)}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media .leaf-image-open{width:100%;height:100%}
+#LeaferserviceProduct-{{ section.id }} .ls-product__info{border-left:0;padding-left:clamp(0px,1vw,16px)}
+#LeaferserviceProduct-{{ section.id }} .ls-product__choice span{border-radius:0}
+@media(max-width:749px){
+#LeaferserviceProduct-{{ section.id }} .ls-product__media{gap:10px;margin:0 -14px;padding:7px 16px 12px;align-items:center}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media .ls-product__media-item{flex:0 0 142px;min-width:142px;width:142px;height:142px;max-height:142px;aspect-ratio:1/1;grid-column:auto;border:0;padding:0}
+#LeaferserviceProduct-{{ section.id }} .ls-product__media .ls-product__media-item:first-child{flex:0 0 176px;min-width:176px;width:176px;height:176px;max-height:176px;aspect-ratio:1/1}
+#LeaferserviceProduct-{{ section.id }} .ls-product__info{padding-left:0}
+}
 {% endstyle %}
 
 <script>

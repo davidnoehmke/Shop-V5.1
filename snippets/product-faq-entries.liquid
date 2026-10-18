@@ -1,14 +1,30 @@
-{%- comment -%}
-  Shared source for visible product FAQs and FAQPage JSON-LD.
-  Custom JSON entries take precedence, followed by leafer.faq_1..4 and Vitals fallbacks.
-  Empty pairs and duplicate questions are omitted. Use format: 'json' for JSON members.
-{%- endcomment -%}
+{% doc %}
+  Shared canonical source for visible product FAQs and FAQPage JSON-LD.
+  Legacy entries are used only if the canonical list has no valid question/answer pair.
+  @param {product} product - Current product.
+  @param {string} [format] - json for structured data; HTML otherwise.
+{% enddoc %}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
 {%- liquid
   assign custom_entries = product.metafields.custom.faq.value
-  assign custom_count = custom_entries.size | default: 0
-  assign total_count = custom_count | plus: 4
+  assign custom_count = 0
+  for entry in custom_entries
+    if entry.question != blank and entry.answer != blank
+      assign custom_count = custom_entries.size
+      break
+    endif
+  endfor
+  assign total_count = custom_count
+  if custom_count == 0
+    assign total_count = 4
+  endif
   assign seen_questions = ''
   assign emitted_count = 0
+  assign suitable_text = product.metafields.leafer.suitable_for.value | join: ', '
+  assign overview_de = product.metafields.leafer.primary_function.value | append: ' Geeignet für: ' | append: suitable_text | append: '.'
+  assign overview_en = product.metafields.leafer.primary_function.value | append: ' Suitable for: ' | append: suitable_text | append: '.'
+  assign steps_text = product.metafields.leafer.application_steps.value | join: ' '
+  assign ingredients_text = product.metafields.leafer.ingredients.value | join: ', '
 -%}
 {%- for position in (1..total_count) -%}
   {%- liquid
@@ -36,8 +52,42 @@
       endif
     endif
     assign question_token = question | downcase | json
+    assign show_question = true
+    assign is_overview_question = false
+    if question contains 'Wofür eignet sich '
+      assign is_overview_question = true
+    elsif question contains 'What is ' and question contains ' suitable for?'
+      assign is_overview_question = true
+    endif
+    if custom_count > 0
+      if is_overview_question
+        if product.metafields.leafer.primary_function.value != blank and product.metafields.leafer.suitable_for.value != blank
+          if answer == overview_de or answer == overview_en
+            assign show_question = false
+          endif
+        endif
+      elsif question contains 'Wie wird ' and question contains ' angewendet?'
+        if steps_text != blank and answer == steps_text
+          assign show_question = false
+        endif
+      elsif question contains 'How is ' and question contains ' used?'
+        if steps_text != blank and answer == steps_text
+          assign show_question = false
+        endif
+      elsif question contains 'Welche Bestandteile enthält ' or question contains 'What ingredients does '
+        if ingredients_text != blank and answer == ingredients_text
+          assign show_question = false
+        endif
+      endif
+    endif
+    if source_status == 'review'
+      assign question_and_answer = question | append: ' ' | append: answer | downcase
+      if question_and_answer contains 'ppf' or question_and_answer contains 'µmol' or question_and_answer contains 'μmol' or question_and_answer contains ' cm' or question_and_answer contains 'm²' or question_and_answer contains 'lebensdauer' or question_and_answer contains 'lifespan'
+        assign show_question = false
+      endif
+    endif
   -%}
-  {%- if question != blank and answer != blank -%}
+  {%- if question != blank and answer != blank and show_question -%}
     {%- unless seen_questions contains question_token -%}
       {%- if format == 'json' -%}
         {%- if emitted_count > 0 -%},{%- endif -%}

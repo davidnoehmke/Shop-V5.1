@@ -1,0 +1,136 @@
+{%- liquid
+  assign application = product.metafields.leafer.additive_application.value
+  assign mixing_ratio = product.metafields.leafer.mixing_ratio.value
+  assign use_as = product.metafields.leafer.use_as
+  assign care_tip = product.metafields.leafer.care_tip.value
+  assign warning = product.metafields.leafer.warning.value
+  assign notice = product.metafields.leaferservice.hinweis.value
+  assign light_mounting = product.metafields.lighting.mounting.value
+  assign safety = product.metafields.lighting.safety_notes.value
+  assign manual_url = product.metafields.lighting.manual_url.value
+-%}
+{%- capture product_kind -%}{%- render 'leaf-product-kind', product: product -%}{%- endcapture -%}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
+{%- capture description_markup -%}{%- render 'leaf-product-description', product: product -%}{%- endcapture -%}
+{%- capture steps_markup -%}{%- render 'leaf-product-steps', product: product -%}{%- endcapture -%}
+{%- capture leaf_faq_markup -%}{%- render 'product-faq-entries', product: product -%}{%- endcapture -%}
+{%- capture application_markup -%}
+  {%- if steps_markup != blank -%}<ol>{{ steps_markup }}</ol>
+  {%- elsif application != blank -%}<p>{{ application | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if use_as.value != blank -%}<p><strong>{{ 'product.content.use_as' | t }}</strong> {% render 'leaf-metafield-value', field: use_as %}</p>{%- endif -%}
+  {%- if mixing_ratio != blank and product_kind != 'mix' -%}<p><strong>{{ 'recipe.ratio' | t }}</strong> {{ mixing_ratio | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if light_mounting != blank -%}<p><strong>{{ 'product.content.mounting' | t }}</strong> {{ light_mounting | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if care_tip != blank -%}<p><strong>{{ 'product.content.care_tip' | t }}</strong> {{ care_tip | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if warning != blank -%}<p class="leaf-pd-tabs__note"><strong>{{ 'product.content.notice' | t }}</strong> {{ warning | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if notice != blank and notice != warning -%}<p class="leaf-pd-tabs__note"><strong>{{ 'product.content.notice' | t }}</strong> {{ notice | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if safety != blank and safety != warning and safety != light_mounting -%}<p class="leaf-pd-tabs__note"><strong>{{ 'product.content.safety' | t }}</strong> {{ safety | escape | newline_to_br }}</p>{%- endif -%}
+  {%- if source_status == 'review' -%}<p class="leaf-pd-tabs__note">{{ 'product.content.variant_check' | t }}</p>{%- endif -%}
+  {%- if manual_url != blank -%}<p><a href="{{ manual_url | escape }}" rel="noopener">{{ 'product.content.manufacturer_information' | t }}</a></p>{%- endif -%}
+{%- endcapture -%}
+{%- liquid
+  assign description_markup = description_markup | strip
+  assign application_markup = application_markup | strip
+  assign leaf_faq_markup = leaf_faq_markup | strip
+-%}
+{%- if description_markup != blank or application_markup != blank or leaf_faq_markup != blank -%}
+<section class="leaf-pd-tabs page-width" id="LeafProductTabs-{{ section.id }}" aria-label="{{ 'product.content.label' | t }}">
+  <div class="leaf-pd-tabs__nav" role="tablist" aria-label="{{ 'product.content.label' | t }}">
+    {% if description_markup != blank %}<button id="leaf-pd-tab-desc-{{ section.id }}" class="leaf-pd-tabs__tab" data-leaf-tab="0" type="button" role="tab" aria-selected="true" aria-controls="leaf-pd-desc-{{ section.id }}" tabindex="0">{{ 'product.content.description' | t }}</button>{% endif %}
+    {% if application_markup != blank %}<button id="leaf-pd-tab-how-{{ section.id }}" class="leaf-pd-tabs__tab" data-leaf-tab="1" type="button" role="tab" aria-selected="false" aria-controls="leaf-pd-how-{{ section.id }}" tabindex="-1">{{ 'product.content.application' | t }}</button>{% endif %}
+    {% if leaf_faq_markup != blank %}<button id="leaf-pd-tab-faq-{{ section.id }}" class="leaf-pd-tabs__tab" data-leaf-tab="2" type="button" role="tab" aria-selected="false" aria-controls="leaf-pd-faq-{{ section.id }}" tabindex="-1">{{ 'product.content.faq' | t }}</button>{% endif %}
+  </div>
+  <div class="leaf-pd-tabs__panels">
+    {% if description_markup != blank %}
+      <details id="leaf-pd-desc-{{ section.id }}" class="leaf-pd-tabs__panel" data-leaf-tab-panel aria-labelledby="leaf-pd-tab-desc-{{ section.id }}" open>
+        <summary>{{ 'product.content.description' | t }}<span aria-hidden="true">+</span></summary>
+        <div class="leaf-pd-tabs__content rte">{{ description_markup }}</div>
+      </details>
+    {% endif %}
+    {% if application_markup != blank %}
+      <details id="leaf-pd-how-{{ section.id }}" class="leaf-pd-tabs__panel" data-leaf-tab-panel aria-labelledby="leaf-pd-tab-how-{{ section.id }}">
+        <summary>{{ 'product.content.application' | t }}<span aria-hidden="true">+</span></summary>
+        <div class="leaf-pd-tabs__content rte">{{ application_markup }}</div>
+      </details>
+    {% endif %}
+    {% if leaf_faq_markup != blank %}
+      <details id="leaf-pd-faq-{{ section.id }}" class="leaf-pd-tabs__panel" data-leaf-tab-panel aria-labelledby="leaf-pd-tab-faq-{{ section.id }}">
+        <summary>{{ 'product.content.faq' | t }}<span aria-hidden="true">+</span></summary>
+        <div class="leaf-pd-tabs__content leaf-pd-tabs__faqs">{{ leaf_faq_markup }}</div>
+      </details>
+    {% endif %}
+  </div>
+</section>
+{%- if steps_markup != blank -%}
+  {%- capture steps_json -%}{%- render 'leaf-product-steps', product: product, format: 'json' -%}{%- endcapture -%}
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"HowTo","name":{{ 'product.content.howto_name' | t: product: product.title | json | replace: '<', '\u003c' }},"step":[{{ steps_json }}]}</script>
+{%- endif -%}
+{%- endif -%}
+{% stylesheet %}
+.leaf-pd-tabs{margin-block:clamp(24px,5vw,66px) clamp(48px,7vw,90px);color:var(--text);max-width:1320px}
+.leaf-pd-tabs__nav{display:none;align-items:flex-end;gap:clamp(24px,4vw,70px);border-bottom:1px solid var(--border);margin-bottom:clamp(16px,3vw,30px)}
+.leaf-pd-tabs__tab{appearance:none;background:transparent;border:0;border-bottom:2px solid transparent;border-radius:0;padding:0 0 17px;color:var(--muted);font:inherit;font-size:clamp(.9rem,1.2vw,1.05rem);font-weight:680;cursor:pointer;white-space:nowrap;transition:color .15s ease,border-color .15s ease}
+.leaf-pd-tabs__tab[aria-selected="true"]{color:var(--text);border-bottom-color:var(--accent)}
+.leaf-pd-tabs__tab:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.leaf-pd-tabs__panels{min-height:0}
+.leaf-pd-tabs__panel{border-bottom:1px solid var(--border)}
+.leaf-pd-tabs__panel > summary{list-style:none;display:flex;align-items:center;justify-content:space-between;min-height:58px;cursor:pointer;font-weight:750;color:var(--text)}
+.leaf-pd-tabs__panel > summary::-webkit-details-marker{display:none}
+.leaf-pd-tabs__panel > summary > span{font-size:1.3rem;font-weight:400;transition:transform .2s ease}
+.leaf-pd-tabs__panel[open] > summary > span{transform:rotate(45deg)}
+.leaf-pd-tabs__content{min-width:0;padding:14px 0 26px;max-width:86ch;color:var(--text);line-height:1.72;overflow-wrap:anywhere}
+.leaf-pd-tabs__content>*:first-child{margin-top:0}
+.leaf-pd-tabs__content>*:last-child{margin-bottom:0}
+.leaf-pd-tabs__content table{width:100%;border-collapse:collapse;display:block;max-width:100%;overflow-x:auto}
+.leaf-pd-tabs__content th,.leaf-pd-tabs__content td{border:1px solid var(--border);padding:12px;text-align:left}
+.leaf-pd-tabs__content ol,.leaf-pd-tabs__content ul{padding-left:1.35rem}
+.leaf-pd-tabs__note{border-left:2px solid var(--accent);padding:10px 14px;background:transparent}
+.leaf-pd-tabs__faqs{max-width:900px}
+.leaf-pd-tabs__faqs .product-seo-details__faq-item{background:transparent;border:0;border-bottom:1px solid var(--border);border-radius:0;margin:0;padding:0;box-shadow:none}
+.leaf-pd-tabs__faqs .product-seo-details__faq-item summary{padding:10px 0;font-weight:680;min-height:58px}
+.leaf-pd-tabs__faqs .product-seo-details__faq-answer{padding:0 0 20px}
+@media(min-width:750px){
+  .leaf-pd-tabs.js-enabled .leaf-pd-tabs__nav{display:flex}
+  .leaf-pd-tabs.js-enabled .leaf-pd-tabs__panel{border-bottom:0}
+  .leaf-pd-tabs.js-enabled .leaf-pd-tabs__panel:not([open]){display:none}
+  .leaf-pd-tabs.js-enabled .leaf-pd-tabs__panel>summary{display:none}
+  .leaf-pd-tabs__content{padding:2px 0 16px}
+}
+@media(max-width:749px){.leaf-pd-tabs{margin-block:26px 52px}.leaf-pd-tabs__content{padding:10px 0 22px;font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){.leaf-pd-tabs__tab,.leaf-pd-tabs__panel > summary > span{transition:none}}
+{% endstylesheet %}
+{% javascript %}
+(()=>{
+  document.querySelectorAll(".leaf-pd-tabs:not(.js-enabled)").forEach(root=>{
+    const nav=root.querySelector(".leaf-pd-tabs__nav");
+    const tabs=[...root.querySelectorAll("[data-leaf-tab]")];
+    const panels=[...root.querySelectorAll("[data-leaf-tab-panel]")];
+    const desktop=window.matchMedia("(min-width:750px)");
+    let active=0;
+    const select=(i,focus)=>{
+      active=i;
+      panels.forEach((p,n)=>{p.open=n===i;if(desktop.matches)p.setAttribute("role","tabpanel");else p.removeAttribute("role")});
+      tabs.forEach((tab,n)=>{tab.setAttribute("aria-selected",String(n===i));tab.tabIndex=n===i?0:-1});
+      if(focus)tabs[i]?.focus();
+    };
+    root.classList.add("js-enabled");
+    tabs.forEach((tab,i)=>tab.addEventListener("click",()=>select(i,false)));
+    nav?.addEventListener("keydown",e=>{
+      const allowed=["ArrowRight","ArrowLeft","Home","End"];
+      if(!allowed.includes(e.key))return;
+      e.preventDefault();
+      let next=active;
+      if(e.key==="Home")next=0;
+      else if(e.key==="End")next=tabs.length-1;
+      else next=(active+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length;
+      select(next,true);
+    });
+    const onChange=()=>{if(desktop.matches)select(active,false);else panels.forEach(p=>p.removeAttribute("role"))};
+    if(desktop.addEventListener)desktop.addEventListener("change",onChange);
+    else desktop.addListener(onChange);
+    onChange();
+  });
+})();
+{% endjavascript %}
+{% schema %}
+{"name":"Produktinfos – 3 Tabs","tag":"section","class":"section","settings":[],"presets":[{"name":"Produktinfos – 3 Tabs"}]}
+{% endschema %}

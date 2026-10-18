@@ -1,0 +1,49 @@
+{% doc %}
+  Renders a short purchase summary and up to three distinct product benefits.
+  @param {product} product - Current product.
+{% enddoc %}
+{%- liquid
+  assign summary = product.metafields.leafer.intro.value | default: product.metafields.custom.use_case.value | default: product.metafields.leafer.subtitle.value
+  if summary == blank
+    assign summary = product.description | strip_html | strip | truncatewords: 32
+  endif
+  assign benefit_keys = 'usp_1,usp_2,usp_3' | split: ','
+  assign seen_benefits = ''
+-%}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
+{%- if source_status == 'review' -%}
+  {%- assign summary = product.metafields.leafer.intro.value | default: product.metafields.leafer.primary_function.value | default: product.title -%}
+{%- endif -%}
+{%- capture benefits -%}
+  {%- for key in benefit_keys -%}
+    {%- liquid
+      assign benefit = product.metafields.leafer[key].value | strip
+      assign benefit_lower = benefit | downcase
+      assign benefit_token = benefit_lower | json
+      assign show_benefit = true
+      if source_status == 'review'
+        if benefit_lower contains 'ppf' or benefit_lower contains 'µmol' or benefit_lower contains 'μmol' or benefit_lower contains 'lebensdauer' or benefit_lower contains 'lifespan'
+          assign show_benefit = false
+        endif
+      endif
+    -%}
+    {%- if benefit != blank and show_benefit -%}
+      {%- unless seen_benefits contains benefit_token or summary == benefit -%}
+        <li>{{ benefit | escape }}</li>
+        {%- assign seen_benefits = seen_benefits | append: benefit_token | append: ',' -%}
+      {%- endunless -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if summary != blank or benefits != blank -%}
+  <div class="leaf-product-summary">
+    {%- if summary != blank -%}<p>{{ summary | escape }}</p>{%- endif -%}
+    {%- if benefits != blank -%}<ul aria-label="{{ 'product.usps.label' | t }}">{{ benefits }}</ul>{%- endif -%}
+  </div>
+{%- endif -%}
+{% stylesheet %}
+  .leaf-product-summary { margin-block: 1rem 1.3rem; max-width: 62ch; }
+  .leaf-product-summary p { margin: 0; color: var(--muted); line-height: 1.55; }
+  .leaf-product-summary ul { margin: .8rem 0 0; padding-left: 1.2rem; display: grid; gap: .35rem; font-size: .9rem; line-height: 1.45; }
+  .leaf-product-summary li::marker { color: var(--accent); }
+{% endstylesheet %}

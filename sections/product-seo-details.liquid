@@ -1,42 +1,28 @@
 {%- liquid
-  assign subtitle = product.metafields.leafer.subtitle.value
-  assign intro = product.metafields.leafer.intro.value
-  assign custom_use_case = product.metafields.custom.use_case.value
-  assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
-  assign ingredient_info = product.metafields.leafer.ingredient_info.value
-  assign notice_field = product.metafields.leaferservice.hinweis
-  if notice_field.value == blank
-    assign notice_field = product.metafields.leafer.warning
-  endif
-  assign description_plain = product.description | strip_html | strip
-  assign show_full_description = false
-  if description_plain != blank and description_plain != intro and description_plain != custom_use_case
-    assign show_full_description = true
-  endif
-  assign show_intro = false
-  if intro != blank and intro != custom_use_case and intro != subtitle
-    assign show_intro = true
-  endif
   if request.locale.iso_code == 'de'
     assign label_index = 2
-    assign details_eyebrow = 'Produktwissen'
-    assign details_heading = 'Eigenschaften und Anwendung'
-    assign benefits_label = 'Produktvorteile'
-    assign facts_heading = 'Auf einen Blick'
-    assign notice_label = 'Hinweis:'
+    assign details_eyebrow = 'product.content.details_eyebrow' | t
+    assign details_heading = 'product.content.details_heading' | t
     assign faq_heading = 'Häufige Fragen'
     assign description_heading = 'Weitere Produktdetails'
   else
     assign label_index = 3
-    assign details_eyebrow = 'Product knowledge'
-    assign details_heading = 'Features and use'
-    assign benefits_label = 'Product benefits'
-    assign facts_heading = 'At a glance'
-    assign notice_label = 'Note:'
+    assign details_eyebrow = 'product.content.details_eyebrow' | t
+    assign details_heading = 'product.content.details_heading' | t
     assign faq_heading = 'Frequently asked questions'
     assign description_heading = 'More product details'
   endif
-  assign fact_definitions = 'custom|light_style|Lichtcharakter|Light character||custom|lighting_position|Beleuchtungsposition|Lighting position||custom|recommended_room|Geeignete Räume|Recommended rooms||leafer|primary_function|Hauptfunktion|Primary function||leafer|suitable_for|Geeignet für|Suitable for||leafer|use_as|Verwendung als|Use as||leafer|ingredients|Bestandteile|Ingredients||leafer|mixing_ratio|Mischverhältnis|Mixing ratio||leafer|additive_application|Anwendung|Application||leafer|water_behavior|Wasserverhalten|Water behaviour||leafer|planter_type|Gefäßtyp|Planter type||leaferservice|botanischer_name|Botanischer Name|Botanical name||leaferservice|keimtemperatur|Keimtemperatur|Germination temperature||leaferservice|keimdauer|Keimdauer|Germination time||leaferservice|aussaatzeit|Aussaatzeit|Sowing period||leaferservice|aussaattiefe|Aussaattiefe|Sowing depth||leaferservice|standort|Standort|Location||leaferservice|substrat_empfehlung|Substrat|Substrate||leaferservice|giessen|Gießen|Watering||leaferservice|schwierigkeitsgrad|Schwierigkeitsgrad|Difficulty||leaferservice|mehrjaehrig|Mehrjährig|Perennial||leaferservice|winterhaerte|Winterhärte|Winter hardiness||lighting|manufacturer|Hersteller|Manufacturer||lighting|model|Modell|Model||lighting|rated_power_w|Nennleistung|Rated power||lighting|cct_k|Farbtemperatur|Color temperature||lighting|spectrum|Spektrum|Spectrum||lighting|ppf_umol_s|PPF|PPF||lighting|ppfd_reference|PPFD-Referenz|PPFD reference||lighting|coverage_guidance|Ausleuchtung|Coverage||lighting|recommended_distance|Empfohlener Abstand|Recommended distance||lighting|mounting|Montage|Mounting||lighting|timer_control|Timer / Steuerung|Timer / control||lighting|dimmable|Dimmbar|Dimmable||lighting|ip_rating|Schutzart|IP rating||lighting|socket_connector|Sockel / Anschluss|Socket / connector||lighting|voltage|Spannung|Voltage||lighting|use_cases|Einsatzbereiche|Use cases' | split: '||'
+  assign fact_definitions = 'custom|light_style|Lichtcharakter|Light character||custom|lighting_position|Beleuchtungsposition|Lighting position||custom|recommended_room|Geeignete Räume|Recommended rooms||leafer|primary_function|Hauptfunktion|Primary function||leafer|suitable_for|Geeignet für|Suitable for||leafer|ingredients|Bestandteile|Ingredients||leafer|water_behavior|Wasserverhalten|Water behaviour||leafer|planter_type|Gefäßtyp|Planter type||leaferservice|botanischer_name|Botanischer Name|Botanical name||leaferservice|keimtemperatur|Keimtemperatur|Germination temperature||leaferservice|keimdauer|Keimdauer|Germination time||leaferservice|aussaatzeit|Aussaatzeit|Sowing period||leaferservice|aussaattiefe|Aussaattiefe|Sowing depth||leaferservice|standort|Standort|Location||leaferservice|substrat_empfehlung|Substrat|Substrate||leaferservice|giessen|Gießen|Watering||leaferservice|schwierigkeitsgrad|Schwierigkeitsgrad|Difficulty||leaferservice|mehrjaehrig|Mehrjährig|Perennial||leaferservice|winterhaerte|Winterhärte|Winter hardiness||lighting|manufacturer|Hersteller|Manufacturer||lighting|model|Modell|Model||lighting|rated_power_w|Nennleistung|Rated power||lighting|cct_k|Farbtemperatur|Color temperature||lighting|spectrum|Spektrum|Spectrum||lighting|ppf_umol_s|PPF|PPF||lighting|ppfd_reference|PPFD-Referenz|PPFD reference||lighting|coverage_guidance|Ausleuchtung|Coverage||lighting|recommended_distance|Empfohlener Abstand|Recommended distance||lighting|timer_control|Timer / Steuerung|Timer / control||lighting|dimmable|Dimmbar|Dimmable||lighting|ip_rating|Schutzart|IP rating||lighting|socket_connector|Sockel / Anschluss|Socket / connector||lighting|voltage|Spannung|Voltage||lighting|use_cases|Einsatzbereiche|Use cases||lighting|beam_angle|Abstrahlwinkel|Beam angle||lighting|weee_disposal|Entsorgung|Disposal||lighting|manufacturer_address|Herstelleranschrift|Manufacturer address||leaf_configurator|plant_groups|Pflanzengruppen|Plant groups||leaf_configurator|volume_liters|Volumen|Volume' | split: '||'
+-%}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
+{%- capture product_kind -%}{%- render 'leaf-product-kind', product: product -%}{%- endcapture -%}
+{%- liquid
+  assign structured_description = false
+  if product_kind == 'mix' or product_kind == 'component' or source_status == 'review'
+    if product.metafields.leafer.primary_function.value != blank and product.metafields.leafer.suitable_for.value != blank
+      assign structured_description = true
+    endif
+  endif
 -%}
 {%- capture facts_markup -%}
   {%- for definition in fact_definitions -%}
@@ -53,6 +39,24 @@
       assign show_fact = false
       if fact.value != blank or fact.type == 'boolean'
         assign show_fact = true
+      endif
+      if structured_description
+        if field_key == 'primary_function' or field_key == 'suitable_for' or field_key == 'water_behavior'
+          assign show_fact = false
+        endif
+      endif
+      if field_key == 'ingredients'
+        if product_kind == 'mix' or product_kind == 'component' and structured_description
+          assign show_fact = false
+        endif
+      endif
+      if field_key == 'plant_groups' and product.metafields.leafer.suitable_for.value != blank
+        assign show_fact = false
+      endif
+      if source_status == 'review' and field_namespace == 'lighting'
+        if field_key == 'ppf_umol_s' or field_key == 'ppfd_reference' or field_key == 'coverage_guidance' or field_key == 'recommended_distance'
+          assign show_fact = false
+        endif
       endif
     -%}
     {%- if show_fact -%}
@@ -75,11 +79,13 @@
         <div class="product-seo-details__fact-copy"><dt>{{ parts[label_index] | escape }}</dt><dd>
         {%- if field_key == 'botanischer_name' -%}<i>{%- endif -%}
         {%- if field_namespace == 'lighting' and field_key == 'rated_power_w' -%}
-          {{ fact.value | escape }} W
+          {% render 'leaf-unit-value', field: fact, unit: 'W' %}
         {%- elsif field_namespace == 'lighting' and field_key == 'cct_k' -%}
-          {{ fact.value | escape }} K
+          {% render 'leaf-unit-value', field: fact, unit: 'K' %}
         {%- elsif field_namespace == 'lighting' and field_key == 'ppf_umol_s' -%}
-          {{ fact.value | escape }} µmol/s
+          {% render 'leaf-unit-value', field: fact, unit: 'µmol/s' %}
+        {%- elsif field_namespace == 'leaf_configurator' and field_key == 'volume_liters' -%}
+          {% render 'leaf-unit-value', field: fact, unit: 'L' %}
         {%- else -%}
           {%- render 'leaf-metafield-value', field: fact -%}
         {%- endif -%}
@@ -88,52 +94,43 @@
     {%- endif -%}
   {%- endfor -%}
 {%- endcapture -%}
+{%- capture description_markup -%}{%- render 'leaf-product-description', product: product -%}{%- endcapture -%}
+{%- capture guide_markup -%}{%- render 'leaf-product-pathways', product: product -%}{%- endcapture -%}
 {%- capture faq_markup -%}{%- render 'product-faq-entries', product: product -%}{%- endcapture -%}
 {%- liquid
   assign facts_markup = facts_markup | strip
   assign faq_markup = faq_markup | strip
 -%}
-{% if subtitle != blank or intro != blank or custom_use_case != blank or knowledge_atoms != blank or facts_markup != blank or faq_markup != blank or notice_field.value != blank or product.description != blank %}
-  <section class="product-seo-details page-width" aria-labelledby="ProductDetails-{{ section.id }}">
-    <header class="product-seo-details__header">
+{% if facts_markup != blank or guide_markup != blank or section.settings.show_embedded_description or section.settings.show_embedded_faq %}
+  <section class="product-seo-details page-width" {% if facts_markup != blank %}aria-labelledby="ProductDetails-{{ section.id }}"{% else %}aria-label="{{ 'product.content.guides' | t }}"{% endif %}>
+    {% if facts_markup != blank %}<header class="product-seo-details__header">
       <p class="product-seo-details__eyebrow">{{ details_eyebrow }}</p>
       <h2 id="ProductDetails-{{ section.id }}">{{ details_heading | escape }}</h2>
-      {% if show_intro %}<p class="product-seo-details__intro">{{ intro | escape | newline_to_br }}</p>{% endif %}
-    </header>
-    {% if facts_markup != blank %}<div class="product-seo-details__facts"><h3>{{ facts_heading }}</h3><dl>{{ facts_markup }}</dl></div>{% endif %}
-    {% if ingredient_info != blank %}
-      {% render 'leaf-ingredient-info', items: ingredient_info %}
-    {% endif %}
-    {% if knowledge_atoms != blank %}
-      <div class="product-seo-details__knowledge">
-        <p class="product-seo-details__eyebrow">{{ 'product.knowledge.eyebrow' | t }}</p>
-        <h3>{{ 'product.knowledge.heading' | t }}</h3>
-        {% render 'leaf-content-atoms', atoms: knowledge_atoms, mode: 'long', limit: 8 %}
-      </div>
-    {% endif %}
-    {% if notice_field.value != blank %}<div class="product-seo-details__notice"><strong>{{ notice_label }}</strong> {% render 'leaf-metafield-value', field: notice_field %}</div>{% endif %}
-    {% if show_full_description %}
+      
+    </header>{% endif %}
+    {% if facts_markup != blank %}<div class="product-seo-details__facts"><dl>{{ facts_markup }}</dl></div>{% endif %}
+    {% if description_markup != blank and section.settings.show_embedded_description %}
       <details class="product-seo-details__description">
         <summary>
           <span class="product-seo-details__description-icon" aria-hidden="true">{% render 'leaf-knowledge-icon', icon_key: 'leaf' %}</span>
           <span>{{ description_heading }}</span>
           <span class="product-seo-details__description-plus" aria-hidden="true">+</span>
         </summary>
-        <div class="product-seo-details__description-body rte">{{ product.description }}</div>
+        <div class="product-seo-details__description-body rte">{{ description_markup }}</div>
       </details>
     {% endif %}
-    {% if faq_markup != blank %}
+    {% if faq_markup != blank and section.settings.show_embedded_faq %}
       <div class="product-seo-details__faq">
         <div class="product-seo-details__faq-head"><p class="product-seo-details__eyebrow">FAQ</p><h3>{{ faq_heading }}</h3></div>
         <div class="product-seo-details__faq-list">{{ faq_markup }}</div>
       </div>
     {% endif %}
-    {% render 'leaf-product-pathways', product: product, ingredient_info: ingredient_info %}
+    {{ guide_markup }}
   </section>
 {% endif %}
 
 {% stylesheet %}
-  .product-seo-details { margin-block: clamp(2.5rem, 8vw, 6rem); padding-block: clamp(2.25rem, 7vw, 5rem); border-block: 1px solid var(--border); }
+  .product-seo-details { margin-block: clamp(1.5rem, 4vw, 3rem); padding-block: clamp(1.25rem, 3vw, 2.5rem); border-block: 1px solid var(--border); }
   .product-seo-details__header { max-width: 760px; }
   .product-seo-details__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
   .product-seo-details h2 { margin: 0; max-width: 18ch; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
@@ -147,7 +144,7 @@
   .product-seo-details__description-plus { width: 30px; height: 30px; display: grid; place-items: center; font-size: 1.2rem; transition: transform .2s ease; }
   .product-seo-details__description[open] .product-seo-details__description-plus { transform: rotate(45deg); }
   .product-seo-details__description-body { max-width: 76ch; padding: 0 0 1.4rem 2.8rem; color: var(--muted); line-height: 1.72; }
-  .product-seo-details__facts, .product-seo-details__knowledge, .product-seo-details__faq { margin-top: clamp(2.4rem, 8vw, 4.5rem); }
+  .product-seo-details__facts, .product-seo-details__knowledge, .product-seo-details__faq { margin-top: clamp(1.2rem, 3vw, 2rem); }
   .product-seo-details__knowledge { max-width: 980px; }
   .product-seo-details__knowledge > .leaf-atoms { margin-top: 1rem; }
   .product-seo-details h3 { margin: 0 0 1rem; font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.2; letter-spacing: -.025em; }
@@ -185,5 +182,5 @@
   @media (prefers-reduced-motion: reduce) { .product-seo-details__faq-item, .product-seo-details__faq-icon::before, .product-seo-details__faq-icon::after, .product-seo-details__description-plus { transition: none; } }
 {% endstylesheet %}
 {% schema %}
-{"name":"SEO-Produktwissen","settings":[],"presets":[{"name":"SEO-Produktwissen"}]}
+{"name":"SEO-Produktwissen","settings":[{"type":"checkbox","id":"show_embedded_description","label":"Beschreibung zusätzlich anzeigen","default":false},{"type":"checkbox","id":"show_embedded_faq","label":"FAQ zusätzlich anzeigen","default":false}],"presets":[{"name":"SEO-Produktwissen"}]}
 {% endschema %}

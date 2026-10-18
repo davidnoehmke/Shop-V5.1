@@ -1,38 +1,54 @@
 {% doc %}
-Renders contextual internal links that move from knowledge to comparison and selection.
-@param {product} product - Current Shopify product.
-@param {array} ingredient_info - Optional structured ingredient information.
+  Links to up to two existing guides for the current product category.
+  @param {product} product - Current product.
 {% enddoc %}
-
-<nav class="leaf-product-pathways" aria-label="{{ 'product.pathways.label' | t }}">
-  <header>
-    <p>{{ 'product.pathways.eyebrow' | t }}</p>
-    <h3>{{ 'product.pathways.heading' | t }}</h3>
-    <span>{{ 'product.pathways.intro' | t }}</span>
-  </header>
-  <div class="leaf-product-pathways__links">
-    <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor"><strong>{{ 'product.pathways.planner' | t }}</strong><span>{{ 'product.pathways.planner_text' | t }}</span></a>
-    {% for product_collection in product.collections limit: 3 %}
-      {% unless product_collection.handle == 'all' %}
-        <a href="{{ product_collection.url }}"><strong>{{ product_collection.title | escape }}</strong><span>{{ 'product.pathways.collection_text' | t }}</span></a>
-      {% endunless %}
-    {% endfor %}
-    {% if ingredient_info != blank %}
-      <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/leafers-substratbestandteile"><strong>{{ 'product.pathways.ingredients' | t }}</strong><span>{{ 'product.pathways.ingredients_text' | t }}</span></a>
-      <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat"><strong>{{ 'product.pathways.mix' | t }}</strong><span>{{ 'product.pathways.mix_text' | t }}</span></a>
-    {% endif %}
-    <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog"><strong>{{ 'product.pathways.knowledge' | t }}</strong><span>{{ 'product.pathways.knowledge_text' | t }}</span></a>
-  </div>
-</nav>
-
+{%- capture product_kind -%}{%- render 'leaf-product-kind', product: product -%}{%- endcapture -%}
+{%- liquid
+  assign candidates = ''
+  case product_kind
+    when 'light'
+      assign candidates = 'pflanzenlampe-watt-ppf-ppfd-abstand-flaeche|e27-t8-high-power-pflanzenlampe-vergleich'
+    when 'mix'
+      assign candidates = 'leafers-substrate-nice2know|substratbestandteile-perlite-bims-lava-erklaert'
+    when 'component'
+      assign candidates = 'substratbestandteile-perlite-bims-lava-erklaert'
+      if product.handle == 'leaferbims-premium-bims' or product.handle == 'leaferperlite-premium-perlite'
+        assign candidates = 'bims-oder-perlit-unterschiede-pflanzsubstrat|substratbestandteile-perlite-bims-lava-erklaert'
+      endif
+    when 'plant'
+      assign candidates = 'interieur-begruenung-led-gefaess-substrat-pflanzen'
+  endcase
+  assign guide_handles = candidates | split: '|' | uniq
+-%}
+{%- capture guide_links -%}
+  {%- for guide_handle in guide_handles limit: 2 -%}
+    {%- unless guide_handle == blank -%}
+      {%- liquid
+        assign guide_key = 'leafers-nice2know-blog/' | append: guide_handle
+        assign guide = articles[guide_key]
+        assign guide_url = guide.url
+        assign url_start = guide_url | slice: 0, 7
+        if routes.root_url != '/' and url_start == '/blogs/'
+          assign guide_url = routes.root_url | append: guide_url
+        endif
+      -%}
+      {%- if guide != blank and guide.url != blank and guide.published_at != blank -%}
+        <a href="{{ guide_url | escape }}"><span>{{ guide.title | escape }}</span><span aria-hidden="true">→</span></a>
+      {%- endif -%}
+    {%- endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- if guide_links != blank -%}
+  <nav class="leaf-product-pathways" aria-label="{{ 'product.content.guides' | t }}">
+    <h3>{{ 'product.content.guides' | t }}</h3>
+    <div class="leaf-product-pathways__links">{{ guide_links }}</div>
+  </nav>
+{%- endif -%}
 {% stylesheet %}
-  .leaf-product-pathways { margin-top: clamp(2.4rem, 8vw, 4.5rem); padding-top: 1.4rem; border-top: 1px solid var(--border); }
-  .leaf-product-pathways header { max-width: 760px; }
-  .leaf-product-pathways header > p { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
-  .leaf-product-pathways header > span { display: block; max-width: 68ch; color: var(--muted); font-size: .88rem; line-height: 1.55; }
-  .leaf-product-pathways__links { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: .65rem; margin-top: 1rem; }
-  .leaf-product-pathways__links a { min-height: 82px; display: flex; flex-direction: column; justify-content: center; gap: .2rem; padding: .8rem .9rem; border: 1px solid var(--border); background: var(--background); color: var(--text); text-decoration: none; }
-  .leaf-product-pathways__links a:hover, .leaf-product-pathways__links a:focus-visible { border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 95%); }
-  .leaf-product-pathways__links strong { font-size: .82rem; }
-  .leaf-product-pathways__links span { color: var(--muted); font-size: .72rem; line-height: 1.45; }
+  .leaf-product-pathways { margin-top: 1.8rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+  .leaf-product-pathways h3 { margin: 0 0 .6rem; font-size: 1.05rem; }
+  .leaf-product-pathways__links { display: grid; gap: .25rem; }
+  .leaf-product-pathways__links a { display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 48px; padding-block: .6rem; color: var(--text); text-underline-offset: .2em; font-size: .9rem; }
+  .leaf-product-pathways__links a:hover { color: var(--accent); }
+  .leaf-product-pathways__links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 {% endstylesheet %}

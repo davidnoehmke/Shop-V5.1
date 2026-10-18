@@ -1,0 +1,23 @@
+{% doc %}
+  Renders the same applicable steps as visible list items or HowTo JSON members.
+  @param {product} product - Current product.
+  @param {string} [format] - json for structured data; HTML otherwise.
+{% enddoc %}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
+{%- assign emitted_count = 0 -%}
+{%- for step in product.metafields.leafer.application_steps.value -%}
+  {%- liquid
+    assign step = step | strip
+    assign show_step = true
+    if source_status == 'review' and step contains 'cm'
+      assign show_step = false
+    endif
+  -%}
+  {%- if step != blank and show_step -%}
+    {%- assign emitted_count = emitted_count | plus: 1 -%}
+    {%- if format == 'json' -%}
+      {%- if emitted_count > 1 -%},{%- endif -%}
+      {"@type":"HowToStep","position":{{ emitted_count }},"text":{{ step | json | replace: '<', '\u003c' }}}
+    {%- else -%}<li>{{ step | escape }}</li>{%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

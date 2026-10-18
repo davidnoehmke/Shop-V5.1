@@ -1,0 +1,50 @@
+{% doc %}
+  Uses structured substrate content once, with the full description as a fallback.
+  Preserves the existing procurement notice on the reviewed Venso product.
+  @param {product} product - Current product.
+{% enddoc %}
+{%- capture product_kind -%}{%- render 'leaf-product-kind', product: product -%}{%- endcapture -%}
+{%- capture source_status -%}{%- render 'leaf-product-source-status', product: product -%}{%- endcapture -%}
+{%- liquid
+  assign function = product.metafields.leafer.primary_function.value
+  assign suitable_for = product.metafields.leafer.suitable_for.value
+  assign structured = false
+  if source_status == 'review'
+    assign structured = true
+  elsif product_kind == 'mix' or product_kind == 'component'
+    if function != blank and suitable_for != blank
+      assign structured = true
+    endif
+  endif
+-%}
+{%- if structured -%}
+  <dl class="leaf-product-description__facts">
+    {% if function != blank %}<div><dt>{{ 'product.content.function' | t }}</dt><dd>{{ function | escape }}</dd></div>{% endif %}
+    {% if suitable_for != blank %}<div><dt>{{ 'product.content.suitable_for' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.suitable_for %}</dd></div>{% endif %}
+    {%- if product.metafields.leafer.water_behavior.value != blank -%}
+      <div><dt>{{ 'product.content.water_behavior' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.water_behavior %}</dd></div>
+    {%- endif -%}
+    {%- if product_kind == 'component' and product.metafields.leafer.ingredients.value != blank -%}
+      <div><dt>{{ 'recipe.ingredients' | t }}</dt><dd>{% render 'leaf-metafield-value', field: product.metafields.leafer.ingredients %}</dd></div>
+    {%- endif -%}
+  </dl>
+  {%- if source_status == 'review' -%}
+    {%- assign procurement_marker = '<div class="leafer-project-item-note"' -%}
+    {%- if product.description contains procurement_marker -%}
+      {%- assign procurement_tail = product.description | split: procurement_marker | last -%}
+      {%- assign procurement_opening = procurement_tail | split: '>' | first | append: '>' -%}
+      {%- assign procurement_content = procurement_tail | remove_first: procurement_opening | split: '</div>' | first -%}
+      <div class="leafer-project-item-note" data-leafer-project-item="true">{{ procurement_content }}</div>
+    {%- endif -%}
+  {%- endif -%}
+{%- elsif product.description != blank -%}
+  {{ product.description }}
+{%- elsif product.metafields.leafer.intro.value != blank -%}
+  <p>{{ product.metafields.leafer.intro.value | escape | newline_to_br }}</p>
+{%- endif -%}
+{% stylesheet %}
+  .leaf-product-description__facts { margin: 0; }
+  .leaf-product-description__facts > div { padding-block: .65rem; border-bottom: 1px solid var(--border); }
+  .leaf-product-description__facts dt { font-weight: 700; font-size: .85rem; }
+  .leaf-product-description__facts dd { margin: .2rem 0 0; }
+{% endstylesheet %}

@@ -1,7 +1,6 @@
 {% liquid
   assign selected_variant = product.selected_or_first_available_variant
   assign product_form_id = 'product-form-' | append: section.id
-  assign product_subtitle = product.metafields.leafer.subtitle.value
   assign selected_on_sale = false
 
   if selected_variant.compare_at_price != blank and selected_variant.compare_at_price > selected_variant.price
@@ -29,6 +28,8 @@
 
 {% capture selected_unit_price %}{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}{% endcapture %}
 
+{{ 'leaf-image-viewer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'leaf-image-viewer.js' | asset_url }}" defer></script>
 <section class="main-product page-width">
   <nav class="main-product__breadcrumbs" aria-label="{{ 'product.breadcrumbs' | t }}">
     <a href="{{ routes.root_url }}">{{ 'header.home' | t }}</a><span aria-hidden="true">/</span>
@@ -49,7 +50,9 @@
           endif
         %}
         <div class="main-product__image">
-          {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 430px, (min-width: 801px) 45vw, 74vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+          <button type="button" class="leaf-image-open" data-leaf-image-open data-leaf-image-full="{{ image | image_url: width: 2200 }}" data-leaf-image-alt="{{ image_alt | escape }}" aria-label="{{ image_alt | escape }} – Bild in voller Größe öffnen">
+            {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 520px, (min-width: 801px) 48vw, 170px', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
+          </button>
         </div>
       {% endfor %}
     {% else %}
@@ -66,7 +69,7 @@
   >
     {% if product.type != blank or product.vendor != blank %}<p class="main-product__eyebrow">{% if product.type != blank %}{{ product.type | escape }}{% else %}{{ product.vendor | escape }}{% endif %}</p>{% endif %}
     <h1>{{ product.title | escape }}</h1>
-    {% if product_subtitle != blank %}<p class="main-product__claim">{{ product_subtitle | escape }}</p>{% endif %}
+    {% render 'leaf-product-summary', product: product %}
     <div class="main-product__price-wrap" aria-live="polite">
       <p class="main-product__price" data-product-price>{{ selected_variant.price | money }}</p>
       <s class="main-product__compare" data-product-compare{% unless selected_on_sale %} hidden{% endunless %}>{% if selected_on_sale %}{{ selected_variant.compare_at_price | money }}{% endif %}</s>
@@ -154,10 +157,6 @@
   </div>
 </section>
 
-{% render 'product-howto', product: product %}
-
-{% render 'product-faq', product: product %}
-
 {% stylesheet %}
   .main-product { padding-block: clamp(1rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(360px, .58fr); gap: clamp(1.5rem, 3.5vw, 4.25rem); align-items: start; }
   .main-product__breadcrumbs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); font-size: .75rem; }
@@ -212,6 +211,23 @@
     .main-product__dock > div { display: none; }
     .main-product__dock button { width: 100%; }
   }
+
+  /* LEAF editorial gallery: images float directly on the surface, no boxes. */
+  .main-product__media{gap:clamp(8px,1.5vw,16px);align-content:start}
+  .main-product__image{background:transparent;border:0;border-radius:0;padding:0;overflow:hidden}
+  .main-product__image:first-child{grid-column:1/-1;aspect-ratio:4/3;max-height:clamp(330px,45vw,650px)}
+  .main-product__image img{object-fit:contain;object-position:center}
+  .main-product__media .leaf-image-open{height:100%;min-height:0}
+  .main-product select,.main-product input{border-radius:0}
+  @media(max-width:800px){
+    .main-product{gap:clamp(12px,4vw,24px)}
+    .main-product__media{display:flex;gap:10px;align-items:center;padding:6px 16px 12px;margin-inline:-12px;scroll-snap-type:x mandatory;overflow-x:auto}
+    .main-product__media .main-product__image,.main-product__media .main-product__image:first-child{grid-column:auto;flex:0 0 146px;width:146px;min-width:146px;height:146px;max-height:146px;aspect-ratio:1/1;padding:0;border:0;border-radius:0;background:transparent;scroll-snap-align:center}
+    .main-product__media .main-product__image:first-child{flex-basis:176px;width:176px;min-width:176px;height:176px;max-height:176px}
+    .main-product__dock{border-radius:0;box-shadow:0 -6px 26px rgba(23,61,43,.07)}
+  }
+  @media(prefers-reduced-motion:reduce){.main-product__image img{transition:none}}
+
 {% endstylesheet %}
 
 {% javascript %}

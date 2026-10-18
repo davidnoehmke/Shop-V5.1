@@ -325,14 +325,19 @@ jobs:
                   "render 'leaf-knowledge-icon'",
               ],
               'sections/leaferservice-product.liquid': [
-                  'metafields.leafer.knowledge_atoms',
-                  "mode: 'chips'",
-                  'truncatewords: 32',
+                  "render 'leaf-product-summary'",
+                  'data-add-to-cart',
+              ],
+              'sections/leaf-product-tabs.liquid': [
+                  "render 'leaf-product-description'",
+                  "render 'leaf-product-steps'",
+                  "render 'product-faq-entries'",
+                  'aria-controls=',
               ],
               'sections/product-seo-details.liquid': [
-                  'metafields.leafer.knowledge_atoms',
-                  "mode: 'long'",
-                  '<details class="product-seo-details__description">',
+                  "render 'leaf-unit-value'",
+                  "render 'leaf-product-pathways'",
+                  'show_embedded_description',
               ],
               'sections/main-collection.liquid': [
                   'metafields.leafer.knowledge_atoms',

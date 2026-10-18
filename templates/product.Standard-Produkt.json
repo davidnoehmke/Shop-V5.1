@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -12,7 +21,10 @@
     },
     "seo_details": {
       "type": "product-seo-details",
-      "settings": {}
+      "settings": {
+        "show_embedded_description": false,
+        "show_embedded_faq": false
+      }
     },
     "recipe": {
       "type": "product-recipe",
@@ -23,7 +35,8 @@
       "settings": {
         "show_heading": true,
         "heading": ""
-      }
+      },
+      "disabled": true
     },
     "cross_sell": {
       "type": "product-cross-sell",
@@ -38,7 +51,8 @@
     },
     "decision": {
       "type": "leaf-product-decision",
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "trust_master": {
       "type": "trust-bar",
@@ -77,30 +91,22 @@
     },
     "component_signature": {
       "type": "leaf-component-signature",
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "loox_reviews": {
       "type": "apps",
-      "blocks": {
-        "loox_product_reviews": {
-          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
-          "settings": {
-            "only_photos": false,
-            "aggregated": false,
-            "hide_thumbnails": false,
-            "maxwidth": 1280
-          }
-        }
-      },
-      "block_order": [
-        "loox_product_reviews"
-      ],
+      "settings": {}
+    },
+    "product_tabs": {
+      "type": "leaf-product-tabs",
       "settings": {}
     }
   },
   "order": [
     "breadcrumbs",
     "main",
+    "product_tabs",
     "decision",
     "component_signature",
     "recipe",

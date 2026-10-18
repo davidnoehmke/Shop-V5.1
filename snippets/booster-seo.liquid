@@ -318,6 +318,10 @@ Organization and Website Schema Markup
 {%- endcomment -%}
 
 {%- assign logo_url = booster_config.company_logo_url -%}
+{%- assign brand_logo = shop.brand.logo | default: shop.brand.square_logo -%}
+{%- if logo_url == blank and brand_logo != blank -%}
+  {%- assign logo_url = brand_logo | image_url: width: 600 | prepend: 'https:' -%}
+{%- endif -%}
 
 {%- if template.name == 'index' or template == "index" -%}
 <script type="application/ld+json">
@@ -330,9 +334,6 @@ Organization and Website Schema Markup
     {%- unless logo_url == blank -%}
       "image": "{{ logo_url | remove: "\" }}",
       "logo": "{{ logo_url | remove: "\" }}",
-    {%- else -%}
-      "image": "https:{{ 'logo.png' | asset_url }}",
-      "logo": "https:{{ 'logo.png' | asset_url }}",
     {%- endunless -%}
     "sameAs": ["{{ booster_config.same_as | join: '", "'}}"],
     "telephone": "{{ shop.phone }}",
@@ -373,7 +374,7 @@ Organization and Website Schema Markup
     "brand": {"@type": "Brand","name": {{ product.vendor | json }}},
     "sku": "{{ product.selected_or_first_available_variant.sku }}",
     "mpn": "{{ product.selected_or_first_available_variant.barcode }}",
-    "description": {{ product.description | strip_html | json }},
+    "description": {% capture leaf_product_description %}{% render 'leaf-product-description', product: product %}{% endcapture %}{{ leaf_product_description | strip_html | strip | json | replace: '<', '\u003c' }},
     "url": "{{ shop.secure_url }}{{ product.url }}",
     {%- if product.featured_image -%}
     {%- assign image_size = product.featured_image.width | append: 'x' -%}
@@ -862,7 +863,7 @@ Collection (CollectionPage + ItemList) and Breadcrumb Schema Markup
     "name": {{ article.title | json }},
     "publisher": {
       "@type": "Organization",
-      "logo": {"@type": "ImageObject","url": "https:{{ 'logo.png' | asset_url }}"},
+      {% if logo_url != blank %}"logo": {"@type": "ImageObject","url": {{ logo_url | json }}},{% endif %}
       "name": {{ shop.name | json }}
     },
     "headline": {{ article.title | json }},
@@ -914,9 +915,7 @@ all other Booster schema.
 {%- endcomment -%}
 {%- if booster_config.google_snippets_enabled -%}
   {%- assign booster_faqs = blank -%}
-  {%- if template.name == 'product' or template == 'product' -%}
-    {%- assign booster_faqs = product.metafields.custom.faqs.value -%}
-  {%- elsif template.name == 'collection' or template == 'collection' -%}
+  {%- if template.name == 'collection' or template == 'collection' -%}
     {%- assign booster_faqs = collection.metafields.custom.faqs.value -%}
   {%- elsif template.name == 'page' or template == 'page' -%}
     {%- assign booster_faqs = page.metafields.custom.faqs.value -%}

@@ -120,7 +120,7 @@
       "label": "Produktvorteile"
     },
     "availability": {
-      "available": "Auf Lager · versandbereit",
+      "available": "Bestellbar",
       "unavailable": "Diese Variante ist derzeit nicht verfügbar.",
       "unavailable_short": "Nicht verfügbar",
       "invalid_combination": "Kombination nicht verfügbar",
@@ -216,6 +216,26 @@
       "mix_text": "Grundrezeptur verstehen und bei Bedarf im Profi-Modus fein abstimmen.",
       "knowledge": "LEAFers nice2know",
       "knowledge_text": "Praxiswissen, Hintergründe und häufige Pflanzenfragen vertiefen."
+    },
+    "content": {
+      "label": "Produktinformationen",
+      "description": "Beschreibung",
+      "application": "Anwendung",
+      "faq": "Häufige Fragen",
+      "function": "Verwendung",
+      "suitable_for": "Geeignet für",
+      "water_behavior": "Wasserverhalten",
+      "use_as": "Verwendung als:",
+      "mounting": "Montage:",
+      "care_tip": "Pflegetipp:",
+      "notice": "Hinweis:",
+      "safety": "Sicherheit:",
+      "variant_check": "Frage uns vor der Bestellung nach den Abmessungen und dem empfohlenen Pflanzenabstand der gewählten Variante.",
+      "manufacturer_information": "Herstellerinformationen ansehen",
+      "howto_name": "So verwendest du {{ product }}",
+      "guides": "Passende Ratgeber",
+      "details_eyebrow": "Produktdetails",
+      "details_heading": "Genaue Angaben"
     }
   },
   "product_variant_guide": {
@@ -401,10 +421,11 @@
   "recipe": {
     "eyebrow": "Transparent gemischt",
     "heading": "Rezeptur & Bestandteile",
-    "intro": "Die Zusammensetzung wird direkt aus den gepflegten Produktdaten geladen und bleibt dadurch auf allen Produktseiten einheitlich.",
+    "intro": "Die Bestandteile dieser Mischung und ihre Anteile.",
     "ratio": "Mischverhältnis",
     "ingredients": "Bestandteile",
-    "note": "Volumenanteile sind Richtwerte. Pflanze, Topf, Standort und Gießverhalten können eine Anpassung erfordern."
+    "note": "Volumenanteile sind Richtwerte. Pflanze, Topf, Standort und Gießverhalten können eine Anpassung erfordern.",
+    "chart_label": "Zusammensetzung von {{ product }}"
   },
   "cross_sell": {
     "eyebrow": "Sinnvoll ergänzen",
@@ -750,13 +771,13 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "Substrat nach Maß",
-      "heading": "Deine Pflanze. Deine Substratmischung.",
-      "text": "Stelle deine Substratmischung selbst zusammen: Komponenten wählen, Anteile per Slider abstimmen und die Rezeptur direkt bestellen.",
-      "primary": "Eigene Mischung bauen",
-      "secondary": "Pflanzenprojekt planen",
+      "eyebrow": "Substrate · Pflanzenlicht",
+      "heading": "Gute Wurzeln. Gutes Licht.",
+      "text": "Fertige Substrate und Pflanzenlicht für dein Zuhause.",
+      "primary": "Substrate kaufen",
+      "secondary": "Pflanzenlicht kaufen",
       "world_heading": "Das Sortiment rund um dein Pflanzenprojekt",
-      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten."
+      "world_intro": "Fertige Mischungen für Alocasia, Kakteen, Palmen und Anzucht. LED-Pflanzenlicht für einzelne Pflanzen, Regale und dein Zuhause."
     },
     "knowledge_links": {
       "label": "Direkt weiterlernen",
@@ -782,6 +803,17 @@
       "a5": "Ja. Starte im LEAF Planer mit Ziel, Raum und Pflanzenbedarf. Die Vorauswahl führt anschließend zu passenden Produktwelten, Einzelprodukten und – sofern vorhanden – abgestimmten Sets.",
       "q6": "Wann brauche ich einen Profi-Konfigurator?",
       "a6": "Nur wenn du Anteile oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte ist der zentrale LEAF Planer der einfachere Start; Spezialwerkzeuge bleiben als optionaler Vertiefungsschritt erhalten."
+    },
+    "shop": {
+      "substrates_heading": "Dein Substrat. Direkt startklar.",
+      "substrates_text": "Fertige Mischungen für Alocasia, Kakteen, Palmen und Anzucht.",
+      "substrates_link": "Alle Substrate ansehen",
+      "substrates_help": "Lieber selbst mischen?",
+      "lighting_heading": "Mehr Licht für deine Pflanzen.",
+      "lighting_text": "LED-Pflanzenlicht für einzelne Pflanzen, Regale und dein Zuhause.",
+      "lighting_link": "Alle Lichtlösungen ansehen",
+      "lighting_help": "Passendes Pflanzenlicht finden",
+      "empty": "Entdecke die aktuell verfügbaren Produkte in der Produktwelt."
     }
   },
   "plant_world": {
