@@ -1,6 +1,12 @@
 <section class="brand-story page-width" aria-labelledby="BrandStory-{{ section.id }}">
   <div class="brand-story__identity">
-    <div class="brand-story__mark" aria-hidden="true">DN</div>
+    {% if section.settings.founder_image != blank %}
+      <div class="brand-story__portrait">
+        {{ section.settings.founder_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320, 480, 640, 900', sizes: '(min-width: 761px) 220px, 120px', alt: section.settings.founder_image_alt | default: 'David Nöhmke, Gründer von LEAFerservice' }}
+      </div>
+    {% else %}
+      <div class="brand-story__mark" aria-hidden="true">DN</div>
+    {% endif %}
     <p class="brand-story__signature">David Nöhmke</p>
     <p class="brand-story__role">{{ 'brand_story.role' | t }}</p>
   </div>
@@ -25,7 +31,10 @@
 {% stylesheet %}
   .brand-story { margin-block: var(--space-section); padding-block: clamp(2.5rem, 5vw, 5.5rem); display: grid; grid-template-columns: minmax(220px, .42fr) minmax(0, 1.58fr); gap: clamp(3rem, 7vw, 8rem); align-items: start; border-block: 1px solid var(--border); }
   .brand-story__identity { position: sticky; top: 7rem; display: grid; justify-items: start; }
-  .brand-story__mark { width: clamp(118px, 11vw, 164px); aspect-ratio: 1; display: grid; place-items: center; background: var(--accent); color: var(--background); font-family: var(--heading-font); font-size: clamp(2.2rem, 3.5vw, 3.4rem); font-weight: 700; letter-spacing: -.08em; }
+  .brand-story__mark, .brand-story__portrait { width: clamp(118px, 11vw, 164px); aspect-ratio: 1; }
+  .brand-story__mark { display: grid; place-items: center; background: var(--accent); color: var(--background); font-family: var(--heading-font); font-size: clamp(2.2rem, 3.5vw, 3.4rem); font-weight: 700; letter-spacing: -.08em; }
+  .brand-story__portrait { overflow: hidden; background: var(--surface); }
+  .brand-story__portrait img { width: 100%; height: 100%; object-fit: cover; object-position: center; border-radius: 0; }
   .brand-story__signature { margin: 1.15rem 0 .15rem; font-family: var(--heading-font); font-size: clamp(1.45rem, 2vw, 2rem); font-weight: 650; letter-spacing: -.035em; }
   .brand-story__role { margin: 0; color: var(--muted); font-size: .78rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
   .brand-story__eyebrow { margin: 0; color: var(--accent); font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
@@ -36,13 +45,17 @@
   .brand-story__proof span { min-height: 72px; display: flex; align-items: center; padding: .85rem 1rem; font-size: .78rem; font-weight: 750; }
   .brand-story__proof span + span { border-left: 1px solid var(--border); }
   .brand-story__link { margin-top: 1.5rem; min-height: 48px; padding-inline: 1.5rem; display: inline-flex; align-items: center; border: 1px solid var(--accent); color: var(--accent); font-weight: 750; text-decoration: none; }
-  @media (max-width: 760px) { .brand-story { grid-template-columns: 1fr; gap: 2rem; } .brand-story__identity { position: static; grid-template-columns: 88px 1fr; column-gap: 1rem; align-items: end; } .brand-story__mark { width: 88px; grid-row: 1 / span 2; font-size: 1.75rem; } .brand-story__signature { margin: 0; } .brand-story__role { align-self: start; } .brand-story__columns, .brand-story__proof { grid-template-columns: 1fr; } .brand-story__proof span + span { border-left: 0; border-top: 1px solid var(--border); } }
+  @media (max-width: 760px) { .brand-story { grid-template-columns: 1fr; gap: 2rem; } .brand-story__identity { position: static; grid-template-columns: 88px 1fr; column-gap: 1rem; align-items: end; } .brand-story__mark, .brand-story__portrait { width: 88px; grid-row: 1 / span 2; } .brand-story__mark { font-size: 1.75rem; } .brand-story__signature { margin: 0; } .brand-story__role { align-self: start; } .brand-story__columns, .brand-story__proof { grid-template-columns: 1fr; } .brand-story__proof span + span { border-left: 0; border-top: 1px solid var(--border); } }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "LEAFerservice Markenstory",
-  "settings": [{ "type": "url", "id": "link", "label": "Ziel des Links" }],
+  "settings": [
+    { "type": "image_picker", "id": "founder_image", "label": "Gründerfoto" },
+    { "type": "text", "id": "founder_image_alt", "label": "Alt-Text Gründerfoto", "default": "David Nöhmke, Gründer von LEAFerservice" },
+    { "type": "url", "id": "link", "label": "Ziel des Links" }
+  ],
   "presets": [{ "name": "LEAFerservice Markenstory" }]
 }
 {% endschema %}
