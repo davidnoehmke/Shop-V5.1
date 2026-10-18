@@ -1,13 +1,5 @@
 {% liquid
   assign section_heading = section.settings.heading
-  assign houseplants_collection = collections['zimmerpflanzen-1']
-  assign has_houseplants_block = false
-  for journey_block in section.blocks
-    if journey_block.settings.collection.handle == 'zimmerpflanzen-1'
-      assign has_houseplants_block = true
-      break
-    endif
-  endfor
   assign section_intro = section.settings.intro
   assign filter_bundle = section.settings.filter_bundle | default: 'Sets & Bundles'
 
@@ -169,34 +161,33 @@
                 <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
                 {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape }}</p>{% endif %}
                 {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ section.settings.product_label | escape }}</span>{% endif %}
+
+                {% if request.locale.iso_code == 'de' %}
+                  {% case selected_collection.handle %}
+                    {% when 'pflanzsubstrate-mischungen' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Substrat-Ratgeber">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/monstera-substrat">Monstera-Substrat verstehen</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/anthurium-substrat">Anthurium-Wurzelraum verstehen</a>
+                      </nav>
+                    {% when 'substrate-verbesserer' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Ratgeber zu Substratbestandteilen">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/leafers-substratbestandteile">Substratbestandteile verstehen</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/bims-oder-perlit-unterschiede-pflanzsubstrat">Bims oder Perlit?</a>
+                      </nav>
+                    {% when 'interieur-solutions' %}
+                      <nav class="home-journey__topic-links" aria-label="Passende Ratgeber zu Pflanzenlicht">
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/e27-t8-high-power-pflanzenlampe-vergleich">E27, T8 oder Vollspektrum-LED?</a>
+                        <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog/pflanzenlampe-watt-ppf-ppfd-abstand-flaeche">Watt, PPF, PPFD & Abstand</a>
+                      </nav>
+                  {% endcase %}
+                {% endif %}
+
                 <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape }} <span aria-hidden="true">→</span></a>
               </div>
             </article>
           {% endif %}
         {% endfor %}
 
-        {% if request.page_type == 'index' and houseplants_collection != blank and has_houseplants_block == false %}
-          <article class="home-journey__card" role="listitem" data-journey-card data-category="interieur" data-leaf-reveal>
-            <a class="home-journey__media" href="{{ houseplants_collection.url }}" aria-label="{{ houseplants_collection.title | escape }}">
-              {% if houseplants_collection.featured_image != blank %}
-                {{ houseplants_collection.featured_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 600, 900, 1200', sizes: '(min-width: 760px) 33vw, 76vw', alt: houseplants_collection.featured_image.alt | default: houseplants_collection.title }}
-              {% else %}
-                <span class="home-journey__placeholder" aria-hidden="true">{{ 'collection-1' | placeholder_svg_tag }}</span>
-              {% endif %}
-              <span class="home-journey__visual-meta">
-                <span class="home-journey__icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M16 29V14M16 23c-6-.8-10-4.7-10-11 6 0 10 3.8 10 9.6M16 18c5.7-.7 9.7-4.4 10-11-6 0-10 3.7-10 9.4M12 29h8"/></svg></span>
-                <span class="home-journey__badge">{{ houseplants_collection.metafields.custom.homepage_badge.value | default: 'Green Living' | escape }}</span>
-              </span>
-            </a>
-            <div class="home-journey__body">
-              <p class="home-journey__eyebrow">{{ houseplants_collection.metafields.custom.homepage_eyebrow.value | default: 'Zimmerpflanzen' | escape }}</p>
-              <h3><a href="{{ houseplants_collection.url }}">{{ houseplants_collection.title | escape }}</a></h3>
-              <p>{{ houseplants_collection.metafields.custom.homepage_intro.value | default: houseplants_collection.description | strip_html | truncatewords: 22 | escape }}</p>
-              <span class="home-journey__count">{{ houseplants_collection.products_count }} {{ section.settings.product_label | escape }}</span>
-              <a class="button button--secondary home-journey__link" href="{{ houseplants_collection.url }}">{{ section.settings.card_cta | escape }} <span aria-hidden="true">→</span></a>
-            </div>
-          </article>
-        {% endif %}
       </div>
       <p class="home-journey__empty" data-journey-empty hidden>{{ section.settings.empty_label | escape }}</p>
     {% endif %}
@@ -248,6 +239,9 @@
   .home-journey h3 a { text-decoration: none; }
   .home-journey__body > p:not(.home-journey__eyebrow) { margin: 0 0 .8rem; color: var(--muted); font-size: .86rem; line-height: 1.55; }
   .home-journey__count { margin-top: auto; color: var(--muted); font-size: .72rem; font-weight: 750; }
+  .home-journey__topic-links { display: flex; flex-wrap: wrap; gap: .35rem .75rem; margin-top: .8rem; }
+  .home-journey__topic-links a { color: var(--muted); font-size: .72rem; font-weight: 720; line-height: 1.35; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .18em; }
+  .home-journey__topic-links a:hover, .home-journey__topic-links a:focus-visible { color: var(--accent); }
   .home-journey__link { width: 100%; min-height: 44px; margin-top: 1rem; padding-inline: .9rem; gap: .45rem; font-size: .78rem; }
   .home-journey__link span, .home-journey__footer .button span { transition: transform .25s var(--ease-out); }
   .home-journey__link:hover span, .home-journey__footer .button:hover span { transform: translateX(.2rem); }

@@ -1,0 +1,308 @@
+/* LEAF V7 custom storefront — reversible visual layer for the unpublished V7 candidate */
+:root {
+  --leaf-v7-studio-bg: #fff;
+  --leaf-v7-studio-line: color-mix(in srgb, var(--text), transparent 91%);
+  --leaf-v7-studio-shadow: 0 20px 48px rgba(24, 37, 30, .08);
+  --leaf-v7-studio-pad: clamp(.75rem, 2.2vw, 2rem);
+}
+
+/* Consistent product-photo canvas: square, white, straight edges, calm optical sizing. */
+.product-card,
+.featured__product,
+.collection-product-card {
+  border-radius: 0 !important;
+}
+
+.product-card__media,
+.main-product__image,
+.main-cart__image {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden;
+  border-radius: 0 !important;
+  background: var(--leaf-v7-studio-bg) !important;
+}
+
+.product-card__media,
+.main-product__image {
+  padding: var(--leaf-v7-studio-pad) !important;
+  border: 1px solid var(--leaf-v7-studio-line);
+}
+
+/* Soft studio floor shadow independent of the source image background. */
+.product-card__media::after,
+.main-product__image::after {
+  position: absolute;
+  z-index: 0;
+  left: 18%;
+  right: 18%;
+  bottom: 7%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(24,37,30,.17) 0%, rgba(24,37,30,.07) 42%, transparent 74%);
+  filter: blur(7px);
+  content: "";
+  pointer-events: none;
+}
+
+.product-card__media img,
+.main-product__image img,
+.main-cart__image img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.product-card__media img {
+  transform: scale(.94);
+}
+
+.main-product__image img {
+  transform: scale(.92);
+}
+
+.product-card__link {
+  padding: clamp(.65rem, 1.2vw, 1rem);
+}
+
+.main-product__media {
+  gap: clamp(.55rem, 1vw, 1rem);
+}
+
+/* V7: cleaner editorial product layout, less generic card styling. */
+.product-card {
+  background: var(--background) !important;
+  border-color: var(--leaf-v7-studio-line) !important;
+  box-shadow: none;
+}
+
+.product-card__copy {
+  padding-top: .85rem;
+}
+
+.main-product__details {
+  border-radius: 0 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--leaf-v7-studio-shadow);
+  }
+  .product-card:hover .product-card__media img {
+    transform: scale(.97);
+  }
+}
+
+@media (max-width: 560px) {
+  :root { --leaf-v7-studio-pad: .45rem; }
+  .product-card__link { padding: .45rem; }
+  .product-card__media img { transform: scale(.97); }
+  .main-product__image img { transform: scale(.96); }
+  .main-product__image { min-width: min(86vw, 360px) !important; }
+}
+
+
+/* V7 motion system: editorial, restrained, performance-safe. */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .template-index .hero {
+    background-image: var(--leaf-v7-hero-image);
+    background-size: cover;
+    background-position: 64% center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .template-index .hero__image {
+    opacity: 0;
+  }
+
+  .template-index .hero__content {
+    transform: translateY(0);
+    transition: transform .45s var(--ease-out);
+  }
+}
+
+/* Product imagery: quiet motion, stronger feedback only while the user interacts. */
+.product-card__media,
+.main-product__image {
+  cursor: zoom-in;
+}
+
+.product-card__media img,
+.main-product__image img {
+  will-change: transform;
+  transition: transform .45s var(--ease-out), filter .3s ease;
+}
+
+.product-card__media:active img,
+.main-product__image:active img {
+  transform: scale(1.075) !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .main-product__image:hover img {
+    transform: scale(.965);
+  }
+}
+
+/* Mobile hero: still cinematic, but no longer consumes the whole first screen. */
+@media (max-width: 700px) {
+  .template-index .hero {
+    min-height: clamp(520px, 74svh, 590px) !important;
+  }
+
+  .template-index .hero__inner {
+    min-height: clamp(520px, 74svh, 590px) !important;
+    padding-top: clamp(5rem, 15svh, 7.5rem) !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .template-index .hero h1 {
+    max-width: 18ch;
+    font-size: clamp(1.9rem, 7.4vw, 2.8rem);
+  }
+
+  .template-index .hero__text {
+    max-width: 36ch;
+  }
+
+  .template-index .hero__benefits {
+    display: none;
+  }
+
+  .template-index .hero__image {
+    transform: scale(1.03);
+    transition: transform .9s var(--ease-out);
+  }
+
+  .template-index .hero:active .hero__image {
+    transform: scale(1.065);
+  }
+}
+
+@media (max-width: 420px) {
+  .template-index .hero,
+  .template-index .hero__inner {
+    min-height: 535px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .template-index .hero {
+    background-attachment: scroll;
+  }
+
+  .product-card__media img,
+  .main-product__image img,
+  .template-index .hero__image {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+
+/* V7 global design contract: one typographic and control language across the theme. */
+:root {
+  --heading-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --leaf-v7-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --radius: 0px;
+  --radius-large: 0px;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+summary,
+.button,
+.shopify-payment-button__button,
+.product-card,
+.main-product,
+.main-cart {
+  font-family: var(--leaf-v7-font) !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--leaf-v7-font) !important;
+  letter-spacing: -.025em;
+}
+
+button,
+.button,
+input,
+select,
+textarea,
+.shopify-payment-button__button,
+.main-product__dock,
+.main-product__errors,
+.product-card,
+.collection-product-card,
+.featured__product {
+  border-radius: 0 !important;
+}
+
+/* Keep semantic circular elements circular: icons, dots and the studio floor shadow. */
+.home-journey__icon,
+.main-product__availability::before,
+.product-card__media::after,
+.main-product__image::after {
+  border-radius: 50%;
+}
+
+/* Remove pill-style Shopify controls while preserving clear focus and tap targets. */
+.hero__buttons .button,
+.home-journey__filter,
+.home-journey__badge,
+.skip-link {
+  border-radius: 0 !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--background);
+  color: var(--text);
+}
+
+/* Images and media stay geometrically straight across the storefront. */
+img,
+picture,
+.product-card__media,
+.main-product__image,
+.main-cart__image,
+.home-journey__media,
+.brand-story__portrait,
+.collection-product-card__media,
+.featured__media {
+  border-radius: 0 !important;
+}
+
+
+/* Desktop canvas: deliberate 85% content width with an upper cap for very large displays. */
+@media (min-width: 1051px) {
+  .page-width {
+    width: min(85vw, 1560px) !important;
+    max-width: none !important;
+    margin-inline: auto;
+  }
+
+  .template-index .hero__inner {
+    width: min(85vw, 1560px) !important;
+  }
+
+  .main-product {
+    width: min(85vw, 1560px) !important;
+  }
+}
