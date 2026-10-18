@@ -29,15 +29,15 @@
 
 {% capture selected_unit_price %}{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}{% endcapture %}
 
-<section class="main-product page-width">
+<section class="main-product page-width{% if product.images.size == 0 %} main-product--text-only{% endif %}">
   <nav class="main-product__breadcrumbs" aria-label="{{ 'product.breadcrumbs' | t }}">
     <a href="{{ routes.root_url }}">{{ 'header.home' | t }}</a><span aria-hidden="true">/</span>
     {% if collection != blank %}<a href="{{ collection.url }}">{{ collection.title | escape }}</a><span aria-hidden="true">/</span>{% endif %}
     <span aria-current="page">{{ product.title | escape }}</span>
   </nav>
 
+  {% if product.images.size > 0 %}
   <div class="main-product__media" aria-label="{{ product.title | escape }}">
-    {% if product.images.size > 0 %}
       {% for image in product.images limit: 8 %}
         {% liquid
           assign image_loading = 'lazy'
@@ -52,10 +52,8 @@
           {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 430px, (min-width: 801px) 45vw, 74vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
         </div>
       {% endfor %}
-    {% else %}
-      <div class="main-product__image">{{ 'product-1' | placeholder_svg_tag }}</div>
-    {% endif %}
   </div>
+  {% endif %}
 
   <product-purchase
     class="main-product__details"
@@ -160,6 +158,8 @@
 
 {% stylesheet %}
   .main-product { padding-block: clamp(1rem, 4vw, 4rem); display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(360px, .58fr); gap: clamp(1.5rem, 3.5vw, 4.25rem); align-items: start; }
+  .main-product--text-only { grid-template-columns: minmax(0, 760px); justify-content: center; }
+  .main-product--text-only .main-product__details { position: static; }
   .main-product__breadcrumbs { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: .45rem; color: var(--muted); font-size: .75rem; }
   .main-product__breadcrumbs a { color: inherit; }
   .main-product__media { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
