@@ -22,7 +22,7 @@
   endif
 %}
 
-<section class="hero" style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}" aria-labelledby="HeroHeading-{{ section.id }}">
+<section class="hero"{% if section.settings.image != blank %} style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --leaf-v7-hero-image: url('{{ section.settings.image | image_url: width: 2600 }}')"{% else %} style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}"{% endif %} aria-labelledby="HeroHeading-{{ section.id }}">
   {% if section.settings.image != blank %}
     {{ section.settings.image | image_url: width: 2600 | image_tag: widths: '750, 1100, 1500, 2000, 2600', sizes: '100vw', loading: 'eager', fetchpriority: 'high', class: 'hero__image', alt: 'Pflanzenversorgung mit Substrat, Gefäß und Pflanzenlicht' }}
   {% else %}
