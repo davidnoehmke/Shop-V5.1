@@ -1,0 +1,107 @@
+/* LEAF V7 custom storefront — reversible visual layer for the unpublished V7 candidate */
+:root {
+  --leaf-v7-studio-bg: #fff;
+  --leaf-v7-studio-line: color-mix(in srgb, var(--text), transparent 91%);
+  --leaf-v7-studio-shadow: 0 20px 48px rgba(24, 37, 30, .08);
+  --leaf-v7-studio-pad: clamp(.75rem, 2.2vw, 2rem);
+}
+
+/* Consistent product-photo canvas: square, white, straight edges, calm optical sizing. */
+.product-card,
+.featured__product,
+.collection-product-card {
+  border-radius: 0 !important;
+}
+
+.product-card__media,
+.main-product__image,
+.main-cart__image {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1 / 1 !important;
+  overflow: hidden;
+  border-radius: 0 !important;
+  background: var(--leaf-v7-studio-bg) !important;
+}
+
+.product-card__media,
+.main-product__image {
+  padding: var(--leaf-v7-studio-pad) !important;
+  border: 1px solid var(--leaf-v7-studio-line);
+}
+
+/* Soft studio floor shadow independent of the source image background. */
+.product-card__media::after,
+.main-product__image::after {
+  position: absolute;
+  z-index: 0;
+  left: 18%;
+  right: 18%;
+  bottom: 7%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(24,37,30,.17) 0%, rgba(24,37,30,.07) 42%, transparent 74%);
+  filter: blur(7px);
+  content: "";
+  pointer-events: none;
+}
+
+.product-card__media img,
+.main-product__image img,
+.main-cart__image img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain !important;
+  object-position: center !important;
+}
+
+.product-card__media img {
+  transform: scale(.94);
+}
+
+.main-product__image img {
+  transform: scale(.92);
+}
+
+.product-card__link {
+  padding: clamp(.65rem, 1.2vw, 1rem);
+}
+
+.main-product__media {
+  gap: clamp(.55rem, 1vw, 1rem);
+}
+
+/* V7: cleaner editorial product layout, less generic card styling. */
+.product-card {
+  background: var(--background) !important;
+  border-color: var(--leaf-v7-studio-line) !important;
+  box-shadow: none;
+}
+
+.product-card__copy {
+  padding-top: .85rem;
+}
+
+.main-product__details {
+  border-radius: 0 !important;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--leaf-v7-studio-shadow);
+  }
+  .product-card:hover .product-card__media img {
+    transform: scale(.97);
+  }
+}
+
+@media (max-width: 560px) {
+  :root { --leaf-v7-studio-pad: .45rem; }
+  .product-card__link { padding: .45rem; }
+  .product-card__media img { transform: scale(.97); }
+  .main-product__image img { transform: scale(.96); }
+  .main-product__image { min-width: min(86vw, 360px) !important; }
+}
