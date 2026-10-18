@@ -64,51 +64,35 @@
     "home_collection_journey": {
       "type": "home-collection-journey",
       "blocks": {
-        "substrate": {
+        "ready_mix": {
           "type": "collection",
           "settings": {
-            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "collection": "pflanzsubstrate-mischungen",
             "category": "substrate",
             "image": "",
-            "eyebrow": "Wurzelraum",
-            "badge": "USP",
-            "title": "Substratwelt & individuelle Mischungen",
-            "copy": "Eigene Rezepturen, fertige Mischungen und einzelne Bestandteile für Luft, Drainage, Struktur und Feuchtepuffer.",
-            "cta_label": "Substratwelt öffnen",
-            "fallback_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "fallback_title": "Substratwelt",
+            "eyebrow": "Fertige Rezepturen",
+            "badge": "6 Mischungen",
+            "title": "Fertige Substratmischungen",
+            "copy": "Fertige Rezepturen für verschiedene Pflanzenprofile – direkt vergleichbar und ohne Umweg kaufbar.",
+            "cta_label": "Mischungen entdecken",
+            "fallback_link": "shopify://collections/pflanzsubstrate-mischungen",
+            "fallback_title": "Fertige Substratmischungen",
             "fallback_copy": ""
           }
         },
-        "interieur": {
+        "components": {
           "type": "collection",
           "settings": {
-            "collection": "interieur-solutions",
-            "category": "interieur",
+            "collection": "substrate-verbesserer",
+            "category": "substrate",
             "image": "",
-            "eyebrow": "Licht & Raum",
-            "badge": "Erweitert",
-            "title": "Pflanzenlicht & Interieur",
-            "copy": "Pflanzenlicht, Wallspots, Röhren und Raumlösungen für Regale, Einzelpflanzen und komplette Setups.",
-            "cta_label": "Lichtlösungen entdecken",
-            "fallback_link": "shopify://collections/interieur-solutions",
-            "fallback_title": "Interieur Solutions",
-            "fallback_copy": ""
-          }
-        },
-        "grow": {
-          "type": "collection",
-          "settings": {
-            "collection": "anzucht-aussaat",
-            "category": "grow",
-            "image": "",
-            "eyebrow": "Anzucht",
-            "badge": "Vom Start weg",
-            "title": "Anzucht & Jungpflanzen",
-            "copy": "Quelltabs, Anzuchtboxen, kleine Töpfe und passende Medien für Aussaat, Stecklinge und Jungpflanzen.",
-            "cta_label": "Anzucht entdecken",
-            "fallback_link": "shopify://collections/anzucht-aussaat",
-            "fallback_title": "Anzucht & Aussaat",
+            "eyebrow": "Selbst mischen",
+            "badge": "13 Produkte",
+            "title": "Substratbestandteile",
+            "copy": "Einzelne Materialien gezielt auswählen, verstehen und für eigene Mischungen kombinieren.",
+            "cta_label": "Bestandteile entdecken",
+            "fallback_link": "shopify://collections/substrate-verbesserer",
+            "fallback_title": "Substratbestandteile",
             "fallback_copy": ""
           }
         },
@@ -119,89 +103,54 @@
             "category": "equipment",
             "image": "",
             "eyebrow": "Gefäße",
-            "badge": "Neu im Fokus",
-            "title": "Pflanzgefäße & Bewässerung",
-            "copy": "Keramik, Pflanzschalen und Bewässerungssysteme passend zu Wurzelraum, Standort und Pflegealltag.",
+            "badge": "12 Produkte",
+            "title": "Pflanzgefäße & Pflanzsysteme",
+            "copy": "Gefäße nach Größe, Material und Pflanzsituation auswählen – vom Kulturtopf bis zum Designgefäß.",
             "cta_label": "Gefäße entdecken",
             "fallback_link": "shopify://collections/pflanzgefasse",
-            "fallback_title": "Pflanzgefäße & Töpfe",
+            "fallback_title": "Pflanzgefäße & Pflanzsysteme",
             "fallback_copy": ""
           }
         },
-        "care": {
+        "lighting": {
           "type": "collection",
           "settings": {
-            "collection": "pflanzenpflege-werkzeuge",
-            "category": "equipment",
-            "image": "",
-            "eyebrow": "Pflege",
-            "badge": "Alltag",
-            "title": "Pflanzenpflege & Zubehör",
-            "copy": "Werkzeuge und Zubehör für Umtopfen, Stützen, Bewässerung und die laufende Pflanzenpflege.",
-            "cta_label": "Pflege entdecken",
-            "fallback_link": "shopify://collections/pflanzenpflege-werkzeuge",
-            "fallback_title": "Pflanzenpflege & Zubehör",
-            "fallback_copy": ""
-          }
-        },
-        "sets": {
-          "type": "collection",
-          "settings": {
-            "collection": "starter-sets-mehrerer-arten",
-            "category": "bundle",
-            "image": "",
-            "eyebrow": "Komplett gedacht",
-            "badge": "Bundles",
-            "title": "Sets & abgestimmte Lösungen",
-            "copy": "Mehrere passende Komponenten als verständliches Setup statt zufällig zusammengestellter Einzelprodukte.",
-            "cta_label": "Sets ansehen",
-            "fallback_link": "shopify://collections/starter-sets-mehrerer-arten",
-            "fallback_title": "Sets & Bundles",
-            "fallback_copy": ""
-          }
-        },
-        "plants": {
-          "type": "collection",
-          "settings": {
-            "collection": "zimmerpflanzen-1",
+            "collection": "interieur-solutions",
             "category": "interieur",
             "image": "",
-            "eyebrow": "Pflanzen",
-            "badge": "Lebendes Sortiment",
-            "title": "Zimmerpflanzen & Raritäten",
-            "copy": "Ausgewählte Zimmerpflanzen und besondere Sorten als Ausgangspunkt für komplette Pflanzen-Setups.",
-            "cta_label": "Pflanzen ansehen",
-            "fallback_link": "shopify://collections/zimmerpflanzen-1",
-            "fallback_title": "Zimmerpflanzen",
+            "eyebrow": "Pflanzenlicht",
+            "badge": "LED",
+            "title": "LEDs & Pflanzenbeleuchtung",
+            "copy": "Leuchtmittel, Leuchten und Lichtlösungen für einzelne Pflanzen, Regale und komplette Setups.",
+            "cta_label": "Lichtlösungen entdecken",
+            "fallback_link": "shopify://collections/interieur-solutions",
+            "fallback_title": "LEDs & Pflanzenbeleuchtung",
             "fallback_copy": ""
           }
         }
       },
       "block_order": [
-        "substrate",
-        "interieur",
+        "ready_mix",
+        "components",
         "planters",
-        "plants",
-        "grow",
-        "sets",
-        "care"
+        "lighting"
       ],
       "settings": {
-        "eyebrow": "Das neue LEAF Sortiment",
-        "heading": "Von Wurzelraum bis Pflanzenlicht",
-        "intro": "<p>Das Sortiment ist gewachsen: individuelle Substrate bleiben der Kern, ergänzt um Pflanzenlicht, Gefäße, Zimmerpflanzen, Anzucht, Sets und Pflege. Jede Produktwelt führt direkt zu passenden Lösungen statt zu einer langen Produktliste.</p>",
+        "eyebrow": "Vier Produktwelten",
+        "heading": "Finde direkt den Bereich, den du brauchst",
+        "intro": "<p>Fertige Mischungen, einzelne Substratbestandteile, Pflanzgefäße und Pflanzenlicht sind die vier Kernbereiche von LEAFerservice. Jeder Einstieg führt direkt zu den passenden Produkten – ohne unnötige Zwischenebenen.</p>",
         "filter_label": "Sortiment filtern",
-        "filter_all": "Alles",
-        "filter_substrate": "Substrat & Wurzelraum",
-        "filter_interieur": "Licht & Interieur",
+        "filter_all": "Alle vier",
+        "filter_substrate": "Substrate",
+        "filter_interieur": "LEDs & Licht",
         "filter_grow": "Anzucht & Aussaat",
-        "filter_equipment": "Gefäße & Pflege",
+        "filter_equipment": "Pflanzgefäße",
         "result_prefix": "Sichtbar:",
         "result_suffix": "Bereiche",
         "product_label": "Produkte",
         "card_cta": "Entdecken",
         "empty_label": "Für diesen Filter sind aktuell keine Bereiche hinterlegt.",
-        "all_label": "Alle Produktwelten ansehen",
+        "all_label": "Alle Produkte ansehen",
         "all_link": "shopify://collections/all",
         "filter_bundle": "Sets & Bundles"
       }
