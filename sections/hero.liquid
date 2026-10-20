@@ -38,7 +38,7 @@
           <sup class="hero__brand-tm" aria-hidden="true">™</sup>
         </div>
       {% endif %}
-      {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape }}</p>{% endif %}
+      {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape_once }}</p>{% endif %}
       <h1 id="HeroHeading-{{ section.id }}">{{ hero_heading }}</h1>
       {% if hero_text != blank %}<div class="hero__text rte">{{ hero_text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
       {% if request.page_type == 'index' %}

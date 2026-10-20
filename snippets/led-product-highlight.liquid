@@ -35,6 +35,7 @@ Renders a plant light as a full-width product highlight.
   assign search_blob = search_blob | downcase | strip_newlines
 %}
 {% capture product_format %}{% render 'led-product-format', product: product %}{% endcapture %}
+{% assign product_format = product_format | strip %}
 {% assign format_key = 'led_highlights.format_' | append: product_format %}
 <article class="led-highlight" id="{{ product_anchor }}" aria-labelledby="{{ product_anchor }}-title" data-led-card data-led-format="{{ product_format }}" data-search="{{ search_blob | escape }}" data-watts="{{ watts }}">
   <a class="led-highlight__media" href="{{ product.url }}" aria-label="{{ product.title | escape }}">

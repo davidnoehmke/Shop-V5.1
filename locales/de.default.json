@@ -120,7 +120,7 @@
       "label": "Produktvorteile"
     },
     "availability": {
-      "available": "Auf Lager · versandbereit",
+      "available": "Bestellbar",
       "unavailable": "Diese Variante ist derzeit nicht verfügbar.",
       "unavailable_short": "Nicht verfügbar",
       "invalid_combination": "Kombination nicht verfügbar",

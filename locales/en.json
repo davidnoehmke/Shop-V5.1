@@ -120,7 +120,7 @@
       "label": "Product benefits"
     },
     "availability": {
-      "available": "In stock · ready to ship",
+      "available": "Available to order",
       "unavailable": "This variant is currently unavailable.",
       "unavailable_short": "Unavailable",
       "invalid_combination": "Combination unavailable",
