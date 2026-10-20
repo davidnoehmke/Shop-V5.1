@@ -193,7 +193,7 @@
           {% if card_title != blank %}
             <article class="home-journey__card{{ featured_class }}" role="listitem" data-journey-card data-category="{{ card_category | escape }}" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 70 }}ms" {{ block.shopify_attributes }}>
               {% if card_image != blank %}
-                <a class="home-journey__media" href="{{ destination }}" aria-label="{{ card_title | escape }}">
+                <a class="home-journey__media" href="{{ destination }}" aria-label="{{ card_title | escape_once }}">
                   {{ card_image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '360, 600, 900, 1200', sizes: '(min-width: 1180px) 50vw, (min-width: 760px) 50vw, 100vw', alt: card_image_alt }}
                   <span class="home-journey__visual-meta">
                     <span class="home-journey__icon" aria-hidden="true">
@@ -206,15 +206,15 @@
                         {% else %}<svg viewBox="0 0 32 32"><path d="M16 29V14M16 23c-6-.8-10-4.7-10-11 6 0 10 3.8 10 9.6M16 18c5.7-.7 9.7-4.4 10-11-6 0-10 3.7-10 9.4M12 29h8"/></svg>
                       {% endcase %}
                     </span>
-                    {% if card_badge != blank %}<span class="home-journey__badge">{{ card_badge | escape }}</span>{% endif %}
+                    {% if card_badge != blank %}<span class="home-journey__badge">{{ card_badge | escape_once }}</span>{% endif %}
                   </span>
                 </a>
               {% endif %}
 
               <div class="home-journey__body">
-                {% if card_eyebrow != blank %}<p class="home-journey__eyebrow">{{ card_eyebrow | escape }}</p>{% endif %}
-                <h3><a href="{{ destination }}">{{ card_title | escape }}</a></h3>
-                {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape }}</p>{% endif %}
+                {% if card_eyebrow != blank %}<p class="home-journey__eyebrow">{{ card_eyebrow | escape_once }}</p>{% endif %}
+                <h3><a href="{{ destination }}">{{ card_title | escape_once }}</a></h3>
+                {% if card_copy != blank %}<p>{{ card_copy | strip_html | truncatewords: 22 | escape_once }}</p>{% endif %}
                 {% if selected_collection != blank %}<span class="home-journey__count">{{ selected_collection.products_count }} {{ 'home.worlds.products' | t }}</span>{% endif %}
                 {% if spotlight_product != blank and spotlight_variant != blank %}
                   <a class="home-journey__spotlight" href="{{ spotlight_product.url }}">
@@ -246,7 +246,7 @@
                   {% endcase %}
                 {% endif %}
 
-                <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape }} <span aria-hidden="true">→</span></a>
+                <a class="button button--secondary home-journey__link" href="{{ destination }}">{{ card_cta | escape_once }} <span aria-hidden="true">→</span></a>
               </div>
             </article>
           {% endif %}

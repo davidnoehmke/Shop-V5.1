@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('node:fs');
+const {previewReference, previewUrl, fetchStorefrontPage} = require('./theme-preview.cjs');
 const origin = 'https://leaferservice.com';
 const decode = value => value.replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
 function route(href, base = origin) {
@@ -12,13 +13,18 @@ function route(href, base = origin) {
 function links(html, base) {
   return [...new Set([...html.matchAll(/<a\b[^>]*\bhref\s*=\s*["']([^"']+)["']/gi)].map(m => route(m[1], base)).filter(Boolean))];
 }
-function findings(path, status, finalUrl, html) {
+function findings(path, status, finalUrl, html, expectedThemeId = null) {
   const issues = []; const final = new URL(finalUrl).pathname;
   if (status !== 200) issues.push(`HTTP ${status}`);
   if (!['/', '/en', '/en/'].includes(path) && ['/', '/en', '/en/'].includes(final)) issues.push('Resource redirected to homepage');
   if (path.startsWith('/en/') && !final.startsWith('/en/') && final !== '/en') issues.push('English link lost locale');
   const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
   if (/Liquid (?:error|syntax error)|Translation missing:/i.test(visible)) issues.push('Rendering error');
+  if (expectedThemeId) {
+    let theme;
+    try { theme = JSON.parse(html.match(/Shopify\.theme\s*=\s*(\{[^;]*\});/)?.[1] || '{}'); } catch { theme = {}; }
+    if (String(theme.id) !== String(expectedThemeId)) issues.push('Expected preview theme was not rendered');
+  }
   return issues;
 }
 async function get(url) {
@@ -26,9 +32,9 @@ async function get(url) {
   for (let attempt = 0; attempt < 5; attempt++) {
     await new Promise(resolve => setTimeout(resolve, 1000));
     try {
-      const r = await fetch(url, {signal: AbortSignal.timeout(25000), headers: {'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}}); const html = await r.text();
+      const r = await fetchStorefrontPage(url, {signal: AbortSignal.timeout(25000), headers: {'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}}); const html = r.html;
       if ((r.status === 429 || r.status >= 500) && attempt < 4) {
-        const header = r.headers.get('retry-after');
+        const header = r.retryAfter;
         const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
         if (seconds > 60) return {status:r.status, url:r.url, html};
         await new Promise(resolve => setTimeout(resolve, Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000)));
@@ -41,6 +47,8 @@ async function get(url) {
   throw error;
 }
 async function main() {
+  const preview = process.env.GITHUB_EVENT_PATH ? previewReference(JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))) : null;
+  console.log(preview ? `Checking verified theme preview ${preview.themeId} for ${preview.sha}` : 'Checking public production storefront');
   const todo = new Set(['/', '/en/', '/cart', '/en/cart', '/search', '/en/search']);
   const sitemap = await get(`${origin}/sitemap.xml`);
   if (sitemap.status !== 200) throw new Error('Sitemap unavailable');
@@ -57,15 +65,15 @@ async function main() {
     batch.forEach(p => seen.add(p));
     await Promise.all(batch.map(async path => {
       try {
-        const r = await get(new URL(path, origin));
-        results.push({path, status:r.status, final:new URL(r.url).pathname, issues:findings(path,r.status,r.url,r.html)});
+        const r = await get(previewUrl(new URL(path, origin), preview));
+        results.push({path, status:r.status, final:new URL(r.url).pathname, issues:findings(path,r.status,r.url,r.html,preview?.themeId)});
         if (r.status === 200) for (const target of links(r.html,r.url)) { todo.add(target); if (!sources.has(target)) sources.set(target,new Set()); sources.get(target).add(path); }
       } catch (e) { results.push({path,status:0,issues:[e.message]}); }
     }));
     if (seen.size % 50 === 0) console.log(`Verified ${seen.size} public routes`);
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
-  const report = {checked:results.length,failures,results};
+  const report = {mode: preview ? 'preview' : 'production', preview, checked:results.length,failures,results};
   fs.writeFileSync(process.env.LINK_REPORT || '/tmp/leaf-live-links.json',JSON.stringify(report,null,2));
   console.log(JSON.stringify({checked:results.length,failures},null,2));
   if (failures.length) process.exitCode = 1;

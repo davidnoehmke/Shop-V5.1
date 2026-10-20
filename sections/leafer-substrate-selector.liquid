@@ -206,9 +206,9 @@
                         {% if option_value == selected_profile %}checked{% endif %}
                       >
                       <label for="{{ profile_id }}">
-                        {% if profile_badge != blank %}<small>{{ profile_badge | escape }}</small>{% endif %}
-                        <strong>{{ profile_title | escape }}</strong>
-                        {% if profile_description != blank %}<span>{{ profile_description | escape }}</span>{% endif %}
+                        {% if profile_badge != blank %}<small>{{ profile_badge | escape_once }}</small>{% endif %}
+                        <strong>{{ profile_title | escape_once }}</strong>
+                        {% if profile_description != blank %}<span>{{ profile_description | escape_once }}</span>{% endif %}
                       </label>
                     </div>
                   {% endfor %}

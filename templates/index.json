@@ -115,7 +115,7 @@
         "lighting": {
           "type": "collection",
           "settings": {
-            "collection": "interieur-solutions",
+            "collection": "pflanzenbeleuchtung",
             "category": "interieur",
             "image": "",
             "eyebrow": "Pflanzenlicht",
@@ -123,7 +123,7 @@
             "title": "LEDs & Pflanzenbeleuchtung",
             "copy": "Leuchtmittel, Leuchten und Lichtlösungen für einzelne Pflanzen, Regale und komplette Setups.",
             "cta_label": "Lichtlösungen entdecken",
-            "fallback_link": "shopify://collections/interieur-solutions",
+            "fallback_link": "shopify://collections/pflanzenbeleuchtung",
             "fallback_title": "LEDs & Pflanzenbeleuchtung",
             "fallback_copy": ""
           }
