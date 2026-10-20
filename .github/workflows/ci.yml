@@ -44,6 +44,9 @@ jobs:
           while IFS= read -r -d '' file; do
             jq empty "$file"
           done < <(find automation -type f -name '*.json' -print0)
+      - name: Validate bundle-only pilot invariants
+        run: node automation/codex/validate-bundle-only.cjs
+
       - name: Validate agent contract
         run: |
           jq -e '.ssot == "supabase"' automation/content-agent/agent-contract.json
