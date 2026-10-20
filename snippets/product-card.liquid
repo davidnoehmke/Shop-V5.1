@@ -44,15 +44,13 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   endif
 %}
 
-<article class="product-card{% if compact %} product-card--compact{% endif %}{% if can_quick_add %} product-card--quick-add{% endif %}">
+<article class="product-card{% if compact %} product-card--compact{% endif %}{% if can_quick_add %} product-card--quick-add{% endif %}{% if product.featured_image == blank %} product-card--text-only{% endif %}">
   <a class="product-card__link" href="{{ product.url }}">
-    <div class="product-card__media">
-      {% if product.featured_image != blank %}
+    {% if product.featured_image != blank %}
+      <div class="product-card__media">
         {{ product.featured_image | image_url: width: 900 | image_tag: widths: '240, 360, 480, 640, 800, 900', sizes: '(min-width: 901px) 23vw, 46vw', loading: 'lazy', alt: card_image_alt }}
-      {% else %}
-        {{ 'product-1' | placeholder_svg_tag }}
-      {% endif %}
-    </div>
+      </div>
+    {% endif %}
 
     <div class="product-card__copy">
       {% if product.tags contains 'Bestseller' or product.type == 'Spezialmischung' %}

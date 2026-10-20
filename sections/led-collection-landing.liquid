@@ -59,6 +59,13 @@
       <p>{{ 'led_collection.finder_intro' | t }}</p>
     </header>
 
+    <div class="led-hub__formats" role="group" aria-label="{{ 'led_highlights.format_label' | t | escape }}" data-led-formats hidden>
+      {% assign format_keys = 'all,bulb,fixture,set,other' | split: ',' %}
+      {% for format in format_keys %}
+        {% assign format_label = 'led_highlights.format_' | append: format %}
+        <button type="button" data-led-format-filter="{{ format }}" aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ format_label | t }}</button>
+      {% endfor %}
+    </div>
     <div class="led-hub__choices" role="group" aria-label="{{ 'led_collection.finder_aria' | t }}">
       {% assign filter_keys = 'all,single,e27,shelf,large,winter' | split: ',' %}
       {% for filter_key in filter_keys %}
@@ -70,6 +77,7 @@
       {% endfor %}
     </div>
 
+    <p class="led-hub__count" data-led-count role="status" aria-live="polite" data-template="{{ 'led_highlights.result_count' | t | escape }}"></p>
     <nav class="led-hub__jump" aria-label="{{ 'led_highlights.jump' | t | escape }}">
       {% for product in collection.products %}
         <a href="#LedProduct-{{ section.id }}-{{ product.id }}" data-led-jump="LedProduct-{{ section.id }}-{{ product.id }}">{{ product.metafields.lighting.model.value | default: product.title | escape }}</a>
@@ -210,47 +218,7 @@
   </section>
 </section>
 
-<script>
-(() => {
-  const root = document.querySelector('[data-led-hub]');
-  if (!root) return;
-  const buttons = [...root.querySelectorAll('[data-led-filter]')];
-  const cards = [...root.querySelectorAll('[data-led-card]')];
-  const empty = root.querySelector('[data-led-empty]');
-  const matches = (card, filter) => {
-    if (filter === 'all') return true;
-    const text = (card.dataset.search || '').toLowerCase();
-    const watts = Number(card.dataset.watts || 0);
-    if (filter === 'single') return /einzel|topfpflanze|zimmerpflanze|solitär|sunlite/.test(text);
-    if (filter === 'e27') return text.includes('e27');
-    if (filter === 'shelf') return /regal|t8|röhre|leiste|linear|60cm|120cm/.test(text);
-    if (filter === 'large') return watts >= 25 || /große|gross|wall|floris|150w|pflanzenwand/.test(text);
-    if (filter === 'winter') return /überwinter|winter|mediterran|zitrus/.test(text);
-    return true;
-  };
-  const apply = (filter) => {
-    let visible = 0;
-    cards.forEach((card) => {
-      const matchesFilter = matches(card, filter);
-      const show = matchesFilter;
-      card.hidden = !show;
-      if (show) visible += 1;
-    });
-    buttons.forEach((button) => {
-      const active = button.dataset.ledFilter === filter;
-      button.classList.toggle('is-active', active);
-      button.setAttribute('aria-pressed', String(active));
-    });
-    if (empty) empty.hidden = visible !== 0;
-  };
-  buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.ledFilter || 'all')));
-  root.querySelectorAll('[data-led-jump]').forEach((link) => link.addEventListener('click', () => apply('all')));
-  const hashTarget = document.getElementById(window.location.hash.slice(1));
-  if (hashTarget?.matches('[data-led-card]')) apply('all');
-  const requested = new URLSearchParams(window.location.search).get('led_use');
-  if (!hashTarget && ['single', 'e27', 'shelf', 'large', 'winter'].includes(requested)) apply(requested);
-})();
-</script>
+<script src="{{ 'leaf-led-filters.js' | asset_url }}" defer="defer"></script>
 {% endpaginate %}
 {% endif %}
 
@@ -313,6 +281,15 @@
 @media(max-width:1080px){.led-hub__choices{grid-template-columns:repeat(3,1fr)}.led-hub__decision-grid,.led-hub__tips ol{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:900px){.led-hub__hero{grid-template-columns:1fr}.led-hub__knowledge-list{grid-template-columns:1fr}}
 @media(max-width:749px){.led-hub__hero{gap:1rem;padding-top:.6rem}.led-hub h1{font-size:clamp(1.65rem,7vw,2.1rem)}.led-hub__info{display:block}.led-hub__signals{grid-template-columns:1fr}.led-hub__hero-media{min-height:290px}.led-hub__choices{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.25rem}.led-hub__choice{min-width:150px;scroll-snap-align:start}.led-hub__decision-grid,.led-hub__tips ol{grid-template-columns:1fr}.led-hub__knowledge-list p{padding-left:.85rem}.led-hub__actions .button{flex:1 1 100%}}
+.led-hub__formats { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1rem; }
+.led-hub__formats[hidden], .led-hub__jump a[hidden] { display:none; }
+.led-hub__formats button { min-height:48px; padding:.65rem 1rem; font:inherit; font-weight:600; color:var(--text); background:var(--surface); border:1px solid var(--border); cursor:pointer; }
+.led-hub__formats button[aria-pressed="true"] { color:#fff; background:#173f2f; border-color:#173f2f; }
+.led-hub__formats button:focus-visible { outline:2px solid #173f2f; outline-offset:3px; }
+.led-hub__count { margin:.75rem 0; font-size:.875rem; }
+.led-highlight__format { display:inline-block; margin:0 0 .7rem; padding:.3rem .6rem; background:#e4eddf; color:#173f2f; font-size:.875rem; font-weight:700; }
+.led-highlight__scope { margin:.5rem 0; font-size:.9375rem; line-height:1.5; }
+.led-highlight__scope a { color:inherit; text-underline-offset:.15em; }
 {% endstylesheet %}
 
 {% schema %}
