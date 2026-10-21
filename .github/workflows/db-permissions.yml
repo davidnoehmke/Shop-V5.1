@@ -1,0 +1,34 @@
+name: Supabase explicit permission regression
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/**'
+      - 'automation/db-permissions/**'
+      - '.github/workflows/db-permissions.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'supabase/**'
+      - 'automation/db-permissions/**'
+      - '.github/workflows/db-permissions.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  permissions:
+    name: Strict-default database permission tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+      - name: Install locked test-only PostgreSQL runtime
+        run: npm ci --prefix automation/db-permissions --ignore-scripts --no-audit --no-fund
+      - name: Replay permission DDL with no automatic API grants
+        run: npm test --prefix automation/db-permissions
