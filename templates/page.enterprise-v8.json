@@ -1,0 +1,11 @@
+{
+  "sections": {
+    "main": {
+      "type": "leaf-enterprise-v8",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
