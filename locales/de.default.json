@@ -30,6 +30,8 @@
     }
   },
   "header": {
+    "language": "Sprache",
+    "change_language": "OK",
     "home": "Startseite",
     "search": "Suche",
     "account": "Kundenkonto",
@@ -1044,6 +1046,7 @@
     }
   },
   "live_labels": {
+    "about": "Über uns",
     "solutions": "Lösung finden",
     "substrate_plan": "Substrat planen",
     "interior_plan": "Interieur planen",

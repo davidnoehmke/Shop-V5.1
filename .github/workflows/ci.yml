@@ -29,6 +29,13 @@ jobs:
           node-version: '24'
       - name: Verify public sitemap and internal links before merge
         run: node automation/codex/live-links.cjs
+      - name: Preserve DE/EN link report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-de-en-links
+          path: /tmp/leaf-live-links.json
+          if-no-files-found: warn
 
   repository-validation:
     name: Repository validation

@@ -30,6 +30,8 @@
     }
   },
   "header": {
+    "language": "Language",
+    "change_language": "Go",
     "home": "Home",
     "search": "Search",
     "account": "Account",
@@ -1044,6 +1046,7 @@
     "read": "Plan your green corner: lighting, pots, growing media and plants explained"
   },
   "live_labels": {
+    "about": "About us",
     "solutions": "Find a solution",
     "substrate_plan": "Plan substrate",
     "interior_plan": "Plan interiors",

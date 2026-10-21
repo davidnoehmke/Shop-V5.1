@@ -21,6 +21,48 @@ function findings(path, status, finalUrl, html, expectedThemeId = null) {
   if (path.startsWith('/en/') && !final.startsWith('/en/') && final !== '/en') issues.push('English link lost locale');
   const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
   if (/Liquid (?:error|syntax error)|Translation missing:/i.test(visible)) issues.push('Rendering error');
+  return issues;
+}
+function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve => setTimeout(resolve, ms)), interval = 1000} = {}) {
+  let queue = Promise.resolve();
+  const request = (url) => {
+    const next = queue.then(async () => {
+      await pause(interval);
+      return fetchImpl(url, {redirect:'manual', signal:AbortSignal.timeout(25000), headers:{'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}});
+    });
+    queue = next.then(() => undefined, () => undefined);
+    return next;
+  };
+  return async function get(url) {
+  let error;
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      let target = new URL(url), r;
+      for (let redirects = 0; ; redirects++) {
+        r = await request(target);
+        if (![301,302,303,307,308].includes(r.status)) break;
+        const location = r.headers.get('location');
+        await r.text();
+        if (!location || redirects >= 10) throw new Error('Invalid or excessive redirects');
+        target = new URL(location, target);
+        if (target.origin !== origin) throw new Error('External redirect');
+      }
+      const html = await r.text();
+      if ((r.status === 429 || r.status >= 500) && attempt < 4) {
+        const header = r.headers.get('retry-after');
+        const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
+        if (seconds > 60) return {status:r.status, url:target.href, html};
+        await pause(Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000));
+        continue;
+      }
+      return {status:r.status, url:target.href, html};
+    }
+    catch (e) { error = e; }
+  }
+  throw error;
+  };
+}
+const get = createRequester();
   if (expectedThemeId) {
     let theme;
     try { theme = JSON.parse(html.match(/Shopify\.theme\s*=\s*(\{[^;]*\});/)?.[1] || '{}'); } catch { theme = {}; }
@@ -59,10 +101,11 @@ async function main() {
     if (!complete) break;
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
+  const report = {checked:results.length,complete:!results.some(r=>r.status===0||r.status===429||r.status>=500),failures,results};
   const report = {mode: preview ? 'preview' : 'production', preview, complete, checked:results.length,failures,results};
   fs.writeFileSync(process.env.LINK_REPORT || '/tmp/leaf-live-links.json',JSON.stringify(report,null,2));
   console.log(JSON.stringify({complete,checked:results.length,failures},null,2));
   if (!complete || failures.length) process.exitCode = 1;
 }
-module.exports = {route,links,findings};
+module.exports = {route,links,findings,createRequester};
 if (require.main === module) main().catch(e => { console.error(e.message); process.exitCode=1; });

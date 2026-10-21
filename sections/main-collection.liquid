@@ -2,6 +2,9 @@
   assign sort_by = collection.sort_by | default: collection.default_sort_by
   assign hero_intro = collection.metafields.leafer.intro.value | strip_html | strip
   assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
+  if request.locale.iso_code == 'en'
+    assign hero_intro = collection.description | strip_html | strip | truncatewords: 38
+  endif
   if hero_intro == blank
     assign hero_intro = collection.description | strip_html | strip | truncatewords: 38
   endif
