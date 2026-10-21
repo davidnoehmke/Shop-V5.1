@@ -3,6 +3,7 @@
   assign intro = product.metafields.leafer.intro.value
   assign custom_use_case = product.metafields.custom.use_case.value
   assign knowledge_atoms = product.metafields.leafer.knowledge_atoms.value
+  assign ingredient_info = product.metafields.leafer.ingredient_info.value
   assign notice_field = product.metafields.leaferservice.hinweis
   if notice_field.value == blank
     assign notice_field = product.metafields.leafer.warning
@@ -48,7 +49,13 @@
         assign fact = product.metafields.leafer.difficulty
       endif
     -%}
-    {%- if fact.value != blank or fact.type == 'boolean' -%}
+    {%- liquid
+      assign show_fact = false
+      if fact.value != blank or fact.type == 'boolean'
+        assign show_fact = true
+      endif
+    -%}
+    {%- if show_fact -%}
       {%- liquid
         assign fact_icon = 'info'
         if field_namespace == 'lighting'
@@ -94,6 +101,9 @@
       {% if show_intro %}<p class="product-seo-details__intro">{{ intro | escape | newline_to_br }}</p>{% endif %}
     </header>
     {% if facts_markup != blank %}<div class="product-seo-details__facts"><h3>{{ facts_heading }}</h3><dl>{{ facts_markup }}</dl></div>{% endif %}
+    {% if ingredient_info != blank %}
+      {% render 'leaf-ingredient-info', items: ingredient_info %}
+    {% endif %}
     {% if knowledge_atoms != blank %}
       <div class="product-seo-details__knowledge">
         <p class="product-seo-details__eyebrow">{{ 'product.knowledge.eyebrow' | t }}</p>
@@ -118,6 +128,7 @@
         <div class="product-seo-details__faq-list">{{ faq_markup }}</div>
       </div>
     {% endif %}
+    {% render 'leaf-product-pathways', product: product, ingredient_info: ingredient_info %}
   </section>
 {% endif %}
 
@@ -125,7 +136,7 @@
   .product-seo-details { margin-block: clamp(2.5rem, 8vw, 6rem); padding-block: clamp(2.25rem, 7vw, 5rem); border-block: 1px solid var(--border); }
   .product-seo-details__header { max-width: 760px; }
   .product-seo-details__eyebrow { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-  .product-seo-details h2 { margin: 0; max-width: 18ch; font-size: clamp(2rem, 9vw, 4.7rem); line-height: 1; letter-spacing: -.045em; text-wrap: balance; }
+  .product-seo-details h2 { margin: 0; max-width: 18ch; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
   .product-seo-details__intro { max-width: 64ch; margin: 1rem 0 0; color: var(--muted); font-size: clamp(1rem, 4.2vw, 1.2rem); line-height: 1.65; }
   .product-seo-details__description { max-width: 900px; margin-top: clamp(2rem, 7vw, 4rem); border-block: 1px solid var(--border); }
   .product-seo-details__description summary { min-height: 68px; display: grid; grid-template-columns: 36px minmax(0,1fr) 32px; gap: .8rem; align-items: center; cursor: pointer; list-style: none; color: var(--text); font-weight: 800; }
@@ -139,7 +150,7 @@
   .product-seo-details__facts, .product-seo-details__knowledge, .product-seo-details__faq { margin-top: clamp(2.4rem, 8vw, 4.5rem); }
   .product-seo-details__knowledge { max-width: 980px; }
   .product-seo-details__knowledge > .leaf-atoms { margin-top: 1rem; }
-  .product-seo-details h3 { margin: 0 0 1rem; font-size: clamp(1.45rem, 6vw, 2.2rem); line-height: 1.1; letter-spacing: -.025em; }
+  .product-seo-details h3 { margin: 0 0 1rem; font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.2; letter-spacing: -.025em; }
   .product-seo-details__facts dl { margin: 0; display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border); }
   .product-seo-details__facts dl > div { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: .7rem; align-items: start; padding: .95rem .15rem; border-bottom: 1px solid var(--border); }
   .product-seo-details__fact-icon { width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); }

@@ -1,0 +1,81 @@
+name: Freeze verified storefront
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: leaf-freeze-main
+  cancel-in-progress: false
+
+jobs:
+  freeze:
+    if: ${{ false }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Require current main
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          current="$(git rev-parse origin/main)"
+          test "$current" = "$VERIFIED_SHA"
+
+      - name: Verify live storefront after native Shopify sync
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          critical_routes=(
+            "/"
+            "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+            "/collections/interieur-solutions"
+            "/collections/zimmerpflanzen-1"
+            "/collections/starter-sets-mehrerer-arten"
+            "/collections/anzucht-aussaat"
+            "/collections/pflanzgefasse"
+            "/collections/pflanzenpflege-werkzeuge"
+            "/pages/individuelles-substrat"
+          )
+          for route in "${critical_routes[@]}"; do
+            curl -fsSL -o /dev/null -H 'Cache-Control: no-cache' "https://leaferservice.com${route}?route_probe=${VERIFIED_SHA}"
+          done
+          ok=0
+          for attempt in $(seq 1 12); do
+            probe="${VERIFIED_SHA}-${attempt}"
+            if curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/?freeze_probe=${probe}" -o /tmp/home.html               && curl -fsSL -H 'Cache-Control: no-cache' "https://leaferservice.com/collections/interieur-solutions?freeze_probe=${probe}" -o /tmp/collection.html               && ! grep -Fq 'Liquid error' /tmp/home.html               && ! grep -Fq 'Liquid error' /tmp/collection.html               && ! grep -Fq 'Translation missing' /tmp/home.html               && grep -Fq 'Ein Pflanzenprojekt. Ein Weg zur passenden Lösung.' /tmp/home.html               && grep -Fq '<leaf-guided-advisor' /tmp/home.html               && grep -Fq '<leaf-guided-advisor' /tmp/collection.html               && grep -Fq 'data-leaf-shop-assistant' /tmp/home.html               && curl -fsSL -X POST                 -H 'Origin: https://leaferservice.com'                 -H 'Content-Type: application/json'                 --data '{"message":"Was ist LEAFerservice?","locale":"de","path":"/"}'                 'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant'                 | jq -e '.answer | type == "string" and length > 20' >/dev/null; then
+              ok=1
+              break
+            fi
+            sleep 10
+          done
+          test "$ok" -eq 1
+
+      - name: Freeze immutable stable tag
+        shell: bash
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          set -euo pipefail
+          short="$(printf '%s' "$VERIFIED_SHA" | cut -c1-12)"
+          tag="freeze/verified-${short}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${tag}" >/dev/null 2>&1; then
+            echo "Stable tag already exists: ${tag}"
+            exit 0
+          fi
+          git config user.name "LEAF Freeze Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git tag -a "$tag" "$VERIFIED_SHA" -m "CI-green and live-smoke-verified storefront: $VERIFIED_SHA"
+          git push origin "refs/tags/$tag"
+          git push --force origin "$VERIFIED_SHA:refs/heads/freeze/best-verified"

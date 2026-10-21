@@ -14,53 +14,10 @@
         </summary>
         <nav id="MobileMenu-{{ section.id }}" class="site-header__mobile-panel" data-mobile-menu-panel>
           <ul class="site-header__mobile-list">
-            {% for link in section.settings.menu.links %}
-              <li>
-                {% if link.links != blank %}
-                  <details class="site-header__mobile-disclosure">
-                    <summary>
-                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></span>
-                      <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
-                    </summary>
-                    <div class="site-header__mobile-submenu">
-                      <a class="site-header__mobile-overview" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>
-                        <span>{{ link.title }}</span>
-                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
-                      </a>
-                      <ul>
-                        {% for child_link in link.links %}
-                          <li>
-                            {% if child_link.links != blank %}
-                              <details class="site-header__mobile-disclosure site-header__mobile-disclosure--nested">
-                                <summary>
-                                  <span>{{ child_link.title }}</span>
-                                  <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
-                                </summary>
-                                <div class="site-header__mobile-submenu site-header__mobile-submenu--nested">
-                                  <a class="site-header__mobile-overview" href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>
-                                    <span>{{ child_link.title }}</span>
-                                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
-                                  </a>
-                                  <ul>
-                                    {% for grandchild_link in child_link.links %}
-                                      <li><a href="{{ grandchild_link.url }}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{{ grandchild_link.title }}</a></li>
-                                    {% endfor %}
-                                  </ul>
-                                </div>
-                              </details>
-                            {% else %}
-                              <a href="{{ child_link.url }}"{% if child_link.current %} aria-current="page"{% endif %}>{{ child_link.title }}</a>
-                            {% endif %}
-                          </li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  </details>
-                {% else %}
-                  <a class="site-header__mobile-link" href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}><span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></span></a>
-                {% endif %}
-              </li>
-            {% endfor %}
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substrate & Bestandteile{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}All substrates{% else %}Gesamte Substratwelt{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Custom mix{% else %}Individuell mischen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substratbestandteile{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Plant pots & systems{% else %}Pflanzgefäße & Pflanzsysteme{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenpflege-werkzeuge' %}">{% if request.locale.iso_code == 'en' %}Plant care & accessories{% else %}Pflanzenpflege & Zubehör{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/anzucht-aussaat' %}">{% if request.locale.iso_code == 'en' %}Propagation & sowing{% else %}Anzucht & Aussaat{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenzubehor-rankhilfen' %}">{% if request.locale.iso_code == 'en' %}Plant supports{% else %}Rankhilfen{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlampen{% endif %}</a></li>{% if collections['pflanzenlicht-zubehor-erganzungen'].id != blank %}<li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenlicht-zubehor-erganzungen' %}">{% if request.locale.iso_code == 'en' %}Lighting accessories{% else %}Licht-Zubehör & Ergänzungen{% endif %}</a></li>{% endif %}<li><a href="{% render 'leaf-localized-url', url: '/collections/starter-sets-mehrerer-arten' %}">{% if request.locale.iso_code == 'en' %}Sets & bundles{% else %}Sets & Bundles{% endif %}</a></li></ul></div></details></li>
           </ul>
         </nav>
       </details>
@@ -70,14 +27,19 @@
     </a>
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
-        {% for link in section.settings.menu.links %}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{{ link.title }}</span></a>{% endfor %}
+        <ul class="site-header__desktop-list">
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substrate & Bestandteile{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}All substrates{% else %}Gesamte Substratwelt{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Custom mix{% else %}Individuell mischen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substratbestandteile{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Plant pots & systems{% else %}Pflanzgefäße & Pflanzsysteme{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenpflege-werkzeuge' %}">{% if request.locale.iso_code == 'en' %}Plant care & accessories{% else %}Pflanzenpflege & Zubehör{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/anzucht-aussaat' %}">{% if request.locale.iso_code == 'en' %}Propagation & sowing{% else %}Anzucht & Aussaat{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenzubehor-rankhilfen' %}">{% if request.locale.iso_code == 'en' %}Plant supports{% else %}Rankhilfen{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlampen{% endif %}</a></li>{% if collections['pflanzenlicht-zubehor-erganzungen'].id != blank %}<li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenlicht-zubehor-erganzungen' %}">{% if request.locale.iso_code == 'en' %}Lighting accessories{% else %}Licht-Zubehör & Ergänzungen{% endif %}</a></li>{% endif %}<li><a href="{% render 'leaf-localized-url', url: '/collections/starter-sets-mehrerer-arten' %}">{% if request.locale.iso_code == 'en' %}Sets & bundles{% else %}Sets & Bundles{% endif %}</a></li></ul></div></details></li>
+          </ul>
       </nav>
     {% endif %}
     <div class="site-header__actions">
-      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search">
+      <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search" data-header-search>
         <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'header.search' | t }}</label>
         <input id="HeaderSearch-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search' | t }}" autocomplete="off">
-        <button type="submit" aria-label="{{ 'header.search' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
+        <button type="submit" aria-label="{{ 'header.search' | t }}" data-search-toggle><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg></button>
       </form>
       <a class="site-header__account site-header__icon-action" href="{{ routes.account_login_url }}" aria-label="{{ 'header.account' | t }}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7.5" r="4"/><path d="M4.5 21c.5-5 3-7.5 7.5-7.5s7 2.5 7.5 7.5"/></svg></a>
       <a class="site-header__cart site-header__icon-action" href="{{ routes.cart_url }}" aria-label="{{ 'header.cart' | t: count: cart.item_count }}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 4h2l2 11.5h11.5l2-8.5H6"/><circle cx="9" cy="20" r="1.2"/><circle cx="17" cy="20" r="1.2"/></svg>{% if cart.item_count > 0 %}<span class="site-header__cart-count">{{ cart.item_count }}</span>{% endif %}</a>
@@ -140,26 +102,75 @@
   .site-header__mobile-panel [aria-current="page"] { color: var(--accent); }
   html.site-header-menu-open, html.site-header-menu-open body { overflow: hidden; overscroll-behavior: none; }
   html.site-header-menu-open body { padding-inline-end: var(--site-header-scrollbar-width, 0px); }
-  @media (min-width: 1200px) {
-    .site-header__inner { min-height: 88px; grid-template-columns: minmax(230px, .72fr) minmax(0, 1.65fr) minmax(290px, .72fr); gap: clamp(1.25rem, 2vw, 2.75rem); }
-    .site-header__brand { width: min(100%, max(var(--logo-width), 210px)); }
-    .site-header__tm { margin-top: .08rem; margin-left: -.24rem; font-size: .94rem; }
-    .site-header__desktop { gap: clamp(1rem, 1.55vw, 1.9rem); }
-    .site-header__desktop a { font-size: .88rem; }
-    .site-header__actions > a { min-height: 46px; padding-inline: .8rem; }
+  .site-header__desktop-list, .site-header__desktop-panel ul { list-style: none; margin: 0; padding: 0; }
+  .site-header__desktop-list { display: flex; flex-wrap: wrap; align-items: center; gap: .15rem 1.25rem; width: 100%; }
+  .site-header__desktop-list > li { min-width: 0; }
+  .site-header__desktop-disclosure > summary { display: flex; align-items: center; gap: .42rem; min-height: 48px; cursor: pointer; list-style: none; font-size: .88rem; font-weight: 680; }
+  .site-header__desktop-disclosure > summary::-webkit-details-marker { display: none; }
+  .site-header__desktop-disclosure .site-header__chevron { width: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+  .site-header__desktop-disclosure[open] > summary .site-header__chevron { transform: rotate(180deg); }
+  .site-header__desktop-panel { position: absolute; z-index: 35; top: 100%; inset-inline: 0; max-height: 68dvh; overflow-y: auto; overscroll-behavior: contain; padding: 1.1rem; border: 1px solid var(--border); border-top: 2px solid var(--accent); background: color-mix(in srgb, var(--background), var(--surface) 18%); box-shadow: var(--shadow-soft); white-space: normal; }
+  .site-header .site-header__desktop-panel a { display: flex; min-height: 46px; padding: .65rem .7rem; font-size: .9rem; overflow-wrap: normal; text-wrap: pretty; }
+  .site-header__desktop-panel a::after { display: none; }
+  .site-header__desktop-overview { justify-content: space-between; margin-bottom: .8rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 55%); background: color-mix(in srgb, var(--accent), transparent 95%); color: var(--accent); font-weight: 820; }
+  .site-header__desktop-panel > ul { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; }
+  .site-header__desktop-panel > ul > li { min-width: 0; border: 1px solid var(--border); background: var(--background); }
+  .site-header__desktop-panel > ul > li > a { min-height: 50px; font-weight: 800; }
+  .site-header__desktop-nested { display: grid; gap: .15rem; padding: 0 .7rem .7rem !important; }
+  .site-header .site-header__desktop-nested a { min-height: 38px; padding: .35rem 0; color: var(--muted); font-size: .78rem; }
+  .site-header .site-header__desktop-nested a:hover, .site-header .site-header__desktop-nested a:focus-visible { color: var(--accent); }
+  .site-header__desktop-disclosure[open] > summary { color: var(--accent); }
+  .site-header__desktop a:focus-visible, .site-header__desktop summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .site-header__desktop [aria-current="page"], .site-header__desktop summary:hover { color: var(--accent); }
+  @media (min-width: 1241px) {
+    .site-header .site-header__inner { grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "brand actions" "nav nav"; gap: 0 2rem; padding-top: .65rem; }
+    .site-header__brand { grid-area: brand; width: max-content; max-width: 100%; white-space: nowrap; min-height: 48px; }
+    .site-header__actions { grid-area: actions; }
+    .site-header__desktop { position: relative; grid-area: nav; min-width: 0; display: block; border-top: 1px solid var(--border); margin-top: .5rem; padding-bottom: .25rem; white-space: normal; }
+    .site-header__desktop-list { gap: .15rem clamp(.9rem, 1.8vw, 1.6rem); }
+    .site-header .site-header__desktop-list > li > a { min-height: 48px; font-size: .86rem; }
+    .site-header__desktop-panel > ul { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   }
-  @media (min-width: 1500px) {
-    .site-header__inner { min-height: 92px; grid-template-columns: minmax(230px, .8fr) minmax(0, 1.65fr) minmax(320px, .85fr); }
-    .site-header__brand { width: min(100%, max(var(--logo-width), 225px)); }
-    .site-header__tm { font-size: 1rem; }
-  }
-  @media (max-width: 1240px) { .site-header__search { width: 44px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { border: 0; } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
-  @media (max-width: 520px) { .site-header__inner { min-height: 66px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 66px)); } }
+  @media (max-width: 1240px) { .site-header__search { width: 48px; min-height:48px; border: 0; } .site-header__search input, .site-header__search label { display: none; } .site-header__search button { width:48px;height:48px;border: 0; } .site-header__search.is-open { position:absolute; z-index:40; inset-inline:0; top:100%; width:auto; min-height:62px; padding:.55rem max(.7rem,calc((100vw - var(--page-width))/2)); display:grid; grid-template-columns:minmax(0,1fr) 50px; border-block:1px solid var(--border); background:var(--background); box-shadow:0 16px 34px rgba(30,45,37,.12); } .site-header__search.is-open input { display:block; height:48px; padding:0 1rem; border:1px solid var(--border); background:var(--surface); font-size:16px; } .site-header__search.is-open button { width:50px;height:48px;border:1px solid var(--border);border-left:0;background:var(--surface); } .site-header__inner { grid-template-columns: 44px minmax(0, 1fr) auto; gap: clamp(.55rem, 2vw, 1.5rem); } .site-header__desktop { display: none; } .site-header__mobile { display: block; justify-self: start; } .site-header__brand { min-width: 0; } .site-header__actions { gap: .1rem; } .site-header__actions > a { width: 44px; min-height: 44px; justify-content: center; padding: 0; border: 0; } .site-header__action-label { display: none; } .site-header__actions svg { width: 24px; } }
+  @media (max-width: 520px) { .site-header { padding-top: env(safe-area-inset-top); } .site-header__inner { min-height: 64px; gap: .35rem; } .site-header__brand { font-size: 1.15rem; } .site-header__wordmark { font-size: 1.15rem; white-space: nowrap; } .site-header__brand > svg { width: 29px; } .site-header__account { display: none !important; } .site-header__actions { gap: .1rem; } .site-header__mobile[open] > .site-header__mobile-panel { height: var(--site-header-menu-height, calc(100dvh - 64px - env(safe-area-inset-top))); padding-bottom:calc(1rem + env(safe-area-inset-bottom)); } }
 {% endstylesheet %}
 
 {% javascript %}
   (() => {
     const desktopBreakpoint = 1240;
+
+    const initDesktopMenu = (header) => {
+      if (header.desktopMenuController) return;
+      const nav = header.querySelector('.site-header__desktop');
+      if (!nav) return;
+      const controller = new AbortController();
+      header.desktopMenuController = controller;
+      const { signal } = controller;
+      const menus = [...nav.querySelectorAll('[data-desktop-menu]')];
+      const closeMenus = (except) => menus.forEach((menu) => {
+        if (menu !== except) menu.open = false;
+      });
+      menus.forEach((menu) => menu.addEventListener('toggle', () => {
+        if (menu.open) closeMenus(menu);
+      }, { signal }));
+      document.addEventListener('pointerdown', (event) => {
+        if (!nav.contains(event.target)) closeMenus();
+      }, { signal });
+      document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Escape') return;
+        const openMenu = menus.find((menu) => menu.open);
+        if (openMenu) {
+          closeMenus();
+          openMenu.querySelector('summary').focus();
+        }
+      }, { signal });
+      nav.addEventListener('focusout', (event) => {
+        if (!nav.contains(event.relatedTarget)) closeMenus();
+      }, { signal });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth <= desktopBreakpoint) closeMenus();
+      }, { signal });
+    };
 
     const initMobileMenu = (header) => {
       if (header.dataset.mobileMenuReady === 'true') return;
@@ -238,8 +249,53 @@
       window.visualViewport?.addEventListener('resize', setPanelHeight, { signal });
     };
 
+    const initMobileSearch = (header) => {
+      if (header.dataset.mobileSearchReady === 'true') return;
+      const form = header.querySelector('[data-header-search]');
+      const input = form?.querySelector('input[type="search"]');
+      const toggle = form?.querySelector('[data-search-toggle]');
+      if (!form || !input || !toggle) return;
+
+      header.dataset.mobileSearchReady = 'true';
+
+      const closeSearch = () => {
+        form.classList.remove('is-open');
+        input.blur();
+      };
+
+      toggle.addEventListener('click', (event) => {
+        if (window.innerWidth > desktopBreakpoint) return;
+        if (!form.classList.contains('is-open')) {
+          event.preventDefault();
+          header.querySelector('[data-mobile-menu]')?.removeAttribute('open');
+          document.documentElement.classList.remove('site-header-menu-open');
+          form.classList.add('is-open');
+          requestAnimationFrame(() => input.focus());
+          return;
+        }
+        if (!input.value.trim()) {
+          event.preventDefault();
+          closeSearch();
+        }
+      });
+
+      document.addEventListener('pointerdown', (event) => {
+        if (form.classList.contains('is-open') && !form.contains(event.target)) closeSearch();
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && form.classList.contains('is-open')) closeSearch();
+      });
+      window.addEventListener('resize', () => {
+        if (window.innerWidth > desktopBreakpoint) closeSearch();
+      });
+    };
+
     const initAllMobileMenus = (root = document) => {
-      root.querySelectorAll('[data-site-header]').forEach(initMobileMenu);
+      root.querySelectorAll('[data-site-header]').forEach((header) => {
+        initDesktopMenu(header);
+        initMobileMenu(header);
+        initMobileSearch(header);
+      });
     };
 
     initAllMobileMenus();
@@ -248,6 +304,7 @@
       const header = event.target.querySelector('[data-site-header]');
       if (!header) return;
       header.mobileMenuController?.abort();
+      header.desktopMenuController?.abort();
       document.documentElement.classList.remove('site-header-menu-open');
       document.documentElement.style.removeProperty('--site-header-scrollbar-width');
     });
@@ -264,3 +321,4 @@
   ]
 }
 {% endschema %}
+

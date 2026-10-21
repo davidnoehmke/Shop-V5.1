@@ -78,6 +78,24 @@
     "component_signature": {
       "type": "leaf-component-signature",
       "settings": {}
+    },
+    "loox_reviews": {
+      "type": "apps",
+      "blocks": {
+        "loox_product_reviews": {
+          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+          "settings": {
+            "only_photos": false,
+            "aggregated": false,
+            "hide_thumbnails": false,
+            "maxwidth": 1280
+          }
+        }
+      },
+      "block_order": [
+        "loox_product_reviews"
+      ],
+      "settings": {}
     }
   },
   "order": [
@@ -87,6 +105,7 @@
     "component_signature",
     "recipe",
     "seo_details",
+    "loox_reviews",
     "cross_sell",
     "trust_master",
     "variant_guide",

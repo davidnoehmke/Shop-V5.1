@@ -26,8 +26,9 @@ Railway, Notion, Google Sheets oder LEAF-OS.
 - `codex/`: Policy-, Prüf- und Delivery-Helfer, die von CI-Tests verwendet werden. Kein eigenständiger Scheduler.
 - `supabase/migrations/`: versionierte Datenbank-/Policy-Änderungen; Supabase bleibt Laufzeit-SSOT.
 
-Die einzige GitHub Action ist `.github/workflows/ci.yml`; sie validiert Repository,
-Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
+Die primäre CI-Action ist `.github/workflows/ci.yml`; zusätzlich markiert
+`.github/workflows/freeze-stable.yml` ausschließlich bereits CI-grüne und live verifizierte Beststände.
+Die CI validiert Repository, Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
 aktiviert keine externe Legacy-Verbindung.
 
 ## Storefront-Freeze
@@ -37,3 +38,13 @@ bereitet standardmäßig nur Produkt- und Blog-Kandidaten vor. SEO-/UX-Änderung
 nur on-demand zulässig, wenn ein verifizierter Fehler, ein belastbares Signal aus
 Search Console/Analytics, eine zwingende technische/rechtliche Anforderung oder eine
 explizite Owner-Freigabe vorliegt.
+
+
+## Verifizierter Beststand
+
+`.github/workflows/freeze-stable.yml` läuft erst nach einem erfolgreichen `LEAF CI`-Push auf
+`main`. Der Workflow wartet auf die native Shopify-Synchronisierung und prüft die reale
+Storefront auf Liquid-Fehler sowie die zentralen Berater-/Assistent-Invarianten. Nur ein bestandener Live-Smoke-Test **und eine erfolgreiche echte Antwort des globalen Shop-Assistenten**
+erzeugen einen unveränderlichen `freeze/verified-<sha>`-Tag. Zusätzlich zeigt der Branch
+`freeze/best-verified` immer auf den zuletzt vollständig verifizierten Stand. Damit bleibt jeder
+bestätigte Beststand reproduzierbar, ohne einen fehlerhaften Merge automatisch als stabil zu deklarieren.

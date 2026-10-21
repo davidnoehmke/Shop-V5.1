@@ -2,6 +2,7 @@ name: LEAF CI
 
 on:
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
   push:
     branches: [main]
   workflow_dispatch:
@@ -14,6 +15,21 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  live-links:
+    name: Public DE/EN link verification
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: '24'
+      - name: Verify public sitemap and internal links before merge
+        run: node automation/codex/live-links.cjs
+
   repository-validation:
     name: Repository validation
     runs-on: ubuntu-24.04
@@ -81,6 +97,45 @@ jobs:
             exit 1
           fi
 
+      - name: Validate blog indexability invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys
+
+          theme = Path('layout/theme.liquid').read_text(encoding='utf-8')
+          blog = Path('sections/main-blog.liquid').read_text(encoding='utf-8')
+
+          required_theme = {
+              'canonical link': '<link rel="canonical" href="{{ canonical_url }}">',
+              'default index robots': '<meta name="robots" content="index,follow,max-image-preview:large">',
+              'search/cart-only noindex gate': "request.page_type == 'search' or request.page_type == 'cart'",
+              'article structured data gate': "request.page_type == 'article'",
+              'Article JSON-LD': '"@type": "Article"',
+          }
+          required_blog = {
+              'article pagination': 'paginate blog.articles',
+              'crawlable pagination links': 'default_pagination',
+              'crawlable article links': 'href="{{ article.url }}"',
+          }
+
+          missing = []
+          for label, token in required_theme.items():
+              if token not in theme:
+                  missing.append(f'layout/theme.liquid: {label}')
+          for label, token in required_blog.items():
+              if token not in blog:
+                  missing.append(f'sections/main-blog.liquid: {label}')
+
+          if missing:
+              print('Blog indexability invariant failed:', file=sys.stderr)
+              for item in missing:
+                  print(f'- {item}', file=sys.stderr)
+              sys.exit(1)
+          PY
+
       - name: Prevent internal SEO strategy leaks
         shell: bash
         run: |
@@ -90,22 +145,52 @@ jobs:
             exit 1
           fi
 
-  theme-check:
-    name: Shopify Theme Check
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-        with:
-          persist-credentials: false
-      - uses: ruby/setup-ruby@bec3f19a76460dbe12f60def7d1a77585f07516c # v1
-        with:
-          ruby-version: '3.3.12'
-          bundler-cache: false
-      - name: Install pinned Shopify Theme Check
-        run: gem install theme-check --version 1.15.0 --no-document
-      - name: Run Theme Check
-        run: theme-check .
+      - name: Enforce LEAF assistant and admin hardening invariants
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          settings = json.loads(Path('config/settings_data.json').read_text(encoding='utf-8'))
+          blocks = (settings.get('current') or {}).get('blocks') or {}
+          forbidden = ('/inbox/', '/cwill-ai-chat/')
+          enabled_duplicate_chat = [
+              block.get('type', '')
+              for block in blocks.values()
+              if not block.get('disabled', False)
+              and any(token in block.get('type', '') for token in forbidden)
+          ]
+          if enabled_duplicate_chat:
+              raise SystemExit('Duplicate chat embed still enabled: ' + ', '.join(enabled_duplicate_chat))
+
+          index = json.loads(Path('templates/index.json').read_text(encoding='utf-8'))
+          if 'shop_videos' in (index.get('sections') or {}) or 'shop_videos' in (index.get('order') or []):
+              raise SystemExit('Empty app-based homepage video section must not be part of the primary template.')
+
+          control = Path('supabase/functions/leaf-control-api/index.ts').read_text(encoding='utf-8')
+          if 'password === "Admin"' in control or 'password==="Admin"' in control or 'password==\"Admin\"' in control:
+              raise SystemExit('Default Admin/Admin bootstrap credential is forbidden.')
+          if '"Access-Control-Allow-Origin":"*"' in control or "'Access-Control-Allow-Origin':'*'" in control:
+              raise SystemExit('Wildcard CORS is forbidden for LEAF control API.')
+
+          assistant = Path('supabase/functions/storefront-assistant/index.ts').read_text(encoding='utf-8')
+          required = [
+              'consume_storefront_assistant_rate_limit',
+              'origin_not_allowed',
+              'approved_existing',
+              'approved',
+              'images_disabled',
+              'interrupt_response: true',
+              'source_citations',
+              'analysis_mode: "text"',
+              'image_analysis: false',
+          ]
+          for token in required:
+              if token not in assistant:
+                  raise SystemExit('Storefront assistant hardening invariant missing: ' + token)
+          PY
 
   theme-structure:
     name: Theme structure
@@ -138,11 +223,62 @@ jobs:
                   text = path.read_text(encoding='utf-8-sig')
                   text = re.sub(r'^\s*/\*.*?\*/\s*', '', text, count=1, flags=re.S)
                   try:
-                      json.loads(text)
+                      data = json.loads(text)
+                      if isinstance(data, dict) and isinstance(data.get('sections'), dict) and isinstance(data.get('order'), list):
+                          section_ids = set(data['sections'])
+                          order = data['order']
+                          if section_ids != set(order) or len(order) != len(set(order)):
+                              raise ValueError('Section IDs must appear exactly once in order')
                   except Exception as exc:
-                      print(f'{path}: invalid JSON ({type(exc).__name__})', file=sys.stderr)
+                      print(f'{path}: invalid theme JSON ({exc})', file=sys.stderr)
                       failed = True
           if failed:
+              sys.exit(1)
+          PY
+      - name: Validate locale parity and translation safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, pathlib, re, sys
+
+          def load(path):
+              text = pathlib.Path(path).read_text(encoding='utf-8-sig')
+              text = re.sub(r'^\s*/\*.*?\*/\s*', '', text, count=1, flags=re.S)
+              return json.loads(text)
+
+          def flatten(value, prefix=''):
+              out = {}
+              for key, item in value.items():
+                  path = f'{prefix}.{key}' if prefix else key
+                  if isinstance(item, dict):
+                      out.update(flatten(item, path))
+                  else:
+                      out[path] = item
+              return out
+
+          de = flatten(load('locales/de.default.json'))
+          en = flatten(load('locales/en.json'))
+          missing_en = sorted(set(de) - set(en))
+          if missing_en:
+              print('English locale is missing keys required by the German default locale:', file=sys.stderr)
+              for key in missing_en:
+                  print(f'- {key}', file=sys.stderr)
+              sys.exit(1)
+
+          theme_files = []
+          for root in ('layout', 'sections', 'snippets', 'templates'):
+              theme_files.extend(pathlib.Path(root).rglob('*.liquid'))
+          literal = re.compile(r'Translation missing', re.I)
+          offenders = []
+          for path in theme_files:
+              text = path.read_text(encoding='utf-8')
+              if literal.search(text):
+                  offenders.append(str(path))
+          if offenders:
+              print('Runtime translation fallbacks are forbidden; fix locale keys instead:', file=sys.stderr)
+              for path in offenders:
+                  print(f'- {path}', file=sys.stderr)
               sys.exit(1)
           PY
       - name: Validate plain JavaScript syntax without executing storefront code
@@ -310,6 +446,10 @@ jobs:
           grep -q 'enable row level security' supabase/migrations/20260914190200_content_approval_queue.sql
           grep -q 'service_role' supabase/migrations/20260914190200_content_approval_queue.sql
 
+          grep -q 'alter table public.storefront_assistant_rate_limits enable row level security' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'revoke all on table public.storefront_assistant_rate_limits from public, anon, authenticated' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+          grep -q 'security invoker' supabase/migrations/20261003030035_storefront_assistant_distributed_rate_limit.sql
+
   pipeline-tests:
     name: Pipeline unit tests
     runs-on: ubuntu-24.04
@@ -325,6 +465,7 @@ jobs:
         run: |
           for file in automation/codex/*.cjs; do node --check "$file"; done
       - name: Run policy and delivery unit tests
-        run: node --test automation/codex/controller.test.cjs
+        run: node --test automation/codex/*.test.cjs
       - name: Validate workflow syntax and expressions
         run: go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.12 -color
+

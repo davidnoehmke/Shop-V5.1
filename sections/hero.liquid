@@ -1,11 +1,28 @@
 {% liquid
   assign hero_heading = section.settings.heading
+  assign hero_eyebrow = section.settings.eyebrow
+  assign hero_text = section.settings.text
+  assign hero_primary_label = section.settings.primary_label
+  assign hero_primary_link = section.settings.primary_link
+  assign hero_secondary_label = section.settings.secondary_label
+  assign hero_secondary_link = section.settings.secondary_link
+
   if hero_heading == blank
     assign hero_heading = 'hero.heading' | t
   endif
+
+  if request.page_type == 'index'
+    assign hero_eyebrow = 'home.solution.eyebrow' | t
+    assign hero_heading = 'home.solution.heading' | t
+    assign hero_text = 'home.solution.text' | t
+    assign hero_primary_label = 'home.solution.primary' | t
+    assign hero_primary_link = '#Substrat-Konfigurator'
+    assign hero_secondary_label = 'home.solution.secondary' | t
+    assign hero_secondary_link = '#LeafAdvisor'
+  endif
 %}
 
-<section class="hero" style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}" aria-labelledby="HeroHeading-{{ section.id }}">
+<section class="hero"{% if section.settings.image != blank %} style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}; --leaf-v7-hero-image: url('{{ section.settings.image | image_url: width: 2600 }}')"{% else %} style="--hero-overlay: {{ section.settings.overlay | divided_by: 100.0 }}"{% endif %} aria-labelledby="HeroHeading-{{ section.id }}">
   {% if section.settings.image != blank %}
     {{ section.settings.image | image_url: width: 2600 | image_tag: widths: '750, 1100, 1500, 2000, 2600', sizes: '100vw', loading: 'eager', fetchpriority: 'high', class: 'hero__image', alt: 'Pflanzenversorgung mit Substrat, Gefäß und Pflanzenlicht' }}
   {% else %}
@@ -21,22 +38,34 @@
           <sup class="hero__brand-tm" aria-hidden="true">™</sup>
         </div>
       {% endif %}
-      {% if section.settings.eyebrow != blank %}<p class="hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>{% endif %}
+      {% if hero_eyebrow != blank %}<p class="hero__eyebrow">{{ hero_eyebrow | escape_once }}</p>{% endif %}
       <h1 id="HeroHeading-{{ section.id }}">{{ hero_heading }}</h1>
-      {% if section.settings.text != blank %}<div class="hero__text rte">{{ section.settings.text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
+      {% if hero_text != blank %}<div class="hero__text rte">{{ hero_text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
+      {% if request.page_type == 'index' %}
+        <nav class="hero__paths" aria-label="{{ 'home.solution.paths_label' | t | escape }}">
+          {% assign ready_url = collections['pflanzsubstrate-mischungen'].url %}
+          {% assign light_url = collections['pflanzenbeleuchtung'].url %}
+          {% if ready_url == blank %}{% assign ready_url = routes.collections_url | append: '/pflanzsubstrate-mischungen' %}{% endif %}
+          {% if light_url == blank %}{% assign light_url = routes.collections_url | append: '/pflanzenbeleuchtung' %}{% endif %}
+          <a href="{{ ready_url }}"><strong>{{ 'home.solution.ready' | t }}</strong><span>{{ 'home.solution.ready_help' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="#Substrat-Konfigurator"><strong>{{ 'home.solution.primary' | t }}</strong><span>{{ 'home.solution.custom_help' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="{{ light_url }}"><strong>{{ 'home.solution.light' | t }}</strong><span>{{ 'home.solution.light_help' | t }}</span><b aria-hidden="true">→</b></a>
+        </nav>
+      {% else %}
       <div class="hero__buttons">
-        {% if section.settings.primary_link != blank %}
-          <a class="button" href="{{ section.settings.primary_link }}">
-            {% if section.settings.primary_label != blank %}{{ section.settings.primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
+        {% if hero_primary_link != blank %}
+          <a class="button" href="{{ hero_primary_link }}">
+            {% if hero_primary_label != blank %}{{ hero_primary_label }}{% else %}{{ 'general.shop_now' | t }}{% endif %}
             <span aria-hidden="true">→</span>
           </a>
         {% endif %}
-        {% if section.settings.secondary_link != blank %}
-          <a class="button button--secondary" href="{{ section.settings.secondary_link }}">
-            {% if section.settings.secondary_label != blank %}{{ section.settings.secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
+        {% if hero_secondary_link != blank %}
+          <a class="button button--secondary" href="{{ hero_secondary_link }}">
+            {% if hero_secondary_label != blank %}{{ hero_secondary_label }}{% else %}{{ 'hero.configure' | t }}{% endif %}
           </a>
         {% endif %}
       </div>
+      {% endif %}
     </div>
 
     {% if section.blocks.size > 0 %}
@@ -76,7 +105,7 @@
   .hero__brand-lockup img { width: 100%; height: auto; }
   .hero__brand-tm { position: absolute; top: -.12rem; right: -.75rem; color: var(--accent); font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem; font-weight: 800; line-height: 1; }
   .hero__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
-  .hero h1 { max-width: 12ch; margin: 0 0 1rem; font-size: clamp(2.8rem, 5.3vw, 5.45rem); line-height: .98; letter-spacing: -.04em; }
+  .hero h1 { max-width: 28ch; margin: 0 0 1rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
   .hero__text, .hero__content > p { max-width: 600px; font-size: clamp(1rem, 1.5vw, 1.16rem); }
   .hero__buttons { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.65rem; }
   .hero__buttons .button { gap: .65rem; }
@@ -104,7 +133,7 @@
     .hero__content { max-width: 760px; padding: clamp(1.5rem, 2.4vw, 2.5rem) clamp(1.5rem, 2.8vw, 3rem) clamp(1.5rem, 2.4vw, 2.5rem) 0; }
     .hero__brand-lockup { width: min(100%, max(var(--hero-brand-width), 280px)); margin-bottom: 1.25rem; }
     .hero__brand-tm { top: -.22rem; right: -1rem; font-size: .9rem; font-weight: 900; text-shadow: 0 0 1px currentColor; }
-    .hero h1 { max-width: 10.5ch; font-size: clamp(4.25rem, 5.6vw, 6.6rem); line-height: .9; letter-spacing: -.058em; text-wrap: balance; }
+    .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
     .hero__text, .hero__content > p { max-width: 55ch; font-size: clamp(1.05rem, 1.15vw, 1.2rem); line-height: 1.65; }
     .hero__buttons { gap: .8rem; margin-top: 2rem; }
     .hero__buttons .button { min-height: 52px; padding-inline: 1.35rem; }
@@ -126,14 +155,48 @@
     .hero__content { padding-top: 34svh; }
     .hero__brand-lockup { width: min(210px, 72vw); margin-bottom: .65rem; }
     .hero__brand-tm { right: -.6rem; font-size: .6rem; }
-    .hero h1 { max-width: 13ch; font-size: clamp(2.45rem, 10.8vw, 4rem); line-height: .96; }
+    .hero h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
     .hero__content > p, .hero__text { font-size: 1rem; line-height: 1.55; }
     .hero__buttons { display: grid; grid-template-columns: 1fr; gap: .65rem; margin-top: 1.2rem; }
     .hero__buttons .button { width: 100%; }
     .hero__benefits { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; margin-top: 1.4rem; }
   }
 
-  @media (max-width: 420px) { .hero { min-height: clamp(680px, 92svh, 730px); } .hero__image { height: 34%; } .hero__content { padding-top: 29svh; } }
+  @media (max-width: 700px) {
+    .hero { min-height: auto; background: #101f19; color: #f5f7f1; isolation: isolate; }
+    .hero__image { height: 100%; object-position: 58% 24%; opacity: .56; }
+    .hero__shade { background: linear-gradient(180deg, rgba(10,28,21,.12) 0%, rgba(10,28,21,.55) 25%, #101f19 68%); }
+    .hero__inner { min-height: 640px; padding-block: clamp(7rem, 22svh, 12rem) 1.4rem; align-content: end; }
+    .hero__content { padding-top: 0; }
+    .hero__eyebrow { color: #b8e4b9; letter-spacing: .16em; font-size: .7rem; }
+    .hero h1 { max-width: 17ch; color: #fff; font-size: clamp(2.05rem, 8vw, 3.2rem); line-height: 1.08; letter-spacing: -.045em; text-wrap: balance; }
+    .hero__text { color: #e2eae3; font-size: .95rem; line-height: 1.55; }
+    .hero__buttons { grid-template-columns: 1fr; }
+    .hero__buttons .button { min-height: 50px; border-radius: 14px; justify-content: center; }
+    .hero .button { background: #d4f1cc; border-color: #d4f1cc; color: #12261b; }
+    .hero .button--secondary { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.5); color: #fff; backdrop-filter: blur(10px); }
+    .hero__benefits { gap: .65rem; margin-top: 1.25rem; }
+    .hero__benefit { min-width: 0; max-width: none; padding: .75rem; border: 1px solid rgba(255,255,255,.17); border-radius: 12px; background: rgba(255,255,255,.055); }
+    .hero__benefit svg { width: 24px; }
+    .hero__benefit strong { font-size: .75rem; }
+    .hero__benefit span { color: #d2ded4; font-size: .69rem; }
+    .hero__brand-lockup { max-width: 170px; }
+    .hero__brand-lockup img { max-height: 50px; object-fit: contain; object-position: left center; }
+  }
+  @media (max-width: 420px) { .hero { min-height: auto; } .hero__image { height: 100%; } .hero__content { padding-top: 0; } .hero__inner { min-height: 650px; } }
+  @media (prefers-reduced-motion: reduce) { .hero__image { animation: none; transform: none; } }
+  .hero__paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin-top: 1.5rem; }
+  .hero__paths a { position: relative; display: grid; align-content: start; gap: .4rem; padding: 1rem 1rem 2.5rem; color: #173f2f; background: #faf9f5; text-decoration: none; line-height: 1.4; }
+  .hero__paths strong { font-size: 1rem; font-weight: 700; }
+  .hero__paths span { font-size: .875rem; }
+  .hero__paths b { position: absolute; right: 1rem; bottom: .6rem; font-size: 1.25rem; }
+  .hero__paths a:hover { background: #e4eddf; }
+  .hero__paths a:focus-visible { outline: 3px solid #173f2f; outline-offset: 3px; }
+  @media (max-width: 700px) {
+    .hero__paths { grid-template-columns: minmax(0, 1fr); gap: .5rem; margin-top: 1rem; }
+    .hero__paths a { gap: .15rem; padding: .75rem 2.75rem .75rem .85rem; }
+    .hero__paths b { bottom: 50%; transform: translateY(50%); }
+  }
 {% endstylesheet %}
 
 {% schema %}

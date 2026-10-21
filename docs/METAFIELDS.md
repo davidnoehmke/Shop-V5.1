@@ -60,11 +60,17 @@ und nach Prüfung der vorhandenen Inhalte anlegen.
 | --- | --- |
 | `custom` | `seo_title`, `seo_description`, `faq`, `cross_sell_products`, `use_case`, `light_style`, `lighting_position`, `recommended_room` |
 | `leafer` | `intro`, `subtitle`, `primary_function`, `suitable_for`, `component_type`, `mix_type`, `ingredients`, `mixing_ratio`, `recipe_matrix`, `recipe_version`, `application_steps`, `additive_application`, `water_behavior`, `planter_type`, `difficulty`, `use_as`, `warning`, `usp_1`–`usp_4`, `recommended_substrates`, `recommended_planters`, `cross_sell_products`, `product_pass_pdf`, `variant_content`, `faq_1`–`faq_4`, `longtail_keywords`, `search_intent` |
-| `leaf_configurator` | `enabled`, `role`, `component_profile`, `plant_groups`, `volume_liters` |
+| `leaf_configurator` | `enabled`, `role`, `component_profile`, `component_profile_data`, `plant_groups`, `volume_liters` |
 
 `leafer`: `intro`, `subtitle`, `primary_function`, `suitable_for`, `component_type`, `mix_type`, `ingredients`, `mixing_ratio`, `recipe_matrix`, `recipe_version`, `application_steps`, `additive_application`, `water_behavior`, `planter_type`, `difficulty`, `use_as`, `warning`, `usp_1`–`usp_4`, `recommended_substrates`, `recommended_planters`, `cross_sell_products`, `product_pass_pdf`, `variant_content`, `faq_1`–`faq_4`, `keywords`, `longtail_keywords`, `search_intent`.
 
+### Konfigurator-Profilprojektion
+
+`leaf_configurator.component_profile` bleibt die optionale Metaobject-Referenz für redaktionell gepflegte Detailprofile. `leaf_configurator.component_profile_data` ist die JSON-Storefront-Projektion aus `public.configurator_components` in Supabase und dient als robuster Fallback für technische Min-/Max-Grenzen sowie Aeration, Drainage, Wasserspeicher und Struktur. Supabase bleibt dafür die kanonische Quelle; Änderungen an `component_profile_data` werden nicht zurück zum SSOT erhoben.
+
 ## Collection-Felder
+
+`leafer.care_guidance` (multi_line_text_field) ergänzt Praxiswissen um Pflege- und Anwendungshinweise und wird aus `collection_content.care_guidance` projiziert.
 
 `leafer.intro`, `leafer.guide`, `leafer.keywords`, `leafer.longtail_keywords`, `leafer.search_intent`, `leafer.faq` sowie die bestehenden Homepage-Felder.
 - `leafer.intro`, `leafer.guide`, `leafer.keywords`, `leafer.longtail_keywords`, `leafer.search_intent`, `leafer.faq`
@@ -94,3 +100,10 @@ Longtail-Cluster werden pro Ressource nach tatsächlicher Suchintention gepflegt
 ## Grenzen
 
 Metafeld-Inhalte, Produktbilder, Collection-Zuordnungen, Navigation und Übersetzungen sind keine Git-Dateien. Vollständige Abdeckung erfordert deshalb zusätzlich die Befüllung der entsprechenden Shopify-Metafelder. Das Theme stellt dafür nun einen einheitlichen Resolver und Fallbacks bereit.
+
+
+## Supabase → Shopify Projektionszustand
+
+`storefront_product_content` ist die kanonische Quelle für sichtbaren Produkt-Content. Der Projektor schreibt registry-freigegebene Felder in `shopify_metafield_state`; Änderungen werden als `dirty_for_shopify` markiert und nur nach erfolgreichem Shopify-Write als synchronisiert bestätigt.
+
+`collection_content` wird analog in `shopify_collection_metafield_state` projiziert. Die Tabelle ist interner Sync-Zustand mit RLS und ohne Zugriff für `anon` oder `authenticated`. Shopify bleibt die Storefront-Projektion; redaktionelle Änderungen werden nicht zurück zum SSOT erhoben.

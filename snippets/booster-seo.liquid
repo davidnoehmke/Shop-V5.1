@@ -261,12 +261,10 @@ Title and Description
   <title>{{ page_title -}}
   {%- if current_tags -%} –
   {%- assign meta_tags = current_tags | join: ', ' -%}
-  {%- assign translated_tags = 'general.meta.tags' | t: tags: meta_tags -%}
-  {%- if translated_tags contains 'translation missing' -%} {{ meta_tags}}{%- else -%} {{ translated_tags }}{%- endif -%}
+  {{ 'general.meta.tags' | t: tags: meta_tags }}
   {%- endif -%}
   {%- if current_page != 1 -%} –
-  {%- assign translated_page = 'general.meta.page' | t: page: current_page -%}
-  {%- if translated_page contains 'translation missing' or translated_page contains 'I18n Error' -%} {{ current_page }}{%- else -%} {{ translated_page }}{%- endif -%}
+  {{ 'general.meta.page' | t: page: current_page }}
   {%- endif -%}
   </title>
   {%- endunless -%}
@@ -952,3 +950,4 @@ all other Booster schema.
   {%- endif -%}
 {%- endif -%}
 <!-- end of Booster Apps SEO -->
+

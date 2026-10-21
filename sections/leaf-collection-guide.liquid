@@ -2,9 +2,10 @@
   assign collection_faq = collection.metafields.leafer.faq.value
   assign collection_keywords = collection.metafields.leafer.keywords.value
   assign collection_guide = collection.metafields.leafer.guide.value
+  assign collection_care = collection.metafields.leafer.care_guidance.value
   assign knowledge_atoms = collection.metafields.leafer.knowledge_atoms.value
   assign has_guide = false
-  if collection_guide != blank or collection_faq != blank or collection_keywords != blank or knowledge_atoms != blank
+  if collection_guide != blank or collection_care != blank or collection_faq != blank or collection_keywords != blank or knowledge_atoms != blank
     assign has_guide = true
   endif
 %}
@@ -29,6 +30,17 @@
               <span class="leaf-collection-guide__plus" aria-hidden="true">+</span>
             </summary>
             <div class="leaf-collection-guide__body rte">{{ collection_guide | escape | newline_to_br }}</div>
+          </details>
+        {% endif %}
+
+        {% if collection_care != blank %}
+          <details class="leaf-collection-guide__panel">
+            <summary class="leaf-collection-guide__panel-heading">
+              <span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c2.8 4.2 5 7.1 5 10a5 5 0 0 1-10 0c0-2.9 2.2-5.8 5-10ZM9.5 14.5c.5 1 1.3 1.5 2.5 1.5"/></svg></span>
+              <strong>{{ 'collection.guide.care_heading' | t }}</strong>
+              <span class="leaf-collection-guide__plus" aria-hidden="true">+</span>
+            </summary>
+            <div class="leaf-collection-guide__body rte">{{ collection_care | escape | newline_to_br }}</div>
           </details>
         {% endif %}
 
@@ -67,9 +79,27 @@
             {% endfor %}
           </div>
         {% endif %}
+
+        <nav class="leaf-collection-guide__paths" aria-label="{{ 'collection.guide.paths_label' | t | escape }}">
+          <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor">{{ 'collection.guide.planner_link' | t }}</a>
+          {% if collection.handle contains 'substrat' %}
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+          {% elsif collection.handle == 'interieur-solutions' %}
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'collection.guide.plants_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/pflanzgefasse">{{ 'collection.guide.planters_link' | t }}</a>
+          {% elsif collection.handle == 'zimmerpflanzen-1' %}
+            <a href="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'collection.guide.substrate_link' | t }}</a>
+            <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/interieur-solutions">{{ 'collection.guide.interieur_link' | t }}</a>
+          {% endif %}
+          <a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog">{{ 'collection.guide.knowledge_link' | t }}</a>
+        </nav>
       </div>
     </div>
   </section>
+  {% if collection_faq != blank %}
+    {% render 'collection-faq-structured-data', collection: collection %}
+  {% endif %}
 {% endif %}
 
 {% stylesheet %}
@@ -80,12 +110,12 @@
   .leaf-collection-guide__icon svg, .leaf-collection-guide__panel-heading svg, .leaf-collection-guide__faq-heading svg, .leaf-collection-guide__topics svg { fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
   .leaf-collection-guide__icon svg { width: 25px; }
   .leaf-collection-guide__intro > p { margin: 0 0 .55rem; color: var(--accent); font-size: .72rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
-  .leaf-collection-guide h2 { margin: 0; max-width: 14ch; font-size: clamp(2.2rem, 4vw, 3.8rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-collection-guide h2 { margin: 0; max-width: 14ch; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .leaf-collection-guide__intro .rte { margin-top: 1rem; color: var(--muted); line-height: 1.65; }
   .leaf-collection-guide__content { display: grid; gap: 1rem; }
   .leaf-collection-guide__panel, .leaf-collection-guide__knowledge, .leaf-collection-guide__faq { border: 1px solid var(--border); background: var(--surface); padding: clamp(1.1rem, 2vw, 1.6rem); }
   .leaf-collection-guide__knowledge-eyebrow { margin: 0 0 .35rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .11em; text-transform: uppercase; }
-  .leaf-collection-guide__knowledge h3 { margin: 0 0 1rem; font-size: clamp(1.35rem, 2.2vw, 1.9rem); }
+  .leaf-collection-guide__knowledge h3 { margin: 0 0 1rem; font-size: clamp(1.1rem, 2.2vw, 1.35rem); }
   .leaf-collection-guide__knowledge .leaf-atoms { margin: 0; }
   .leaf-collection-guide__panel-heading, .leaf-collection-guide__faq-heading { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
   .leaf-collection-guide__panel > summary { min-height: 58px; margin: 0; cursor: pointer; list-style: none; }
@@ -108,6 +138,9 @@
   .leaf-collection-guide__plus { width: 30px; height: 30px; flex: 0 0 auto; display: grid; place-items: center; border: 1px solid var(--border); transition: transform .2s ease, background .2s ease; }
   .leaf-collection-guide__faq details[open] .leaf-collection-guide__plus { transform: rotate(45deg); background: var(--accent); color: #fff; }
   .leaf-collection-guide__faq .rte { max-width: 70ch; padding: 0 2.5rem 1rem 0; color: var(--muted); line-height: 1.65; }
+  .leaf-collection-guide__paths { display: flex; flex-wrap: wrap; gap: .5rem; padding-top: .35rem; }
+  .leaf-collection-guide__paths a { min-height: 38px; display: inline-flex; align-items: center; padding: .45rem .65rem; border: 1px solid var(--border); background: var(--background); color: var(--text); font-size: .75rem; font-weight: 760; text-decoration: none; }
+  .leaf-collection-guide__paths a:hover, .leaf-collection-guide__paths a:focus-visible { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 900px) {
     .leaf-collection-guide__shell { grid-template-columns: 1fr; gap: 2rem; }
     .leaf-collection-guide__intro { position: static; }

@@ -96,7 +96,7 @@
           "type": "faq",
           "settings": {
             "question": "Sind die Mischverhältnisse frei veränderbar?",
-            "answer": "<p>Die Pflanzenprofile starten mit festen Grundrezepturen. Im Bereich „Individuell mischen“ stehen bis zu fünf auswählbare Komponenten und Regler zur Anpassung bereit. Prüfe vor dem Hinzufügen die angezeigte Rezeptur, Menge und den Preis. Für darüber hinausgehende Sonderwünsche nutze bitte das Kontaktformular.</p>"
+            "answer": "<p>Die Pflanzenprofile starten mit festen Grundrezepturen. Im Bereich „Individuell mischen“ stehen bis zu vier auswählbare Komponenten und Regler zur Anpassung bereit. Prüfe vor dem Hinzufügen die angezeigte Rezeptur, Menge und den Preis. Für darüber hinausgehende Sonderwünsche nutze bitte das Kontaktformular.</p>"
           }
         },
         "faq_beginner": {
@@ -144,7 +144,7 @@
         "image_alt": "LEAFerservice Substrat-Konfigurator mit Bestandteilen für verschiedene Pflanzenprofile",
         "eyebrow": "LEAFerservice · Substrat-Konfigurator",
         "heading": "Passendes Substrat nach Pflanzentyp und Menge",
-        "intro": "<p>Starte mit einem Pflanzenprofil und einer verfügbaren Menge von 2, 5 oder 10 Litern. Nutze die hinterlegte Grundrezeptur als Ausgangspunkt oder bearbeite die angebotenen Komponenten unter „Individuell mischen“.</p>",
+        "intro": "<p>Wähle Pflanzenprofil und Menge. Die passende Grundrezeptur bleibt als nachvollziehbare Orientierung sichtbar. Eigene Prozentanteile sind optional und liegen im eingeklappten Profi-Modus.</p>",
         "selection_eyebrow": "Deine Mischung",
         "selection_heading": "Pflanzenprofil und Menge auswählen",
         "selection_text": "<p>Wähle zuerst das Profil und die Menge. Prüfe danach die angezeigte Rezeptur, die Literverteilung sowie Preis und Verfügbarkeit.</p>",
@@ -181,10 +181,6 @@
       "name": "Rezeptur & Bestandteile",
       "settings": {}
     },
-    "project_configurator": {
-      "type": "leaf-project-configurator",
-      "settings": {}
-    },
     "breadcrumbs": {
       "type": "leaf-breadcrumbs",
       "settings": {}
@@ -192,15 +188,14 @@
     "page_heading": {
       "type": "leaf-page-heading",
       "settings": {
-        "heading": "Substrat konfigurieren für dein Pflanzenprojekt",
-        "intro": "<p>Plane dein Pflanzenprojekt oder wähle direkt ein Pflanzenprofil. Vergleiche anschließend Zusammensetzung, Menge und Preis. Die folgenden Fragen helfen dir, deine Auswahl vor dem Bestellen zu prüfen.</p>"
+        "heading": "Substrat passend zu Pflanze, Wurzelraum und Menge",
+        "intro": "<p>Starte mit Pflanzenprofil und Menge. LEAF zeigt dir die feste Grundrezeptur und erklärt die Bestandteile. Den Profi-Modus öffnest du nur, wenn du die Mischung bewusst selbst fein abstimmen möchtest.</p>"
       }
     }
   },
   "order": [
     "breadcrumbs",
     "page_heading",
-    "project_configurator",
     "main",
     "product_recipe_bzM3LF"
   ]
