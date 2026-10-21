@@ -122,7 +122,7 @@
       "label": "Produktvorteile"
     },
     "availability": {
-      "available": "Auf Lager · versandbereit",
+      "available": "Bestellbar",
       "unavailable": "Diese Variante ist derzeit nicht verfügbar.",
       "unavailable_short": "Nicht verfügbar",
       "invalid_combination": "Kombination nicht verfügbar",
@@ -218,6 +218,10 @@
       "mix_text": "Grundrezeptur verstehen und bei Bedarf im Profi-Modus fein abstimmen.",
       "knowledge": "LEAFers nice2know",
       "knowledge_text": "Praxiswissen, Hintergründe und häufige Pflanzenfragen vertiefen."
+    },
+    "editorial": {
+      "difficulty": "Pflegeaufwand",
+      "cart_error": "Dieses Produkt konnte nicht hinzugefügt werden. Bitte versuche es erneut."
     }
   },
   "product_variant_guide": {
@@ -752,13 +756,19 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "Substrat nach Maß",
-      "heading": "Deine Pflanze. Deine Substratmischung.",
-      "text": "Stelle deine Substratmischung selbst zusammen: Komponenten wählen, Anteile per Slider abstimmen und die Rezeptur direkt bestellen.",
+      "eyebrow": "Substrat & Pflanzenlicht",
+      "heading": "Die passende Basis für deine Pflanzen.",
+      "text": "Fertige Substratmischung wählen, eine eigene Rezeptur bauen oder Pflanzenlicht finden.",
       "primary": "Eigene Mischung bauen",
       "secondary": "Pflanzenprojekt planen",
       "world_heading": "Das Sortiment rund um dein Pflanzenprojekt",
-      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten."
+      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten.",
+      "paths_label": "Direkt zum passenden Angebot",
+      "ready": "Fertigmischungen kaufen",
+      "ready_help": "Passende Rezeptur direkt auswählen.",
+      "custom_help": "Bestandteile und Anteile selbst bestimmen.",
+      "light": "Pflanzenlicht finden",
+      "light_help": "Leuchtmittel, Leuchten und Sets entdecken."
     },
     "knowledge_links": {
       "label": "Direkt weiterlernen",
@@ -784,6 +794,25 @@
       "a5": "Ja. Starte im LEAF Planer mit Ziel, Raum und Pflanzenbedarf. Die Vorauswahl führt anschließend zu passenden Produktwelten, Einzelprodukten und – sofern vorhanden – abgestimmten Sets.",
       "q6": "Wann brauche ich einen Profi-Konfigurator?",
       "a6": "Nur wenn du Anteile oder technische Parameter bewusst selbst fein abstimmen möchtest. Für die meisten Projekte ist der zentrale LEAF Planer der einfachere Start; Spezialwerkzeuge bleiben als optionaler Vertiefungsschritt erhalten."
+    },
+    "worlds": {
+      "ready_mix_title": "Fertige Substratmischungen",
+      "ready_mix_eyebrow": "Fertige Rezepturen",
+      "ready_mix_copy": "Fertige Rezepturen für verschiedene Pflanzenprofile – direkt vergleichbar und ohne Umweg kaufbar.",
+      "ready_mix_cta": "Mischungen entdecken",
+      "components_title": "Substratbestandteile",
+      "components_eyebrow": "Selbst mischen",
+      "components_copy": "Einzelne Materialien gezielt auswählen und für eigene Mischungen kombinieren.",
+      "components_cta": "Bestandteile entdecken",
+      "planters_title": "Pflanzgefäße & Pflanzsysteme",
+      "planters_eyebrow": "Gefäße",
+      "planters_copy": "Gefäße nach Größe, Material und Pflanzsituation auswählen.",
+      "planters_cta": "Gefäße entdecken",
+      "lighting_title": "LEDs & Pflanzenbeleuchtung",
+      "lighting_eyebrow": "Pflanzenlicht",
+      "lighting_copy": "Leuchtmittel, Leuchten und Sets für einzelne Pflanzen, Regale und größere Flächen.",
+      "lighting_cta": "Pflanzenlicht entdecken",
+      "products": "Produkte"
     }
   },
   "plant_world": {
@@ -1258,8 +1287,24 @@
     "voltage": "Spannung",
     "connector": "Sockel / Anschluss",
     "protection": "Schutzart",
-    "use": "Geeignet für"
-},
+    "use": "Geeignet für",
+    "format_label": "Produktart auswählen",
+    "format_all": "Alle Produktarten",
+    "format_bulb": "Nur Leuchtmittel",
+    "format_fixture": "Leuchte",
+    "format_set": "Set",
+    "format_other": "Weitere Produkte",
+    "result_count": "Angezeigte Produkte: [count]",
+    "scope_bulb": "Leuchtmittel für eine passende, separat benötigte Leuchte.",
+    "scope_tube": "T8-Röhre mit Ersatzstarter. Eine geeignete Fassung wird separat benötigt.",
+    "scope_tube_set": "Röhre(n) und Fassung enthalten. Anschlusskabel zur Stromquelle nicht enthalten; zur Festinstallation vorgesehen.",
+    "scope_pendant_set": "Vita-Leuchtmittel und Pendelfassung mit Stoffkabel enthalten. Kein zusätzlicher Lampenschirm.",
+    "scope_set": "Set aus Pflanzenleuchte und Halterung bzw. Standfuß. Ausführung und Zubehör siehe Lieferumfang.",
+    "scope_fixture": "Pflanzenleuchte. Montage, Anschluss und Zubehör siehe Lieferumfang.",
+    "scope_bar": "LED-Leiste und kleines Netzteil enthalten. Controller optional.",
+    "scope_other": "Ausführung, Anschluss und enthaltenes Zubehör bitte im Lieferumfang prüfen.",
+    "scope_link": "Lieferumfang ansehen"
+  },
   "mix_highlights": {
     "eyebrow": "Fertige Rezepturen von LEAFerservice",
     "heading": "Fertige Substratmischungen für deine Pflanzen",
@@ -1278,5 +1323,37 @@
     "components_cta": "Einzelne Bestandteile entdecken",
     "cart_error": "Die Mischung konnte nicht hinzugefügt werden. Bitte versuche es erneut.",
     "details": "Produktdetails ansehen"
-}
+  },
+  "substrate_profiles": {
+    "aroids": {
+      "title": "Aroids / Tropical",
+      "badge": "Luftig & strukturstabil",
+      "description": "Lockere Struktur für die Wurzeln von Monstera, Philodendron und Alocasia."
+    },
+    "herbs": {
+      "title": "Kräuter & Balkon",
+      "badge": "Ausgewogen & durchlässig",
+      "description": "Für Kräuter und Balkonpflanzen mit gleichmäßiger Feuchtigkeit und gutem Wasserabzug."
+    },
+    "cactus": {
+      "title": "Kakteen & Sukkulenten",
+      "badge": "Mineralisch & durchlässig",
+      "description": "Für trockenheitsliebende Pflanzen, deren Wurzeln zwischen dem Gießen abtrocknen sollen."
+    },
+    "orchid": {
+      "title": "Orchideen",
+      "badge": "Porös & luftig",
+      "description": "Offen und luftdurchlässig für feinwurzelnde Epiphyten."
+    },
+    "palms": {
+      "title": "Palmen & Grünpflanzen",
+      "badge": "Stabil & ausgewogen",
+      "description": "Für kräftigen Wurzelhalt und eine ausgewogene Versorgung mit Wasser und Luft."
+    },
+    "seedlings": {
+      "title": "Anzucht & Jungpflanzen",
+      "badge": "Fein & gleichmäßig",
+      "description": "Feine Struktur für die Aussaat und die Entwicklung junger Wurzeln."
+    }
+  }
 }

@@ -30,10 +30,10 @@
   assign lighting_socket = product.metafields.lighting.socket_connector.value
   assign hero_summary = custom_use_case | default: leafer_intro | default: product.description | strip_html | strip | truncatewords: 32
 %}
-<section class="ls-product" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
+<section class="ls-product{% if product.media.size == 0 %} ls-product--text-only{% endif %}" id="LeaferserviceProduct-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="ls-product__grid page-width">
+    {% if product.media.size > 0 %}
     <div class="ls-product__media" aria-label="{{ 'product.media.label' | t }}">
-      {% if product.media.size > 0 %}
         {% for media in product.media %}
           {% liquid
             if forloop.first
@@ -50,10 +50,8 @@
             {% endif %}
           </div>
         {% endfor %}
-      {% else %}
-        <div class="ls-product__media-empty">{{ 'product-1' | placeholder_svg_tag }}</div>
-      {% endif %}
     </div>
+    {% endif %}
 
     <div class="ls-product__info">
       {% if section.settings.show_vendor and product.vendor != blank %}<p class="ls-product__eyebrow">{{ product.vendor }}</p>{% endif %}

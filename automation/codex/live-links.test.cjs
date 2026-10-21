@@ -32,3 +32,7 @@ test('render errors are checked in visible markup, excluding script literals',()
   assert.deepEqual(findings('/',200,'https://leaferservice.com/','<script>"Translation missing:"</script>'),[]);
   assert.deepEqual(findings('/',200,'https://leaferservice.com/','<main>Liquid error: missing snippet</main>'),['Rendering error']);
 });
+test('a successful response from the wrong theme is not preview verification',()=>{
+  assert.deepEqual(findings('/',200,'https://leaferservice.com/','<script>Shopify.theme = {"id":190364942721};</script>','190712709505'),['Expected preview theme was not rendered']);
+  assert.deepEqual(findings('/',200,'https://leaferservice.com/','<script>Shopify.theme = {"id":190712709505};</script>','190712709505'),[]);
+});

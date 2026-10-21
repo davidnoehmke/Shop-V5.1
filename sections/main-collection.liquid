@@ -509,7 +509,7 @@
       {% paginate collection.products by 48 %}
         {% if collection.handle == 'pflanzenbeleuchtung' %}<span id="CollectionProducts" class="visually-hidden" aria-hidden="true"></span>{% endif %}
         <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
-          {% for product in collection.products %}<div data-product-type="{{ product.type | handleize }}">{% render 'product-card', product: product, interactive_facts: true %}</div>{% endfor %}
+          {% for product in collection.products %}<div class="leaf-editorial-item" data-product-type="{{ product.type | handleize }}">{% render 'leaf-editorial-product', product: product, section_id: section.id %}</div>{% endfor %}
         </div>
         {% if paginate.pages > 1 %}<nav class="main-collection__pagination" aria-label="{{ 'general.pagination' | t }}">{{ paginate | default_pagination }}</nav>{% endif %}
       {% endpaginate %}
@@ -518,7 +518,11 @@
 </section>
 {% endunless %}
 
+<script src="{{ 'leaf-editorial-products.js' | asset_url }}" defer="defer"></script>
+
 {% stylesheet %}
+.main-collection .main-collection__grid{display:flex;flex-direction:column;gap:clamp(2rem,5vw,5rem)}.leaf-editorial-item{width:100%;min-width:0}.leaf-editorial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(1rem,4vw,4rem);border-bottom:1px solid var(--border);padding-block:2rem}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:2}.leaf-editorial__media{aspect-ratio:1/1;overflow:hidden;background:var(--surface)}.leaf-editorial__media img{width:100%;height:100%;object-fit:contain;border-radius:0;display:block}.leaf-editorial__facts{margin:0;display:grid;gap:.5rem}.leaf-editorial__facts:empty{display:none}.leaf-editorial__facts div{display:grid;grid-template-columns:minmax(7rem,.6fr) minmax(0,1fr);gap:.75rem}.leaf-editorial__facts dt{font-weight:600}.leaf-editorial__facts dd{margin:0}.leaf-editorial__media a{display:block;width:100%;height:100%}.leaf-editorial__content{min-width:0;display:grid;gap:.8rem}.leaf-editorial__content h2{margin:0;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.2}.leaf-editorial__content p{line-height:1.65;max-width:65ch}.leaf-editorial__form{display:grid;gap:.7rem}.leaf-editorial__form select{min-height:48px;padding:.5rem;width:100%;background:var(--background);color:var(--text)}.leaf-editorial__purchase{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}.leaf-editorial__purchase button{min-height:48px;padding:.75rem 1.25rem;background:var(--text);color:var(--background);border:0}.leaf-editorial__purchase button:disabled{opacity:.55}@media(max-width:760px){.leaf-editorial{grid-template-columns:1fr}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:0}}
+
   .main-collection { padding-block: clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem); }
   .main-collection__hero { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: center; margin-bottom: clamp(2rem, 4vw, 3.6rem); }
   .main-collection__hero-copy { display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-block: clamp(1.5rem, 4vw, 4rem); }
