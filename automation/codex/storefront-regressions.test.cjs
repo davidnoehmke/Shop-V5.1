@@ -64,13 +64,13 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /100 - othersMax/);
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
-  assert.deepEqual(index.order.slice(0, 5), ['hero', 'leaf_listening', 'substrate_configurator', 'home_collection_journey', 'trust']);
+  assert.deepEqual(index.order.slice(0, 5), ['hero', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);
   assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
   assert.equal(index.sections.loox_reviews.disabled, true);
-  assert.match(index.sections.home_collection_journey.settings.heading, /Bereich/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Fertige Mischungen/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Substratbestandteile/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Pflanzgefäße/);
+  assert.match(index.sections.home_collection_journey.settings.heading, /Pflanzenprojekt/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Substratmischungen/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Einzelbestandteile/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Gefäße/);
   assert.match(index.sections.home_collection_journey.settings.intro, /Pflanzenlicht/);
   assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
 });
