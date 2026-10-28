@@ -27,15 +27,21 @@ type HomepageProduct = {
 };
 
 type HomepageQuery = {
-  products: {nodes: HomepageProduct[]};
+  collection: {
+    id: string;
+    title: string;
+    description: string;
+    image?: HomepageImage | null;
+    products: {nodes: HomepageProduct[]};
+  } | null;
 };
 
 export const meta: Route.MetaFunction = () => [
-  {title: 'LEAF Campus – Pflanzenwelten statt Produktregal | LEAFerservice'},
+  {title: 'Substrate, Pflanzenlicht & Beratung | LEAFerservice'},
   {
     name: 'description',
     content:
-      'LEAFerservice führt über Substrat, Licht, Bewässerung, Gefäße, Anzucht und Wissen in kuratierte Themen- und Markenwelten.',
+      'LEAFerservice verbindet eigene Substratmischungen, einen Substrat-Konfigurator, Pflanzenlicht, Bewässerung und Pflanzenwissen mit dem KI-Assistenten LEAF.',
   },
 ];
 
@@ -43,50 +49,96 @@ export async function loader({context}: Route.LoaderArgs) {
   const homepage = await context.storefront.query<HomepageQuery>(HOMEPAGE_QUERY, {
     cache: context.storefront.CacheShort(),
   });
-  return {products: homepage.products.nodes};
+
+  return {
+    substrateCollection: homepage.collection,
+  };
 }
 
 export default function Homepage() {
-  const {products} = useLoaderData<typeof loader>();
+  const {substrateCollection} = useLoaderData<typeof loader>();
+  const substrateProducts = substrateCollection?.products.nodes ?? [];
+
+  function openLeafAssistant() {
+    window.dispatchEvent(new Event('leaf:assistant:open'));
+  }
 
   return (
-    <main className="leafer-home">
-      <LeafAtrium locale="de" />
-
-      <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title">
-        <div>
-          <p className="page-eyebrow">Direkter Weg</p>
-          <h2 id="leaf-shortcut-title">Du weißt schon, was du brauchst?</h2>
-          <p>
-            Das Erlebnis bleibt optional. Wer direkt kaufen möchte, kommt ohne Umweg zu
-            Sortiment, Suche und Produkten.
+    <main className="leafer-home leaf-homepage">
+      <section className="leaf-home-entry" aria-labelledby="leaf-home-title">
+        <div className="leaf-home-entry__copy">
+          <p className="page-eyebrow">LEAFerservice · Pflanzen besser verstehen</p>
+          <h1 id="leaf-home-title">Was braucht deine Pflanze?</h1>
+          <p className="leaf-home-entry__lead">
+            Starte mit deinem Ziel statt mit einem Produktregal. LEAF hilft dir bei der
+            Orientierung – oder du gehst direkt zu Substraten, Konfigurator und unseren
+            kuratierten Themenwelten.
+          </p>
+          <div className="leaf-home-entry__actions">
+            <button type="button" className="leaf-home-entry__assistant" onClick={openLeafAssistant}>
+              Frag LEAF
+            </button>
+            <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">
+              Substrat konfigurieren
+            </Link>
+            <a href="#leaf-worlds">Welten entdecken</a>
+          </div>
+          <p className="leaf-home-entry__trust">
+            Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
           </p>
         </div>
-        <div className="leaf-campus-shortcut__links">
-          <Link to="/collections/all" prefetch="intent">Gesamtes Sortiment →</Link>
-          <Link to="/search" prefetch="intent">Produkte suchen →</Link>
-          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">
-            Substrat konfigurieren →
-          </Link>
+        <div className="leaf-home-entry__visual" aria-hidden="true">
+          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
+          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
+          <div className="leaf-home-entry__leafmark">LEAF</div>
         </div>
       </section>
 
-      {products.length ? (
-        <section className="leaf-campus-featured" aria-labelledby="leaf-featured-title">
-          <div className="leaf-campus-featured__head">
-            <p className="page-eyebrow">Aktuell im Campus</p>
-            <h2 id="leaf-featured-title">Ausgewählte Produkte</h2>
-          </div>
-          <div className="leaf-campus-featured__grid">
-            {products.map((product) => (
+      <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title">
+        <div className="leaf-home-substrate__intro">
+          <p className="page-eyebrow">Kernkompetenz · Substrate</p>
+          <h2 id="leaf-substrate-title">Mischen, auswählen oder selbst konfigurieren.</h2>
+          <p>
+            Unsere Substratwelt steht bewusst vor den Herstellerwelten: fertige LEAFerservice-
+            Mischungen, einzelne Komponenten und ein eigener 100-%-Mix führen direkt zum passenden
+            Aufbau.
+          </p>
+        </div>
+
+        <div className="leaf-home-substrate__paths">
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent" className="leaf-home-path leaf-home-path--primary">
+            <span>01 · Konfigurator</span>
+            <strong>Eigenen Mix bauen</strong>
+            <p>Bis zu vier Komponenten kombinieren, auf 100 % ausbalancieren und direkt in den Warenkorb legen.</p>
+            <b>Konfigurator öffnen →</b>
+          </Link>
+          <Link to="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze" prefetch="intent" className="leaf-home-path">
+            <span>02 · Fertigmischungen</span>
+            <strong>Bewährte Mischung wählen</strong>
+            <p>Für Aroids, Tropical, Orchideen, Bonsai und weitere Anwendungen ohne eigenes Rezept.</p>
+            <b>Mischungen ansehen →</b>
+          </Link>
+          <Link to="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze#einzelbestandteile" prefetch="intent" className="leaf-home-path">
+            <span>03 · Komponenten</span>
+            <strong>Einzelbestandteile kaufen</strong>
+            <p>Lava, Perlite, Pinienrinde, Seramis und weitere Bestandteile für eigene Rezepturen.</p>
+            <b>Bestandteile ansehen →</b>
+          </Link>
+        </div>
+
+        {substrateProducts.length ? (
+          <div className="leaf-home-substrate__products" aria-label="Ausgewählte Substratprodukte">
+            {substrateProducts.slice(0, 6).map((product) => (
               <article key={product.id}>
                 <Link to={`/products/${product.handle}`} prefetch="intent">
                   {product.featuredImage ? (
                     <Image
                       data={product.featuredImage}
-                      sizes="(min-width: 1000px) 22vw, (min-width: 600px) 45vw, 100vw"
+                      sizes="(min-width: 1000px) 16vw, (min-width: 650px) 30vw, 46vw"
                     />
-                  ) : null}
+                  ) : (
+                    <div className="leaf-home-product-placeholder">LEAF</div>
+                  )}
                   <span>{product.vendor || 'LEAFerservice'}</span>
                   <h3>{product.title}</h3>
                 </Link>
@@ -94,23 +146,64 @@ export default function Homepage() {
               </article>
             ))}
           </div>
-        </section>
-      ) : null}
+        ) : null}
+      </section>
+
+      <section className="leaf-home-assistant" aria-labelledby="leaf-assistant-home-title">
+        <div>
+          <p className="page-eyebrow">Zweite Bedienebene · LEAF</p>
+          <h2 id="leaf-assistant-home-title">Nicht suchen. Fragen.</h2>
+          <p>
+            LEAF ist nicht nur ein Chatfenster, sondern ein direkter Zugang zu Wissen, Navigation
+            und passenden Shop-Inhalten. Text und Realtime-Sprache bleiben verfügbar, während du
+            dich durch den Shop bewegst.
+          </p>
+        </div>
+        <div className="leaf-home-assistant__examples">
+          <button type="button" onClick={openLeafAssistant}>„Welches Substrat passt zu meiner Alocasia?“</button>
+          <button type="button" onClick={openLeafAssistant}>„Welche Lampe reicht für dieses Regal?“</button>
+          <button type="button" onClick={openLeafAssistant}>„Bring mich zu Bewässerung für drei Pflanzen.“</button>
+        </div>
+      </section>
+
+      <LeafAtrium locale="de" />
+
+      <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title">
+        <div>
+          <p className="page-eyebrow">Direkter Weg</p>
+          <h2 id="leaf-shortcut-title">Du weißt schon, was du brauchst?</h2>
+          <p>
+            Die Erlebnisstruktur ist kein Zwangspfad. Sortiment, Suche, Warenkorb und Checkout
+            bleiben jederzeit direkt erreichbar.
+          </p>
+        </div>
+        <div className="leaf-campus-shortcut__links">
+          <Link to="/collections/all" prefetch="intent">Gesamtes Sortiment →</Link>
+          <Link to="/search" prefetch="intent">Produkte suchen →</Link>
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Substrat konfigurieren →</Link>
+        </div>
+      </section>
     </main>
   );
 }
 
 const HOMEPAGE_QUERY = `#graphql
-  query LeafCampusHomepage($country: CountryCode, $language: LanguageCode)
+  query LeafHomepage($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
-    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        id
-        title
-        handle
-        vendor
-        featuredImage { id url altText width height }
-        priceRange { minVariantPrice { amount currencyCode } }
+    collection(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze") {
+      id
+      title
+      description
+      image { id url altText width height }
+      products(first: 6) {
+        nodes {
+          id
+          title
+          handle
+          vendor
+          featuredImage { id url altText width height }
+          priceRange { minVariantPrice { amount currencyCode } }
+        }
       }
     }
   }
