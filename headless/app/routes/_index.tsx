@@ -166,7 +166,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <LeafAtrium locale="de" />
+      <LeafAtrium locale="de" showAtrium={false} />
 
       <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title">
         <div>
