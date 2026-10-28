@@ -7,7 +7,6 @@ export const meta: Route.MetaFunction = ({data}) => [
   ...(data?.article.seo?.description
     ? [{name: 'description', content: data.article.seo.description.slice(0, 155)}]
     : []),
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export async function loader({context, params}: Route.LoaderArgs) {
