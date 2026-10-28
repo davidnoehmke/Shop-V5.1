@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'Explore Venso grow lights for indoor plants, including pot-mounted, E27 and larger lighting solutions with live prices and variants.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export async function loader({context}: Route.LoaderArgs) {
