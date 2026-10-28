@@ -255,7 +255,7 @@ function publicVoiceContext(context: any) {
       facts: (item.facts || []).map((fact: any) => ({ label: clean(fact.label, 100), value: publicValue(fact.value) }))
     })),
     knowledge: (context.knowledge || []).map((item: any) => ({ question: clean(item.question, 300), answer: stripHtml(item.answer, 1800) })),
-    articles: (context.articles || []).map((item: any) => ({ handle: clean(item.handle, 180), title: clean(item.title, 180), excerpt: clean(item.excerpt, 650), body: clean(item.body, 1800) })),
+    articles: (context.articles || []).map((item: any) => ({ handle: clean(item.handle, 180), title: clean(item.title, 180), excerpt: clean(item.excerpt, 650), body: clean(item.body, 12_000) })),
     atoms: (context.atoms || []).map((item: any) => ({ name: clean(item.name, 150), explanation: stripHtml(item.explanation, 1800) })),
     collections: (context.collections || []).map((item: any) => ({ title: clean(item.title, 180), intro: stripHtml(item.intro, 650), guide: stripHtml(item.guide, 1800), care: stripHtml(item.care, 1200), faq: publicValue(item.faq) })),
     information: (context.information || []).map((item: any) => ({ statement: stripHtml(item.statement, 500), explanation: stripHtml(item.explanation, 1500) }))
