@@ -420,10 +420,10 @@ function KnowledgeSection() {
           <Link to="/blogs/journal/braune-flecken-alocasia" prefetch="intent">
             Braune Flecken an Alocasia verstehen
           </Link>
-          <Link to="/collections/all" prefetch="intent">
-            Passendes Substrat nach Pflanzengruppe finden
+          <Link to="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze" prefetch="intent">
+            Substratwelt: Mischungen, Bestandteile & Konfigurator
           </Link>
-          <Link to="/pages/leafers-konfigurator" prefetch="intent">
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">
             Zum Substrat-Konfigurator
           </Link>
         </div>
