@@ -125,7 +125,7 @@ export function LeafAtrium({locale = 'de'}: {locale?: Locale}) {
         </nav>
       </section>
 
-      <section className="leaf-campus-worlds" aria-labelledby="leaf-worlds-title">
+      <section id="leaf-worlds" className="leaf-campus-worlds" aria-labelledby="leaf-worlds-title">
         <div className="leaf-campus-worlds__intro">
           <p className="page-eyebrow">{isEnglish ? 'Districts' : 'Themenwelten'}</p>
           <h2 id="leaf-worlds-title">
