@@ -1752,3 +1752,72 @@ img,
 .venso-brand :focus-visible {outline: 3px solid #477b43; outline-offset: 4px;}
 @media(max-width: 900px) {.venso-grid {grid-template-columns: repeat(2,minmax(0,1fr));}}
 @media(max-width: 600px) {.venso-hero, .venso-grid {grid-template-columns: 1fr;} .venso-hero img {max-height: 320px;}}
+
+
+/* English Venso SEO reference product */
+.product-page-en .product-intro-en {
+  color: #425f53;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin: 0 0 1.25rem;
+}
+.seo-intent-section,
+.related-guides {
+  border-top: 1px solid var(--leafer-line);
+  margin-top: clamp(3rem, 7vw, 6rem);
+  padding-top: clamp(2rem, 4vw, 3.5rem);
+}
+.seo-intent-section {
+  max-width: 860px;
+}
+.seo-intent-section h2,
+.related-guides h2 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin: 0 0 1rem;
+}
+.seo-intent-section > p:not(.page-eyebrow),
+.related-guides p {
+  color: #465f55;
+  line-height: 1.72;
+}
+.source-note {
+  font-size: .9rem;
+  margin-top: 1.25rem;
+}
+.source-note a {
+  color: var(--leafer-forest);
+  font-weight: 700;
+  text-underline-offset: .2em;
+}
+.related-guides-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.5rem;
+}
+.related-guides-grid article {
+  border-top: 1px solid var(--leafer-line);
+  padding-top: .8rem;
+}
+.related-guides-grid a {
+  color: inherit;
+  text-decoration: none;
+}
+.related-guides-grid img {
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  width: 100%;
+}
+.related-guides-grid h3 {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  margin: .8rem 0 .4rem;
+}
+@media (max-width: 760px) {
+  .related-guides-grid {
+    grid-template-columns: 1fr;
+  }
+}
