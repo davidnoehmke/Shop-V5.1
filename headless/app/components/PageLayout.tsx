@@ -1,4 +1,4 @@
-import {Await, Link} from 'react-router';
+import {Await, Link, useLocation} from 'react-router';
 import {Suspense, useId} from 'react';
 import type {
   CartApiQueryFragment,
@@ -14,6 +14,8 @@ import {
   SearchFormPredictive,
 } from '~/components/SearchFormPredictive';
 import {SearchResultsPredictive} from '~/components/SearchResultsPredictive';
+
+export type StorefrontLocale = 'de' | 'en';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -32,17 +34,28 @@ export function PageLayout({
   isLoggedIn,
   publicStoreDomain,
 }: PageLayoutProps) {
+  const location = useLocation();
+  const locale: StorefrontLocale =
+    location.pathname === '/en' || location.pathname.startsWith('/en/')
+      ? 'en'
+      : 'de';
+
   return (
     <Aside.Provider>
-      <CartAside cart={cart} />
-      <SearchAside />
-      <MobileMenuAside header={header} publicStoreDomain={publicStoreDomain} />
+      <CartAside cart={cart} locale={locale} />
+      <SearchAside locale={locale} />
+      <MobileMenuAside
+        header={header}
+        publicStoreDomain={publicStoreDomain}
+        locale={locale}
+      />
       {header && (
         <Header
           header={header}
           cart={cart}
           isLoggedIn={isLoggedIn}
           publicStoreDomain={publicStoreDomain}
+          locale={locale}
         />
       )}
       <main>{children}</main>
@@ -55,24 +68,34 @@ export function PageLayout({
   );
 }
 
-function CartAside({cart}: {cart: PageLayoutProps['cart']}) {
+function CartAside({
+  cart,
+  locale,
+}: {
+  cart: PageLayoutProps['cart'];
+  locale: StorefrontLocale;
+}) {
   return (
-    <Aside type="cart" heading="Warenkorb">
-      <Suspense fallback={<p>Warenkorb wird geladen ...</p>}>
+    <Aside type="cart" heading={locale === 'en' ? 'Cart' : 'Warenkorb'}>
+      <Suspense
+        fallback={
+          <p>{locale === 'en' ? 'Loading cart ...' : 'Warenkorb wird geladen ...'}</p>
+        }
+      >
         <Await resolve={cart}>
-          {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
-          }}
+          {(cart) => <CartMain cart={cart} layout="aside" locale={locale} />}
         </Await>
       </Suspense>
     </Aside>
   );
 }
 
-function SearchAside() {
+function SearchAside({locale}: {locale: StorefrontLocale}) {
   const queriesDatalistId = useId();
+  const isEnglish = locale === 'en';
+
   return (
-    <Aside type="search" heading="Suche">
+    <Aside type="search" heading={isEnglish ? 'Search' : 'Suche'}>
       <div className="predictive-search">
         <br />
         <SearchFormPredictive>
@@ -82,13 +105,15 @@ function SearchAside() {
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
-                placeholder="Suche"
+                placeholder={isEnglish ? 'Search' : 'Suche'}
                 ref={inputRef}
                 type="search"
                 list={queriesDatalistId}
               />
               &nbsp;
-              <button onClick={goToSearch}>Suchen</button>
+              <button onClick={goToSearch}>
+                {isEnglish ? 'Search' : 'Suchen'}
+              </button>
             </>
           )}
         </SearchFormPredictive>
@@ -98,7 +123,7 @@ function SearchAside() {
             const {articles, collections, pages, products, queries} = items;
 
             if (state === 'loading' && term.current) {
-              return <div>Laedt...</div>;
+              return <div>{isEnglish ? 'Loading ...' : 'Lädt ...'}</div>;
             }
 
             if (!total) {
@@ -137,8 +162,8 @@ function SearchAside() {
                     to={`${SEARCH_ENDPOINT}?q=${term.current}`}
                   >
                     <p>
-                      Alle Ergebnisse fuer <q>{term.current}</q> ansehen
-                      &nbsp; →
+                      {isEnglish ? 'View all results for' : 'Alle Ergebnisse für'}{' '}
+                      <q>{term.current}</q>&nbsp; →
                     </p>
                   </Link>
                 ) : null}
@@ -154,22 +179,24 @@ function SearchAside() {
 function MobileMenuAside({
   header,
   publicStoreDomain,
+  locale,
 }: {
   header: PageLayoutProps['header'];
   publicStoreDomain: PageLayoutProps['publicStoreDomain'];
+  locale: StorefrontLocale;
 }) {
   return (
     header.menu &&
     header.shop.primaryDomain?.url && (
-      <Aside type="mobile" heading="Menue">
+      <Aside type="mobile" heading={locale === 'en' ? 'Menu' : 'Menü'}>
         <HeaderMenu
           menu={header.menu}
           viewport="mobile"
           primaryDomainUrl={header.shop.primaryDomain.url}
           publicStoreDomain={publicStoreDomain}
+          locale={locale}
         />
       </Aside>
     )
   );
 }
-
