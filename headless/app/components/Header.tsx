@@ -7,12 +7,14 @@ import {
 } from '@shopify/hydrogen';
 import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
 import {useAside} from '~/components/Aside';
+import type {StorefrontLocale} from '~/components/PageLayout';
 
 interface HeaderProps {
   header: HeaderQuery;
   cart: Promise<CartApiQueryFragment | null>;
   isLoggedIn: Promise<boolean>;
   publicStoreDomain: string;
+  locale?: StorefrontLocale;
 }
 
 type Viewport = 'desktop' | 'mobile';
@@ -22,15 +24,17 @@ export function Header({
   isLoggedIn,
   cart,
   publicStoreDomain,
+  locale = 'de',
 }: HeaderProps) {
   const {shop, menu} = header;
+  const homeUrl = locale === 'en' ? '/en' : '/';
 
   return (
     <header className="header">
       <NavLink
         className="header-brand"
         prefetch="intent"
-        to="/"
+        to={homeUrl}
         style={activeLinkStyle}
         end
       >
@@ -42,9 +46,14 @@ export function Header({
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
         publicStoreDomain={publicStoreDomain}
+        locale={locale}
       />
 
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+      <HeaderCtas
+        isLoggedIn={isLoggedIn}
+        cart={cart}
+        locale={locale}
+      />
     </header>
   );
 }
@@ -54,18 +63,30 @@ export function HeaderMenu({
   primaryDomainUrl,
   viewport,
   publicStoreDomain,
+  locale = 'de',
 }: {
   menu: HeaderProps['header']['menu'];
   primaryDomainUrl: HeaderProps['header']['shop']['primaryDomain']['url'];
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
+  locale?: StorefrontLocale;
 }) {
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
   const items = (menu || FALLBACK_HEADER_MENU).items;
+  const isEnglish = locale === 'en';
 
   return (
-    <nav className={className} aria-label={viewport === 'mobile' ? 'Mobile Navigation' : 'Hauptnavigation'}>
+    <nav
+      className={className}
+      aria-label={
+        viewport === 'mobile'
+          ? 'Mobile Navigation'
+          : isEnglish
+            ? 'Main navigation'
+            : 'Hauptnavigation'
+      }
+    >
       <ul className="header-menu-list">
         {viewport === 'mobile' && (
           <li>
@@ -74,9 +95,9 @@ export function HeaderMenu({
               onClick={close}
               prefetch="intent"
               style={activeLinkStyle}
-              to="/"
+              to={isEnglish ? '/en' : '/'}
             >
-              Start
+              {isEnglish ? 'Home' : 'Start'}
             </NavLink>
           </li>
         )}
@@ -93,7 +114,11 @@ export function HeaderMenu({
 
           return (
             <li
-              className={children.length ? 'header-menu-group has-children' : 'header-menu-group'}
+              className={
+                children.length
+                  ? 'header-menu-group has-children'
+                  : 'header-menu-group'
+              }
               key={item.id}
             >
               <NavLink
@@ -156,10 +181,16 @@ function resolveMenuUrl(
 function HeaderCtas({
   isLoggedIn,
   cart,
-}: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
+  locale,
+}: Pick<HeaderProps, 'isLoggedIn' | 'cart' | 'locale'>) {
+  const isEnglish = locale === 'en';
+
   return (
-    <nav className="header-ctas" aria-label="Shop Funktionen">
-      <HeaderMenuMobileToggle />
+    <nav
+      className="header-ctas"
+      aria-label={isEnglish ? 'Shop actions' : 'Shop Funktionen'}
+    >
+      <HeaderMenuMobileToggle locale={locale} />
       <NavLink
         className="header-cta-link header-account-link"
         prefetch="intent"
@@ -168,23 +199,39 @@ function HeaderCtas({
       >
         <Suspense fallback="Login">
           <Await resolve={isLoggedIn} errorElement="Login">
-            {(loggedIn) => (loggedIn ? 'Konto' : 'Login')}
+            {(loggedIn) =>
+              loggedIn
+                ? isEnglish
+                  ? 'Account'
+                  : 'Konto'
+                : 'Login'
+            }
           </Await>
         </Suspense>
       </NavLink>
-      <NavLink to="/marken/venso" prefetch="intent" className="header-cta-link">Venso</NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
+      <NavLink
+        to={isEnglish ? '/en/brands/venso' : '/marken/venso'}
+        prefetch="intent"
+        className="header-cta-link"
+      >
+        Venso
+      </NavLink>
+      <SearchToggle locale={locale} />
+      <CartToggle cart={cart} locale={locale} />
     </nav>
   );
 }
 
-function HeaderMenuMobileToggle() {
+function HeaderMenuMobileToggle({
+  locale = 'de',
+}: {
+  locale?: StorefrontLocale;
+}) {
   const {open} = useAside();
 
   return (
     <button
-      aria-label="Menü öffnen"
+      aria-label={locale === 'en' ? 'Open menu' : 'Menü öffnen'}
       className="header-menu-mobile-toggle reset"
       onClick={() => open('mobile')}
       type="button"
@@ -194,24 +241,36 @@ function HeaderMenuMobileToggle() {
   );
 }
 
-function SearchToggle() {
+function SearchToggle({
+  locale = 'de',
+}: {
+  locale?: StorefrontLocale;
+}) {
   const {open} = useAside();
+  const isEnglish = locale === 'en';
 
   return (
     <button
-      aria-label="Suche öffnen"
+      aria-label={isEnglish ? 'Open search' : 'Suche öffnen'}
       className="reset header-search-toggle"
       onClick={() => open('search')}
       type="button"
     >
-      Suche
+      {isEnglish ? 'Search' : 'Suche'}
     </button>
   );
 }
 
-function CartBadge({count}: {count: number}) {
+function CartBadge({
+  count,
+  locale = 'de',
+}: {
+  count: number;
+  locale?: StorefrontLocale;
+}) {
   const {open} = useAside();
   const {publish, shop, cart, prevCart} = useAnalytics();
+  const isEnglish = locale === 'en';
 
   return (
     <a
@@ -228,29 +287,43 @@ function CartBadge({count}: {count: number}) {
         } as CartViewPayload);
       }}
     >
-      <span>Warenkorb</span>
-      <span className="header-cart-count" aria-label={`Artikel im Warenkorb: ${count}`}>
+      <span>{isEnglish ? 'Cart' : 'Warenkorb'}</span>
+      <span
+        className="header-cart-count"
+        aria-label={
+          isEnglish
+            ? `Items in cart: ${count}`
+            : `Artikel im Warenkorb: ${count}`
+        }
+      >
         {count}
       </span>
     </a>
   );
 }
 
-function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
+function CartToggle({
+  cart,
+  locale = 'de',
+}: Pick<HeaderProps, 'cart' | 'locale'>) {
   return (
-    <Suspense fallback={<CartBadge count={0} />}>
+    <Suspense fallback={<CartBadge count={0} locale={locale} />}>
       <Await resolve={cart}>
-        <CartBanner />
+        <CartBanner locale={locale} />
       </Await>
     </Suspense>
   );
 }
 
-function CartBanner() {
+function CartBanner({
+  locale = 'de',
+}: {
+  locale?: StorefrontLocale;
+}) {
   const originalCart = useAsyncValue() as CartApiQueryFragment | null;
   const cart = useOptimisticCart(originalCart);
 
-  return <CartBadge count={cart?.totalQuantity ?? 0} />;
+  return <CartBadge count={cart?.totalQuantity ?? 0} locale={locale} />;
 }
 
 const FALLBACK_HEADER_MENU = {
@@ -307,4 +380,3 @@ function activeLinkStyle({
     opacity: isPending ? 0.55 : 1,
   };
 }
-
