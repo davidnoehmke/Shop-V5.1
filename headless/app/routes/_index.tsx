@@ -183,6 +183,15 @@ export default function Homepage() {
           <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Substrat konfigurieren →</Link>
         </div>
       </section>
+      <aside aria-label="Live Labs Entwicklungstagebuch" style={{borderTop: '1px solid rgba(100,120,100,.25)',padding: '22px 0 30px',marginTop: '36px'}}>
+        <div style={{display: 'flex',flexWrap: 'wrap',alignItems: 'center',justifyContent: 'space-between',gap: '14px'}}>
+          <div>
+            <p style={{fontSize: '11px',letterSpacing: '.13em',textTransform: 'uppercase',opacity: .7,marginBottom: '5px'}}>Live Labs · Einblicke in die Entwicklung</p>
+            <p style={{fontSize: '14px',margin: 0}}>Wie ich LEAFerservice technisch weiterentwickle – transparent und Schritt für Schritt.</p>
+          </div>
+          <a href="https://leaferservice.com/blogs/live-labs/shopify-liquid-headless-commerce-migration-werkstattbericht" style={{fontSize: '13px',textDecoration: 'underline',textUnderlineOffset: '4px'}}>Entwicklungstagebuch lesen →</a>
+        </div>
+      </aside>
     </main>
   );
 }
