@@ -87,10 +87,24 @@ export default function Homepage() {
             Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
           </p>
         </div>
-        <div className="leaf-home-entry__visual" aria-hidden="true">
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
-          <div className="leaf-home-entry__leafmark">LEAF</div>
+        <div className="leaf-home-entry__visual">
+          {substrateProducts.find((product) => product.featuredImage)?.featuredImage ? (
+            <Image
+              data={substrateProducts.find((product) => product.featuredImage)!.featuredImage!}
+              sizes="(min-width: 1000px) 42vw, 90vw"
+              loading="eager"
+              className="leaf-home-entry__shopify-image"
+            />
+          ) : substrateCollection?.image ? (
+            <Image
+              data={substrateCollection.image}
+              sizes="(min-width: 1000px) 42vw, 90vw"
+              loading="eager"
+              className="leaf-home-entry__shopify-image"
+            />
+          ) : (
+            <div className="leaf-home-entry__leafmark" aria-hidden="true">LEAF</div>
+          )}
         </div>
       </section>
 
