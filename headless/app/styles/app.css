@@ -1898,3 +1898,31 @@ img,
 .elho-brand :focus-visible{outline:3px solid #477b43;outline-offset:4px;}
 @media(max-width:980px){.elho-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.elho-steps{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:620px){.elho-hero,.elho-grid,.elho-steps{grid-template-columns:1fr;}.elho-hero img,.elho-hero-placeholder{min-height:220px;max-height:320px;}}
+
+
+/* Blumat watering world */
+.blumat-brand{padding-block:2rem 5rem;}
+.blumat-brand nav{font-size:.9rem;margin-bottom:2rem;}
+.blumat-hero{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,5rem);align-items:center;background:#eef5f2;padding:clamp(1.5rem,4vw,4rem);border-radius:12px;}
+.blumat-hero h1{font-size:clamp(2.2rem,5vw,4.5rem);line-height:1.08;margin:1rem 0 1.5rem;color:#173e2c;}
+.blumat-hero img,.blumat-hero-placeholder{width:100%;min-height:320px;max-height:500px;object-fit:contain;border-radius:8px;background:#fff;}
+.blumat-hero-placeholder{display:grid;place-items:center;font-size:clamp(3rem,8vw,7rem);font-weight:800;letter-spacing:-.06em;color:#173e2c;}
+.blumat-cta{display:inline-block;background:#173e2c;color:#fff;padding:1rem 1.4rem;margin-top:1.5rem;border-radius:4px;}
+.blumat-path{margin-top:clamp(3rem,7vw,6rem);}
+.blumat-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.5rem;}
+.blumat-steps article{border-top:1px solid var(--leafer-line);padding-top:1rem;}
+.blumat-steps b{display:inline-block;margin-bottom:.8rem;color:#63776e;font-size:.85rem;}
+.blumat-steps h3{margin:.2rem 0 .7rem;font-size:1.15rem;}
+.blumat-group{margin-top:2.75rem;}
+.blumat-group>h3{font-size:clamp(1.35rem,2vw,1.8rem);margin-bottom:1rem;}
+.blumat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem;}
+.blumat-card{padding:1.1rem;border:1px solid #e2e5dd;border-radius:8px;background:#fff;}
+.blumat-card img{width:100%;aspect-ratio:1;object-fit:contain;}
+.blumat-card h4{font-size:1.05rem;line-height:1.35;margin:.8rem 0 .55rem;}
+.blumat-price{margin-block:1rem;font-weight:700;}
+.blumat-product-link{display:inline-block;padding-block:.7rem;text-decoration:underline;}
+.blumat-advice{max-width:760px;margin-top:clamp(3rem,7vw,6rem);border-top:1px solid var(--leafer-line);padding-top:2rem;}
+.blumat-brand :focus-visible{outline:3px solid #477b43;outline-offset:4px;}
+@media(max-width:1100px){.blumat-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:860px){.blumat-grid,.blumat-steps{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:620px){.blumat-hero,.blumat-grid,.blumat-steps{grid-template-columns:1fr;}.blumat-hero img,.blumat-hero-placeholder{min-height:220px;max-height:320px;}}
