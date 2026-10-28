@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'LEAFerservice combines substrate systems, a custom substrate configurator, grow lighting, irrigation and plant knowledge with the LEAF AI assistant.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export default function EnglishHome() {
