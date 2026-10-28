@@ -1,0 +1,107 @@
+name: Headless Venso pilot
+
+on:
+  pull_request:
+    paths: ['headless/**', '.github/workflows/headless-pilot.yml']
+  push:
+    branches: ['pilot/venso-hydrogen-oxygen']
+    paths: ['headless/**', '.github/workflows/headless-pilot.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: venso-pilot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Hydrogen typecheck, tests and production build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: headless
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: headless/package-lock.json
+      - run: npm ci
+      - run: npm run codegen
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:build
+      - name: Preserve public preview assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: venso-client-build
+          path: headless/dist/client
+          if-no-files-found: error
+
+  preview:
+    name: Oxygen preview and real commerce verification
+    needs: validate
+    if: >-
+      (github.event_name == 'push' && github.ref == 'refs/heads/pilot/venso-hydrogen-oxygen') ||
+      (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      deployments: write
+    defaults:
+      run:
+        working-directory: headless
+    env:
+      SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN: ${{ secrets.OXYGEN_DEPLOYMENT_TOKEN }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: headless/package-lock.json
+      - name: Detect optional Oxygen connection
+        id: oxygen
+        shell: bash
+        run: |
+          if [ -n "$SHOPIFY_HYDROGEN_DEPLOYMENT_TOKEN" ]; then
+            echo 'connected=true' >> "$GITHUB_OUTPUT"
+            echo 'Oxygen connection detected; preview commerce verification will run.'
+          else
+            echo 'connected=false' >> "$GITHUB_OUTPUT"
+            echo '::notice::OXYGEN_DEPLOYMENT_TOKEN is not configured. Skipping Oxygen-only preview verification; validation remains required.'
+          fi
+      - run: npm ci
+        if: steps.oxygen.outputs.connected == 'true'
+      - name: Deploy only to the Oxygen Preview environment
+        if: steps.oxygen.outputs.connected == 'true'
+        run: npx shopify hydrogen deploy --preview --json-output
+      - name: Read and record the verified preview URL
+        if: steps.oxygen.outputs.connected == 'true'
+        run: node scripts/preview-url.mjs
+      - run: npx playwright install --with-deps chromium
+        if: steps.oxygen.outputs.connected == 'true'
+      - name: Verify real product IDs, variant selection, cart and checkout handoff
+        if: steps.oxygen.outputs.connected == 'true'
+        run: npm run test:e2e
+      - name: Preserve preview verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: venso-preview-evidence
+          path: |
+            headless/preview.json
+            headless/playwright-report
+            headless/test-results
+          if-no-files-found: warn
