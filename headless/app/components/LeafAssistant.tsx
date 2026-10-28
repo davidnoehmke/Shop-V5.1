@@ -1,13 +1,15 @@
 import {useEffect, useMemo, useRef, useState} from 'react';
-import type {FormEvent} from 'react';
+import type {CSSProperties, FormEvent, PointerEvent as ReactPointerEvent} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 
 type ChatMessage = {role: 'user' | 'assistant'; content: string};
 type AssistantLink = {label: string; href: string};
+type Position = {x: number; y: number};
 
 const MAX_HISTORY = 6;
-const SAFE_PREFIXES = ['/collections/', '/products/', '/blogs/', '/marken/', '/en/'];
+const SAFE_PREFIXES = ['/collections/', '/products/', '/blogs/', '/marken/', '/welten/', '/pages/', '/policies/', '/en/'];
 const SAFE_EXACT = new Set(['/', '/search', '/cart', '/collections']);
+const DRAG_STEP = 24;
 
 function safePath(value: unknown) {
   if (typeof value !== 'string') return '';
@@ -28,6 +30,8 @@ export function LeafAssistant() {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const [minimized, setMinimized] = useState(false);
+  const [position, setPosition] = useState<Position>({x: 0, y: 0});
   const [voiceActive, setVoiceActive] = useState(false);
   const [busy, setBusy] = useState(false);
   const [input, setInput] = useState('');
@@ -37,6 +41,7 @@ export function LeafAssistant() {
     {role: 'assistant', content: 'Was möchtest du finden, verstehen oder auf der Seite erledigen?'},
   ]);
   const historyRef = useRef<ChatMessage[]>([]);
+  const dragRef = useRef<{pointerId: number; clientX: number; clientY: number; position: Position} | null>(null);
   const peerRef = useRef<RTCPeerConnection | null>(null);
   const channelRef = useRef<RTCDataChannel | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -48,10 +53,60 @@ export function LeafAssistant() {
   const turnRef = useRef(0);
 
   const locale = useMemo(() => location.pathname.startsWith('/en') ? 'en' : 'de', [location.pathname]);
+  const assistantStyle = {'--leaf-assistant-x': `${position.x}px`, '--leaf-assistant-y': `${position.y}px`} as CSSProperties;
 
   useEffect(() => {
     return () => stopVoice();
   }, []);
+
+  function clampPosition(next: Position) {
+    if (typeof window === 'undefined') return next;
+    const keepVisible = 88;
+    const maxX = Math.max(0, window.innerWidth - keepVisible);
+    const maxY = Math.max(0, window.innerHeight - keepVisible);
+    return {
+      x: Math.max(-maxX, Math.min(maxX, next.x)),
+      y: Math.max(-maxY, Math.min(maxY, next.y)),
+    };
+  }
+
+  function beginDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragRef.current = {
+      pointerId: event.pointerId,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      position,
+    };
+  }
+
+  function drag(event: ReactPointerEvent<HTMLElement>) {
+    const active = dragRef.current;
+    if (!active || active.pointerId !== event.pointerId) return;
+    setPosition(clampPosition({
+      x: active.position.x + event.clientX - active.clientX,
+      y: active.position.y + event.clientY - active.clientY,
+    }));
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLElement>) {
+    if (dragRef.current?.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+  }
+
+  function moveWithKeyboard(event: React.KeyboardEvent<HTMLElement>) {
+    let dx = 0;
+    let dy = 0;
+    if (event.key === 'ArrowLeft') dx = -DRAG_STEP;
+    if (event.key === 'ArrowRight') dx = DRAG_STEP;
+    if (event.key === 'ArrowUp') dy = -DRAG_STEP;
+    if (event.key === 'ArrowDown') dy = DRAG_STEP;
+    if (!dx && !dy) return;
+    event.preventDefault();
+    setPosition((current) => clampPosition({x: current.x + dx, y: current.y + dy}));
+  }
 
   function append(role: ChatMessage['role'], content: string) {
     const clean = content.trim().slice(0, 3000);
@@ -77,7 +132,12 @@ export function LeafAssistant() {
     const path = safePath(destination);
     if (!path) return {ok: false, error: 'destination_not_allowed'};
     void navigate(path);
-    setOpen(false);
+    if (!voiceActive) {
+      setOpen(false);
+      setMinimized(false);
+    } else {
+      setMinimized(true);
+    }
     return {ok: true, path};
   }
 
@@ -176,6 +236,7 @@ export function LeafAssistant() {
       return;
     }
     setOpen(true);
+    setMinimized(false);
     setStatus('Sprachmodus wird verbunden …');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -241,26 +302,100 @@ export function LeafAssistant() {
   }
 
   return (
-    <aside className="leaf-assistant" aria-label="LEAF Assistent">
-      <button
-        className="leaf-assistant__trigger"
-        type="button"
-        aria-expanded={open}
-        aria-controls="leaf-assistant-panel"
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span aria-hidden="true">LEAF</span>
-        <span className="sr-only">Assistent öffnen</span>
-      </button>
-
-      {open ? (
+    <aside className="leaf-assistant" aria-label="LEAF Assistent" style={assistantStyle}>
+      {!open ? (
+        <button
+          className="leaf-assistant__trigger"
+          type="button"
+          aria-expanded="false"
+          aria-controls="leaf-assistant-panel"
+          onClick={() => {
+            setOpen(true);
+            setMinimized(false);
+          }}
+        >
+          <span aria-hidden="true">LEAF</span>
+          <span className="sr-only">Assistent öffnen</span>
+        </button>
+      ) : minimized ? (
+        <div className={'leaf-assistant__minimized' + (voiceActive ? ' is-live' : '')}>
+          <button
+            className="leaf-assistant__drag-handle"
+            type="button"
+            aria-label="LEAF verschieben"
+            title="Ziehen oder mit Pfeiltasten verschieben"
+            onPointerDown={beginDrag}
+            onPointerMove={drag}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onKeyDown={moveWithKeyboard}
+          >
+            ⋮⋮
+          </button>
+          <button
+            className="leaf-assistant__restore"
+            type="button"
+            onClick={() => setMinimized(false)}
+            aria-label="LEAF wieder öffnen"
+          >
+            <span>LEAF</span>
+            <small>{voiceActive ? (status || 'Sprachgespräch aktiv') : 'Assistent öffnen'}</small>
+          </button>
+          {voiceActive ? <span className="leaf-assistant__live-dot" aria-label="Sprachgespräch aktiv" /> : null}
+        </div>
+      ) : (
         <section id="leaf-assistant-panel" className="leaf-assistant__panel" aria-live="polite">
           <header className="leaf-assistant__header">
-            <div>
+            <button
+              className="leaf-assistant__drag-handle"
+              type="button"
+              aria-label="LEAF verschieben"
+              title="Ziehen oder mit Pfeiltasten verschieben"
+              onPointerDown={beginDrag}
+              onPointerMove={drag}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              onKeyDown={moveWithKeyboard}
+            >
+              ⋮⋮
+            </button>
+            <div className="leaf-assistant__header-copy">
               <p className="page-eyebrow">LEAF · Finden, verstehen, navigieren</p>
               <h2>Wobei kann ich helfen?</h2>
             </div>
-            <button type="button" onClick={() => setOpen(false)} aria-label="Assistent schließen">×</button>
+            <div className="leaf-assistant__window-actions">
+              <button
+                type="button"
+                onClick={() => setPosition({x: 0, y: 0})}
+                aria-label="LEAF auf Standardposition zurücksetzen"
+                title="Position zurücksetzen"
+              >
+                ↺
+              </button>
+              <button
+                type="button"
+                onClick={() => setMinimized(true)}
+                aria-label="LEAF minimieren"
+                title={voiceActive ? 'Minimieren – Sprachgespräch läuft weiter' : 'Minimieren'}
+              >
+                −
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (voiceActive) {
+                    setMinimized(true);
+                  } else {
+                    setOpen(false);
+                    setMinimized(false);
+                  }
+                }}
+                aria-label={voiceActive ? 'LEAF minimieren; Sprachgespräch läuft weiter' : 'Assistent schließen'}
+                title={voiceActive ? 'Sprachgespräch läuft weiter' : 'Schließen'}
+              >
+                ×
+              </button>
+            </div>
           </header>
 
           <div className="leaf-assistant__messages">
@@ -302,7 +437,7 @@ export function LeafAssistant() {
           <p className="leaf-assistant__status" role="status">{status}</p>
           <p className="leaf-assistant__privacy">Ohne Login nutzbar. LEAF ist ein KI-Assistent und kein Mensch.</p>
         </section>
-      ) : null}
+      )}
     </aside>
   );
 }

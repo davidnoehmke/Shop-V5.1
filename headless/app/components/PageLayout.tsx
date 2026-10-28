@@ -63,6 +63,7 @@ export function PageLayout({
         footer={footer}
         header={header}
         publicStoreDomain={publicStoreDomain}
+        locale={locale}
       />
     </Aside.Provider>
   );
@@ -159,7 +160,7 @@ function SearchAside({locale}: {locale: StorefrontLocale}) {
                 {term.current && total ? (
                   <Link
                     onClick={closeSearch}
-                    to={`${SEARCH_ENDPOINT}?q=${term.current}`}
+                    to={`${isEnglish ? '/en/search' : SEARCH_ENDPOINT}?q=${term.current}`}
                   >
                     <p>
                       {isEnglish ? 'View all results for' : 'Alle Ergebnisse für'}{' '}

@@ -1,10 +1,11 @@
-import {Link} from 'react-router';
+import {Link, useLocation} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
 import type {
   ProductItemFragment,
   CollectionItemFragment,
 } from 'storefrontapi.generated';
 import {useVariantUrl} from '~/lib/variants';
+import {localizedPath} from '~/lib/locale-path';
 
 export function ProductItem({
   product,
@@ -16,13 +17,15 @@ export function ProductItem({
   loading?: 'eager' | 'lazy';
 }) {
   const variantUrl = useVariantUrl(product.handle);
+  const location = useLocation();
+  const localizedVariantUrl = localizedPath(variantUrl, location.pathname);
   const image = product.featuredImage;
   return (
     <Link
       className="product-item"
       key={product.id}
       prefetch="intent"
-      to={variantUrl}
+      to={localizedVariantUrl}
     >
       {image && (
         <Image

@@ -20,10 +20,6 @@ import {LeafAssistant} from './components/LeafAssistant';
 
 export type RootLoader = typeof loader;
 
-export const meta: Route.MetaFunction = () => [
-  {name: 'robots', content: 'noindex,nofollow'},
-];
-
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  */

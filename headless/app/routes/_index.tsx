@@ -1,9 +1,8 @@
 import {Image, Money} from '@shopify/hydrogen';
 import {Link, useLoaderData} from 'react-router';
-import type {Route} from './+types/_index';
-import {AddToCartButton} from '~/components/AddToCartButton';
-import {useAside} from '~/components/Aside';
 import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
+import type {Route} from './+types/_index';
+import {LeafAtrium} from '~/components/LeafAtrium';
 
 type HomepageImage = {
   id: string;
@@ -23,487 +22,189 @@ type HomepageProduct = {
   title: string;
   handle: string;
   vendor: string;
-  productType: string;
-  shortClaim?: {value: string} | null;
-  mixingRatio?: {value: string} | null;
-  ingredients?: {value: string} | null;
   featuredImage?: HomepageImage | null;
-  selectedOrFirstAvailableVariant?: {
-    id: string;
-    availableForSale: boolean;
-    price: HomepageMoney;
-    product: {
-      title: string;
-      handle: string;
-    };
-  } | null;
-  priceRange: {
-    minVariantPrice: HomepageMoney;
-  };
-};
-
-type HomepageCollection = {
-  id: string;
-  title: string;
-  handle: string;
-  description: string;
-  image?: HomepageImage | null;
+  priceRange: {minVariantPrice: HomepageMoney};
 };
 
 type HomepageQuery = {
-  shop: {
-    name: string;
-    description: string | null;
-  };
-  products: {
-    nodes: HomepageProduct[];
-  };
-  collections: {
-    nodes: HomepageCollection[];
-  };
+  collection: {
+    id: string;
+    title: string;
+    description: string;
+    image?: HomepageImage | null;
+    products: {nodes: HomepageProduct[]};
+  } | null;
 };
 
-export const meta: Route.MetaFunction = () => {
-  return [
-    {title: 'Substrat-Konfigurator, Pflanzen & Zubehör | LEAFerservice'},
-    {
-      name: 'description',
-      content:
-        'Pflanze auswählen, passendes Substrat- und Topfset konfigurieren und Pflanzen, Licht sowie Zubehör direkt bei LEAFerservice finden.',
-    },
-  ];
-};
+export const meta: Route.MetaFunction = () => [
+  {title: 'Substrate, Pflanzenlicht & Beratung | LEAFerservice'},
+  {
+    name: 'description',
+    content:
+      'LEAFerservice verbindet eigene Substratmischungen, einen Substrat-Konfigurator, Pflanzenlicht, Bewässerung und Pflanzenwissen mit dem KI-Assistenten LEAF.',
+  },
+];
 
 export async function loader({context}: Route.LoaderArgs) {
-  const homepage = await context.storefront.query<HomepageQuery>(
-    HOMEPAGE_QUERY,
-    {
-      cache: context.storefront.CacheShort(),
-    },
-  );
-
-  const products = homepage.products.nodes;
-  const collections = homepage.collections.nodes;
+  const homepage = await context.storefront.query<HomepageQuery>(HOMEPAGE_QUERY, {
+    cache: context.storefront.CacheShort(),
+  });
 
   return {
-    products,
-    collections,
-    heroProduct: products[0] ?? null,
-    substrateProduct:
-      products.find((product) =>
-        /substrat|mix|perlite|seramis|lava|blaehton|blähton/i.test(
-          `${product.title} ${product.productType}`,
-        ),
-      ) ?? products[1] ?? null,
-    potProduct:
-      products.find((product) =>
-        /topf|pot|grow|lechuza|stoff/i.test(
-          `${product.title} ${product.productType}`,
-        ),
-      ) ?? products[2] ?? null,
+    substrateCollection: homepage.collection,
   };
 }
 
 export default function Homepage() {
-  const {products, collections, heroProduct, substrateProduct, potProduct} =
-    useLoaderData<typeof loader>();
+  const {substrateCollection} = useLoaderData<typeof loader>();
+  const substrateProducts = substrateCollection?.products.nodes ?? [];
+
+  function openLeafAssistant() {
+    window.dispatchEvent(new Event('leaf:assistant:open'));
+  }
 
   return (
-    <div className="leafer-home">
-      <Hero product={heroProduct} />
-      <ConfiguratorPreview
-        products={products}
-        substrateProduct={substrateProduct}
-        potProduct={potProduct}
-      />
-      <ProductWorlds collections={collections} />
-      <FeaturedProducts products={products} />
-      <KnowledgeSection />
-    </div>
-  );
-}
-
-function Hero({product}: {product: HomepageProduct | null}) {
-  const image = product?.featuredImage;
-
-  return (
-    <section className="leafer-hero">
-      <div className="leafer-wrap leafer-hero-grid">
-        <div className="leafer-hero-copy">
-          <p className="leafer-eyebrow">Pflanzen-Systeme statt Einzelteile</p>
-          <h1>Pflanze waehlen. Setup bekommen. Besser wachsen.</h1>
-          <p className="leafer-lead">
-            LEAFerservice fuehrt Kundinnen und Kunden von der Pflanze zum
-            passenden System: Substrat, Topf, Rankhilfe, Licht und smarte
-            Add-ons in einem klaren Kaufweg.
+    <main className="leafer-home leaf-homepage">
+      <section className="leaf-home-entry" aria-labelledby="leaf-home-title">
+        <div className="leaf-home-entry__copy">
+          <p className="page-eyebrow">LEAFerservice · Pflanzen besser verstehen</p>
+          <h1 id="leaf-home-title">Was braucht deine Pflanze?</h1>
+          <p className="leaf-home-entry__lead">
+            Starte mit deinem Ziel statt mit einem Produktregal. LEAF hilft dir bei der
+            Orientierung – oder du gehst direkt zu Substraten, Konfigurator und unseren
+            kuratierten Themenwelten.
           </p>
-          <div className="leafer-actions">
-            <a className="leafer-button leafer-button-primary" href="#konfigurator">
-              Set konfigurieren
-            </a>
-            <a className="leafer-button leafer-button-ghost" href="#schnell">
-              Nur Topf + Substrat
-            </a>
-          </div>
-          <div className="leafer-trust">
-            <span>Passend kombiniert</span>
-            <span>Klare Anwendung</span>
-            <span>Direkt bestellbar</span>
-          </div>
-        </div>
-
-        <Link
-          className="leafer-hero-product"
-          to={product ? `/products/${product.handle}` : '/collections/all'}
-          prefetch="intent"
-        >
-          <div className="leafer-hero-image">
-            {image ? (
-              <Image
-                data={image}
-                alt={image.altText || product?.title || 'LEAFerservice Produkt'}
-                sizes="(min-width: 900px) 48vw, 92vw"
-                loading="eager"
-              />
-            ) : (
-              <div className="leafer-image-fallback">LEAFER</div>
-            )}
-          </div>
-          <div className="leafer-hero-card">
-            <span>Empfohlen</span>
-            <strong>{product?.title ?? 'LEAFerservice Sortiment'}</strong>
-            {product ? (
-              <Money data={product.priceRange.minVariantPrice} />
-            ) : (
-              <small>Sortiment entdecken und passend kombinieren.</small>
-            )}
-          </div>
-        </Link>
-      </div>
-    </section>
-  );
-}
-
-function ConfiguratorPreview({
-  products,
-  substrateProduct,
-  potProduct,
-}: {
-  products: HomepageProduct[];
-  substrateProduct: HomepageProduct | null;
-  potProduct: HomepageProduct | null;
-}) {
-  return (
-    <section className="leafer-section leafer-configurator" id="konfigurator">
-      <div className="leafer-wrap">
-        <div className="leafer-section-head">
-          <p className="leafer-eyebrow">Konfigurator</p>
-          <h2>Vom Pflanzenprojekt zum passenden Setup.</h2>
-          <p>
-            Wähle Pflanzengruppe und Projektgröße. Daraus entsteht ein übersichtlicher
-            Weg zu Substrat, Gefäß und passenden Ergänzungen.
-          </p>
-        </div>
-
-        <div className="leafer-config-grid">
-          <div className="leafer-config-panel">
-            <label>
-              Pflanze
-              <select defaultValue="aroid">
-                <option value="aroid">Alocasia / Monstera / Philodendron</option>
-                <option value="herbs">Kraeuter & Starter-Sets</option>
-                <option value="caladium">Caladium & Knollenpflanzen</option>
-              </select>
-            </label>
-            <label>
-              Projektgroesse
-              <input type="range" min="2" max="25" defaultValue="5" />
-            </label>
-            <div className="leafer-tabs">
-              <details open>
-                <summary>Empfohlenes System</summary>
-                <p>
-                  Strukturstarkes Substrat, passendes Gefäß und Ergänzungen nach
-                  tatsächlichem Bedarf.
-                </p>
-              </details>
-              <details>
-                <summary>Warum diese Mischung?</summary>
-                <p>
-                  Luft, Wasserhaltefaehigkeit und Mineralanteil werden nach
-                  Pflanzenbeduerfnis kombiniert.
-                </p>
-              </details>
-            </div>
-          </div>
-
-          <div className="leafer-bundle">
-            <BundleLine label="Substrat" product={substrateProduct} />
-            <BundleLine label="Topf" product={potProduct} />
-            <BundleLine label="Add-on" product={products[3] ?? null} />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function BundleLine({
-  label,
-  product,
-}: {
-  label: string;
-  product: HomepageProduct | null;
-}) {
-  const variant = product?.selectedOrFirstAvailableVariant;
-  const {open} = useAside();
-
-  return (
-    <article className="leafer-bundle-line">
-      <div>
-        <span>{label}</span>
-        <strong>{product?.title ?? `${label} auswaehlen`}</strong>
-        {product ? <Money data={product.priceRange.minVariantPrice} /> : null}
-      </div>
-      {variant ? (
-        <AddToCartButton
-          disabled={!variant.availableForSale}
-          lines={[
-            {
-              merchandiseId: variant.id,
-              quantity: 1,
-              selectedVariant: variant,
-            },
-          ]}
-          onSuccess={() => open('cart')}
-        >
-          {variant.availableForSale ? 'Hinzufuegen' : 'Ausverkauft'}
-        </AddToCartButton>
-      ) : (
-        <Link to="/collections/all" prefetch="intent">
-          Sortiment
-        </Link>
-      )}
-    </article>
-  );
-}
-
-function ProductWorlds({collections}: {collections: HomepageCollection[]}) {
-  const fallbackWorlds: HomepageCollection[] = [
-    {
-      id: 'substrate-fallback',
-      title: 'Substrate',
-      handle: 'substrate',
-      description: 'Mischungen und Bestandteile fuer stabile Wurzeln.',
-    },
-    {
-      id: 'pots-fallback',
-      title: 'LEAFerPots',
-      handle: 'toepfe',
-      description: 'Luftige Toepfe, Selbstbewaesserung und saubere Drainage.',
-    },
-    {
-      id: 'smart-growing-fallback',
-      title: 'Smart Growing',
-      handle: 'smart-growing',
-      description: 'Licht, Sensorik und Zubehoer fuer kontrolliertes Wachstum.',
-    },
-  ];
-  const worlds = collections.length ? collections.slice(0, 3) : fallbackWorlds;
-
-  return (
-    <section className="leafer-section leafer-worlds">
-      <div className="leafer-wrap">
-        <div className="leafer-section-head">
-          <p className="leafer-eyebrow">Produktwelten</p>
-          <h2>Weniger suchen. Schneller das richtige Setup finden.</h2>
-        </div>
-        <div className="leafer-world-grid">
-          {worlds.map((world) => (
-            <Link
-              key={world.handle}
-              className="leafer-world-card"
-              to={`/collections/${world.handle}`}
-              prefetch="intent"
-            >
-              {'image' in world && world.image ? (
-                <Image
-                  data={world.image}
-                  alt={world.image.altText || world.title}
-                  sizes="(min-width: 900px) 30vw, 90vw"
-                />
-              ) : null}
-              <span>Entdecken</span>
-              <h3>{world.title}</h3>
-              <p>{world.description || 'Kuratierte Auswahl aus Shopify.'}</p>
+          <div className="leaf-home-entry__actions">
+            <button type="button" className="leaf-home-entry__assistant" onClick={openLeafAssistant}>
+              Frag LEAF
+            </button>
+            <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">
+              Substrat konfigurieren
             </Link>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FeaturedProducts({products}: {products: HomepageProduct[]}) {
-  return (
-    <section className="leafer-section leafer-products" id="schnell">
-      <div className="leafer-wrap">
-        <div className="leafer-section-head">
-          <p className="leafer-eyebrow">Kurzer Weg</p>
-          <h2>Direkt Topf, Substrat oder Starter-Set kaufen.</h2>
-          <p>
-            Fuer kleine Projekte bleibt der Kaufweg bewusst kurz: Produkt
-            waehlen, in den Warenkorb legen, fertig.
+            <a href="#leaf-worlds">Welten entdecken</a>
+          </div>
+          <p className="leaf-home-entry__trust">
+            Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
           </p>
         </div>
-        <div className="leafer-product-grid">
-          {products.slice(0, 8).map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+        <div className="leaf-home-entry__visual" aria-hidden="true">
+          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
+          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
+          <div className="leaf-home-entry__leafmark">LEAF</div>
         </div>
-      </div>
-    </section>
-  );
-}
+      </section>
 
-function ProductCard({product}: {product: HomepageProduct}) {
-  const variant = product.selectedOrFirstAvailableVariant;
-  const {open} = useAside();
+      <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title">
+        <div className="leaf-home-substrate__intro">
+          <p className="page-eyebrow">Kernkompetenz · Substrate</p>
+          <h2 id="leaf-substrate-title">Mischen, auswählen oder selbst konfigurieren.</h2>
+          <p>
+            Unsere Substratwelt steht bewusst vor den Herstellerwelten: fertige LEAFerservice-
+            Mischungen, einzelne Komponenten und ein eigener 100-%-Mix führen direkt zum passenden
+            Aufbau.
+          </p>
+        </div>
 
-  return (
-    <article className="leafer-product-card">
-      <Link to={`/products/${product.handle}`} prefetch="intent">
-        {product.featuredImage ? (
-          <Image
-            data={product.featuredImage}
-            alt={product.featuredImage.altText || product.title}
-            aspectRatio="1/1"
-            sizes="(min-width: 900px) 22vw, 46vw"
-          />
-        ) : (
-          <div className="leafer-product-fallback">LEAFER</div>
-        )}
-        <span>{product.vendor || 'LEAFerservice'}</span>
-        <h3>{product.title}</h3>
-      </Link>
-      <div className="leafer-card-bottom">
-        <Money data={product.priceRange.minVariantPrice} />
-        {variant ? (
-          <AddToCartButton
-            disabled={!variant.availableForSale}
-            lines={[
-              {
-                merchandiseId: variant.id,
-                quantity: 1,
-                selectedVariant: variant,
-              },
-            ]}
-            onSuccess={() => open('cart')}
-          >
-            +
-          </AddToCartButton>
+        <div className="leaf-home-substrate__paths">
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent" className="leaf-home-path leaf-home-path--primary">
+            <span>01 · Konfigurator</span>
+            <strong>Eigenen Mix bauen</strong>
+            <p>Bis zu vier Komponenten kombinieren, auf 100 % ausbalancieren und direkt in den Warenkorb legen.</p>
+            <b>Konfigurator öffnen →</b>
+          </Link>
+          <Link to="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze" prefetch="intent" className="leaf-home-path">
+            <span>02 · Fertigmischungen</span>
+            <strong>Bewährte Mischung wählen</strong>
+            <p>Für Aroids, Tropical, Orchideen, Bonsai und weitere Anwendungen ohne eigenes Rezept.</p>
+            <b>Mischungen ansehen →</b>
+          </Link>
+          <Link to="/collections/substratwelt-pflanzsubstrate-mischungen-zusatze#einzelbestandteile" prefetch="intent" className="leaf-home-path">
+            <span>03 · Komponenten</span>
+            <strong>Einzelbestandteile kaufen</strong>
+            <p>Lava, Perlite, Pinienrinde, Seramis und weitere Bestandteile für eigene Rezepturen.</p>
+            <b>Bestandteile ansehen →</b>
+          </Link>
+        </div>
+
+        {substrateProducts.length ? (
+          <div className="leaf-home-substrate__products" aria-label="Ausgewählte Substratprodukte">
+            {substrateProducts.slice(0, 6).map((product) => (
+              <article key={product.id}>
+                <Link to={`/products/${product.handle}`} prefetch="intent">
+                  {product.featuredImage ? (
+                    <Image
+                      data={product.featuredImage}
+                      sizes="(min-width: 1000px) 16vw, (min-width: 650px) 30vw, 46vw"
+                    />
+                  ) : (
+                    <div className="leaf-home-product-placeholder">LEAF</div>
+                  )}
+                  <span>{product.vendor || 'LEAFerservice'}</span>
+                  <h3>{product.title}</h3>
+                </Link>
+                <Money data={product.priceRange.minVariantPrice} />
+              </article>
+            ))}
+          </div>
         ) : null}
-      </div>
-    </article>
-  );
-}
+      </section>
 
-function KnowledgeSection() {
-  return (
-    <section className="leafer-section leafer-knowledge">
-      <div className="leafer-wrap leafer-knowledge-grid">
+      <section className="leaf-home-assistant" aria-labelledby="leaf-assistant-home-title">
         <div>
-          <p className="leafer-eyebrow">Wissen & Beratung</p>
-          <h2>Wissen führt direkt zur passenden Lösung.</h2>
+          <p className="page-eyebrow">Zweite Bedienebene · LEAF</p>
+          <h2 id="leaf-assistant-home-title">Nicht suchen. Fragen.</h2>
+          <p>
+            LEAF ist nicht nur ein Chatfenster, sondern ein direkter Zugang zu Wissen, Navigation
+            und passenden Shop-Inhalten. Text und Realtime-Sprache bleiben verfügbar, während du
+            dich durch den Shop bewegst.
+          </p>
         </div>
-        <div className="leafer-knowledge-list">
-          <Link to="/blogs/journal/braune-flecken-alocasia" prefetch="intent">
-            Braune Flecken an Alocasia verstehen
-          </Link>
-          <Link to="/collections/all" prefetch="intent">
-            Passendes Substrat nach Pflanzengruppe finden
-          </Link>
-          <Link to="/pages/leafers-konfigurator" prefetch="intent">
-            Zum Substrat-Konfigurator
-          </Link>
+        <div className="leaf-home-assistant__examples">
+          <button type="button" onClick={openLeafAssistant}>„Welches Substrat passt zu meiner Alocasia?“</button>
+          <button type="button" onClick={openLeafAssistant}>„Welche Lampe reicht für dieses Regal?“</button>
+          <button type="button" onClick={openLeafAssistant}>„Bring mich zu Bewässerung für drei Pflanzen.“</button>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <LeafAtrium locale="de" showAtrium={false} />
+
+      <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title">
+        <div>
+          <p className="page-eyebrow">Direkter Weg</p>
+          <h2 id="leaf-shortcut-title">Du weißt schon, was du brauchst?</h2>
+          <p>
+            Die Erlebnisstruktur ist kein Zwangspfad. Sortiment, Suche, Warenkorb und Checkout
+            bleiben jederzeit direkt erreichbar.
+          </p>
+        </div>
+        <div className="leaf-campus-shortcut__links">
+          <Link to="/collections/all" prefetch="intent">Gesamtes Sortiment →</Link>
+          <Link to="/search" prefetch="intent">Produkte suchen →</Link>
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Substrat konfigurieren →</Link>
+        </div>
+      </section>
+    </main>
   );
 }
 
 const HOMEPAGE_QUERY = `#graphql
-  fragment HomepageImage on Image {
-    id
-    url
-    altText
-    width
-    height
-  }
-
-  fragment HomepageMoney on MoneyV2 {
-    amount
-    currencyCode
-  }
-
-  fragment HomepageProduct on Product {
-    id
-    title
-    handle
-    vendor
-    productType
-    shortClaim: metafield(namespace: "leafer", key: "short_claim") {
-      value
-    }
-    mixingRatio: metafield(namespace: "leafer", key: "mixing_ratio") {
-      value
-    }
-    ingredients: metafield(namespace: "leafer", key: "ingredients") {
-      value
-    }
-    featuredImage {
-      ...HomepageImage
-    }
-    selectedOrFirstAvailableVariant {
+  query LeafHomepage($country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collection(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze") {
       id
-      availableForSale
-      price {
-        ...HomepageMoney
-      }
-      product {
-        title
-        handle
-      }
-    }
-    priceRange {
-      minVariantPrice {
-        ...HomepageMoney
-      }
-    }
-  }
-
-  query LeaferHomepage($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    shop {
-      name
+      title
       description
-    }
-    products(first: 8, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...HomepageProduct
-      }
-    }
-    collections(first: 6, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        id
-        title
-        handle
-        description
-        image {
-          ...HomepageImage
+      image { id url altText width height }
+      products(first: 6) {
+        nodes {
+          id
+          title
+          handle
+          vendor
+          featuredImage { id url altText width height }
+          priceRange { minVariantPrice { amount currencyCode } }
         }
       }
     }
   }
 ` as const;
-

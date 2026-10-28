@@ -1,4 +1,4 @@
-import {Link, useLoaderData} from 'react-router';
+import {Link, useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/blogs._index';
 import {getPaginationVariables} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -6,9 +6,14 @@ import type {BlogsQuery} from 'storefrontapi.generated';
 
 type BlogNode = BlogsQuery['blogs']['nodes'][0];
 
-export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Blogs`}];
-};
+export const meta: Route.MetaFunction = () => [
+  {title: 'Ratgeber & Pflanzenwissen | LEAFerservice'},
+  {
+    name: 'description',
+    content:
+      'Praxisnahe Ratgeber zu Zimmerpflanzen, Substraten, Pflanzenlicht, Bewässerung und Anzucht bei LEAFerservice.',
+  },
+];
 
 export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -52,10 +57,16 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Blogs() {
   const {blogs} = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
 
   return (
-    <div className="blogs">
-      <h1>Blogs</h1>
+    <div className="page-shell blogs">
+      <header className="page-intro">
+        <p className="page-eyebrow">LEAFerservice</p>
+        <h1>{isEnglish ? 'Guides & knowledge' : 'Ratgeber & Wissen'}</h1>
+        <p className="page-lead">{isEnglish ? 'Plant care, substrates, lighting and practical growing knowledge.' : 'Pflanzenpflege, Substrate, Licht und praxisnahes Growing-Wissen.'}</p>
+      </header>
       <div className="blogs-grid">
         <PaginatedResourceSection<BlogNode> connection={blogs}>
           {({node: blog}) => (
@@ -63,7 +74,7 @@ export default function Blogs() {
               className="blog"
               key={blog.handle}
               prefetch="intent"
-              to={`/blogs/${blog.handle}`}
+              to={`${isEnglish ? '/en' : ''}/blogs/${blog.handle}`}
             >
               <h2>{blog.title}</h2>
             </Link>
