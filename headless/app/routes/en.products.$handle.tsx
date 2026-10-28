@@ -49,7 +49,6 @@ export const meta: Route.MetaFunction = ({data}) => {
     ...(description
       ? [{name: 'description', content: description.slice(0, 155)}]
       : []),
-    {name: 'robots', content: 'noindex,nofollow'},
     {
       rel: 'canonical',
       href: `/en/products/${product?.handle ?? ''}`,
