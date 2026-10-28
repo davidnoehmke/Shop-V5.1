@@ -1,12 +1,13 @@
 import {useMemo, useState} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
+import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 
 type Locale = 'de' | 'en';
 
-type MoneyData = {amount: string; currencyCode: string};
+type MoneyData = {amount: string; currencyCode: CurrencyCode};
 type ImageData = {
   id: string;
   url: string;
@@ -163,7 +164,7 @@ export function SubstrateConfigurator({
             </select>
           </label>
           {selectedVariant ? (
-            <p className="substrate-configurator__price"><Money data={selectedVariant.price as never} /></p>
+            <p className="substrate-configurator__price"><Money data={selectedVariant.price} /></p>
           ) : null}
         </div>
 
