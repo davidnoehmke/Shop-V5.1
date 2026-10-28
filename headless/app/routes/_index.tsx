@@ -149,6 +149,21 @@ export default function Homepage() {
         ) : null}
       </section>
 
+
+      <section className="leaf-home-story" aria-labelledby="leaf-story-title">
+        <div className="leaf-home-story__visual">
+          {substrateProducts.find((product) => product.featuredImage)?.featuredImage ? (
+            <Image data={substrateProducts.find((product) => product.featuredImage)!.featuredImage!} sizes="(min-width: 900px) 42vw, 90vw" />
+          ) : <div className="leaf-home-story__fallback" aria-hidden="true">LEAFerservice</div>}
+        </div>
+        <div className="leaf-home-story__copy">
+          <p className="page-eyebrow">Hinter LEAFerservice</p>
+          <h2 id="leaf-story-title">Aus Begeisterung für Pflanzen. Mit Blick fürs Detail.</h2>
+          <p>LEAFerservice ist aus der praktischen Beschäftigung mit Zimmerpflanzen entstanden: Welche Mischung passt wirklich zu den Wurzeln? Wie viel Licht braucht ein Standort? Und welches Zubehör macht die Pflege einfacher?</p>
+          <p>Statt beliebiger Produktlisten verbinden wir ausgewählte Komponenten, eigene Substratideen und verständliche Orientierung. Damit du eine Lösung findest, die zu deiner Pflanze und deinem Zuhause passt.</p>
+          <div className="leaf-home-story__actions"><Link to="/collections/all" prefetch="intent">Sortiment entdecken →</Link><Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Eigenen Mix zusammenstellen →</Link></div>
+        </div>
+      </section>
       <section className="leaf-home-assistant" aria-labelledby="leaf-assistant-home-title">
         <div>
           <p className="page-eyebrow">Zweite Bedienebene · LEAF</p>
