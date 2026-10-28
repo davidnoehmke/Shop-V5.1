@@ -4,7 +4,7 @@ import {hydrogen} from '@shopify/hydrogen/vite';
 import {oxygen} from '@shopify/mini-oxygen/vite';
 import {reactRouter} from '@react-router/dev/vite';
 
-export default defineConfig(() => ({
+export default defineConfig(({isSsrBuild}) => ({
   plugins: [hydrogen(), oxygen(), reactRouter()],
   resolve: {
     alias: {
@@ -14,6 +14,10 @@ export default defineConfig(() => ({
   },
   build: {
     assetsInlineLimit: 0,
+    rollupOptions:
+      process.env.VERCEL && isSsrBuild
+        ? {input: './server.vercel.ts'}
+        : undefined,
   },
   ssr: {
     optimizeDeps: {
