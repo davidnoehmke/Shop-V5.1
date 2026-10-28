@@ -1,17 +1,20 @@
 import {Suspense} from 'react';
 import {Await, NavLink} from 'react-router';
 import type {FooterQuery, HeaderQuery} from 'storefrontapi.generated';
+import type {StorefrontLocale} from '~/components/PageLayout';
 
 interface FooterProps {
   footer: Promise<FooterQuery | null>;
   header: HeaderQuery;
   publicStoreDomain: string;
+  locale?: StorefrontLocale;
 }
 
 export function Footer({
   footer: footerPromise,
   header,
   publicStoreDomain,
+  locale = 'de',
 }: FooterProps) {
   return (
     <Suspense>
@@ -23,6 +26,7 @@ export function Footer({
                 menu={footer.menu}
                 primaryDomainUrl={header.shop.primaryDomain.url}
                 publicStoreDomain={publicStoreDomain}
+                locale={locale}
               />
             )}
           </footer>
@@ -36,10 +40,12 @@ function FooterMenu({
   menu,
   primaryDomainUrl,
   publicStoreDomain,
+  locale = 'de',
 }: {
   menu: FooterQuery['menu'];
   primaryDomainUrl: FooterProps['header']['shop']['primaryDomain']['url'];
   publicStoreDomain: string;
+  locale?: StorefrontLocale;
 }) {
   return (
     <nav className="footer-menu" role="navigation">
@@ -52,9 +58,13 @@ function FooterMenu({
           item.url.includes(primaryDomainUrl)
             ? new URL(item.url).pathname
             : item.url;
-        const isExternal = !url.startsWith('/');
+        const localizedUrl =
+          locale === 'en' && url.startsWith('/') && !url.startsWith('/en/')
+            ? `/en${url}`
+            : url;
+        const isExternal = !localizedUrl.startsWith('/');
         return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
+          <a href={localizedUrl} key={item.id} rel="noopener noreferrer" target="_blank">
             {item.title}
           </a>
         ) : (
@@ -63,7 +73,7 @@ function FooterMenu({
             key={item.id}
             prefetch="intent"
             style={activeLinkStyle}
-            to={url}
+            to={localizedUrl}
           >
             {item.title}
           </NavLink>
