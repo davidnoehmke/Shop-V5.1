@@ -2485,3 +2485,14 @@ img,
   .leaf-home-entry__orb--one,.leaf-home-entry__orb--two{animation:none}
   .leaf-home-entry__actions a,.leaf-home-entry__actions button,.leaf-home-path,.leaf-home-assistant__examples button{transition:none}
 }
+
+/* Floating Alocasia assistant: override Hydrogen's global aside drawer. */
+aside.leaf-assistant{position:fixed;inset:auto max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) auto;width:max-content;height:auto;max-height:none;box-shadow:none;background:transparent;transition:none;transform:translate3d(var(--leaf-assistant-x,0),var(--leaf-assistant-y,0),0);z-index:90;}
+.leaf-assistant__trigger,.leaf-assistant__restore{display:grid;place-items:center;width:64px;height:64px;min-width:64px;padding:0;border-radius:50%;background:#f2f8ed;border:1px solid #aac5a0;touch-action:none;user-select:none;cursor:grab;box-shadow:0 12px 30px rgb(18 46 28 / .22);}
+.leaf-assistant__trigger:active,.leaf-assistant__restore:active{cursor:grabbing;}
+.leaf-assistant__leaf{width:46px;height:46px;display:block;}
+.leaf-assistant__minimized{min-width:0;width:64px;height:64px;padding:0;border:0;background:transparent;box-shadow:none;}
+.leaf-assistant__minimized>.leaf-assistant__drag-handle{display:none;}
+.leaf-assistant__minimized .leaf-assistant__live-dot{position:absolute;right:-3px;top:-3px;margin:0;}
+.leaf-assistant__panel{position:absolute;bottom:76px;right:0;}
+@media(max-width:600px){aside.leaf-assistant{right:max(.75rem,env(safe-area-inset-right));bottom:max(.75rem,env(safe-area-inset-bottom));}.leaf-assistant__trigger,.leaf-assistant__restore,.leaf-assistant__minimized{width:58px;height:58px;min-width:58px;}.leaf-assistant__panel{position:fixed;inset:.75rem .75rem 5.5rem .75rem;width:auto;}}
