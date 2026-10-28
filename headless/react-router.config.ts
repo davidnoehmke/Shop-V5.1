@@ -1,19 +1,13 @@
 import type {Config} from '@react-router/dev/config';
 import {hydrogenPreset} from '@shopify/hydrogen/react-router-preset';
 
-const presets: Config['presets'] = [];
-
-if (process.env.VERCEL) {
-  const vercelPresetModule = '@vercel/react-router/vite';
-  const {vercelPreset} = await import(/* @vite-ignore */ vercelPresetModule);
-  presets.push(vercelPreset());
-} else {
-  presets.push(hydrogenPreset());
-}
-
+// The Vercel React Router preset generates its own server entry. Combining it
+// with Hydrogen's custom worker entry produces an incompatible server bundle
+// (the Vercel adapter expects build.future.v8_middleware to exist).
+// Keep Hydrogen's server build and let the Vercel worker adapter invoke it.
 export default {
   ssr: true,
-  presets,
+  presets: [hydrogenPreset()],
   future: {
     v8_middleware: true,
   },
