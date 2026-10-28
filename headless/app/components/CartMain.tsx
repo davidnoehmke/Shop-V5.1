@@ -10,6 +10,7 @@ export type CartLayout = 'page' | 'aside';
 export type CartMainProps = {
   cart: CartApiQueryFragment | null;
   layout: CartLayout;
+  locale?: 'de' | 'en';
 };
 
 export type LineItemChildrenMap = {[parentId: string]: CartLine[]};
@@ -36,7 +37,11 @@ function getLineItemChildrenMap(lines: CartLine[]): LineItemChildrenMap {
  * The main cart component that displays the cart items and summary.
  * It is used by both the /cart route and the cart aside dialog.
  */
-export function CartMain({layout, cart: originalCart}: CartMainProps) {
+export function CartMain({
+  layout,
+  cart: originalCart,
+  locale = 'de',
+}: CartMainProps) {
   // The useOptimisticCart hook applies pending actions to the cart
   // so the user immediately sees feedback when they modify the cart.
   const cart = useOptimisticCart(originalCart);
@@ -52,12 +57,20 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
   return (
     <section
       className={className}
-      aria-label={layout === 'page' ? 'Warenkorbseite' : 'Warenkorb'}
+      aria-label={
+        locale === 'en'
+          ? layout === 'page'
+            ? 'Cart page'
+            : 'Cart'
+          : layout === 'page'
+            ? 'Warenkorbseite'
+            : 'Warenkorb'
+      }
     >
-      <CartEmpty hidden={linesCount} layout={layout} />
+      <CartEmpty hidden={linesCount} layout={layout} locale={locale} />
       <div className="cart-details">
         <p id="cart-lines" className="sr-only">
-          Artikel
+          {locale === 'en' ? 'Items' : 'Artikel'}
         </p>
         <div>
           <ul aria-labelledby="cart-lines">
@@ -88,20 +101,22 @@ export function CartMain({layout, cart: originalCart}: CartMainProps) {
 
 function CartEmpty({
   hidden = false,
+  locale = 'de',
 }: {
   hidden: boolean;
   layout?: CartMainProps['layout'];
+  locale?: 'de' | 'en';
 }) {
   const {close} = useAside();
   return (
     <div hidden={hidden}>
       <br />
       <p>
-        Dein Warenkorb ist leer.
+        {locale === 'en' ? 'Your cart is empty.' : 'Dein Warenkorb ist leer.'}
       </p>
       <br />
       <Link to="/collections" onClick={close} prefetch="viewport">
-        Weiter einkaufen →
+        {locale === 'en' ? 'Continue shopping →' : 'Weiter einkaufen →'}
       </Link>
     </div>
   );
