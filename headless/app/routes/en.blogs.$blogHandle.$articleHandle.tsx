@@ -7,6 +7,9 @@ export const meta: Route.MetaFunction = ({data}) => [
   ...(data?.article.seo?.description
     ? [{name: 'description', content: data.article.seo.description.slice(0, 155)}]
     : []),
+  ...(data?.article.handle
+    ? [{rel: 'canonical', href: `/en/blogs/ratgeber/${data.article.handle}`}]
+    : []),
 ];
 
 export async function loader({context, params}: Route.LoaderArgs) {
