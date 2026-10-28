@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'Explore ready-made substrate mixes, individual components and the LEAF custom substrate configurator.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export async function loader({context}: Route.LoaderArgs) {
