@@ -64,7 +64,6 @@ export const meta: Route.MetaFunction = ({params}) => {
   const world = params.world ? WORLDS[params.world] : undefined;
   return [
     {title: world ? `${world.title} | LEAFerservice` : 'LEAF Campus | LEAFerservice'},
-    {name: 'robots', content: 'noindex,nofollow'},
   ];
 };
 
