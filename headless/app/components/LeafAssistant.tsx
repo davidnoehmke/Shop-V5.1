@@ -18,7 +18,9 @@ function safePath(value: unknown) {
     if (url.origin !== 'https://leaferservice.com') return '';
     const path = url.pathname + url.search + url.hash;
     if (SAFE_EXACT.has(url.pathname) || SAFE_PREFIXES.some((prefix) => url.pathname.startsWith(prefix))) return path;
-  } catch {}
+  } catch {
+    return '';
+  }
   return '';
 }
 
@@ -74,7 +76,7 @@ export function LeafAssistant() {
   function executeNavigation(destination: unknown) {
     const path = safePath(destination);
     if (!path) return {ok: false, error: 'destination_not_allowed'};
-    navigate(path);
+    void navigate(path);
     setOpen(false);
     return {ok: true, path};
   }
@@ -194,7 +196,11 @@ export function LeafAssistant() {
       const channel = peer.createDataChannel('oai-events');
       channelRef.current = channel;
       channel.addEventListener('message', (event) => {
-        try { void handleRealtimeEvent(JSON.parse(event.data)); } catch {}
+        try {
+          void handleRealtimeEvent(JSON.parse(event.data));
+        } catch {
+          setStatus('Sprachereignis konnte nicht verarbeitet werden.');
+        }
       });
       channel.addEventListener('open', () => {
         setVoiceActive(true);
@@ -276,7 +282,7 @@ export function LeafAssistant() {
             </div>
           ) : null}
 
-          <form className="leaf-assistant__composer" onSubmit={submit}>
+          <form className="leaf-assistant__composer" onSubmit={(event) => { void submit(event); }}>
             <label htmlFor="leaf-assistant-input" className="sr-only">Nachricht an LEAF</label>
             <textarea
               id="leaf-assistant-input"
