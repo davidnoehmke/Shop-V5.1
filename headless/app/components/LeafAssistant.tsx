@@ -31,6 +31,7 @@ export function LeafAssistant() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
+  const suppressClickRef = useRef(false);
   const [position, setPosition] = useState<Position>({x: 0, y: 0});
   const [voiceActive, setVoiceActive] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -61,7 +62,7 @@ export function LeafAssistant() {
 
   function clampPosition(next: Position) {
     if (typeof window === 'undefined') return next;
-    const keepVisible = 88;
+    const keepVisible = 64;
     const maxX = Math.max(0, window.innerWidth - keepVisible);
     const maxY = Math.max(0, window.innerHeight - keepVisible);
     return {
@@ -84,10 +85,10 @@ export function LeafAssistant() {
   function drag(event: ReactPointerEvent<HTMLElement>) {
     const active = dragRef.current;
     if (!active || active.pointerId !== event.pointerId) return;
-    setPosition(clampPosition({
-      x: active.position.x + event.clientX - active.clientX,
-      y: active.position.y + event.clientY - active.clientY,
-    }));
+    const dx = event.clientX - active.clientX;
+    const dy = event.clientY - active.clientY;
+    if (Math.abs(dx) + Math.abs(dy) > 7) suppressClickRef.current = true;
+    setPosition(clampPosition({x: active.position.x + dx, y: active.position.y + dy}));
   }
 
   function endDrag(event: ReactPointerEvent<HTMLElement>) {
@@ -309,12 +310,18 @@ export function LeafAssistant() {
           type="button"
           aria-expanded="false"
           aria-controls="leaf-assistant-panel"
+          onPointerDown={beginDrag}
+          onPointerMove={drag}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onKeyDown={moveWithKeyboard}
           onClick={() => {
+            if (suppressClickRef.current) { suppressClickRef.current = false; return; }
             setOpen(true);
             setMinimized(false);
           }}
         >
-          <span aria-hidden="true">LEAF</span>
+          <svg className="leaf-assistant__leaf" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 7C18 16 8 27 10 41c2 12 12 17 22 13 10 4 20-1 22-13C56 27 46 16 32 7Z" fill="#79a966" stroke="#28543b" strokeWidth="2"/><path d="M32 14v44M32 30 19 24m13 16L15 36m17-6 13-6M32 40l17-4" fill="none" stroke="#e5f1dc" strokeWidth="2.5" strokeLinecap="round"/></svg>
           <span className="sr-only">Assistent öffnen</span>
         </button>
       ) : minimized ? (
@@ -335,11 +342,15 @@ export function LeafAssistant() {
           <button
             className="leaf-assistant__restore"
             type="button"
-            onClick={() => setMinimized(false)}
+            onPointerDown={beginDrag}
+            onPointerMove={drag}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onKeyDown={moveWithKeyboard}
+            onClick={() => { if (suppressClickRef.current) { suppressClickRef.current = false; return; } setMinimized(false); }}
             aria-label="LEAF wieder öffnen"
           >
-            <span>LEAF</span>
-            <small>{voiceActive ? (status || 'Sprachgespräch aktiv') : 'Assistent öffnen'}</small>
+            <svg className="leaf-assistant__leaf" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 7C18 16 8 27 10 41c2 12 12 17 22 13 10 4 20-1 22-13C56 27 46 16 32 7Z" fill="#79a966" stroke="#28543b" strokeWidth="2"/><path d="M32 14v44M32 30 19 24m13 16L15 36m17-6 13-6M32 40l17-4" fill="none" stroke="#e5f1dc" strokeWidth="2.5" strokeLinecap="round"/></svg>
           </button>
           {voiceActive ? <span className="leaf-assistant__live-dot" aria-label="Sprachgespräch aktiv" /> : null}
         </div>
