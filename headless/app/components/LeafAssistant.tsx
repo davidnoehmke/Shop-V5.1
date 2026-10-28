@@ -113,6 +113,14 @@ export function LeafAssistant() {
       } else if (call.name === 'navigate_storefront') {
         const args = JSON.parse(call.arguments || '{}');
         output = executeNavigation(args.destination);
+      } else if (call.name === 'read_leaf_article') {
+        const args = JSON.parse(call.arguments || '{}');
+        output = await api({
+          action: 'article_read',
+          message: 'read article',
+          handle: String(args.handle || '').slice(0, 180),
+          offset: Math.max(0, Number(args.offset) || 0),
+        });
       }
     } catch {
       output = {ok: false, error: 'tool_failed'};
