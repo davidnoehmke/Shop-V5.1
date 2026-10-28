@@ -1,4 +1,4 @@
-import {Link, useLoaderData} from 'react-router';
+import {Link, useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/policies.$handle';
 import {type Shop} from '@shopify/hydrogen/storefront-api-types';
 
@@ -43,12 +43,19 @@ export async function loader({params, context}: Route.LoaderArgs) {
 
 export default function Policy() {
   const {policy} = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
 
   return (
     <div className="page-shell content-page policy-page">
-      <Link className="content-page__back" to="/policies">← Rechtliches</Link>
+      <Link
+        className="content-page__back"
+        to={isEnglish ? '/en/policies' : '/policies'}
+      >
+        {isEnglish ? '← Legal' : '← Rechtliches'}
+      </Link>
       <header className="content-page__hero">
-        <p className="page-eyebrow">Rechtliches</p>
+        <p className="page-eyebrow">{isEnglish ? 'Legal' : 'Rechtliches'}</p>
         <h1>{policy.title}</h1>
       </header>
       <article className="content-page__body" dangerouslySetInnerHTML={{__html: policy.body}} />
@@ -89,4 +96,3 @@ const POLICY_CONTENT_QUERY = `#graphql
     }
   }
 ` as const;
-
