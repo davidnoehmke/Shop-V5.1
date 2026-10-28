@@ -1,4 +1,5 @@
-import {FormEvent, useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useMemo, useRef, useState} from 'react';
+import type {FormEvent} from 'react';
 import {useLocation, useNavigate} from 'react-router';
 
 type ChatMessage = {role: 'user' | 'assistant'; content: string};
@@ -58,14 +59,14 @@ export function LeafAssistant() {
     historyRef.current = next;
   }
 
-  async function api(body: Record<string, unknown>, signal?: AbortSignal) {
+  async function api(body: Record<string, unknown>, signal?: AbortSignal): Promise<any> {
     const response = await fetch('/api/assistant', {
       method: 'POST',
       headers: {'content-type': 'application/json'},
       body: JSON.stringify({...body, locale, path: location.pathname}),
       signal,
     });
-    const payload = await response.json().catch(() => ({}));
+    const payload: any = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(payload?.error || 'assistant_unavailable');
     return payload;
   }
@@ -108,13 +109,13 @@ export function LeafAssistant() {
     let output: any = {ok: false, error: 'unsupported_tool'};
     try {
       if (call.name === 'lookup_leaf_knowledge') {
-        const args = JSON.parse(call.arguments || '{}');
+        const args: any = JSON.parse(call.arguments || '{}');
         output = await api({action: 'knowledge_lookup', message: String(args.query || '').slice(0, 1600)});
       } else if (call.name === 'navigate_storefront') {
-        const args = JSON.parse(call.arguments || '{}');
+        const args: any = JSON.parse(call.arguments || '{}');
         output = executeNavigation(args.destination);
       } else if (call.name === 'read_leaf_article') {
-        const args = JSON.parse(call.arguments || '{}');
+        const args: any = JSON.parse(call.arguments || '{}');
         output = await api({
           action: 'article_read',
           message: 'read article',
@@ -147,7 +148,9 @@ export function LeafAssistant() {
       pendingTranscriptRef.current = {id: event.response_id, text: String(event.transcript || '')};
     } else if (event.type === 'output_audio_buffer.stopped') {
       const pending = pendingTranscriptRef.current;
-      if (pending?.id === event.response_id && !cancelledRef.current.has(event.response_id)) append('assistant', pending.text);
+      if (pending && pending.id === event.response_id && !cancelledRef.current.has(event.response_id)) {
+        append('assistant', pending.text);
+      }
       pendingTranscriptRef.current = null;
       responseRef.current = null;
       setStatus('Ich höre zu …');
