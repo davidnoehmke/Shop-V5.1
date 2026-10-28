@@ -4,7 +4,17 @@ import {Image} from '@shopify/hydrogen';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.article.title ?? ''} article`}];
+  const article = data?.article;
+  const description = article?.seo?.description;
+  return [
+    {title: `${article?.seo?.title || article?.title || 'Ratgeber'} | LEAFerservice`},
+    ...(description
+      ? [{name: 'description', content: description.slice(0, 155)}]
+      : []),
+    ...(article?.handle
+      ? [{rel: 'canonical', href: `/blogs/ratgeber/${article.handle}`}]
+      : []),
+  ];
 };
 
 export async function loader(args: Route.LoaderArgs) {
