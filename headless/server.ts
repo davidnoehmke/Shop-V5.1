@@ -30,7 +30,13 @@ export default {
 
       const response = await handleRequest(request);
 
-      response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      const hostname = new URL(request.url).hostname.toLowerCase();
+      const isProductionHost =
+        hostname === 'leaferservice.com' || hostname === 'www.leaferservice.com';
+
+      if (!isProductionHost) {
+        response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+      }
 
       if (hydrogenContext.session.isPending) {
         response.headers.set(
