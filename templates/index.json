@@ -444,6 +444,12 @@
     "led_home_finder": {
       "type": "leaf-led-home-finder",
       "settings": {}
+    },
+    "live_labs": {
+      "type": "custom-liquid",
+      "settings": {
+        "custom_liquid": "<div class=\"page-width\" style=\"padding-block:24px 32px\"><div style=\"display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid rgba(100,120,100,.25);padding-top:20px\"><div><p style=\"font-size:11px;letter-spacing:.13em;text-transform:uppercase;margin:0 0 5px;opacity:.7\">Live Labs · Einblicke in die Entwicklung</p><p style=\"font-size:14px;margin:0\">Wie ich LEAFerservice technisch weiterentwickle – transparent und Schritt für Schritt.</p></div><a href=\"/blogs/live-labs/shopify-liquid-headless-commerce-migration-werkstattbericht\" style=\"font-size:13px;text-decoration:underline;text-underline-offset:4px\">Entwicklungstagebuch lesen →</a></div></div>"
+      }
     }
   },
   "order": [
@@ -458,6 +464,7 @@
     "community",
     "loox_reviews",
     "brand_story",
-    "phone_call"
+    "phone_call",
+    "live_labs"
   ]
 }
