@@ -210,6 +210,13 @@ function HeaderCtas({
         </Suspense>
       </NavLink>
       <NavLink
+        to={isEnglish ? '/en/substrate' : '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'}
+        prefetch="intent"
+        className="header-cta-link"
+      >
+        {isEnglish ? 'Substrate' : 'Substrate'}
+      </NavLink>
+      <NavLink
         to={isEnglish ? '/en/brands/venso' : '/marken/venso'}
         prefetch="intent"
         className="header-cta-link"
