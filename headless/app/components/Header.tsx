@@ -227,7 +227,7 @@ function HeaderCtas({
         {isEnglish ? 'Campus' : 'Campus'}
       </NavLink>
       <NavLink
-        to={isEnglish ? '/en/substrate' : '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'}
+        to={isEnglish ? '/en#leaf-worlds' : '/#leaf-worlds'}
         prefetch="intent"
         className="header-cta-link"
       >
