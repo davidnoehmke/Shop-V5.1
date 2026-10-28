@@ -118,6 +118,14 @@ function rankArticles(
   );
 
   return articles
+    .filter((article) => {
+      const languageTags = article.tags.map((tag) => tag.toLowerCase());
+      return (
+        languageTags.includes('lang:en') ||
+        languageTags.includes('language:en') ||
+        languageTags.includes('english')
+      );
+    })
     .map((article) => {
       const tags = article.tags.map((tag) => tag.toLowerCase());
       const title = article.title.toLowerCase();
@@ -190,7 +198,7 @@ export default function EnglishProduct() {
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <ol>
           <li><Link to="/en">Home</Link></li>
-          <li><Link to="/en/collections">Shop</Link></li>
+          <li><Link to="/en/brands/venso">Venso grow lighting</Link></li>
           <li><span aria-current="page">{displayTitle}</span></li>
         </ol>
       </nav>
