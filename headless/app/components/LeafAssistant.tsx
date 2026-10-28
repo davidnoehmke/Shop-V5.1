@@ -7,7 +7,7 @@ type AssistantLink = {label: string; href: string};
 type Position = {x: number; y: number};
 
 const MAX_HISTORY = 6;
-const SAFE_PREFIXES = ['/collections/', '/products/', '/blogs/', '/marken/', '/en/'];
+const SAFE_PREFIXES = ['/collections/', '/products/', '/blogs/', '/marken/', '/welten/', '/pages/', '/policies/', '/en/'];
 const SAFE_EXACT = new Set(['/', '/search', '/cart', '/collections']);
 const DRAG_STEP = 24;
 
