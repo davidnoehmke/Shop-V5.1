@@ -14,4 +14,7 @@ if (process.env.VERCEL) {
 export default {
   ssr: true,
   presets,
+  future: {
+    v8_middleware: true,
+  },
 } satisfies Config;
