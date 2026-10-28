@@ -9,7 +9,7 @@ type Locale = 'de' | 'en';
 
 type MoneyData = {amount: string; currencyCode: CurrencyCode};
 type ImageData = {
-  id: string;
+  id?: string | null;
   url: string;
   altText?: string | null;
   width?: number | null;
