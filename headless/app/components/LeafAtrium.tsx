@@ -91,12 +91,12 @@ const WORLDS: WorldCard[] = [
   },
 ];
 
-export function LeafAtrium({locale = 'de'}: {locale?: Locale}) {
+export function LeafAtrium({locale = 'de', showAtrium = true}: {locale?: Locale; showAtrium?: boolean}) {
   const isEnglish = locale === 'en';
 
   return (
     <div className="leaf-campus">
-      <section className="leaf-atrium" aria-labelledby="leaf-atrium-title">
+      {showAtrium ? <section className="leaf-atrium" aria-labelledby="leaf-atrium-title">
         <div className="leaf-atrium__copy">
           <p className="page-eyebrow">{isEnglish ? 'LEAF Campus · Atrium' : 'LEAF Campus · Atrium'}</p>
           <h1 id="leaf-atrium-title">
@@ -123,7 +123,7 @@ export function LeafAtrium({locale = 'de'}: {locale?: Locale}) {
             </Link>
           ))}
         </nav>
-      </section>
+      </section> : null}
 
       <section id="leaf-worlds" className="leaf-campus-worlds" aria-labelledby="leaf-worlds-title">
         <div className="leaf-campus-worlds__intro">
