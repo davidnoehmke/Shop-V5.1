@@ -45,8 +45,37 @@ export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
   const description = product?.seo?.description || product?.description;
 
+  const variant = product?.selectedOrFirstAvailableVariant;
+  const origin = 'https://www.leaferservice.com';
+  const productJsonLd = product?.id ? {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    brand: product.vendor ? {'@type': 'Brand', name: product.vendor} : undefined,
+    sku: variant?.sku || undefined,
+    image: variant?.image?.url ? [variant.image.url] : undefined,
+    offers: variant?.price ? {
+      '@type': 'Offer',
+      url: origin + '/products/' + product.handle,
+      price: variant.price.amount,
+      priceCurrency: variant.price.currencyCode,
+      availability: variant.availableForSale ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    } : undefined,
+  } : null;
+  const faqJsonLd = product?.vendor?.trim().toLowerCase() === 'elho' ? {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: ELHO_FAQ.map(({question, answer}) => ({
+      '@type': 'Question',
+      name: question,
+      acceptedAnswer: {'@type': 'Answer', text: answer},
+    })),
+  } : null;
   return [
     {title: `${product?.seo?.title || product?.title || 'Produkt'} | LEAFerservice`},
+    ...(productJsonLd ? [{'script:ld+json': productJsonLd}] : []),
+    ...(faqJsonLd ? [{'script:ld+json': faqJsonLd}] : []),
     ...(description
       ? [
           {
