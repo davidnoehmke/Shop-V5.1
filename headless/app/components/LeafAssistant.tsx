@@ -205,7 +205,11 @@ export function LeafAssistant() {
       responseRef.current = event.response_id || null;
       setStatus('LEAF spricht …');
     } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
-      append('user', String(event.transcript || ''));
+      const transcript = String(event.transcript || '');
+      append('user', transcript);
+      if (location.pathname.includes('leafer-substrat-konfigurator')) {
+        window.dispatchEvent(new CustomEvent('leaf:substrate-voice-command', {detail: {transcript}}));
+      }
     } else if (event.type === 'response.output_audio_transcript.done' && !cancelledRef.current.has(event.response_id)) {
       pendingTranscriptRef.current = {id: event.response_id, text: String(event.transcript || '')};
     } else if (event.type === 'output_audio_buffer.stopped') {
