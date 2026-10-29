@@ -2485,3 +2485,6 @@ img,
   .leaf-home-entry__orb--one,.leaf-home-entry__orb--two{animation:none}
   .leaf-home-entry__actions a,.leaf-home-entry__actions button,.leaf-home-path,.leaf-home-assistant__examples button{transition:none}
 }
+
+/* Keep LEAF as a compact, minimizable floating assistant on narrow screens. */
+@media(max-width:600px){.leaf-assistant__panel{position:absolute;inset:auto 0 72px auto;width:min(390px,calc(100vw - 1.5rem));max-height:min(600px,calc(100dvh - 7rem));border-radius:18px;}.leaf-assistant__minimized{min-width:0;width:auto;max-width:min(240px,calc(100vw - 1.5rem));}.leaf-assistant__restore{gap:.35rem;}.leaf-assistant__header{padding:.7rem;gap:.35rem;}.leaf-assistant__header h2{font-size:1.05rem;}.leaf-assistant__window-actions button{width:38px;height:38px;}.leaf-assistant__messages{min-height:0;}}
