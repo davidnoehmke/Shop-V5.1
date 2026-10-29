@@ -15,6 +15,32 @@ import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {variantGid} from '~/lib/pilot-guards';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
+
+// Brand-specific editorial content is shown only for confirmed vendors.
+// All commerce values continue to come from Shopify.
+const ELHO_FAQ = [
+  {question: 'Welche elho Topfgröße passt zu meiner Zimmerpflanze?', answer: 'Orientiere dich am Durchmesser des Wurzelballens und den angegebenen Innenmaßen. Ein zu großer Übertopf kann die Pflege erschweren.'},
+  {question: 'Ist jeder elho Pflanztopf für den Außenbereich geeignet?', answer: 'Nein. Prüfe die Produktbeschreibung auf den vorgesehenen Einsatzbereich und mögliche Ablauflöcher.'},
+  {question: 'Brauche ich für einen elho Übertopf einen Innentopf?', answer: 'Das hängt vom Modell ab. Bei geschlossenen Übertöpfen hilft ein separater Kulturtopf, überschüssiges Wasser zu kontrollieren.'},
+];
+
+function ProductEditorial({vendor}: {vendor: string}) {
+  if (vendor.trim().toLocaleLowerCase('de-DE') !== 'elho') return null;
+  return (
+    <section className="product-editorial" aria-labelledby="elho-guide-heading">
+      <p className="page-eyebrow">LEAFerservice · Pflanzgefäße</p>
+      <h2 id="elho-guide-heading">elho Pflanzgefäße für Zimmerpflanzen: Größe, Standort und Bewässerung</h2>
+      <p>Ein passender Pflanztopf unterstützt die tägliche Pflege. Achte bei der Auswahl auf Topfdurchmesser, Standort, Wasserabfluss und die Anforderungen deiner Pflanze. Die verbindlichen Maße und Eigenschaften stehen in den jeweiligen Produktdetails.</p>
+      <h3>Häufige Fragen zu elho Pflanztöpfen</h3>
+      <div className="product-editorial__faqs">
+        {ELHO_FAQ.map(({question, answer}) => (
+          <details key={question}><summary>{question}</summary><p>{answer}</p></details>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export const meta: Route.MetaFunction = ({data}) => {
   const product = data?.product;
   const description = product?.seo?.description || product?.description;
@@ -189,6 +215,7 @@ export default function Product() {
           }}
         />
       </div>
+      <ProductEditorial vendor={product.vendor || ''} />
     </div>
   );
 }
