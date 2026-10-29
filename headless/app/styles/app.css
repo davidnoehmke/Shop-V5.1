@@ -1983,7 +1983,7 @@ img,
 .substrate-mixer__head>strong{font-size:1.6rem;}
 .substrate-mixer__head .is-valid{color:#2f6c3c;}
 .substrate-mixer__head .is-invalid{color:#9b2c2c;}
-.substrate-pot-visual{position:relative;height:360px;display:flex;flex-direction:column-reverse;overflow:hidden;clip-path:polygon(5% 0,95% 0,82% 100%,18% 100%);background:#dfe7dc;box-shadow:inset 0 0 0 4px #52655a;}
+.substrate-pot-visual{position:relative;isolation:isolate;width:min(100%,360px);height:340px;margin-inline:auto;display:flex;flex-direction:column-reverse;overflow:hidden;clip-path:polygon(0 0,100% 0,88% 96%,84% 100%,16% 100%,12% 96%);border-radius:22px 22px 48px 48px;background:#dfe7dc;box-shadow:inset 0 0 0 4px #52655a;}.substrate-pot-visual::after{content:"";position:absolute;inset:0;border:4px solid #52655a;border-radius:22px 22px 48px 48px;pointer-events:none;z-index:2;}
 .substrate-pot-visual>div{display:flex;align-items:center;justify-content:center;min-height:0;border-top:1px solid rgba(255,255,255,.6);background:color-mix(in srgb,#5f765f 22%,#f3f1e7);}
 .substrate-pot-visual>div:nth-child(even){background:color-mix(in srgb,#8a6f51 24%,#f3f1e7);}
 .substrate-pot-visual span{font-size:.78rem;font-weight:800;text-align:center;padding:.2rem;}
