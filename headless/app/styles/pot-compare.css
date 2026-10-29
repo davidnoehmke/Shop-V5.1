@@ -1,0 +1,16 @@
+.pot-compare {margin:clamp(2rem,5vw,4rem) 0;padding:clamp(1rem,3vw,2rem);background:var(--leafer-paper);border:1px solid var(--leafer-line);border-radius:18px}
+.pot-compare h2{margin:.3rem 0 1rem;line-height:1.2}
+.pot-compare__choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:1rem;margin:1.5rem 0}
+.pot-compare__choice{display:flex;flex-direction:column;gap:.75rem;min-width:0;border:1px solid var(--leafer-line);padding:1rem;border-radius:12px;background:white}
+.pot-compare__choice img{width:100%;aspect-ratio:1;object-fit:contain}
+.pot-compare__choice strong{overflow-wrap:anywhere}
+.pot-compare__choice p{margin:.25rem 0}
+.pot-compare__choice button{margin-top:auto;min-height:44px;border-radius:9px;border:1px solid var(--leafer-forest);background:var(--leafer-forest);color:white;cursor:pointer;padding:.65rem}
+.pot-compare__choice button[aria-pressed="true"]{background:white;color:var(--leafer-forest)}
+.pot-compare__choice button:disabled{opacity:.5;cursor:not-allowed}
+.pot-compare__scroll{overflow-x:auto;max-width:100%;border:1px solid var(--leafer-line);border-radius:12px}
+.pot-compare table{border-collapse:collapse;min-width:560px;width:100%;background:white}
+.pot-compare th,.pot-compare td{padding:.8rem;text-align:left;vertical-align:top;border-bottom:1px solid var(--leafer-line)}
+.pot-compare thead th{background:var(--leafer-mint)}
+.pot-compare th:first-child{min-width:130px}
+.pot-compare :is(button,a):focus-visible,.pot-compare__scroll:focus-visible{outline:3px solid var(--leafer-leaf);outline-offset:3px}
