@@ -1,4 +1,4 @@
-import {useMemo, useState} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from 'react-router';
@@ -100,7 +100,38 @@ export function SubstrateConfigurator({
   const firstAvailable = variants.find((variant) => variant.availableForSale) ?? variants[0];
   const [variantId, setVariantId] = useState(firstAvailable?.id ?? '');
   const [mix, setMix] = useState<MixPart[]>([]);
+  const [voiceNotice, setVoiceNotice] = useState('');
   const selectedVariant = variants.find((variant) => variant.id === variantId) ?? firstAvailable;
+
+  useEffect(() => {
+    function onVoiceCommand(event: Event) {
+      const transcript = (event as CustomEvent<{transcript?: string}>).detail?.transcript ?? '';
+      const match = transcript.match(/(?:auf|to|bei|at)\s*(\d{1,3})\s*(?:%|prozent|percent)/i);
+      if (!match) return;
+      const requested = Number(match[1]);
+      if (!Number.isInteger(requested) || requested < 0 || requested > 100) {
+        setVoiceNotice(isEnglish ? 'Choose a percentage from 0 to 100.' : 'Bitte einen Anteil zwischen 0 und 100 Prozent nennen.');
+        return;
+      }
+      const normalized = (value: string) => value.toLocaleLowerCase(locale).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
+      const words = normalized(transcript);
+      const candidates = mix.filter((part) => words.includes(normalized(part.title)) || words.includes(normalized(part.handle).replace(/substrat|zusatz/g, '')));
+      if (candidates.length !== 1) {
+        setVoiceNotice(isEnglish ? 'Please name exactly one selected component.' : 'Bitte genau einen ausgewählten Bestandteil eindeutig nennen.');
+        return;
+      }
+      const target = candidates[0];
+      setMix((current) => {
+        const index = current.findIndex((part) => part.id === target.id);
+        return index < 0 ? current : rebalance(current, index, requested);
+      });
+      setVoiceNotice(`${target.title}: ${requested} %`);
+    }
+    window.addEventListener('leaf:substrate-voice-command', onVoiceCommand);
+    return () => window.removeEventListener('leaf:substrate-voice-command', onVoiceCommand);
+  }, [mix, locale, isEnglish]);
+
+
 
   const recipe = useMemo(
     () => mix.map((part) => `${part.title} ${part.share}%`).join(' · '),
@@ -115,7 +146,7 @@ export function SubstrateConfigurator({
       );
       return;
     }
-    if (mix.length >= 4) return;
+    if (mix.length >= 5) return;
     setMix((current) =>
       equalShares([
         ...current.map(({share: _share, ...part}) => part),
@@ -140,8 +171,8 @@ export function SubstrateConfigurator({
           <h1>{isEnglish ? 'Build a substrate that always totals 100%.' : 'Mische dein Substrat – immer exakt 100 %.'}</h1>
           <p>
             {isEnglish
-              ? 'Choose the plant profile and volume, then combine up to four substrate components. Adjust one share and LEAF automatically balances the others.'
-              : 'Wähle Pflanzentyp und Menge und kombiniere anschließend bis zu vier Bestandteile. Änderst du einen Anteil, gleicht LEAF die übrigen automatisch aus.'}
+              ? 'Choose the plant profile and volume, then combine up to five substrate components. Adjust one share and LEAF automatically balances the others.'
+              : 'Wähle Pflanzentyp und Menge und kombiniere anschließend bis zu fünf Bestandteile. Änderst du einen Anteil, gleicht LEAF die übrigen automatisch aus.'}
           </p>
         </div>
         {product.featuredImage ? (
@@ -170,11 +201,11 @@ export function SubstrateConfigurator({
 
         <div>
           <p className="page-eyebrow">{isEnglish ? '2 · Components' : '2 · Bestandteile'}</p>
-          <h2>{isEnglish ? 'Choose up to four' : 'Bis zu vier auswählen'}</h2>
+          <h2>{isEnglish ? 'Choose up to five' : 'Bis zu fünf auswählen'}</h2>
           <div className="substrate-component-picker">
             {components.map((component) => {
               const active = mix.some((part) => part.id === component.id);
-              const disabled = !active && mix.length >= 4;
+              const disabled = !active && mix.length >= 5;
               return (
                 <button
                   type="button"
@@ -213,6 +244,7 @@ export function SubstrateConfigurator({
             ))}
           </div>
 
+          {voiceNotice ? <p role="status" className="substrate-recipe-text">{voiceNotice}</p> : null}
           <div className="substrate-sliders">
             {mix.map((part, index) => (
               <label key={part.id}>
