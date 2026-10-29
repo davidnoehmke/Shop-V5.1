@@ -115,12 +115,16 @@ export function SubstrateConfigurator({
       }
       const normalized = (value: string) => value.toLocaleLowerCase(locale).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
       const words = normalized(transcript);
-      const candidates = mix.filter((part) => words.includes(normalized(part.title)) || words.includes(normalized(part.handle).replace(/substrat|zusatz/g, '')));
+      const candidates = mix.filter((part) => words.includes(normalized(part.title)) || (normalized(part.handle).replace(/substrat|zusatz/g, '').length > 2 && words.includes(normalized(part.handle).replace(/substrat|zusatz/g, ''))));
       if (candidates.length !== 1) {
         setVoiceNotice(isEnglish ? 'Please name exactly one selected component.' : 'Bitte genau einen ausgewählten Bestandteil eindeutig nennen.');
         return;
       }
       const target = candidates[0];
+      if (mix.length === 1 && requested !== 100) {
+        setVoiceNotice(isEnglish ? 'Select another component first; a single component must be 100%.' : 'Bitte zuerst einen weiteren Bestandteil wählen; ein einzelner Bestandteil muss 100 Prozent ergeben.');
+        return;
+      }
       setMix((current) => {
         const index = current.findIndex((part) => part.id === target.id);
         return index < 0 ? current : rebalance(current, index, requested);
