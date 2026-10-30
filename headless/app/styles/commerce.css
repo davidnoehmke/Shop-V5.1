@@ -304,3 +304,96 @@
     font-size:clamp(1.9rem,8vw,2.7rem);
   }
 }
+
+
+/* Romberg 2026: image-led, verified catalogue only. Consistent with LEAF commerce UI. */
+.romberg-brand--commerce {--romberg-ink:#263b30;--romberg-line:#dde2d8;--romberg-cream:#f3f0e8;--romberg-soft:#eef2eb;padding-block:1.35rem 5rem}
+.romberg-brand--commerce .romberg-breadcrumbs{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin:0 0 1.3rem;font-size:.82rem;color:#627064}
+.romberg-brand--commerce .romberg-breadcrumbs a{color:inherit;text-underline-offset:.23em}
+.romberg-brand--commerce .romberg-hero{display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);min-height:0;gap:clamp(1.3rem,4vw,3.6rem);padding:clamp(1.4rem,3.3vw,3.3rem);align-items:center;background:linear-gradient(126deg,#f4f1e9,#fafbf7);border:1px solid var(--romberg-line);border-radius:20px;box-shadow:none}
+.romberg-brand--commerce .romberg-hero::before{display:none}
+.romberg-brand--commerce .romberg-hero__copy{min-width:0;max-width:620px;z-index:1}
+.romberg-brand--commerce .romberg-hero h1{font-size:clamp(2.3rem,4.1vw,4rem);line-height:1.08;letter-spacing:-.055em;font-weight:565;max-width:16ch;margin:.65rem 0 1rem;color:var(--romberg-ink)}
+.romberg-brand--commerce .romberg-hero__lead{font-size:clamp(.98rem,1.32vw,1.12rem);line-height:1.69;max-width:53ch;margin:0;color:#52665a}
+.romberg-brand--commerce .romberg-hero__actions{display:flex;flex-wrap:wrap;align-items:center;gap:1rem;margin-top:1.6rem}
+.romberg-brand--commerce .romberg-cta{display:inline-flex;align-items:center;gap:1.2rem;justify-content:space-between;min-height:48px;padding:.76rem 1.25rem;margin:0;border-radius:999px;background:var(--romberg-ink);color:white;box-shadow:none;text-decoration:none;font-size:.9rem}
+.romberg-brand--commerce .romberg-hero__count{font-size:.8rem;color:#67776b}
+.romberg-brand--commerce .romberg-hero__visual{display:grid;place-items:center;aspect-ratio:4/3;width:100%;min-width:0;border:1px solid #e5e8e0;overflow:hidden;background:var(--romberg-soft);border-radius:16px}
+.romberg-brand--commerce .romberg-hero__visual img{display:block;width:100%;height:100%;object-fit:contain;padding:clamp(.9rem,2vw,1.8rem);background:transparent;border:0;border-radius:0;max-height:none;filter:none;transform:none;animation:none}
+.romberg-brand--commerce .romberg-hero__placeholder{color:#9cae9d;font-size:3rem;font-weight:800;letter-spacing:-.08em}
+.romberg-brand--commerce .romberg-path{margin:clamp(2.5rem,5vw,4.2rem) 0}
+.romberg-brand--commerce .romberg-section-heading{margin:0 0 1.5rem;max-width:920px}
+.romberg-brand--commerce .romberg-section-heading h2{margin:.35rem 0 .8rem;font-size:clamp(1.85rem,3vw,2.65rem);letter-spacing:-.035em;line-height:1.12;font-weight:560;color:var(--romberg-ink)}
+.romberg-brand--commerce .romberg-section-heading>p:last-child{color:#5c7164;max-width:70ch;line-height:1.55}
+.romberg-brand--commerce .romberg-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem;margin:1.2rem 0 0}
+.romberg-brand--commerce .romberg-steps article{padding:1.15rem 1.2rem 1.3rem;border:1px solid var(--romberg-line);border-radius:14px;background:#f8faf6;min-height:160px}
+.romberg-brand--commerce .romberg-steps b{color:#6d795d;font-size:.72rem;letter-spacing:.08em}
+.romberg-brand--commerce .romberg-steps h3{font-size:1.08rem;line-height:1.3;color:var(--romberg-ink);margin:.4rem 0}
+.romberg-brand--commerce .romberg-steps p{font-size:.91rem;color:#607267;line-height:1.55;margin:0}
+.romberg-brand--commerce .romberg-range{scroll-margin-top:95px}
+.romberg-brand--commerce .romberg-range__nav{display:flex;flex-wrap:wrap;gap:.55rem;margin:1rem 0 2.8rem}
+.romberg-brand--commerce .romberg-range__nav a{display:inline-flex;align-items:center;gap:.75rem;padding:.67rem 1rem;background:#eef3eb;border:1px solid #d6e0d4;color:#2e4b36;border-radius:999px;font-size:.85rem;font-weight:650;text-decoration:none}
+.romberg-brand--commerce .romberg-range__nav a span{display:inline-grid;place-items:center;min-width:21px;height:21px;font-size:.73rem;background:#d9e5d7;border-radius:99px}
+.romberg-brand--commerce .romberg-range__group{scroll-margin-top:100px;margin:0 0 clamp(2.1rem,4vw,3.6rem)}
+.romberg-brand--commerce .romberg-range__group-heading{margin:0 0 1.15rem}
+.romberg-brand--commerce .romberg-range__group-heading h3{font-size:clamp(1.35rem,2.2vw,1.92rem);letter-spacing:-.026em;line-height:1.16;font-weight:640;margin:0 0 .35rem;color:var(--romberg-ink)}
+.romberg-brand--commerce .romberg-range__group-heading p{font-size:.91rem;line-height:1.6;color:#607267;margin:0;max-width:70ch}
+.romberg-brand--commerce .romberg-range__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));align-items:stretch;gap:clamp(.7rem,1.4vw,1.2rem)}
+.romberg-brand--commerce .romberg-product-card{position:relative;display:flex;flex-direction:column;background:#fff;overflow:hidden;border:1px solid var(--romberg-line);border-radius:15px;box-shadow:none;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;min-width:0}
+.romberg-brand--commerce .romberg-product-card:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgb(20 57 38 / .075);border-color:#afc5b4}
+.romberg-brand--commerce .romberg-product-card__link{display:flex;flex:1;flex-direction:column;min-width:0;color:inherit;text-decoration:none}
+.romberg-brand--commerce .romberg-product-card__media{display:grid;place-items:center;aspect-ratio:1;width:100%;overflow:hidden;background:#f2f5ef}
+.romberg-brand--commerce .romberg-product-card__media img{display:block;width:100%;height:100%;aspect-ratio:1;object-fit:contain;padding:clamp(.55rem,1.5vw,1.15rem);filter:none;transform:none;border:0;border-radius:0;background:transparent}
+.romberg-brand--commerce .romberg-product-card__missing{color:#93a79b;font-size:1.6rem;font-weight:800}
+.romberg-brand--commerce .romberg-product-card__body{display:flex;flex:1;flex-direction:column;gap:.45rem;padding:1rem 1rem .8rem}
+.romberg-brand--commerce .romberg-product-card__type{font-size:.67rem;letter-spacing:.07em;text-transform:uppercase;color:#687c70;font-weight:730}
+.romberg-brand--commerce .romberg-product-card__name{font-size:.99rem;line-height:1.32;font-weight:710;color:#264436;overflow-wrap:anywhere}
+.romberg-brand--commerce .romberg-product-card__summary{font-size:.81rem;color:#61756a;line-height:1.52;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.romberg-brand--commerce .romberg-product-card__footer{display:flex;justify-content:space-between;align-items:center;gap:.4rem;margin-top:auto;padding-top:.7rem}
+.romberg-brand--commerce .romberg-product-card__price{font-size:1.08rem;color:var(--romberg-ink);font-weight:770}
+.romberg-brand--commerce .romberg-product-card__arrow{font-size:1.12rem;color:#31553b}
+.romberg-brand--commerce .romberg-product-card__availability{display:inline-flex;align-items:center;gap:.5rem;border-top:1px solid #edf0eb;padding:.68rem 1rem .75rem;font-size:.75rem;color:#9a625c}
+.romberg-brand--commerce .romberg-product-card__availability span{background:currentColor;border-radius:99px;height:7px;width:7px}
+.romberg-brand--commerce .romberg-product-card__availability.is-available{color:#3e7857}
+.romberg-brand--commerce .romberg-range__empty{background:#f4f7f2;border:1px solid var(--romberg-line);border-radius:12px;padding:1.2rem}
+.romberg-brand--commerce .romberg-advice{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.95fr);gap:clamp(1.5rem,5vw,4rem);margin:clamp(2rem,6vw,4.5rem) 0 0;padding:clamp(1.4rem,3vw,3rem);border:1px solid var(--romberg-line);border-radius:16px;background:#f8faf6}
+.romberg-brand--commerce .romberg-advice h2{font-size:clamp(1.65rem,2.7vw,2.5rem);line-height:1.15;font-weight:575;letter-spacing:-.03em}
+.romberg-brand--commerce .romberg-advice p{line-height:1.65;color:#53675b}
+.romberg-brand--commerce .romberg-advice a{display:inline-flex;gap:.35rem;font-weight:700;text-decoration:underline;text-underline-offset:4px;color:#315b40}
+.romberg-brand--commerce .romberg-advice__questions details{border-bottom:1px solid #dbe4d8;padding:.95rem 0}
+.romberg-brand--commerce .romberg-advice__questions summary{cursor:pointer;font-weight:690;color:#2b4935;line-height:1.4}
+.romberg-brand--commerce .romberg-advice__questions p{font-size:.91rem}
+.romberg-brand--commerce a:focus-visible,.romberg-brand--commerce summary:focus-visible{outline:3px solid #477b43;outline-offset:3px}
+@media(max-width:1130px){.romberg-brand--commerce .romberg-range__grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:900px){.romberg-brand--commerce .romberg-hero,.romberg-brand--commerce .romberg-advice{grid-template-columns:1fr}.romberg-brand--commerce .romberg-hero__visual{max-height:420px}.romberg-brand--commerce .romberg-range__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.romberg-brand--commerce .romberg-hero{padding:1.15rem;gap:1.2rem}.romberg-brand--commerce .romberg-hero h1{font-size:clamp(2rem,8.9vw,2.85rem)}.romberg-brand--commerce .romberg-hero__visual{max-height:290px}.romberg-brand--commerce .romberg-steps{grid-template-columns:1fr}.romberg-brand--commerce .romberg-range__grid{gap:.7rem}.romberg-brand--commerce .romberg-product-card__body{padding:.78rem .78rem .6rem}.romberg-brand--commerce .romberg-product-card__name{font-size:.88rem}.romberg-brand--commerce .romberg-product-card__summary{font-size:.76rem;-webkit-line-clamp:2}.romberg-brand--commerce .romberg-product-card__availability{padding:.6rem .75rem;font-size:.68rem}.romberg-brand--commerce .romberg-advice{padding:1.15rem}}
+@media(max-width:360px){.romberg-brand--commerce .romberg-range__grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.romberg-brand--commerce .romberg-product-card{transition:none}}
+
+
+/* Romberg product detail: no hard-coded product specifications. */
+.product-page .romberg-product-intro{display:grid;gap:.5rem;padding:.15rem 0 .85rem}
+.product-page .romberg-product-intro p{max-width:63ch;color:#597063;font-size:.97rem;line-height:1.65;margin:0}
+.product-page .romberg-product-intro a{display:inline-flex;gap:.35rem;align-items:center;color:#38654b;font-weight:710;font-size:.84rem;text-underline-offset:.25em}
+.romberg-pdp{margin:clamp(2.7rem,6vw,5.6rem) auto 0;max-width:1320px}
+.romberg-pdp__heading{max-width:780px;margin-bottom:1.35rem}
+.romberg-pdp__heading h2,.romberg-pdp__related-header h2{font-size:clamp(1.7rem,3vw,2.6rem);font-weight:560;line-height:1.12;letter-spacing:-.035em;margin:.45rem 0;color:#263b30}
+.romberg-pdp__heading p:last-child{max-width:67ch;line-height:1.6;color:#607367}
+.romberg-pdp__tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9rem}
+.romberg-pdp__tips article{background:#f5f8f3;border:1px solid #dfe7dc;border-radius:13px;padding:1.15rem 1.2rem;min-height:165px}
+.romberg-pdp__tips article span{font-size:.72rem;letter-spacing:.08em;color:#668069;font-weight:800}
+.romberg-pdp__tips h3{font-size:1.08rem;line-height:1.3;margin:.65rem 0 .5rem;color:#2d4a35}
+.romberg-pdp__tips p{font-size:.9rem;line-height:1.6;color:#627368;margin:0}
+.romberg-brand--commerce.romberg-pdp__related{padding:0;margin-top:clamp(2.25rem,5vw,4rem)}
+.romberg-pdp__related-header{display:flex;gap:1rem;justify-content:space-between;align-items:end;flex-wrap:wrap;margin-bottom:1.4rem}
+.romberg-pdp__related-header a,.romberg-pdp__back a{color:#315e40;font-size:.88rem;font-weight:730;text-underline-offset:.25em}
+.romberg-pdp__related .romberg-range__grid{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1050px}
+.romberg-pdp__back{margin-top:2rem}
+@media(max-width:820px){.romberg-pdp__tips{grid-template-columns:1fr}.romberg-pdp__tips article{min-height:auto}.romberg-pdp__related .romberg-range__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:410px){.romberg-pdp__related .romberg-range__grid{grid-template-columns:1fr}}
+
+.product-page .romberg-product-specifications{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.4rem 0 .4rem}
+.product-page .romberg-product-specifications>div{border:1px solid #dfe7dc;border-radius:9px;background:#f5f8f3;padding:.65rem .75rem;min-width:0}
+.product-page .romberg-product-specifications dt{font-size:.7rem;font-weight:650;color:#64796b}
+.product-page .romberg-product-specifications dd{font-size:.91rem;line-height:1.35;font-weight:730;color:#294934;overflow-wrap:anywhere;margin:.2rem 0 0}
+@media(max-width:680px){.product-page .romberg-product-specifications{grid-template-columns:repeat(2,minmax(0,1fr))}}

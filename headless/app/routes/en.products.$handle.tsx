@@ -12,6 +12,9 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {RombergProductGuide, RombergProductSpecifications} from '~/components/RombergProductGuide';
+import {rombergSummary, relatedRombergProducts} from '~/lib/romberg-world';
+import type {RombergProduct} from '~/components/RombergWorld';
 import {variantGid} from '~/lib/pilot-guards';
 
 const SUNLITE_XL_HANDLE = 'venso-sunlite-xl-25w-led-pflanzenlampe';
@@ -91,7 +94,20 @@ export async function loader(args: Route.LoaderArgs) {
     product.tags ?? [],
   ).slice(0, 3);
 
-  return {product, relatedArticles};
+  let rombergRelated: RombergProduct[] = [];
+  if (product.vendor === 'Romberg GmbH & Co. KG') {
+    try {
+      const result = await context.storefront.query(ENGLISH_ROMBERG_RELATED_QUERY, {
+        variables: {query: 'vendor:"Romberg GmbH & Co. KG"'},
+        cache: context.storefront.CacheShort(),
+      });
+      rombergRelated = relatedRombergProducts(result.products.nodes, product);
+    } catch {
+      rombergRelated = [];
+    }
+  }
+
+  return {product, relatedArticles, rombergRelated};
 }
 
 function rankArticles(
@@ -143,7 +159,8 @@ function rankArticles(
 }
 
 export default function EnglishProduct() {
-  const {product, relatedArticles} = useLoaderData<typeof loader>();
+  const {product, relatedArticles, rombergRelated} = useLoaderData<typeof loader>();
+  const isRomberg = product.vendor === 'Romberg GmbH & Co. KG';
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     getAdjacentAndFirstAvailableVariants(product),
@@ -214,6 +231,13 @@ export default function EnglishProduct() {
         <div className="product-main">
           <p className="page-eyebrow">{[product.vendor, product.productType].filter(Boolean).join(' · ')}</p>
           <h1>{displayTitle}</h1>
+          {isRomberg ? (
+            <div className="romberg-product-intro">
+              <p>{rombergSummary(product.description, 230)}</p>
+              <a href="#romberg-guide-heading">Seed-starting tips <span aria-hidden="true">↗</span></a>
+              <RombergProductSpecifications product={product} locale="en" />
+            </div>
+          ) : null}
 
           {isSunliteXL ? (
             <p className="product-intro-en">
@@ -357,6 +381,10 @@ export default function EnglishProduct() {
         </>
       ) : null}
 
+      {isRomberg ? (
+        <RombergProductGuide product={product} locale="en" related={rombergRelated} />
+      ) : null}
+
       <Analytics.ProductView
         data={{
           products: [
@@ -468,6 +496,21 @@ const RELATED_ARTICLES_QUERY = `#graphql
         excerpt
         blog { handle }
         image { id url altText width height }
+      }
+    }
+  }
+` as const;
+
+
+const ENGLISH_ROMBERG_RELATED_QUERY = `#graphql
+  query EnglishRombergRelatedProducts($country: CountryCode, $language: LanguageCode, $query: String!)
+  @inContext(country: $country, language: $language) {
+    products(first: 30, query: $query, sortKey: TITLE) {
+      nodes {
+        id handle title description productType availableForSale
+        shortClaim: metafield(namespace: "leafer", key: "short_claim") { value }
+        featuredImage { id url altText width height }
+        priceRange { minVariantPrice { amount currencyCode } }
       }
     }
   }
