@@ -1,0 +1,82 @@
+{% liquid
+  assign locale_prefix = routes.root_url | append: '/' | replace: '//', '/'
+  assign shown_products = 0
+  assign selected_products = section.settings.products
+%}
+<section class="leaf-v8" aria-labelledby="leaf-v8-title-{{ section.id }}">
+  <div class="leaf-v8__hero">
+    <div class="leaf-v8__inner leaf-v8__hero-grid">
+      <div>
+        <p class="leaf-v8__eyebrow">LEAFerservice / {{ 'enterprise_v8.living_systems' | t }}</p>
+        <h1 id="leaf-v8-title-{{ section.id }}">{{ 'enterprise_v8.hero_heading' | t }}</h1>
+        <p class="leaf-v8__lead">{{ 'enterprise_v8.hero_intro' | t }}</p>
+        <div class="leaf-v8__actions"><a class="leaf-v8__button" href="#leaf-v8-worlds">{{ 'enterprise_v8.explore_solutions' | t }} <span aria-hidden="true">↗</span></a><a class="leaf-v8__textlink" href="#leaf-v8-irrigation">{{ 'enterprise_v8.explore_watering' | t }} →</a></div>
+      </div>
+      <div class="leaf-v8__visual" role="img" aria-label="{{ 'enterprise_v8.hero_image_alt' | t }}">
+        <svg viewBox="0 0 540 520" aria-hidden="true" focusable="false"><circle cx="310" cy="242" r="202" fill="#dbe5d4"/><circle cx="308" cy="236" r="146" fill="#b7ccb1"/><path d="M301 412V167M301 291C221 289 172 249 161 166c74 3 124 42 140 125M301 250c12-104 74-154 159-155-2 90-55 141-159 155" fill="#325a45" stroke="#204331" stroke-width="8" stroke-linecap="round"/><path d="M301 410c-35 25-65 41-108 49m108-49c43 24 71 41 120 48m-120-48-8 65" fill="none" stroke="#5f7657" stroke-width="8" stroke-linecap="round"/><path d="M89 404h390" stroke="#95a88c" stroke-width="3"/><path d="M83 359c0-20 23-42 23-42s23 22 23 42a23 23 0 0 1-46 0Z" fill="#6d948d"/></svg>
+      </div>
+    </div>
+  </div>
+  <div id="leaf-v8-worlds" class="leaf-v8__inner leaf-v8__section">
+    <div class="leaf-v8__section-head"><p class="leaf-v8__eyebrow">01 / {{ 'enterprise_v8.solutions_label' | t }}</p><h2>{{ 'enterprise_v8.solutions_heading' | t }}</h2></div>
+    <div class="leaf-v8__worlds">
+      <a href="{{ locale_prefix }}collections/pflanzsubstrate-mischungen"><span class="leaf-v8__world-icon" aria-hidden="true">◈</span><h3>{{ 'enterprise_v8.substrates_title' | t }}</h3><p>{{ 'enterprise_v8.substrates_intro' | t }}</p><span aria-hidden="true">↗</span></a>
+      <a href="{{ locale_prefix }}pages/substrat-konfigurator"><span class="leaf-v8__world-icon" aria-hidden="true">✳</span><h3>{{ 'enterprise_v8.configurator_title' | t }}</h3><p>{{ 'enterprise_v8.configurator_intro' | t }}</p><span aria-hidden="true">↗</span></a>
+      <a href="{{ locale_prefix }}collections/pflanzenbeleuchtung"><span class="leaf-v8__world-icon" aria-hidden="true">☼</span><h3>{{ 'enterprise_v8.lighting_title' | t }}</h3><p>{{ 'enterprise_v8.lighting_intro' | t }}</p><span aria-hidden="true">↗</span></a>
+      <a href="#leaf-v8-irrigation"><span class="leaf-v8__world-icon" aria-hidden="true">◉</span><h3>{{ 'enterprise_v8.watering_title' | t }}</h3><p>{{ 'enterprise_v8.watering_intro' | t }}</p><span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+  <div id="leaf-v8-irrigation" class="leaf-v8__section leaf-v8__irrigation">
+    <div class="leaf-v8__inner">
+      <div class="leaf-v8__section-head"><p class="leaf-v8__eyebrow">02 / Blumat</p><h2>{{ 'enterprise_v8.watering_heading' | t }}</h2><p>{{ 'enterprise_v8.watering_description' | t }}</p></div>
+      <div class="leaf-v8__products">
+        {% assign blumat_handles = 'blumat-classic-automatische-pflanzenbewasserung-3er-set,blumat-easy-flaschenadapter-fur-pflanzenbewasserung-3er-set,tropf-blumat-set12,blumat-digital' | split: ',' %}
+        {% if selected_products == blank %}
+          {% assign selected_products = blumat_handles %}
+        {% endif %}
+        {% for selected_product in selected_products %}
+          {% liquid
+            assign item = selected_product
+            if section.settings.products == blank
+              assign item = all_products[selected_product]
+            endif
+          %}
+          {% if item != blank and item.vendor == 'Blumat' %}
+            {% assign shown_products = shown_products | plus: 1 %}
+            <article class="leaf-v8__product">
+              <a href="{{ item.url }}" class="leaf-v8__product-media">{% if item.featured_image != blank %}{{ item.featured_image | image_url: width: 680 | image_tag: loading: 'lazy', alt: item.title, widths: '320,480,680', sizes: '(max-width: 700px) calc(100vw - 28px), (max-width: 990px) 46vw, 23vw' }}{% else %}<span class="leaf-v8__no-image">{{ 'enterprise_v8.no_image' | t }}</span>{% endif %}</a>
+              <div class="leaf-v8__product-content">
+                {% if item.metafields.custom.homepage_badge.value != blank %}<p class="leaf-v8__tag">{{ item.metafields.custom.homepage_badge.value | escape }}</p>{% else %}<p class="leaf-v8__tag">Blumat</p>{% endif %}
+                <h3><a href="{{ item.url }}">{{ item.title | escape }}</a></h3>
+                {% assign short_intro = item.metafields.custom.homepage_intro.value | default: item.metafields.leafer.intro.value | default: item.metafields.leafer.subtitle.value | default: item.description %}
+                {% if short_intro != blank %}<p class="leaf-v8__product-intro">{{ short_intro | strip_html | truncate: 110 | escape }}</p>{% endif %}
+                {% if item.metafields.irrigation_spec.plants_supported.value != blank %}<p class="leaf-v8__property">{{ 'enterprise_v8.plants' | t: count: item.metafields.irrigation_spec.plants_supported.value }}</p>{% endif %}
+                {% if item.metafields.irrigation_spec.water_source.value != blank %}<p class="leaf-v8__property">{{ 'enterprise_v8.water_source' | t }}: {{ item.metafields.irrigation_spec.water_source.value | escape }}</p>{% endif %}
+                {% if item.metafields.irrigation_spec.power_supply.value != blank %}<p class="leaf-v8__property">{{ 'enterprise_v8.power_supply' | t }}: {{ item.metafields.irrigation_spec.power_supply.value | escape }}</p>{% endif %}
+                {% assign tank_included = item.metafields.irrigation_spec.water_tank_included %}
+                {% if tank_included != blank %}<p class="leaf-v8__property">{{ 'enterprise_v8.tank' | t }}: {% if tank_included.value == true %}{{ 'enterprise_v8.yes' | t }}{% else %}{{ 'enterprise_v8.no' | t }}{% endif %}</p>{% endif %}
+                <p class="leaf-v8__availability">{% if item.available %}{{ 'enterprise_v8.orderable' | t }}{% else %}{{ 'enterprise_v8.unavailable' | t }}{% endif %}</p>
+                <div class="leaf-v8__product-footer"><span>{% if item.price_varies %}{{ 'enterprise_v8.from' | t }} {% endif %}{{ item.price_min | money_with_currency }}</span><a href="{{ item.url }}">{{ 'enterprise_v8.view_product' | t }} ↗</a></div>
+              </div>
+            </article>
+          {% elsif request.design_mode %}
+            <p>{{ 'enterprise_v8.missing_product' | t }}: {{ selected_product | escape }}</p>
+          {% endif %}
+        {% endfor %}
+        {% if shown_products == 0 %}<p>{{ 'enterprise_v8.empty' | t }}</p>{% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="leaf-v8__inner leaf-v8__bottom"><p class="leaf-v8__eyebrow">03 / {{ 'enterprise_v8.philosophy' | t }}</p><h2>{{ 'enterprise_v8.philosophy_heading' | t }}</h2><p>{{ 'enterprise_v8.philosophy_intro' | t }}</p></div>
+</section>
+{% stylesheet %}
+.leaf-v8{--v8-ink:#183b2d;--v8-muted:#52645c;--v8-bg:#f5f6ef;--v8-accent:#d7ee86;color:var(--v8-ink);background:var(--v8-bg);font-family:inherit}
+.leaf-v8 *{box-sizing:border-box}.leaf-v8 a:focus-visible{outline:3px solid #325a45;outline-offset:4px}.leaf-v8 h1,.leaf-v8 h2,.leaf-v8 h3,.leaf-v8 p{overflow-wrap:anywhere}.leaf-v8 [id]{scroll-margin-top:100px}.leaf-v8__availability{font-size:14px;margin:0;font-weight:650}.leaf-v8__property{font-size:14px;margin:0;color:var(--v8-muted)}.leaf-v8__inner{width:min(100% - 48px,1280px);margin:auto}.leaf-v8__hero{background:#e9eee2;padding:clamp(55px,8vw,128px) 0}.leaf-v8__hero-grid{display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:5vw}
+.leaf-v8__eyebrow{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#54735a;margin:0 0 25px}.leaf-v8 h1{font-size:clamp(32px,5.3vw,76px);line-height:1.01;letter-spacing:-.055em;font-weight:650;margin:0 0 28px;max-width:800px}.leaf-v8 h2{font-size:clamp(28px,3.5vw,52px);line-height:1.11;letter-spacing:-.04em;margin:0}.leaf-v8 h3{font-size:20px;line-height:1.2;letter-spacing:-.02em;margin:0}.leaf-v8 p{line-height:1.55}.leaf-v8__lead{font-size:clamp(16px,1.65vw,21px);max-width:600px;color:var(--v8-muted);margin:0 0 32px}.leaf-v8__actions{display:flex;flex-wrap:wrap;align-items:center;gap:25px}.leaf-v8__button{display:inline-flex;gap:30px;align-items:center;background:var(--v8-ink);color:#fff!important;padding:17px 24px;text-decoration:none;min-height:52px;font-weight:650}.leaf-v8__button:hover{background:#28533d}.leaf-v8__textlink{color:var(--v8-ink);font-weight:650;text-decoration:none}.leaf-v8__visual svg{width:100%;height:auto;max-height:520px}
+.leaf-v8__section{padding:clamp(60px,7vw,110px) 0}.leaf-v8__section-head{max-width:760px;margin:0 0 38px}.leaf-v8__section-head>p:last-child{max-width:650px;color:var(--v8-muted)}.leaf-v8__worlds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.leaf-v8__worlds>a{position:relative;min-height:280px;background:white;padding:30px 25px;display:flex;flex-direction:column;gap:14px;text-decoration:none;color:var(--v8-ink);border-bottom:3px solid transparent}.leaf-v8__worlds>a:hover{border-color:#719a64}.leaf-v8__worlds p{color:var(--v8-muted);font-size:14px;margin:0}.leaf-v8__worlds>a>span:last-child{margin-top:auto;align-self:end}.leaf-v8__world-icon{display:grid;place-items:center;border:1px solid #b9d0b5;width:47px;height:47px;font-size:24px}
+.leaf-v8__irrigation{background:#dde7d8}.leaf-v8__products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}.leaf-v8__product{background:#fff;display:flex;flex-direction:column;min-width:0}.leaf-v8__product-media{aspect-ratio:1/1;display:grid;place-items:center;background:#f2f4ee;overflow:hidden}.leaf-v8__product-media img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}.leaf-v8__product-content{padding:24px;display:flex;flex-direction:column;flex:1;gap:12px}.leaf-v8__product h3 a{text-decoration:none;color:inherit}.leaf-v8__tag{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#52785b;margin:0}.leaf-v8__product-intro{font-size:14px;color:var(--v8-muted);margin:0}.leaf-v8__product-footer{margin-top:auto;padding-top:20px;display:flex;gap:12px;justify-content:space-between;align-items:center;font-size:13px}.leaf-v8__product-footer span{font-size:18px;font-weight:700}.leaf-v8__product-footer a{color:inherit}.leaf-v8__bottom{padding:100px 0;max-width:800px}.leaf-v8__bottom>p:last-child{font-size:18px;color:var(--v8-muted);max-width:600px}
+@media(max-width:990px){.leaf-v8__worlds,.leaf-v8__products{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.leaf-v8__inner{width:min(100% - 28px,1280px)}.leaf-v8__hero{padding:60px 0 30px}.leaf-v8__hero-grid{grid-template-columns:1fr;gap:10px}.leaf-v8__visual{max-width:360px;margin:auto}.leaf-v8__worlds,.leaf-v8__products{grid-template-columns:minmax(0,1fr);gap:16px}.leaf-v8__worlds>a{min-height:230px;padding:18px 15px}.leaf-v8__worlds h3,.leaf-v8__product h3{font-size:16px}.leaf-v8__product-content{padding:14px}.leaf-v8__product-footer{flex-direction:column;align-items:start}.leaf-v8__product-footer span{font-size:16px}.leaf-v8__section{padding:60px 0}.leaf-v8__bottom{padding:75px 0}.leaf-v8__world-icon{width:40px;height:40px}}
+{% endstylesheet %}
+{% schema %}
+{"name":"LEAF Enterprise V8","settings":[{"type":"product_list","id":"products","label":"Blumat-Produkte","limit":20,"info":"Nur im Onlineshop verfügbare Blumat-Produkte werden angezeigt. Leer: vier kuratierte Standardprodukte."}],"presets":[{"name":"LEAF Enterprise V8"}]}
+{% endschema %}
