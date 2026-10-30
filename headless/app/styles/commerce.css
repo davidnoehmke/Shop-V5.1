@@ -267,3 +267,40 @@
   .leaf-experience-world__hero h1{font-size:clamp(2rem,8vw,3rem)}
   .leaf-home-entry__visual img{height:310px}
 }
+
+
+/* Unified typography: editorial, readable and compact at every viewport. */
+.page-intro h1 {
+  font-size:clamp(2.2rem,4.2vw,4rem);
+  line-height:1.08;
+  letter-spacing:-.045em;
+  text-wrap:balance;
+}
+.leaf-home-entry h1,.leaf-atrium__copy h1 {
+  font-size:clamp(2.6rem,5.2vw,4.8rem);
+  font-weight:520;
+  line-height:1.055;
+  letter-spacing:-.055em;
+}
+.leaf-home-substrate__intro h2,.leaf-home-assistant h2 {
+  font-size:clamp(2rem,4.4vw,3.8rem);
+  line-height:1.09;
+}
+.leaf-campus-worlds__intro h2,.leaf-experience-world__house h2 {
+  font-size:clamp(2rem,4.2vw,3.7rem);
+  line-height:1.1;
+}
+.venso-hero h1,.romberg-hero h1,.elho-hero h1,.blumat-hero h1,.geli-hero h1 {
+  font-size:clamp(2rem,3.6vw,3.6rem);
+  line-height:1.095;
+  letter-spacing:-.045em;
+}
+@media(max-width:600px){
+  .page-intro h1 {font-size:clamp(2rem,8.8vw,2.8rem)}
+  .leaf-home-entry h1,.leaf-atrium__copy h1 {
+    font-size:clamp(2.35rem,9vw,3.2rem);
+  }
+  .leaf-home-substrate__intro h2,.leaf-home-assistant h2 {
+    font-size:clamp(1.9rem,8vw,2.7rem);
+  }
+}
