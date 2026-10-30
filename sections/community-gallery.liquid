@@ -1,9 +1,4 @@
-{% liquid
-  assign community_cta_link = section.settings.cta_link
-  if community_cta_link contains '/collections/zimmerpflanzen' and collections['zimmerpflanzen-1'] != blank
-    assign community_cta_link = collections['zimmerpflanzen-1'].url
-  endif
-%}
+{% assign community_cta_link = section.settings.cta_link %}
 <section class="community page-width" aria-labelledby="CommunityHeading-{{ section.id }}">
   <div class="community__intro" data-leaf-reveal>
     <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29V15M16 23C9 22 5 18 5 10c7 0 11 4 11 11M16 18c6-1 10-5 11-12-7 0-11 4-11 10"/></svg>
