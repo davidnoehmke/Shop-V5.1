@@ -59,10 +59,7 @@ export function Header({
 }
 
 export function HeaderMenu({
-  menu,
-  primaryDomainUrl,
   viewport,
-  publicStoreDomain,
   locale = 'de',
 }: {
   menu: HeaderProps['header']['menu'];
@@ -73,119 +70,26 @@ export function HeaderMenu({
 }) {
   const className = `header-menu-${viewport}`;
   const {close} = useAside();
-  const items = (menu || FALLBACK_HEADER_MENU).items;
   const isEnglish = locale === 'en';
-
+  const destinations = [
+    {de:'Shop',en:'Shop',hrefDe:'/collections/all',hrefEn:'/en/collections/all'},
+    {de:'Substrate',en:'Substrates',hrefDe:'/collections/substratwelt-pflanzsubstrate-mischungen-zusatze',hrefEn:'/en/substrate'},
+    {de:'Pflanzenlicht',en:'Grow lights',hrefDe:'/pflanzenlicht-vergleich',hrefEn:'/en/worlds/light'},
+    {de:'3D Raumplaner',en:'3D Room Planner',hrefDe:'/raumplaner-3d',hrefEn:'/en/room-planner-3d'},
+    {de:'Pflanzenwissen',en:'Plant knowledge',hrefDe:'/blogs',hrefEn:'/en/blogs'},
+  ];
   return (
-    <nav
-      className={className}
-      aria-label={
-        viewport === 'mobile'
-          ? 'Mobile Navigation'
-          : isEnglish
-            ? 'Main navigation'
-            : 'Hauptnavigation'
-      }
-    >
+    <nav className={className} aria-label={viewport==='mobile'?'Mobile Navigation':isEnglish?'Main navigation':'Hauptnavigation'}>
       <ul className="header-menu-list">
-        {viewport === 'mobile' && (
-          <li>
-            <NavLink
-              end
-              onClick={close}
-              prefetch="intent"
-              style={activeLinkStyle}
-              to={isEnglish ? '/en' : '/'}
-            >
-              {isEnglish ? 'Home' : 'Start'}
-            </NavLink>
-          </li>
-        )}
-
-        {items.map((item) => {
-          if (!item.url) return null;
-
-          const url = resolveMenuUrl(
-            item.url,
-            primaryDomainUrl,
-            publicStoreDomain,
-            locale,
-          );
-          const children = item.items || [];
-
-          return (
-            <li
-              className={
-                children.length
-                  ? 'header-menu-group has-children'
-                  : 'header-menu-group'
-              }
-              key={item.id}
-            >
-              <NavLink
-                className="header-menu-item"
-                end
-                onClick={viewport === 'mobile' ? close : undefined}
-                prefetch="intent"
-                style={activeLinkStyle}
-                to={url}
-              >
-                {item.title}
-              </NavLink>
-
-              {children.length > 0 && (
-                <ul className="header-submenu">
-                  {children.map((child) => {
-                    if (!child.url) return null;
-                    const childUrl = resolveMenuUrl(
-                      child.url,
-                      primaryDomainUrl,
-                      publicStoreDomain,
-                      locale,
-                    );
-
-                    return (
-                      <li key={child.id}>
-                        <NavLink
-                          onClick={viewport === 'mobile' ? close : undefined}
-                          prefetch="intent"
-                          style={activeLinkStyle}
-                          to={childUrl}
-                        >
-                          {child.title}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          );
-        })}
+        {viewport==='mobile' ? <li className="header-menu-group"><NavLink end onClick={close} prefetch="intent" to={isEnglish?'/en':'/'}>{isEnglish?'Home':'Start'}</NavLink></li> : null}
+        {destinations.map(item=><li className="header-menu-group" key={item.hrefDe}>
+          <NavLink className="header-menu-item" end onClick={viewport==='mobile'?close:undefined} prefetch="intent" style={activeLinkStyle} to={isEnglish?item.hrefEn:item.hrefDe}>
+            {isEnglish?item.en:item.de}
+          </NavLink>
+        </li>)}
       </ul>
     </nav>
   );
-}
-
-function resolveMenuUrl(
-  itemUrl: string,
-  primaryDomainUrl: string,
-  publicStoreDomain: string,
-  locale: StorefrontLocale,
-) {
-  const isInternal =
-    itemUrl.includes('myshopify.com') ||
-    itemUrl.includes(publicStoreDomain) ||
-    itemUrl.includes(primaryDomainUrl);
-
-  if (!isInternal) return itemUrl;
-  const path = new URL(itemUrl).pathname;
-  if (locale !== 'en' || path === '/en' || path.startsWith('/en/')) return path;
-  if (path.startsWith('/marken/')) return path.replace('/marken/', '/en/brands/');
-  if (/^\/(collections|products|blogs|pages|policies|search|cart)(\/|$)/.test(path)) {
-    return `/en${path}`;
-  }
-  return path;
 }
 
 function HeaderCtas({
@@ -218,20 +122,6 @@ function HeaderCtas({
             }
           </Await>
         </Suspense>
-      </NavLink>
-      <NavLink
-        to={isEnglish ? '/en' : '/'}
-        prefetch="intent"
-        className="header-cta-link"
-      >
-        {isEnglish ? 'Campus' : 'Campus'}
-      </NavLink>
-      <NavLink
-        to={isEnglish ? '/en#leaf-worlds' : '/#leaf-worlds'}
-        prefetch="intent"
-        className="header-cta-link"
-      >
-        {isEnglish ? 'Worlds' : 'Welten'}
       </NavLink>
       <SearchToggle locale={locale} />
       <CartToggle cart={cart} locale={locale} />
@@ -342,48 +232,6 @@ function CartBanner({
 
   return <CartBadge count={cart?.totalQuantity ?? 0} locale={locale} />;
 }
-
-const FALLBACK_HEADER_MENU = {
-  id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Sortiment',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Ratgeber',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Rechtliches',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
-      tags: [],
-      title: 'Über LEAFerservice',
-      type: 'PAGE',
-      url: '/pages/about',
-      items: [],
-    },
-  ],
-};
 
 function activeLinkStyle({
   isActive,
