@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {groupRombergProducts, rombergCategory, rombergSummary} from '../app/lib/romberg-world.ts';
+import {groupRombergProducts, rombergCategory, rombergSummary, relatedRombergProducts} from '../app/lib/romberg-world.ts';
 
 test('Romberg products are grouped by real title and product type', () => {
   const products = [
@@ -27,4 +27,16 @@ test('Unknown category is still offered in essentials instead of disappearing', 
 test('Product summary preserves source text and fixes missing sentence spaces', () => {
   assert.equal(rombergSummary('BoQube S.Die Haube ist dabei.'), 'BoQube S. Die Haube ist dabei.');
   assert.ok(rombergSummary('Langes Wort '.repeat(50), 140).length <= 141);
+});
+
+test('Related items exclude the current product and favour complementary types', () => {
+  const current = {handle: 'boqube-s', productType: 'Anzuchtgewächshaus'};
+  const candidates = [
+    current,
+    {handle: 'boqube-m', productType: 'Anzuchtgewächshaus'},
+    {handle: 'quelltabletten', productType: 'Anzuchtsubstrat'},
+    {handle: 'heizmatte', productType: 'Anzuchtzubehör'},
+  ];
+  assert.deepEqual(relatedRombergProducts(candidates, current).map((item) => item.handle),
+    ['quelltabletten', 'heizmatte', 'boqube-m']);
 });

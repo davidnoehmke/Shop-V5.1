@@ -29,3 +29,15 @@ export function rombergSummary(value?: string | null, limit = 172): string {
   const cutoff = normalized.slice(0, limit + 1).lastIndexOf(' ');
   return normalized.slice(0, cutoff > 50 ? cutoff : limit).trimEnd() + '…';
 }
+
+export function relatedRombergProducts<T extends {handle: string; productType: string}>(
+  candidates: readonly T[],
+  current: {handle: string; productType: string},
+  limit = 3,
+): T[] {
+  const others = candidates.filter((item) => item.handle !== current.handle);
+  return [
+    ...others.filter((item) => item.productType !== current.productType),
+    ...others.filter((item) => item.productType === current.productType),
+  ].slice(0, limit);
+}

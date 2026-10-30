@@ -11,6 +11,9 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
+import {RombergProductGuide} from '~/components/RombergProductGuide';
+import {rombergSummary, relatedRombergProducts} from '~/lib/romberg-world';
+import type {RombergProduct} from '~/components/RombergWorld';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 import {variantGid} from '~/lib/pilot-guards';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -69,8 +72,21 @@ async function loadCriticalData({context, params, request}: Route.LoaderArgs) {
   }
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
+  let rombergRelated: RombergProduct[] = [];
+  if (product.vendor === 'Romberg GmbH & Co. KG') {
+    try {
+      const result = await storefront.query(ROMBERG_RELATED_QUERY, {
+        variables: {query: 'vendor:"Romberg GmbH & Co. KG"'},
+        cache: storefront.CacheShort(),
+      });
+      rombergRelated = relatedRombergProducts(result.products.nodes, product);
+    } catch {
+      // Product buying must not fail if complementary recommendations cannot load.
+      rombergRelated = [];
+    }
+  }
 
-  return {product};
+  return {product, rombergRelated};
 }
 
 function loadDeferredData(_args: Route.LoaderArgs) {
@@ -78,7 +94,8 @@ function loadDeferredData(_args: Route.LoaderArgs) {
 }
 
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const {product, rombergRelated} = useLoaderData<typeof loader>();
+  const isRomberg = product.vendor === 'Romberg GmbH & Co. KG';
 
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
@@ -123,6 +140,12 @@ export default function Product() {
         <div className="product-main">
           {eyebrow ? <p className="page-eyebrow">{eyebrow}</p> : null}
           <h1>{product.title}</h1>
+          {isRomberg ? (
+            <div className="romberg-product-intro">
+              <p>{rombergSummary(product.description, 230)}</p>
+              <a href="#romberg-guide-heading">Anzuchttipps ansehen <span aria-hidden="true">↗</span></a>
+            </div>
+          ) : null}
 
           <div className="product-price-block">
             <ProductPrice
@@ -189,6 +212,9 @@ export default function Product() {
           }}
         />
       </div>
+      {isRomberg ? (
+        <RombergProductGuide product={product} locale="de" related={rombergRelated} />
+      ) : null}
     </div>
   );
 }
@@ -300,6 +326,21 @@ const PILOT_VARIANT_QUERY = `#graphql
   @inContext(country: $country, language: $language) {
     node(id: $id) {
       ... on ProductVariant { id selectedOptions { name value } product { handle } }
+    }
+  }
+` as const;
+
+
+const ROMBERG_RELATED_QUERY = `#graphql
+  query RombergRelatedProducts($country: CountryCode, $language: LanguageCode, $query: String!)
+  @inContext(country: $country, language: $language) {
+    products(first: 30, query: $query, sortKey: TITLE) {
+      nodes {
+        id handle title description productType availableForSale
+        shortClaim: metafield(namespace: "leafer", key: "short_claim") { value }
+        featuredImage { id url altText width height }
+        priceRange { minVariantPrice { amount currencyCode } }
+      }
     }
   }
 ` as const;
