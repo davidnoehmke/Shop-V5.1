@@ -11,7 +11,7 @@ The repository is the versioned theme source. A single permanent unpublished Sho
 3. Only a successful `LEAF CI` run on `main` triggers `Shopify Staging Delivery`.
 4. The delivery workflow resolves the fixed staging theme ID from the GitHub Environment variable `SHOPIFY_STAGING_THEME_ID`.
 5. Theme Check is executed again immediately before delivery.
-6. Shopify CLI pushes `theme/` into the same permanent unpublished staging theme.
+6. Shopify CLI pushes the repository root (`--path .`) into the same permanent unpublished staging theme.
 7. Deployment result, commit SHA, workflow run, target theme, duration, changed-file count and machine-readable analysis are recorded in Supabase `ops.deployments`.
 8. GitHub Actions writes a human-readable deployment summary for every run.
 9. Production publication is deliberately separate from staging delivery.

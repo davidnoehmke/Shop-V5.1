@@ -1,0 +1,84 @@
+name: Live storefront verification
+
+on:
+  workflow_run:
+    workflows: ["LEAF CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: leaf-live-storefront-verification-${{ github.event.workflow_run.event }}-${{ github.event.workflow_run.head_branch }}-${{ github.event.workflow_run.conclusion }}
+  cancel-in-progress: true
+
+jobs:
+  verify-live:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+      - name: Verify delivered German and English product worlds
+        env:
+          VERIFIED_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          for attempt in 1 2 3; do
+            if node automation/codex/storefront-release.cjs; then exit 0; fi
+            if [ "$attempt" -lt 3 ]; then sleep 10; fi
+          done
+          exit 1
+
+      - name: Verify live assistant response
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          response=$(curl --max-time 45 -fsSL -X POST \
+            -H 'Origin: https://leaferservice.com' \
+            -H 'Content-Type: application/json' \
+            --data '{"message":"Was macht Bims im Substrat?","locale":"de","path":"/"}' \
+            'https://vbqimcwaxcydegqlkkgw.supabase.co/functions/v1/storefront-assistant')
+          echo "$response" | jq -e '.answer | type == "string" and length > 20' >/dev/null
+
+      - name: Verify legacy redirects remain canonical
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://leaferservice.com'
+
+          final=$(curl -sSL -o /dev/null -w '%{url_effective}' "${base}/pages/ratgeber")
+          case "$final" in
+            "${base}/blogs/leafers-nice2know-blog"*) ;;
+            *) echo "Unexpected /pages/ratgeber target: $final" >&2; exit 1 ;;
+          esac
+
+          final=$(curl -sSL -o /dev/null -w '%{url_effective}' "${base}/pages/pflanzeninterieur-konfigurator")
+          case "$final" in
+            "${base}/collections/interieur-solutions"*) ;;
+            *) echo "Unexpected Pflanzeninterieur redirect target: $final" >&2; exit 1 ;;
+          esac
+
+      - name: Crawl public sitemap and internal German and English links
+        if: always()
+        run: node automation/codex/live-links.cjs
+
+      - name: Preserve verification reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-de-en-verification
+          path: |
+            /tmp/leaf-release.json
+            /tmp/leaf-live-links.json
+          if-no-files-found: warn

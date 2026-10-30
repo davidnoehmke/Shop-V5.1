@@ -26,8 +26,9 @@ Railway, Notion, Google Sheets oder LEAF-OS.
 - `codex/`: Policy-, Prüf- und Delivery-Helfer, die von CI-Tests verwendet werden. Kein eigenständiger Scheduler.
 - `supabase/migrations/`: versionierte Datenbank-/Policy-Änderungen; Supabase bleibt Laufzeit-SSOT.
 
-Die einzige GitHub Action ist `.github/workflows/ci.yml`; sie validiert Repository,
-Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
+Die primäre CI-Action ist `.github/workflows/ci.yml`; zusätzlich prüft
+`.github/workflows/live-storefront-verify.yml` den Storefront nach erfolgreicher CI auf `main`.
+Die CI validiert Repository, Theme, Migrationen und Pipeline-Code. Sie synchronisiert keine Fremddatenbank und
 aktiviert keine externe Legacy-Verbindung.
 
 ## Storefront-Freeze
@@ -37,3 +38,12 @@ bereitet standardmäßig nur Produkt- und Blog-Kandidaten vor. SEO-/UX-Änderung
 nur on-demand zulässig, wenn ein verifizierter Fehler, ein belastbares Signal aus
 Search Console/Analytics, eine zwingende technische/rechtliche Anforderung oder eine
 explizite Owner-Freigabe vorliegt.
+
+
+## Live-Verifikation
+
+`.github/workflows/live-storefront-verify.yml` läuft nach einem erfolgreichen
+`LEAF CI`-Push auf `main`. Der Workflow wartet auf die native Shopify-Synchronisierung
+und prüft zentrale Routen, Liquid-Fehler, Berater, eine echte Antwort des globalen
+Shop-Assistenten und öffentliche DE-/EN-Links. Der Actions-Lauf dokumentiert das
+Ergebnis. Der Workflow erzeugt keine Freeze-Tags oder Beststand-Branches.

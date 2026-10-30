@@ -261,12 +261,10 @@ Title and Description
   <title>{{ page_title -}}
   {%- if current_tags -%} –
   {%- assign meta_tags = current_tags | join: ', ' -%}
-  {%- assign translated_tags = 'general.meta.tags' | t: tags: meta_tags -%}
-  {%- if translated_tags contains 'translation missing' -%} {{ meta_tags}}{%- else -%} {{ translated_tags }}{%- endif -%}
+  {{ 'general.meta.tags' | t: tags: meta_tags }}
   {%- endif -%}
   {%- if current_page != 1 -%} –
-  {%- assign translated_page = 'general.meta.page' | t: page: current_page -%}
-  {%- if translated_page contains 'translation missing' or translated_page contains 'I18n Error' -%} {{ current_page }}{%- else -%} {{ translated_page }}{%- endif -%}
+  {{ 'general.meta.page' | t: page: current_page }}
   {%- endif -%}
   </title>
   {%- endunless -%}
@@ -332,9 +330,6 @@ Organization and Website Schema Markup
     {%- unless logo_url == blank -%}
       "image": "{{ logo_url | remove: "\" }}",
       "logo": "{{ logo_url | remove: "\" }}",
-    {%- else -%}
-      "image": "https:{{ 'logo.png' | asset_url }}",
-      "logo": "https:{{ 'logo.png' | asset_url }}",
     {%- endunless -%}
     "sameAs": ["{{ booster_config.same_as | join: '", "'}}"],
     "telephone": "{{ shop.phone }}",
@@ -864,7 +859,9 @@ Collection (CollectionPage + ItemList) and Breadcrumb Schema Markup
     "name": {{ article.title | json }},
     "publisher": {
       "@type": "Organization",
-      "logo": {"@type": "ImageObject","url": "https:{{ 'logo.png' | asset_url }}"},
+      {%- unless logo_url == blank -%}
+        "logo": {"@type": "ImageObject","url": {{ logo_url | json }}},
+      {%- endunless -%}
       "name": {{ shop.name | json }}
     },
     "headline": {{ article.title | json }},
@@ -952,3 +949,4 @@ all other Booster schema.
   {%- endif -%}
 {%- endif -%}
 <!-- end of Booster Apps SEO -->
+

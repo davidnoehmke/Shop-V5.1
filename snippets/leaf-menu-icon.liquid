@@ -1,0 +1,29 @@
+{% liquid
+  assign menu_icon_key = ''
+  assign menu_href = link.url | default: '' | downcase
+
+  if menu_href contains 'social-greens'
+    assign menu_icon_key = 'sprout'
+  elsif menu_href contains 'substrat'
+    assign menu_icon_key = 'layers'
+  elsif menu_href contains 'interieur-solutions'
+    assign menu_icon_key = 'room'
+  elsif menu_href contains 'pflanzgefasse' or menu_href contains 'pflanzgefaesse'
+    assign menu_icon_key = 'pot'
+  elsif menu_href contains 'zimmerpflanzen'
+    assign menu_icon_key = 'leaf'
+  elsif menu_href contains 'zubehor' or menu_href contains 'zubehör'
+    assign menu_icon_key = 'care'
+  elsif menu_href contains 'set' or menu_href contains 'bundle'
+    assign menu_icon_key = 'bundle'
+  elsif menu_href contains 'licht' or menu_href contains 'lamp'
+    assign menu_icon_key = 'light'
+  elsif menu_href contains 'ratgeber' or menu_href contains 'blog'
+    assign menu_icon_key = 'care'
+  elsif menu_href contains 'kontakt' or menu_href contains 'contact'
+    assign menu_icon_key = 'support'
+  endif
+%}
+{% if menu_icon_key != blank %}
+  <span class="site-header__nav-icon" aria-hidden="true">{% render 'leaf-knowledge-icon', icon_key: menu_icon_key %}</span>
+{% endif %}

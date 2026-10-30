@@ -1,12 +1,24 @@
 {%- comment -%}
   Shared source for visible product FAQs and FAQPage JSON-LD.
-  Custom JSON entries take precedence, followed by leafer.faq_1..4 and Vitals fallbacks.
+  Populated custom JSON is authoritative; legacy fields are a fallback only.
   Empty pairs and duplicate questions are omitted. Use format: 'json' for JSON members.
 {%- endcomment -%}
 {%- liquid
   assign custom_entries = product.metafields.custom.faq.value
   assign custom_count = custom_entries.size | default: 0
-  assign total_count = custom_count | plus: 4
+  assign has_custom_faq = false
+  for entry in custom_entries
+    assign entry_question = entry.question | default: entry.q | strip
+    assign entry_answer = entry.answer | default: entry.a | strip
+    if entry_question != blank and entry_answer != blank
+      assign has_custom_faq = true
+      break
+    endif
+  endfor
+  assign total_count = 4
+  if has_custom_faq
+    assign total_count = custom_count
+  endif
   assign seen_questions = ''
   assign emitted_count = 0
 -%}
@@ -14,12 +26,12 @@
   {%- liquid
     assign question = ''
     assign answer = ''
-    if position <= custom_count
+    if has_custom_faq
       assign custom_index = position | minus: 1
-      assign question = custom_entries[custom_index].question | strip
-      assign answer = custom_entries[custom_index].answer | strip
+      assign question = custom_entries[custom_index].question | default: custom_entries[custom_index].q | strip
+      assign answer = custom_entries[custom_index].answer | default: custom_entries[custom_index].a | strip
     else
-      assign legacy_index = position | minus: custom_count
+      assign legacy_index = position
       assign legacy_key = 'faq_' | append: legacy_index
       assign legacy_value = product.metafields.leafer[legacy_key].value
       if legacy_value contains '||'

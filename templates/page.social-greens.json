@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "main": {
+      "type": "leaf-social-greens",
+      "settings": {}
+    }
+  },
+  "order": ["main"]
+}
