@@ -52,3 +52,105 @@
 @media(max-width:980px){.product-page .product{grid-template-columns:1fr;gap:1.6rem}.product-gallery__stage{max-height:min(62svh,650px)}}
 @media(max-width:600px){.product-page .product-main h1{font-size:clamp(1.85rem,7vw,2.5rem)}.product-gallery__stage{max-height:50svh}.product-gallery__thumbnail{flex-basis:64px}.product-item__body{padding:.8rem}.product-item__title{font-size:.9rem}}
 @media(prefers-reduced-motion:reduce){.product-item{transition:none}}
+
+
+/* Collection worlds · image-led, concise typography, SEO below commerce. */
+.collection-editorial-hero {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,.92fr);
+  align-items:center;
+  gap:clamp(1.5rem,4vw,4rem);
+  margin:clamp(.8rem,2vw,1.5rem) 0 clamp(2.5rem,5vw,4.5rem);
+  padding:clamp(1.15rem,3vw,3.25rem);
+  background:linear-gradient(128deg,#edf3e9 0%,#f8faf6 60%,#e8eee6 100%);
+  border:1px solid var(--leaf-border);
+  border-radius:18px;
+}
+.collection-editorial-hero__copy {min-width:0}
+.collection-editorial-hero__copy h1 {
+  color:var(--leaf-ink);font-size:clamp(2.2rem,4vw,3.75rem);
+  font-weight:560;line-height:1.065;letter-spacing:-.055em;
+  margin:.5rem 0 1.25rem;max-width:17ch;text-wrap:balance;
+  overflow-wrap:anywhere;
+}
+.collection-editorial-hero__lead {
+  color:#4e6558;font-size:clamp(.98rem,1.25vw,1.1rem);
+  line-height:1.65;max-width:51ch;margin:0;
+}
+.collection-editorial-hero__visual {
+  width:100%;aspect-ratio:4/3;display:grid;place-items:center;
+  min-width:0;overflow:hidden;background:#f0f4ed;border-radius:14px;
+}
+.collection-editorial-hero__visual img {
+  width:100%;height:100%;display:block;object-fit:contain;
+  padding:clamp(.4rem,1.5vw,1rem);
+}
+.collection-editorial-hero__placeholder {
+  color:#94a99a;font-size:clamp(2.2rem,5vw,4.5rem);
+  font-weight:800;letter-spacing:-.07em;
+}
+.collection-editorial-hero__cta {
+  display:inline-flex;align-items:center;justify-content:space-between;
+  gap:1.3rem;margin-top:1.55rem;padding:.85rem 1.2rem;
+  border-radius:999px;min-height:48px;background:var(--leaf-ink);
+  color:#fff;font-size:.93rem;font-weight:750;text-decoration:none;
+}
+.collection-editorial-hero__cta:hover {background:#24533d}
+.collection-editorial-hero__cta:focus-visible,.collection-editorial-more summary:focus-visible {
+  outline:3px solid #477b43;outline-offset:3px;
+}
+.collection .section-heading-row h2 {
+  font-size:clamp(1.55rem,2.45vw,2.45rem);line-height:1.15;
+}
+.collection-editorial-more {
+  max-width:920px;margin:clamp(2rem,6vw,5rem) auto 0;
+  border-top:1px solid var(--leaf-border);
+}
+.collection-editorial-more summary {
+  cursor:pointer;display:list-item;list-style-position:inside;
+  padding:1.2rem .25rem;font-size:clamp(1rem,1.6vw,1.2rem);
+  font-weight:700;color:var(--leaf-ink);
+}
+.collection-editorial-more__body {
+  padding:.75rem clamp(.25rem,3vw,2rem) 2rem;
+  color:#496155;font-size:clamp(.92rem,1.2vw,1.03rem);line-height:1.75;
+}
+.collection-editorial-more__body h2 {
+  font-size:clamp(1.3rem,2vw,1.8rem);line-height:1.2;
+  letter-spacing:-.03em;margin:1.7rem 0 .55rem;
+}
+.collection-editorial-more__body p {max-width:72ch}
+.collection-editorial-more__body details {border-top:1px solid var(--leaf-border)}
+.collection-editorial-more__body details summary {font-size:1rem}
+.collections-grid {align-items:stretch}
+.collection-item {
+  overflow:hidden;border:1px solid var(--leaf-border);
+  border-radius:14px;padding:0;background:#fff;
+}
+.collection-item-media {aspect-ratio:4/3;background:var(--leaf-canvas)}
+.collection-item-media img {
+  display:block;width:100%;height:100%;
+  object-fit:contain;padding:.75rem;
+}
+.collection-item-copy {padding:1.1rem 1.2rem 1.25rem}
+.collection-item-copy h2 {font-size:clamp(1.2rem,2vw,1.65rem);line-height:1.16}
+.collection-item-copy p {
+  display:-webkit-box;-webkit-line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden;
+  font-size:.91rem;line-height:1.55;
+}
+@media (max-width:900px) {
+  .collection-editorial-hero {grid-template-columns:1fr}
+  .collection-editorial-hero__copy h1 {max-width:22ch}
+  .collection-editorial-hero__visual {max-height:430px}
+  .collections-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:600px) {
+  .collection-editorial-hero {padding:1.1rem;gap:1.2rem}
+  .collection-editorial-hero__copy h1 {
+    font-size:clamp(2rem,9vw,2.7rem);margin-bottom:.75rem;
+  }
+  .collection-editorial-hero__visual {max-height:280px}
+  .collection-editorial-hero__cta {width:100%}
+  .collections-grid {grid-template-columns:1fr}
+}
