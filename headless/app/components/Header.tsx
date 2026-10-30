@@ -182,6 +182,7 @@ function CartBadge({
   return (
     <a
       className="header-cart-link"
+      aria-label={isEnglish ? 'Open cart' : 'Warenkorb öffnen'}
       href={isEnglish ? '/en/cart' : '/cart'}
       onClick={(event) => {
         event.preventDefault();
