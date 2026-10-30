@@ -117,12 +117,13 @@ export default function Product() {
 
       <div className="product" data-product-id={product.id} data-variant-id={selectedVariant?.id}>
         <div className="product-media-column">
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImage image={selectedVariant?.image} fallbackImage={product.featuredImage} locale="de" />
         </div>
 
         <div className="product-main">
           {eyebrow ? <p className="page-eyebrow">{eyebrow}</p> : null}
           <h1>{product.title}</h1>
+          {product.description ? <p className="leaf-product-lead">{product.description.length>245 ? product.description.slice(0,242).trimEnd()+'…' : product.description}</p> : null}
 
           <div className="product-price-block">
             <ProductPrice
@@ -239,6 +240,7 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    featuredImage { id url altText width height }
     collections(first: 1) {
       nodes {
         id
