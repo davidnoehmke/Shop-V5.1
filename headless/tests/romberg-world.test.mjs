@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {groupRombergProducts, rombergCategory, rombergSummary, relatedRombergProducts} from '../app/lib/romberg-world.ts';
+import {groupRombergProducts, rombergCategory, rombergSummary, relatedRombergProducts, rombergSpecifications} from '../app/lib/romberg-world.ts';
 
 test('Romberg products are grouped by real title and product type', () => {
   const products = [
@@ -39,4 +39,16 @@ test('Related items exclude the current product and favour complementary types',
   ];
   assert.deepEqual(relatedRombergProducts(candidates, current).map((item) => item.handle),
     ['quelltabletten', 'heizmatte', 'boqube-m']);
+});
+
+test('Technical facts are extracted only when actually in Shopify descriptions', () => {
+  assert.deepEqual(
+    rombergSpecifications('Romberg BoQube S', '28 × 12 × 13 cm und bis zu 8 Quelltabletten').map((x) => [x.key, x.value]),
+    [['dimensions', '28 × 12 × 13 cm'], ['capacity', 'Bis zu 8']],
+  );
+  assert.deepEqual(
+    rombergSpecifications('Romberg Heizmatte', '40 × 15 cm und 14 Watt', 'en').map((x) => [x.key, x.value]),
+    [['dimensions', '40 × 15 cm'], ['power', '14 W']],
+  );
+  assert.deepEqual(rombergSpecifications('Romberg Anzucht-Erlebnisbox', 'Praktisches Set.'), []);
 });

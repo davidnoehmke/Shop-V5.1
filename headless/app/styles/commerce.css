@@ -391,3 +391,9 @@
 .romberg-pdp__back{margin-top:2rem}
 @media(max-width:820px){.romberg-pdp__tips{grid-template-columns:1fr}.romberg-pdp__tips article{min-height:auto}.romberg-pdp__related .romberg-range__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:410px){.romberg-pdp__related .romberg-range__grid{grid-template-columns:1fr}}
+
+.product-page .romberg-product-specifications{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin:.4rem 0 .4rem}
+.product-page .romberg-product-specifications>div{border:1px solid #dfe7dc;border-radius:9px;background:#f5f8f3;padding:.65rem .75rem;min-width:0}
+.product-page .romberg-product-specifications dt{font-size:.7rem;font-weight:650;color:#64796b}
+.product-page .romberg-product-specifications dd{font-size:.91rem;line-height:1.35;font-weight:730;color:#294934;overflow-wrap:anywhere;margin:.2rem 0 0}
+@media(max-width:680px){.product-page .romberg-product-specifications{grid-template-columns:repeat(2,minmax(0,1fr))}}

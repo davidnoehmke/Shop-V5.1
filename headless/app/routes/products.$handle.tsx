@@ -11,7 +11,7 @@ import {
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
-import {RombergProductGuide} from '~/components/RombergProductGuide';
+import {RombergProductGuide, RombergProductSpecifications} from '~/components/RombergProductGuide';
 import {rombergSummary, relatedRombergProducts} from '~/lib/romberg-world';
 import type {RombergProduct} from '~/components/RombergWorld';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
@@ -144,6 +144,7 @@ export default function Product() {
             <div className="romberg-product-intro">
               <p>{rombergSummary(product.description, 230)}</p>
               <a href="#romberg-guide-heading">Anzuchttipps ansehen <span aria-hidden="true">↗</span></a>
+              <RombergProductSpecifications product={product} locale="de" />
             </div>
           ) : null}
 

@@ -1,5 +1,6 @@
 import {Link} from 'react-router';
 import {RombergProductCard, type RombergProduct} from '~/components/RombergWorld';
+import {rombergSpecifications} from '~/lib/romberg-world';
 
 type Locale = 'de' | 'en';
 
@@ -96,5 +97,28 @@ export function RombergProductGuide({
         </p>
       )}
     </div>
+  );
+}
+
+
+/** Specification labels are shown only when the values occur in Shopify copy. */
+export function RombergProductSpecifications({
+  product,
+  locale,
+}: {
+  product: {title: string; description: string};
+  locale: Locale;
+}) {
+  const specifications = rombergSpecifications(product.title, product.description, locale);
+  if (!specifications.length) return null;
+  return (
+    <dl className="romberg-product-specifications" aria-label={locale === 'en' ? 'Product specifications' : 'Technische Produktdaten'}>
+      {specifications.map(({key, label, value}) => (
+        <div key={key}>
+          <dt>{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
