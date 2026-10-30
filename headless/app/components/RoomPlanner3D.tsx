@@ -7,6 +7,15 @@ type RGB = [number, number, number];
 type Box = {x:number;y:number;z:number;w:number;h:number;d:number;color:RGB};
 type View = {yaw:number; pitch:number; distance:number};
 type Zone = {id:string;title:string;copy:string;href:string;cta:string;view:View};
+const EN_ZONES: Record<string, {title: string;copy: string;cta: string}> = {
+  overview: {title:'Room overview',copy:'Discover suitable interior ideas. Illustrative geometry, not a dimensionally accurate model.',cta:'Explore interior solutions'},
+  plants: {title:'Plants',copy:'Choose suitable locations for indoor plants, planters, lighting and substrate.',cta:'Explore indoor plants'},
+  planters: {title:'Planters',copy:'Consider drainage, dimensions, maintenance and the appearance of each planter.',cta:'Explore planters'},
+  light: {title:'Grow lighting',copy:'Explore light positions. PPFD and coverage require verified product measurements.',cta:'Compare grow lights'},
+  terrarium: {title:'Terrarium',copy:'Consider the enclosure, humidity, substrate and grow lighting as one setup.',cta:'Explore interior solutions'},
+  vertical: {title:'Vertical planting',copy:'Plan climbing supports and lighting for wall and shelf spaces.',cta:'Explore climbing supports'},
+};
+
 const PANORAMA = 'https://cdn.shopify.com/s/files/1/0949/8876/3521/files/interieur-solution-pflanzenraum-panorama.png?v=1790445342';
 export const ZONES:Zone[]=[
   {id:'overview',title:'Raumübersicht',copy:'Starte mit deinem Raum und entdecke passende Pflanzenlösungen. Die Vorschau zeigt eine beispielhafte Einrichtung ohne verbindliche Maße.',href:'/collections/interieur-solutions',cta:'Interieur-Lösungen ansehen',view:{yaw:.9,pitch:.47,distance:10}},
@@ -118,6 +127,7 @@ export function RoomPlanner3D({locale='de'}:{locale?:'de'|'en'}){
     return()=>{observer.disconnect();resize?.disconnect();};
   },[camera,plants,lamps]);
   const zone=ZONES[active];
+  const zoneText = isEnglish ? EN_ZONES[zone.id] : {title:zone.title,copy:zone.copy,cta:zone.cta};
   function select(i:number){setActive(i);setCamera(ZONES[i].view);}
   function pointerDown(e:ReactPointerEvent<HTMLCanvasElement>){drag.current={x:e.clientX,y:e.clientY};e.currentTarget.setPointerCapture(e.pointerId);}
   function pointerMove(e:ReactPointerEvent<HTMLCanvasElement>){
@@ -131,16 +141,16 @@ export function RoomPlanner3D({locale='de'}:{locale?:'de'|'en'}){
       <p>{isEnglish?'Explore six zones in a real 3D scene. This is an illustrative preview, not a precise lighting or room measurement.':'Erkunde sechs Erlebniszonen in einer interaktiven 3D-Szene. Die Darstellung ist eine Gestaltungs-Vorschau, keine maßstabsgetreue Raum- oder Lichtberechnung.'}</p>
     </header>
     <div className="leaf-room__layout">
-      <section className="leaf-room__stage" aria-label="3D-Raumansicht">
+      <section className="leaf-room__stage" aria-label={isEnglish ? "3D room scene" : "3D-Raumansicht"}>
         {!ready||fallback?<img src={PANORAMA} alt="Pflanzenraum als Panorama – alternative Ansicht ohne 3D" loading="eager" className="leaf-room__poster"/>:null}
-        <canvas ref={canvas} className={ready&&!fallback?'is-ready':''} role="img" aria-label="Drehbare 3D-Raumansicht" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={()=>{drag.current=null;}} onPointerCancel={()=>{drag.current=null;}}/>
+        <canvas ref={canvas} className={ready&&!fallback?'is-ready':''} role="img" aria-label={isEnglish ? "Interactive 3D room" : "Drehbare 3D-Raumansicht"} onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={()=>{drag.current=null;}} onPointerCancel={()=>{drag.current=null;}}/>
         <p className="leaf-room__stage-note">3D-Entwurf · Objekte und Proportionen symbolisch</p>
       </section>
       <section className="leaf-room__details" aria-live="polite">
         <p className="page-eyebrow">{active+1} / 6</p>
-        <h2>{zone.title}</h2>
-        <p>{zone.copy}</p>
-        <Link to={zone.href} prefetch="intent">{zone.cta} →</Link>
+        <h2>{zoneText.title}</h2>
+        <p>{zoneText.copy}</p>
+        <Link to={zone.href} prefetch="intent">{zoneText.cta} →</Link>
         <div className="leaf-room__settings">
           <label>{isEnglish?'Plants':'Pflanzen'}: {plants}<input type="range" min="0" max="6" value={plants} onChange={e=>setPlants(Number(e.target.value))}/></label>
           <label>{isEnglish?'Lights':'Lichtmodule'}: {lamps}<input type="range" min="0" max="3" value={lamps} onChange={e=>setLamps(Number(e.target.value))}/></label>
@@ -148,8 +158,8 @@ export function RoomPlanner3D({locale='de'}:{locale?:'de'|'en'}){
       </section>
     </div>
     <nav className="leaf-room__zones" aria-label={isEnglish?'Six planning zones':'Sechs Planungsbereiche'}>
-      {ZONES.map((item,i)=><button type="button" key={item.id} aria-current={i===active?'step':undefined} onClick={()=>select(i)}><span>{String(i+1).padStart(2,'0')}</span><strong>{item.title}</strong></button>)}
+      {ZONES.map((item,i)=><button type="button" key={item.id} aria-current={i===active?'step':undefined} onClick={()=>select(i)}><span>{String(i+1).padStart(2,'0')}</span><strong>{isEnglish ? EN_ZONES[item.id].title : item.title}</strong></button>)}
     </nav>
-    <p className="leaf-room__footer">Die Szene verwendet beispielhafte Objekte. Ein verbindliches, direkt bestellbares Raum-Setup erfordert später geprüfte Produktabmessungen und Varianten aus Shopify.</p>
+    <p className="leaf-room__footer">{isEnglish ? 'This is an illustrative scene. Purchasable, accurately scaled room setups require verified Shopify variant data.' : 'Die Szene verwendet beispielhafte Objekte. Ein verbindliches, direkt bestellbares Raum-Setup erfordert später geprüfte Produktabmessungen und Varianten aus Shopify.'}</p>
   </main>;
 }
