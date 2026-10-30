@@ -50,3 +50,18 @@ Each zone must have a stable ID, scene anchor, accessible text alternative, cate
 6. Verify CI, Vercel preview, route health and business conversion; promote only after checks.
 
 Do not treat a draft/prototype rendering as a finished enterprise product.
+
+## Instant-feeling HTML delivery contract (2026-10-30)
+
+The commercial HTML storefront must render immediately without waiting for 3D, Supabase, images or animations. Literal zero network/render latency is impossible.
+
+- SSR critical HTML on Vercel: H1, navigation, CTAs, image placeholder/poster, SEO text, and real product links arrive in the initial document; avoid client-only shells.
+- No full-screen loader, splash screen, forced intro or animation blocking interaction. Preserve standard HTML links even without JS.
+- Defer WebGL renderer initialization until idle/visible; show a stable, attractive static scene poster while it loads. Never download all scene models during initial page load.
+- Lazy-load individual zone models with GPU-friendly compressed glTF where possible; guard browser GPU and low-memory use, prefer lower LOD and static fallback on mobile.
+- Never wait for Supabase to show the page. Cache published scene manifest server-side, with revalidation; authoritative product prices/availability still come from Shopify.
+- Set measurable performance gates before launch: field CWV LCP <= 2.5s p75, INP <= 200ms p75, CLS <= 0.1 p75 on mobile and desktop; budgets are targets to validate, not current achieved results.
+- Warm Sage & Cream styling, lightweight CSS transitions only; honor prefers-reduced-motion.
+- Continuous 3D rendering only while interaction/animation is active; pause when offscreen and when the document is hidden.
+- All six zones remain usable as plain HTML anchor/button navigation. Keep shopping, cart and checkout functional if WebGL fails.
+- Run Lighthouse mobile, Playwright smoke checks and real Vercel preview route tests before any production promotion.
