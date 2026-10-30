@@ -58,7 +58,7 @@ export function ProductImage({
               key={entry.id}
               type="button"
               className={entry.id === activeImage?.id ? 'product-gallery__thumbnail is-active' : 'product-gallery__thumbnail'}
-              onClick={() => setActiveId(entry.id)}
+              onClick={() => setActiveId(entry.id ?? null)}
               aria-pressed={entry.id === activeImage?.id}
               aria-label={(english ? 'View image ' : 'Bild anzeigen ') + (index + 1) + (english ? ' of ' : ' von ') + gallery.length}
             >

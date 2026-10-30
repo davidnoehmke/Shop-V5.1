@@ -61,7 +61,7 @@ export function ProductForm({
                   swatch,
                 } = value;
                 const localizedName = localizeLabel(name, locale);
-                const className = ['product-options-item', selected ? 'is-selected' : '', !optionAvailable ? 'is-unavailable' : '', swatch?.color || swatch?.image ? 'is-swatch' : ''].filter(Boolean).join(' ');
+                const className = ['product-options-item', selected ? 'is-selected' : '', !available ? 'is-unavailable' : '', swatch?.color || swatch?.image ? 'is-swatch' : ''].filter(Boolean).join(' ');
 
                 if (isDifferentProduct) {
                   return (
@@ -84,12 +84,6 @@ export function ProductForm({
                     aria-pressed={selected}
                     className={className}
                     key={option.name + name}
-                    style={{
-                      border: selected
-                        ? '1px solid black'
-                        : '1px solid transparent',
-                      opacity: available ? 1 : 0.3,
-                    }}
                     disabled={!exists}
                     onClick={() => {
                       if (!selected) {
