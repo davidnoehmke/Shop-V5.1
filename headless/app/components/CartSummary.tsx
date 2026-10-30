@@ -2,14 +2,21 @@ import type {CartApiQueryFragment} from 'storefrontapi.generated';
 import type {CartLayout} from '~/components/CartMain';
 import {CartForm, Money, type OptimisticCart} from '@shopify/hydrogen';
 import {useEffect, useId, useRef, useState} from 'react';
-import {useFetcher} from 'react-router';
+import {useFetcher, useLocation} from 'react-router';
+
+function useCartLocale() {
+  const isEnglish = useLocation().pathname.startsWith('/en/');
+  return {isEnglish, cartRoute: isEnglish ? '/en/cart' : '/cart'};
+}
 
 type CartSummaryProps = {
   cart: OptimisticCart<CartApiQueryFragment | null>;
   layout: CartLayout;
+  locale?: 'de' | 'en';
 };
 
-export function CartSummary({cart, layout}: CartSummaryProps) {
+export function CartSummary({cart, layout, locale = 'de'}: CartSummaryProps) {
+  const isEnglish = locale === 'en';
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
   const summaryId = useId();
@@ -20,9 +27,9 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 
   return (
     <div aria-labelledby={summaryId} className={className}>
-      <h4 id={summaryId}>Zusammenfassung</h4>
+      <h4 id={summaryId}>{isEnglish ? 'Summary' : 'Zusammenfassung'}</h4>
       <dl role="group" className="cart-subtotal">
-        <dt>Zwischensumme</dt>
+        <dt>{isEnglish ? 'Subtotal' : 'Zwischensumme'}</dt>
         <dd>
           {cart?.cost?.subtotalAmount?.amount ? (
             <Money data={cart?.cost?.subtotalAmount} />
@@ -47,12 +54,13 @@ export function CartSummary({cart, layout}: CartSummaryProps) {
 }
 
 function CartCheckoutActions({checkoutUrl}: {checkoutUrl?: string}) {
+  const {isEnglish} = useCartLocale();
   if (!checkoutUrl) return null;
 
   return (
     <div>
       <a href={checkoutUrl} target="_self">
-        <p>Zur Kasse &rarr;</p>
+        <p>{isEnglish ? 'Checkout' : 'Zur Kasse'} &rarr;</p>
       </a>
       <br />
     </div>
@@ -68,17 +76,18 @@ function CartDiscounts({
   discountsHeadingId: string;
   discountCodeInputId: string;
 }) {
+  const {isEnglish} = useCartLocale();
   const codes: string[] =
     discountCodes
       ?.filter((discount) => discount.applicable)
       ?.map(({code}) => code) || [];
 
   return (
-    <section aria-label="Discounts">
+    <section aria-label={isEnglish ? 'Discounts' : 'Rabatte'}>
       {/* Have existing discount, display it with a remove option */}
       <dl hidden={!codes.length}>
         <div>
-          <dt id={discountsHeadingId}>Discounts</dt>
+          <dt id={discountsHeadingId}>{isEnglish ? 'Discounts' : 'Rabatte'}</dt>
           <UpdateDiscountForm>
             <div
               className="cart-discount"
@@ -87,8 +96,8 @@ function CartDiscounts({
             >
               <code>{codes?.join(', ')}</code>
               &nbsp;
-              <button type="submit" aria-label="Rabatt entfernen">
-                Entfernen
+              <button type="submit" aria-label={isEnglish ? 'Remove discount' : 'Rabatt entfernen'}>
+                {isEnglish ? 'Remove' : 'Entfernen'}
               </button>
             </div>
           </UpdateDiscountForm>
@@ -99,17 +108,17 @@ function CartDiscounts({
       <UpdateDiscountForm discountCodes={codes}>
         <div>
           <label htmlFor={discountCodeInputId} className="sr-only">
-            Rabattcode
+            {isEnglish ? 'Discount code' : 'Rabattcode'}
           </label>
           <input
             id={discountCodeInputId}
             type="text"
             name="discountCode"
-            placeholder="Rabattcode"
+            placeholder={isEnglish ? 'Discount code' : 'Rabattcode'}
           />
           &nbsp;
-          <button type="submit" aria-label="Rabattcode anwenden">
-            Apply
+          <button type="submit" aria-label={isEnglish ? 'Apply discount code' : 'Rabattcode anwenden'}>
+            {isEnglish ? 'Apply' : 'Anwenden'}
           </button>
         </div>
       </UpdateDiscountForm>
@@ -124,9 +133,10 @@ function UpdateDiscountForm({
   discountCodes?: string[];
   children: React.ReactNode;
 }) {
+  const {cartRoute} = useCartLocale();
   return (
     <CartForm
-      route="/cart"
+      route={cartRoute}
       action={CartForm.ACTIONS.DiscountCodesUpdate}
       inputs={{
         discountCodes: discountCodes || [],
@@ -146,6 +156,7 @@ function CartGiftCard({
   giftCardHeadingId: string;
   giftCardInputId: string;
 }) {
+  const {isEnglish} = useCartLocale();
   const giftCardCodeInput = useRef<HTMLInputElement>(null);
   const removeButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const previousCardIdsRef = useRef<string[]>([]);
@@ -193,10 +204,10 @@ function CartGiftCard({
   };
 
   return (
-    <section aria-label="Gift cards">
+    <section aria-label={isEnglish ? 'Gift cards' : 'Gutscheine'}>
       {giftCardCodes && giftCardCodes.length > 0 && (
         <dl>
-          <dt id={giftCardHeadingId}>Applied Gift Card(s)</dt>
+          <dt id={giftCardHeadingId}>{isEnglish ? 'Applied gift cards' : 'Angewendete Gutscheine'}</dt>
           {giftCardCodes.map((giftCard) => (
             <dd key={giftCard.id} className="cart-discount">
               <RemoveGiftCardForm
@@ -223,22 +234,22 @@ function CartGiftCard({
       <AddGiftCardForm fetcherKey="gift-card-add">
         <div>
           <label htmlFor={giftCardInputId} className="sr-only">
-            Gutscheincode
+            {isEnglish ? 'Gift card code' : 'Gutscheincode'}
           </label>
           <input
             id={giftCardInputId}
             type="text"
             name="giftCardCode"
-            placeholder="Gutscheincode"
+            placeholder={isEnglish ? 'Gift card code' : 'Gutscheincode'}
             ref={giftCardCodeInput}
           />
           &nbsp;
           <button
             type="submit"
             disabled={giftCardAddFetcher.state !== 'idle'}
-            aria-label="Apply gift card code"
+            aria-label={isEnglish ? 'Apply gift card code' : 'Gutscheincode anwenden'}
           >
-            Apply
+            {isEnglish ? 'Apply' : 'Anwenden'}
           </button>
         </div>
       </AddGiftCardForm>
@@ -253,10 +264,11 @@ function AddGiftCardForm({
   fetcherKey?: string;
   children: React.ReactNode;
 }) {
+  const {cartRoute} = useCartLocale();
   return (
     <CartForm
       fetcherKey={fetcherKey}
-      route="/cart"
+      route={cartRoute}
       action={CartForm.ACTIONS.GiftCardCodesAdd}
     >
       {children}
@@ -277,9 +289,10 @@ function RemoveGiftCardForm({
   onRemoveClick?: () => void;
   buttonRef?: (el: HTMLButtonElement | null) => void;
 }) {
+  const {cartRoute, isEnglish} = useCartLocale();
   return (
     <CartForm
-      route="/cart"
+      route={cartRoute}
       action={CartForm.ACTIONS.GiftCardCodesRemove}
       inputs={{
         giftCardCodes: [giftCardId],
@@ -289,11 +302,11 @@ function RemoveGiftCardForm({
       &nbsp;
       <button
         type="submit"
-        aria-label={`Remove gift card ending in ${lastCharacters}`}
+        aria-label={isEnglish ? `Remove gift card ending in ${lastCharacters}` : `Gutschein mit Endziffern ${lastCharacters} entfernen`}
         onClick={onRemoveClick}
         ref={buttonRef}
       >
-        Remove
+        {isEnglish ? 'Remove' : 'Entfernen'}
       </button>
     </CartForm>
   );

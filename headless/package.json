@@ -13,7 +13,10 @@
     "codegen": "shopify hydrogen codegen && react-router typegen",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:e2e": "playwright test",
-    "check:build": "node scripts/check-build.mjs"
+    "check:build": "node scripts/check-build.mjs",
+    "build:vercel": "VERCEL=1 react-router build",
+    "check:vercel": "node scripts/check-vercel.mjs",
+    "check:env": "node scripts/check-env.mjs"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
@@ -34,6 +37,7 @@
     "@playwright/test": "^1.64.1",
     "@react-router/dev": "7.16.0",
     "@react-router/fs-routes": "7.16.0",
+    "@react-router/node": "7.16.0",
     "@shopify/cli": "3.93.2",
     "@shopify/hydrogen-codegen": "0.3.3",
     "@shopify/mini-oxygen": "4.2.1",
@@ -45,6 +49,7 @@
     "@types/react-dom": "19.2.4",
     "@typescript-eslint/eslint-plugin": "^8.21.0",
     "@typescript-eslint/parser": "^8.21.0",
+    "@vercel/react-router": "1.3.7",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-import-resolver-typescript": "^3.7.0",

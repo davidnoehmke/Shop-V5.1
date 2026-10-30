@@ -1,4 +1,9 @@
 import hydrogenWorker from './server';
+import {withNodeStreamUploads} from './app/lib/node-fetch';
+
+// Hydrogen forwards the incoming body stream for same-origin consent/API calls.
+// Apply this only in the Node adapter; do not change the Oxygen runtime.
+globalThis.fetch = withNodeStreamUploads(globalThis.fetch);
 
 class MemoryCache {
   private readonly responses = new Map<string, Response>();

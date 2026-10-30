@@ -15,3 +15,5 @@ node_modules
 /playwright-report/
 h2_deploy_log.json
 preview.json
+
+/.vercel/
