@@ -162,3 +162,20 @@
   .header-cart-link>span:first-child{display:none}
   .header-cart-count{display:grid;place-items:center;min-width:24px;min-height:24px}
 }
+
+/* Commerce-first images and short benefit summary, no fake photography or badges. */
+.product-item{display:flex;flex-direction:column;align-items:stretch;gap:8px;min-width:0;padding:12px;border:1px solid var(--leaf-line,#d8e2d4);border-radius:17px;background:var(--leaf-cream,#fff);text-decoration:none;color:var(--leaf-ink,#29412e);transition:transform .25s ease,box-shadow .25s ease}
+.product-item:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgb(20 52 27 / .09)}
+.product-item:focus-visible{outline:3px solid #5a7c5d;outline-offset:3px}
+.product-item__media{width:100%;aspect-ratio:1/1;display:grid;place-items:center;border-radius:12px;overflow:hidden;background:var(--leaf-surface-sage,#eff2e8)}
+.product-item__media img{width:100%;height:100%;object-fit:contain;max-height:100%}
+.product-item__no-image{display:grid;place-items:center;text-align:center;color:#48624d;padding:16px;aspect-ratio:1/1;font-size:.82rem}
+.product-item h4{font-size:clamp(.92rem,1.4vw,1.08rem);line-height:1.35;overflow-wrap:anywhere;margin:7px 0 0}
+.product-item small{font-size:1rem;font-weight:750;margin-top:auto}
+.product-image{aspect-ratio:1/1;overflow:hidden;border-radius:18px;background:var(--leaf-surface-sage,#f0f3eb);display:grid;place-items:center}
+.product-image>img{width:100%;height:100%;object-fit:contain}
+.product-image--placeholder{min-height:270px;display:grid;place-items:center;text-align:center;color:#46614b;padding:30px}
+.leaf-product-lead{font-size:clamp(.95rem,1.4vw,1.1rem);color:var(--leaf-ink,#2c4532);line-height:1.62;max-width:65ch;margin:10px 0 18px}
+.product-purchase button{min-height:48px}
+@media(max-width:720px){.product-item{padding:8px;border-radius:13px}.product-item__media{border-radius:10px}.product-item h4{font-size:.89rem}.product-image{border-radius:14px}}
+@media(prefers-reduced-motion:reduce){.product-item{transition:none}.product-item:hover{transform:none}}
