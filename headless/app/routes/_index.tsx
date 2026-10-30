@@ -84,7 +84,7 @@ export default function Homepage() {
             <a href="#leaf-worlds">Welten entdecken</a>
           </div>
           <p className="leaf-home-entry__trust">
-            Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
+            Ohne Login nutzbar · Keine Werbe-Pop-ups · Beratung nur auf Wunsch · Shopify-Checkout
           </p>
         </div>
         <div className="leaf-home-entry__visual" aria-hidden="true">
@@ -156,6 +156,17 @@ export default function Homepage() {
         ) : null}
       </section>
 
+      <section className="leaf-quiet-advice" aria-label="Freiwillige Produkthilfe">
+        <div>
+          <p className="page-eyebrow">Passende Produkte statt Werbedruck</p>
+          <h2>Finde in Ruhe, was deine Pflanzen brauchen.</h2>
+          <p>Entdecke passende Materialien im Sortiment. Wenn du Unterstützung möchtest, ist LEAF für dich da – ohne automatisch geöffnete Fenster und ohne Verkaufsdruck.</p>
+        </div>
+        <div className="leaf-quiet-advice__actions">
+          <Link to="/collections/all" prefetch="intent">Produkte ansehen →</Link>
+          <button type="button" onClick={openLeafAssistant}>Freiwillig beraten lassen</button>
+        </div>
+      </section>
       <section className="leaf-home-assistant" aria-labelledby="leaf-assistant-home-title">
         <div>
           <p className="page-eyebrow">Zweite Bedienebene · LEAF</p>
