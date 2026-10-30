@@ -1,0 +1,30 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {groupRombergProducts, rombergCategory, rombergSummary} from '../app/lib/romberg-world.ts';
+
+test('Romberg products are grouped by real title and product type', () => {
+  const products = [
+    {title: 'Romberg BoQube S Zimmergewächshaus', productType: 'Anzuchtgewächshaus'},
+    {title: 'Romberg Anzuchthaus L', productType: 'Anzuchtgewächshaus'},
+    {title: 'Romberg Heizmatte S STYLE', productType: 'Anzuchtzubehör'},
+    {title: 'Romberg Kokos-Quelltabletten 50', productType: 'Anzuchtsubstrat'},
+  ];
+  const groups = groupRombergProducts(products);
+  assert.deepEqual(groups.map((item) => [item.key, item.products.length]), [
+    ['boqube', 1], ['houses', 1], ['essentials', 2],
+  ]);
+  assert.equal(groups.flatMap((item) => item.products).length, products.length);
+});
+
+test('Empty Shopify assortment renders no artificial preview categories', () => {
+  assert.deepEqual(groupRombergProducts([]), []);
+});
+
+test('Unknown category is still offered in essentials instead of disappearing', () => {
+  assert.equal(rombergCategory({title: 'Romberg Neues Produkt', productType: 'Unbekannt'}), 'essentials');
+});
+
+test('Product summary preserves source text and fixes missing sentence spaces', () => {
+  assert.equal(rombergSummary('BoQube S.Die Haube ist dabei.'), 'BoQube S. Die Haube ist dabei.');
+  assert.ok(rombergSummary('Langes Wort '.repeat(50), 140).length <= 141);
+});
