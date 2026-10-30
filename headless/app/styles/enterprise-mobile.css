@@ -110,3 +110,16 @@
 @media(max-width:1000px){.leaf-room__layout{grid-template-columns:minmax(0,1fr)}.leaf-room__stage{height:min(67vw,520px)}.leaf-room__details{gap:12px}.leaf-room__zones{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:600px){.leaf-room{padding:20px 12px 40px}.leaf-room__stage{height:360px;border-radius:17px}.leaf-room__details{border-radius:17px}.leaf-room__zones{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.leaf-room__zones button{min-height:70px}.leaf-room__stage-note{font-size:.68rem}}
 @media(prefers-reduced-motion:reduce){.leaf-room__zones button,.leaf-room__stage canvas{transition:none}.leaf-room__zones button:hover{transform:none}}
+
+/* Visible shop tools without aggressive overlays */
+.leaf-studio-gateway{max-width:1400px;margin:clamp(22px,3vw,48px) auto;padding:clamp(18px,3vw,40px);background:color-mix(in srgb,var(--leaf-surface-sage,#e5eadd) 45%,var(--leaf-cream,#fff));border-radius:24px;border:1px solid var(--leaf-line,#cad5c9)}
+.leaf-studio-gateway h2{font-size:clamp(1.5rem,3vw,2.3rem);margin:.35em 0;text-wrap:balance;line-height:1.2}
+.leaf-studio-gateway p{max-width:760px;line-height:1.55}
+.leaf-studio-gateway__links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.leaf-studio-gateway__links a{display:flex;flex-direction:column;justify-content:space-between;gap:20px;min-height:132px;padding:20px;border:1px solid var(--leaf-line,#c4d2c0);background:var(--leaf-cream,#fff);color:var(--leaf-ink,#2c4835);border-radius:18px;text-decoration:none;transition:transform .25s ease,box-shadow .25s ease}
+.leaf-studio-gateway__links a:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgb(25 65 35 / .09)}
+.leaf-studio-gateway__links a:focus-visible{outline:3px solid #587e5c;outline-offset:3px}
+.leaf-studio-gateway__links strong{font-size:1.04rem;line-height:1.2}
+.leaf-studio-gateway__links span{font-size:.86rem}
+@media(max-width:720px){.leaf-studio-gateway{margin:14px;padding:18px;border-radius:17px}.leaf-studio-gateway__links{grid-template-columns:minmax(0,1fr);gap:9px}.leaf-studio-gateway__links a{min-height:74px;padding:14px;gap:6px;border-radius:14px}}
+@media(prefers-reduced-motion:reduce){.leaf-studio-gateway__links a{transition:none}.leaf-studio-gateway__links a:hover{transform:none}}
