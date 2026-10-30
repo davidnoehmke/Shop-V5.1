@@ -110,6 +110,9 @@ export default function BlumatBrand() {
                       <h4>{product.title}</h4>
                     </Link>
                     {product.shortClaim?.value ? <p>{product.shortClaim.value}</p> : null}
+              {product.description && <p className="brand-product-description">{product.description.length > 180 ? `${product.description.slice(0, 177)}…` : product.description}</p>}
+              {product.images.nodes.length > 1 && <div className="brand-product-images" aria-label="Weitere Produktbilder">{product.images.nodes.slice(1, 4).map((photo) => <Image key={photo.id} data={photo} sizes="96px" loading="lazy" />)}</div>}
+              {product.variants.nodes.length > 1 && <p className="brand-product-variants">Varianten: {product.variants.nodes.filter((v) => v.availableForSale).length} / {product.variants.nodes.length}</p>}
                     <p className="blumat-price">Ab <Money data={product.priceRange.minVariantPrice} /></p>
                     <Link className="blumat-product-link" to={`/products/${product.handle}`} prefetch="intent">
                       Produkt ansehen →
@@ -144,6 +147,9 @@ const BLUMAT_QUERY = `#graphql
         handle
         title
         shortClaim: metafield(namespace: "leafer", key: "short_claim") { value }
+        description(truncateAt: 600)
+        images(first: 4) { nodes { id url altText width height } }
+        variants(first: 20) { nodes { id availableForSale } }
         featuredImage { id url altText width height }
         priceRange { minVariantPrice { amount currencyCode } }
       }

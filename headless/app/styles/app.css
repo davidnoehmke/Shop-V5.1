@@ -2485,3 +2485,10 @@ img,
   .leaf-home-entry__orb--one,.leaf-home-entry__orb--two{animation:none}
   .leaf-home-entry__actions a,.leaf-home-entry__actions button,.leaf-home-path,.leaf-home-assistant__examples button{transition:none}
 }
+
+
+/* Brand product data and licensed Shopify imagery */
+.brand-product-description { line-height: 1.55; color: var(--color-text-secondary, #526058); }
+.brand-product-images { display: flex; flex-wrap: wrap; gap: .5rem; margin-block: .75rem; }
+.brand-product-images img { width: 64px; height: 64px; object-fit: contain; border-radius: .5rem; background: #f6f7f3; }
+.brand-product-variants { font-size: .875rem; opacity: .78; }
