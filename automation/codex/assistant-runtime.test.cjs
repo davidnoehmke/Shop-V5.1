@@ -68,7 +68,8 @@ test('server creates slow natural voice with automatic interruption and prior co
   assert.equal(config.audio.input.turn_detection.interrupt_response, true);
   assert.equal(config.audio.input.turn_detection.type, 'semantic_vad');
   assert.match(config.instructions, /Alocasia/);
-  assert.match(config.instructions, /lookup_leaf_knowledge before answering/);
+  assert.match(config.instructions, /concrete shop facts call lookup_leaf_knowledge/i);
+  assert.match(config.instructions, /established horticultural principles/i);
   assert.ok(config.tools.some(tool => tool.name === 'navigate_storefront'));
   assert.ok(config.tools.some(tool => tool.name === 'read_leaf_article'));
   assert.match(config.instructions, /read an article aloud/);
@@ -88,7 +89,7 @@ test('text replies retain follow-up context, use conversational instructions and
   assert.equal(result.capabilities.image_analysis, false);
   assert.equal(app.requests[0].store, false);
   assert.equal(app.requests[0].input[0].content, 'Was macht Bims?');
-  assert.match(app.requests[0].instructions, /short, clear sentences/);
+  assert.match(app.requests[0].instructions, /general horticultural advice/i);
 });
 
 function knowledgeFixture() {
