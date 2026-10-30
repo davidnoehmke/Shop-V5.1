@@ -2,6 +2,8 @@
 // A preview must be tied to the current PR head; an old theme URL is not evidence.
 function previewReference(event) {
   if (!event.pull_request) return null;
+  const marker = (event.pull_request.body || '').match(/<!-- leaf-preview theme_id=([1-9][0-9]{5,19}) source_sha=([a-f0-9]{40}) -->/);
+  if (!marker) return null;
   const body = event.pull_request.body || '';
   const declarations = body.match(/<!--\s*leaf-preview\b/g) || [];
   if (!declarations.length) return null;

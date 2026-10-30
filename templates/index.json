@@ -445,6 +445,10 @@
       "type": "leaf-led-home-finder",
       "settings": {}
     },
+    "leaf_listening": {
+      "type": "leaf-listening",
+      "settings": {
+        "link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
     "live_labs": {
       "type": "custom-liquid",
       "settings": {
@@ -454,6 +458,8 @@
   },
   "order": [
     "hero",
+    "leaf_listening",
+    "substrate_configurator",
     "home_collection_journey",
     "substrate_configurator",
     "trust",

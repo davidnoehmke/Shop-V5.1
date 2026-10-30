@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('node:fs');
+const {previewReference, previewUrl, fetchStorefrontPage} = require('./theme-preview.cjs');
 const {previewReference, previewUrl} = require('./theme-preview.cjs');
 const {createStorefrontRequester} = require('./storefront-requester.cjs');
 const origin = 'https://leaferservice.com';
@@ -42,6 +43,7 @@ function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve =
   let error;
   for (let attempt = 0; attempt < 5; attempt++) {
     try {
+      const r = await fetchStorefrontPage(url, {signal: AbortSignal.timeout(25000), headers: {'user-agent':'LEAFerservice-link-audit/1.0 (+https://leaferservice.com)','accept':'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}}); const html = r.html;
       let target = new URL(url), r;
       for (let redirects = 0; ; redirects++) {
         r = await request(target);
@@ -54,7 +56,7 @@ function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve =
       }
       const html = await r.text();
       if ((r.status === 429 || r.status >= 500) && attempt < 4) {
-        const header = r.headers.get('retry-after');
+        const header = r.retryAfter;
         const seconds = header && /^\d+$/.test(header) ? Number(header) : header ? (Date.parse(header) - Date.now()) / 1000 : 5 * (attempt + 1);
         if (seconds > 60) return {status:r.status, url:target.href, html};
         await pause(Math.max(5000, Number.isFinite(seconds) ? seconds * 1000 : 5000));
@@ -98,6 +100,7 @@ async function main() {
     if (!complete) break;
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
+  const report = {mode: preview ? 'preview' : 'production', preview, checked:results.length,failures,results};
   const report = {mode: preview ? 'preview' : 'production', preview, complete: complete && !results.some(r => r.status === 0 || r.status === 429 || r.status >= 500), checked:results.length, failures, results};
   fs.writeFileSync(process.env.LINK_REPORT || '/tmp/leaf-live-links.json',JSON.stringify(report,null,2));
   console.log(JSON.stringify({complete,checked:results.length,failures},null,2));

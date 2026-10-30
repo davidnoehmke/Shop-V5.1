@@ -64,6 +64,8 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /100 - othersMax/);
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
+  assert.deepEqual(index.order.slice(0, 5), ['hero', 'leaf_listening', 'substrate_configurator', 'home_collection_journey', 'trust']);
+  assert.match(index.sections.home_collection_journey.settings.heading, /Wurzelraum/);
   assert.deepEqual(index.order.slice(0, 5), ['hero', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);
   assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
   assert.equal(index.sections.loox_reviews.disabled, true);
@@ -106,6 +108,31 @@ test('mobile pro mixer keeps the pot above a readable vertical component list', 
   assert.doesNotMatch(mobile, /custom-options \{[^}]*overflow-x: auto/);
   assert.match(mobile, /home-usp \.leafer-substrate__pot-slider \{[^}]*height: clamp\(165px, 26svh, 220px\)/);
   assert.match(liquid, /The pot visualises loose substrate, never packaged product photography/);
+});
+
+test('mobile mixer scrolls ingredient choices vertically and keeps share ranges vertical', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const mobile = liquid.slice(liquid.indexOf('@media (max-width: 620px) {\n    .leafer-substrate__advanced-summary'));
+  assert.match(mobile, /custom-options \{[^}]*overflow-y: auto/);
+  assert.match(mobile, /custom-options \{[^}]*scroll-snap-type: y proximity/);
+  assert.match(mobile, /mix-slider input \{[^}]*writing-mode: vertical-lr/);
+  assert.match(liquid, /mix-slider input \{[^}]*cursor: ew-resize/);
+  assert.match(liquid, /data-custom-slider-list/);
+  const de = JSON.parse(fs.readFileSync('locales/de.default.json', 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  const en = JSON.parse(fs.readFileSync('locales/en.json', 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+  assert.ok(de.substrate_selector.component_scroll_hint);
+  assert.ok(en.substrate_selector.component_scroll_hint);
+});
+
+test('pot stays flat, texture-free and rounded while retaining drag reordering', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  const pot = liquid.match(/\.leafer-substrate__pot-slider \{[^}]+\}/)?.[0] || '';
+  assert.match(pot, /border-radius: 24px 24px 40px 40px/);
+  assert.match(pot, /mask-image:/);
+  assert.doesNotMatch(pot, /linear-gradient|polygon\(/);
+  assert.doesNotMatch(liquid, /materialTexture\(/);
+  assert.match(liquid, /materialColor\(/);
+  assert.match(liquid, /reorderCustomSegments\(dragged, clientY\)/);
 });
 
 test('layer reordering preserves shares while slider balancing stays at 100 percent', () => {

@@ -254,6 +254,7 @@ async function contextFor(message: string, current = message, path = "") {
     const refs = Array.isArray(row.source_refs) ? row.source_refs : [];
     return refs.length > 0 && Number(row.factuality_score || 0) >= 0.9;
   }).map(row => ({ question: clean(row.question, 300), answer: stripHtml(row.answer, 1800), _score: rank([row.question], [row.answer, row.long_tail_keywords]) })), 4);
+  const articles = ranked(articleRows.filter(row => Array.isArray(row.source_citations) && row.source_citations.length > 0).map(row => ({ title: clean(row.title, 180), excerpt: stripHtml(row.excerpt, 650), body: relevantPassage(row.body_html, currentNeedles.length ? currentNeedles : needles), _score: rank([row.title, row.primary_keyword], [stripHtml(row.body_html, 60_000), row.secondary_keywords]) })), 3);
   const wantsArticleSummary = /zusammenfass|zusammenfassung|fass(?:e)?\s+.{0,120}\s+zusammen|summary|summarize|wichtigsten punkte|kurzfassung/.test(message.toLowerCase());
   const articles = ranked(articleRows.filter(row => Array.isArray(row.source_citations) && row.source_citations.length > 0).map(row => ({ handle: clean(row.handle, 180), title: clean(row.title, 180), excerpt: stripHtml(row.excerpt, 650), body: wantsArticleSummary ? stripHtml(row.body_html, 30_000) : relevantPassage(row.body_html, currentNeedles.length ? currentNeedles : needles), _score: rank([row.title, row.primary_keyword], [stripHtml(row.body_html, 60_000), row.secondary_keywords]) })), 3);
   const atoms = ranked(atomRows.map(row => ({ name: clean(row.name, 150), explanation: stripHtml(row.long_explanation || row.short_explanation || row.one_liner, 1800), _score: rank([row.name, row.aliases], [row.one_liner, row.long_explanation]) })), 4);
@@ -545,6 +546,7 @@ Deno.serve(async (req: Request) => {
 
     if (!runtimeOpenaiKey) {
       const answer = fallbackAnswer(context, locale, message);
+      const links = productLinks(context.products, locale);
       const links = contextLinks(context, locale);
       return json(origin, 200, { answer, speech: speechSummary(answer, locale), links, mode: "approved_context", capabilities: { image_analysis: false } });
     }
