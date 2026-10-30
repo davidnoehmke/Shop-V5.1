@@ -79,6 +79,8 @@ export function SubstrateConfigurator({
         setVoiceNotice(isEnglish ? 'Select another component first; a single component must be 100%.' : 'Bitte zuerst einen weiteren Bestandteil wählen; ein einzelner Bestandteil muss 100 Prozent ergeben.');
         return;
       }
+      // Explicitly narrow the discriminated union before reading validated values.
+      if (command.kind !== 'valid') return;
       const target = mix.find((part) => part.id === command.partId);
       if (!target) return;
       setMix((current) => {
