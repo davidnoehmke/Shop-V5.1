@@ -1,4 +1,5 @@
 import {Image, Money} from '@shopify/hydrogen';
+import type {MoneyV2} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from 'react-router';
 import {groupRombergProducts, rombergSummary} from '~/lib/romberg-world';
 
@@ -12,7 +13,7 @@ export type RombergProduct = {
   productType: string;
   availableForSale: boolean;
   shortClaim?: {value: string} | null;
-  featuredImage: {
+  featuredImage?: {
     id?: string | null;
     url: string;
     altText?: string | null;
@@ -20,7 +21,7 @@ export type RombergProduct = {
     height?: number | null;
   } | null;
   priceRange: {
-    minVariantPrice: {amount: string; currencyCode: string};
+    minVariantPrice: Pick<MoneyV2, 'amount' | 'currencyCode'>;
   };
 };
 
