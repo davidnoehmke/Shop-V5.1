@@ -88,12 +88,13 @@ export function CartMain({
                   line={line}
                   layout={layout}
                   childrenMap={childrenMap}
+                  locale={locale}
                 />
               );
             })}
           </ul>
         </div>
-        {cartHasItems && <CartSummary cart={cart} layout={layout} />}
+        {cartHasItems && <CartSummary cart={cart} layout={layout} locale={locale} />}
       </div>
     </section>
   );
@@ -115,7 +116,7 @@ function CartEmpty({
         {locale === 'en' ? 'Your cart is empty.' : 'Dein Warenkorb ist leer.'}
       </p>
       <br />
-      <Link to="/collections" onClick={close} prefetch="viewport">
+      <Link to={locale === 'en' ? '/en/collections' : '/collections'} onClick={close} prefetch="viewport">
         {locale === 'en' ? 'Continue shopping →' : 'Weiter einkaufen →'}
       </Link>
     </div>

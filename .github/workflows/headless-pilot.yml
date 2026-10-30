@@ -39,6 +39,12 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run check:build
+      - name: Build Vercel Node handler
+        run: npm run build:vercel
+        env:
+          VERCEL: '1'
+      - name: Invoke the built Vercel handler
+        run: npm run check:vercel
       - name: Preserve public preview assets
         uses: actions/upload-artifact@v4
         with:

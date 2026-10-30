@@ -5,7 +5,9 @@ import {oxygen} from '@shopify/mini-oxygen/vite';
 import {reactRouter} from '@react-router/dev/vite';
 
 export default defineConfig(({isSsrBuild}) => ({
-  plugins: [hydrogen(), oxygen(), reactRouter()],
+  // Mini Oxygen replaces the SSR entry with its worker object. Vercel needs
+  // the Fetch handler in server.vercel.ts instead.
+  plugins: [hydrogen(), ...(process.env.VERCEL ? [] : [oxygen()]), reactRouter()],
   resolve: {
     alias: {
       '~': fileURLToPath(new URL('./app', import.meta.url)),

@@ -306,7 +306,7 @@ export function LeafAssistant() {
   }
 
   return (
-    <aside className="leaf-assistant" aria-label="LEAF Assistent" style={assistantStyle}>
+    <div role="complementary" className="leaf-assistant" aria-label="LEAF Assistent" style={assistantStyle}>
       {!open ? (
         <button
           className="leaf-assistant__trigger"
@@ -442,6 +442,6 @@ export function LeafAssistant() {
           <p className="leaf-assistant__privacy">Ohne Login nutzbar. LEAF ist ein KI-Assistent und kein Mensch.</p>
         </section>
       )}
-    </aside>
+    </div>
   );
 }

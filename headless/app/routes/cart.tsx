@@ -1,12 +1,12 @@
-import {useLoaderData, data, type HeadersFunction} from 'react-router';
+import {useLoaderData, useLocation, data, type HeadersFunction} from 'react-router';
 import type {Route} from './+types/cart';
 import type {CartQueryDataReturn} from '@shopify/hydrogen';
 import {CartForm} from '@shopify/hydrogen';
 import {safeCartRedirect} from '~/lib/pilot-guards';
 import {CartMain} from '~/components/CartMain';
 
-export const meta: Route.MetaFunction = () => {
-  return [{title: `Warenkorb | LEAFerservice`}];
+export const meta: Route.MetaFunction = ({location}) => {
+  return [{title: `${location.pathname.startsWith('/en/') ? 'Cart' : 'Warenkorb'} | LEAFerservice`}];
 };
 
 export const headers: HeadersFunction = ({actionHeaders}) => actionHeaders;
@@ -104,11 +104,12 @@ export async function loader({context}: Route.LoaderArgs) {
 
 export default function Cart() {
   const cart = useLoaderData<typeof loader>();
+  const locale = useLocation().pathname.startsWith('/en/') ? 'en' : 'de';
 
   return (
     <div className="cart">
-      <h1>Warenkorb</h1>
-      <CartMain layout="page" cart={cart} />
+      <h1>{locale === 'en' ? 'Cart' : 'Warenkorb'}</h1>
+      <CartMain layout="page" cart={cart} locale={locale} />
     </div>
   );
 }

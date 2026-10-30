@@ -59,3 +59,24 @@ test('speech parser validates integer amounts, language, ambiguity and single-pa
   assert.deepEqual(parseVoiceShareCommand('Es ist ein schoener Tag', mix, 'de'), {kind: 'none'});
   assert.deepEqual(parseVoiceShareCommand('Perlite auf 30 Prozent', equalShares(items.slice(0, 1)), 'de'), {kind: 'single'});
 });
+
+// Retain the regression cases already added on main while extending coverage to five parts.
+test('a 98 to 99 percent adjustment never produces a negative remainder', () => {
+  const initial = equalShares(items.slice(0, 4));
+  const next = rebalance(rebalance(initial, 0, 98), 0, 99);
+  assertValid(next);
+  assert.equal(next[0].share, 99);
+});
+
+test('one to four components remain balanced through all slider positions', () => {
+  for (let count = 1; count <= 4; count++) {
+    let mix = equalShares(items.slice(0, count));
+    for (let index = 0; index < count; index++) {
+      for (let value = 0; value <= 100; value++) {
+        mix = rebalance(mix, index, value);
+        assertValid(mix);
+        assert.equal(mix[index].share, count === 1 ? 100 : value);
+      }
+    }
+  }
+});
