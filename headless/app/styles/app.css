@@ -2521,3 +2521,62 @@ img,
 .leaf-blog-commerce__intro{max-width:700px;margin-bottom:1.4rem}.leaf-blog-commerce__intro h2{font-size:clamp(1.5rem,2.5vw,2.1rem);font-weight:550;letter-spacing:-.03em;margin:.25rem 0 .65rem}.leaf-blog-commerce__intro p:last-child{color:#53705e;line-height:1.55}
 .leaf-blog-commerce__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}.leaf-blog-commerce__product{min-width:0;background:#fff;border:1px solid #dce4d9;border-radius:13px;overflow:hidden}.leaf-blog-commerce__product>a{display:block;color:#173b2c;text-decoration:none;height:100%}.leaf-blog-commerce__product>a:focus-visible{outline:3px solid #176a4a;outline-offset:-3px}.leaf-blog-commerce__image{aspect-ratio:1/1;background:#fff}.leaf-blog-commerce__image img{width:100%;height:100%;object-fit:contain}.leaf-blog-commerce__copy{padding:1rem}.leaf-blog-commerce__copy>span{font-size:.73rem;color:#667e70}.leaf-blog-commerce__copy h3{font-size:1rem;line-height:1.3;margin:.4rem 0 1rem}.leaf-blog-commerce__bottom{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.55rem}.leaf-blog-commerce__bottom strong{font-size:.82rem;color:#166244}
 @media(max-width:690px){.leaf-blog-commerce__grid{grid-template-columns:1fr}.leaf-blog-commerce__product>a{display:grid;grid-template-columns:110px minmax(0,1fr)}.leaf-blog-commerce__image{height:100%}.leaf-blog-commerce__copy{padding:.8rem}.leaf-blog-commerce__copy h3{font-size:.95rem}}
+
+/* Soft section transitions: keep gradients stationary while content settles. */
+html {
+  scroll-padding-top: calc(var(--header-height) + 1rem);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+.leaf-homepage {
+  --leaf-section-blend: clamp(48px, 7vw, 100px);
+}
+.leaf-homepage .leaf-home-entry {
+  border-bottom: 0;
+  background:
+    linear-gradient(to bottom, transparent 65%, #e3ece0),
+    linear-gradient(135deg, #edf3e8 0%, #fbfcf8 52%, #e3ece0 100%);
+}
+.leaf-homepage .leaf-home-substrate {
+  background: linear-gradient(
+    to bottom,
+    #e3ece0 0,
+    #102a20 var(--leaf-section-blend),
+    #102a20 calc(100% - var(--leaf-section-blend)),
+    #e7efe3 100%
+  );
+  padding-block: calc(clamp(4rem, 9vw, 8rem) + var(--leaf-section-blend));
+}
+.leaf-homepage .leaf-home-assistant {
+  border-bottom: 0;
+  background: linear-gradient(
+    to bottom, #e7efe3 0%, #e7efe3 65%, #f7f8f3 100%
+  );
+}
+.leaf-homepage .leaf-campus-shortcut {
+  border-top: 0;
+}
+
+/* Let the brand and world hero tint dissolve into the surrounding paper. */
+.venso-hero { background: linear-gradient(to bottom, #f1f3eb 65%, var(--leafer-paper)); }
+.romberg-hero { background: linear-gradient(to bottom, #f2efe5 65%, var(--leafer-paper)); }
+.elho-hero { background: linear-gradient(to bottom, #f3f6ef 65%, var(--leafer-paper)); }
+.blumat-hero { background: linear-gradient(to bottom, #eef5f2 65%, var(--leafer-paper)); }
+.leaf-experience-world__hero { border-bottom-color: transparent; }
+.leaf-experience-world--light .leaf-experience-world__hero {
+  background: linear-gradient(to bottom, #f9f3d8, #fffdf4 65%, var(--leafer-paper));
+}
+.leaf-experience-world--water .leaf-experience-world__hero {
+  background: linear-gradient(to bottom, #dfeeea, #f6fbfa 65%, var(--leafer-paper));
+}
+.leaf-experience-world--gallery .leaf-experience-world__hero {
+  background: linear-gradient(to bottom, #efe6d9, #fbf8f3 65%, var(--leafer-paper));
+}
+.leaf-experience-world--lab .leaf-experience-world__hero {
+  background: linear-gradient(to bottom, #ece4d8, #faf8f3 65%, var(--leafer-paper));
+}

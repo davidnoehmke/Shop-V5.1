@@ -1,5 +1,6 @@
 import {Await, Link, useLocation} from 'react-router';
-import {Suspense, useId} from 'react';
+import {Suspense, useEffect, useId, useRef} from 'react';
+import {installScrollReveal} from '~/lib/scroll-reveal';
 import type {
   CartApiQueryFragment,
   FooterQuery,
@@ -35,6 +36,11 @@ export function PageLayout({
   publicStoreDomain,
 }: PageLayoutProps) {
   const location = useLocation();
+  const contentRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (contentRef.current) return installScrollReveal(contentRef.current);
+  }, [location.pathname]);
   const locale: StorefrontLocale =
     location.pathname === '/en' || location.pathname.startsWith('/en/')
       ? 'en'
@@ -58,7 +64,7 @@ export function PageLayout({
           locale={locale}
         />
       )}
-      <main>{children}</main>
+      <main ref={contentRef}>{children}</main>
       <Footer
         footer={footer}
         header={header}
