@@ -1,10 +1,12 @@
-import {useMemo, useState} from 'react';
+import {lazy, Suspense, useMemo, useState} from 'react';
 import {Image, Money} from '@shopify/hydrogen';
 import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
 import {equalShares, rebalance, type MixPart} from '~/lib/substrate-mix';
+
+const SubstrateScene3D = lazy(() => import('~/components/SubstrateScene3D'));
 
 type Locale = 'de' | 'en';
 
@@ -162,13 +164,13 @@ export function SubstrateConfigurator({
             <strong className={total === 100 ? 'is-valid' : 'is-invalid'}>{total} %</strong>
           </div>
 
-          <div className="substrate-pot-visual" aria-label={isEnglish ? 'Visual substrate mix' : 'Visuelle Substratmischung'}>
-            {mix.map((part) => (
-              <div key={part.id} style={{height: `${part.share}%`}}>
-                <span>{part.title} · {part.share}%</span>
-              </div>
-            ))}
-          </div>
+          <Suspense fallback={
+            <div className="substrate-pot-visual" aria-label={isEnglish ? 'Visual substrate mix' : 'Visuelle Substratmischung'}>
+              {mix.map((part) => <div key={part.id} style={{height: `${part.share}%`}}><span>{part.title} · {part.share}%</span></div>)}
+            </div>
+          }>
+            <SubstrateScene3D mix={mix} locale={locale} />
+          </Suspense>
 
           <div className="substrate-sliders">
             {mix.map((part, index) => (
