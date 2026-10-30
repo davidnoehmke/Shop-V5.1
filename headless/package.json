@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "check:build": "node scripts/check-build.mjs",
     "build:vercel": "VERCEL=1 react-router build",
-    "check:vercel": "node scripts/check-vercel.mjs"
+    "check:vercel": "node scripts/check-vercel.mjs",
+    "check:env": "node scripts/check-env.mjs"
   },
   "prettier": "@shopify/prettier-config",
   "dependencies": {
