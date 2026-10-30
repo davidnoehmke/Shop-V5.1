@@ -76,7 +76,7 @@ export default function Blogs() {
               prefetch="intent"
               to={`${isEnglish ? '/en' : ''}/blogs/${blog.handle}`}
             >
-              <h2>{blog.title}</h2>
+              <span className="page-eyebrow">{blog.handle === 'live-labs' ? 'Live Labs' : isEnglish ? 'Plant knowledge' : 'Pflanzenwissen'}</span><h2>{blog.title}</h2><p>{isEnglish ? 'Browse articles and practical guides' : 'Artikel und praxisnahe Ratgeber entdecken'} →</p>
             </Link>
           )}
         </PaginatedResourceSection>

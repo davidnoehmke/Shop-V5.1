@@ -11,14 +11,6 @@ Renders the native Shopify language form for the current resource.
               <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.iso_code | upcase }}</option>
             {% endfor %}
           </select>
-          {% assign language_submit_label = 'header.change_language' | t %}
-          {% if language_submit_label contains 'Translation missing' or language_submit_label contains 'translation missing' %}
-            {% if localization.language.iso_code == 'de' %}
-              {% assign language_submit_label = 'OK' %}
-            {% else %}
-              {% assign language_submit_label = 'Go' %}
-            {% endif %}
-          {% endif %}
-          <button type="submit">{{ language_submit_label }}</button>
+          <button type="submit">{{ 'header.change_language' | t }}</button>
         {% endform %}
       {% endif %}

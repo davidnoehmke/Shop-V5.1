@@ -1,21 +1,12 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
-import {Image} from '@shopify/hydrogen';
+import {BlogArticlePage} from '~/components/BlogArticlePage';
+import {articleCommerceHandles, BLOG_COMMERCE_QUERY} from '~/lib/blog-commerce';
+import {blogArticleMeta} from '~/lib/blog-routing';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
-export const meta: Route.MetaFunction = ({data, params}) => {
-  const article = data?.article;
-  const description = article?.seo?.description;
-  return [
-    {title: `${article?.seo?.title || article?.title || 'Ratgeber'} | LEAFerservice`},
-    ...(description
-      ? [{name: 'description', content: description.slice(0, 155)}]
-      : []),
-    ...(article?.handle
-      ? [{rel: 'canonical', href: `/blogs/${params.blogHandle || 'ratgeber'}/${article.handle}`}]
-      : []),
-  ];
-};
+export const meta: Route.MetaFunction = ({data, params}) =>
+  blogArticleMeta(data?.article, params.blogHandle || 'leafers-nice2know-blog', 'de');
 
 export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -63,7 +54,11 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
 
   const article = blog.articleByHandle;
 
-  return {article};
+  const handles = articleCommerceHandles(blogHandle, articleHandle);
+  const products = handles ? await context.storefront.query(BLOG_COMMERCE_QUERY, {
+    variables: {one: handles[0], two: handles[1], three: handles[2]},
+  }).then(({one, two, three}) => [one, two, three]).catch(() => []) : [];
+  return {article, blogHandle, products};
 }
 
 /**
@@ -76,32 +71,8 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function Article() {
-  const {article} = useLoaderData<typeof loader>();
-  const {title, image, contentHtml, author} = article;
-
-  const publishedDate = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(article.publishedAt));
-
-  return (
-    <div className="article">
-      <h1>
-        {title}
-        <div>
-          <time dateTime={article.publishedAt}>{publishedDate}</time> &middot;{' '}
-          <address>{author?.name}</address>
-        </div>
-      </h1>
-
-      {image && <Image data={image} sizes="90vw" loading="eager" />}
-      <div
-        dangerouslySetInnerHTML={{__html: contentHtml}}
-        className="article"
-      />
-    </div>
-  );
+  const {article, blogHandle, products} = useLoaderData<typeof loader>();
+  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="de" products={products} />;
 }
 
 // NOTE: https://shopify.dev/docs/api/storefront/latest/objects/blog#field-blog-articlebyhandle
@@ -118,6 +89,7 @@ const ARTICLE_QUERY = `#graphql
         handle
         title
         contentHtml
+        excerpt
         publishedAt
         author: authorV2 {
           name
