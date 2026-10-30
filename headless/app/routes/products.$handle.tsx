@@ -117,7 +117,7 @@ export default function Product() {
 
       <div className="product" data-product-id={product.id} data-variant-id={selectedVariant?.id}>
         <div className="product-media-column">
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImage image={selectedVariant?.image} images={product.images.nodes} title={product.title} />
         </div>
 
         <div className="product-main">
@@ -239,6 +239,7 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    images(first: 10) { nodes { __typename id url altText width height } }
     collections(first: 1) {
       nodes {
         id
