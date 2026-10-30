@@ -4,6 +4,8 @@ import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
 import {Link} from 'react-router';
 import {AddToCartButton} from '~/components/AddToCartButton';
 import {useAside} from '~/components/Aside';
+import {equalShares, parseVoiceShareCommand, rebalance} from '~/lib/substrate-mix';
+import type {MixPart} from '~/lib/substrate-mix';
 
 type Locale = 'de' | 'en';
 
@@ -41,50 +43,6 @@ export type SubstrateConfiguratorProduct = {
   variants: {nodes: SubstrateVariant[]};
 };
 
-type MixPart = {id: string; handle: string; title: string; share: number};
-
-function equalShares(parts: Array<Omit<MixPart, 'share'>>): MixPart[] {
-  if (!parts.length) return [];
-  const base = Math.floor(100 / parts.length);
-  let remaining = 100 - base * parts.length;
-  return parts.map((part) => ({
-    ...part,
-    share: base + (remaining-- > 0 ? 1 : 0),
-  }));
-}
-
-function rebalance(parts: MixPart[], index: number, requested: number): MixPart[] {
-  if (parts.length <= 1) return parts.map((part, i) => ({...part, share: i === index ? 100 : 0}));
-  const value = Math.max(0, Math.min(100, Math.round(requested)));
-  const otherIndexes = parts.map((_, i) => i).filter((i) => i !== index);
-  const otherTotal = 100 - value;
-  const currentOtherTotal = otherIndexes.reduce((sum, i) => sum + parts[i].share, 0);
-
-  const next = parts.map((part) => ({...part}));
-  next[index].share = value;
-
-  if (currentOtherTotal <= 0) {
-    const base = Math.floor(otherTotal / otherIndexes.length);
-    let remaining = otherTotal - base * otherIndexes.length;
-    otherIndexes.forEach((i) => {
-      next[i].share = base + (remaining-- > 0 ? 1 : 0);
-    });
-    return next;
-  }
-
-  let assigned = 0;
-  otherIndexes.forEach((i, position) => {
-    if (position === otherIndexes.length - 1) {
-      next[i].share = otherTotal - assigned;
-      return;
-    }
-    const proportional = Math.round((parts[i].share / currentOtherTotal) * otherTotal);
-    next[i].share = proportional;
-    assigned += proportional;
-  });
-  return next;
-}
-
 export function SubstrateConfigurator({
   product,
   components,
@@ -105,37 +63,33 @@ export function SubstrateConfigurator({
 
   useEffect(() => {
     function onVoiceCommand(event: Event) {
-      const transcript = (event as CustomEvent<{transcript?: string}>).detail?.transcript ?? '';
-      const match = transcript.match(/(?:auf|to|bei|at)\s*(\d{1,3})\s*(?:%|prozent|percent)/i);
-      if (!match) return;
-      const requested = Number(match[1]);
-      if (!Number.isInteger(requested) || requested < 0 || requested > 100) {
-        setVoiceNotice(isEnglish ? 'Choose a percentage from 0 to 100.' : 'Bitte einen Anteil zwischen 0 und 100 Prozent nennen.');
+      const raw = (event as CustomEvent<{transcript?: unknown}>).detail?.transcript;
+      const transcript = typeof raw === 'string' ? raw : '';
+      const command = parseVoiceShareCommand(transcript, mix, locale);
+      if (command.kind === 'none') return;
+      if (command.kind === 'invalid') {
+        setVoiceNotice(isEnglish ? 'Choose a whole percentage from 0 to 100.' : 'Bitte einen ganzzahligen Anteil zwischen 0 und 100 Prozent nennen.');
         return;
       }
-      const normalized = (value: string) => value.toLocaleLowerCase(locale).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '');
-      const words = normalized(transcript);
-      const candidates = mix.filter((part) => words.includes(normalized(part.title)) || (normalized(part.handle).replace(/substrat|zusatz/g, '').length > 2 && words.includes(normalized(part.handle).replace(/substrat|zusatz/g, ''))));
-      if (candidates.length !== 1) {
+      if (command.kind === 'ambiguous') {
         setVoiceNotice(isEnglish ? 'Please name exactly one selected component.' : 'Bitte genau einen ausgewählten Bestandteil eindeutig nennen.');
         return;
       }
-      const target = candidates[0];
-      if (mix.length === 1 && requested !== 100) {
+      if (command.kind === 'single') {
         setVoiceNotice(isEnglish ? 'Select another component first; a single component must be 100%.' : 'Bitte zuerst einen weiteren Bestandteil wählen; ein einzelner Bestandteil muss 100 Prozent ergeben.');
         return;
       }
+      const target = mix.find((part) => part.id === command.partId);
+      if (!target) return;
       setMix((current) => {
         const index = current.findIndex((part) => part.id === target.id);
-        return index < 0 ? current : rebalance(current, index, requested);
+        return index < 0 ? current : rebalance(current, index, command.requested);
       });
-      setVoiceNotice(`${target.title}: ${requested} %`);
+      setVoiceNotice(`${target.title}: ${command.requested} %`);
     }
     window.addEventListener('leaf:substrate-voice-command', onVoiceCommand);
     return () => window.removeEventListener('leaf:substrate-voice-command', onVoiceCommand);
   }, [mix, locale, isEnglish]);
-
-
 
   const recipe = useMemo(
     () => mix.map((part) => `${part.title} ${part.share}%`).join(' · '),

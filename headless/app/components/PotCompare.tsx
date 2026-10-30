@@ -59,6 +59,7 @@ export function PotCompare({products, heading = 'Pflanzgefäße vergleichen'}: {
       </div>
       <p aria-live="polite">{selected.length} von {MAX_COMPARE} Produkten ausgewählt</p>
       {choices.length > 0 ? (
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- Keyboard focus is required to horizontally scroll this named comparison region.
         <div className="pot-compare__scroll" role="region" aria-label="Produktvergleich" tabIndex={0}>
           <table>
             <caption>Vergleich der ausgewählten Pflanzgefäße</caption>
