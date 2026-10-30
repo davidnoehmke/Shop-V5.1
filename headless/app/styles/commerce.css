@@ -154,3 +154,116 @@
   .collection-editorial-hero__cta {width:100%}
   .collections-grid {grid-template-columns:1fr}
 }
+
+
+/* Theme worlds and homepage use authentic Shopify collection photography. */
+.leaf-world-card {
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  border-radius:16px;
+  background:#fff;
+}
+.leaf-world-card__media {
+  display:grid;
+  place-items:center;
+  aspect-ratio:16/9;
+  width:100%;
+  background:var(--leaf-canvas);
+  overflow:hidden;
+}
+.leaf-world-card__media img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:clamp(.65rem,1.6vw,1.1rem);
+}
+.leaf-world-card__media-fallback {
+  font-size:clamp(1.5rem,4vw,2.6rem);
+  font-weight:750;
+  letter-spacing:-.06em;
+  color:#90a695;
+}
+.leaf-world-card__copy {
+  padding:clamp(1.1rem,2.1vw,1.8rem) clamp(1.1rem,2.1vw,1.8rem) .1rem;
+}
+.leaf-world-card__copy h3 {
+  font-size:clamp(1.5rem,2.6vw,2.55rem);
+  line-height:1.11;
+  margin:.6rem 0;
+}
+.leaf-world-card__actions {
+  margin-top:auto;
+  padding:1.15rem clamp(1.1rem,2.1vw,1.8rem) clamp(1.1rem,2.1vw,1.8rem);
+}
+.leaf-world-card__actions a {
+  border-radius:999px;
+  font-size:.86rem;
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+}
+.leaf-experience-world__hero.has-visual {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,.9fr);
+  align-items:center;
+  min-height:0;
+  gap:clamp(1.5rem,4vw,4rem);
+  padding:clamp(1.3rem,4vw,3rem);
+}
+.leaf-experience-world__hero h1 {
+  font-size:clamp(2.15rem,4vw,4rem);
+  line-height:1.07;
+}
+.leaf-experience-world__copy p:last-child {
+  max-width:60ch;
+  line-height:1.68;
+  font-size:clamp(.98rem,1.4vw,1.08rem);
+}
+.leaf-experience-world__photo {
+  display:grid;
+  place-items:center;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  border-radius:15px;
+  background:var(--leaf-canvas);
+}
+.leaf-experience-world__photo img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:clamp(.7rem,2vw,1.5rem);
+}
+.leaf-home-entry__visual img {
+  display:block;
+  width:100%;
+  height:clamp(290px,36vw,500px);
+  object-fit:contain;
+  padding:clamp(1rem,2.6vw,2rem);
+  border-radius:18px;
+  background:var(--leaf-canvas);
+  box-shadow:0 18px 65px rgb(20 57 38 / .11);
+}
+.leaf-home-entry__fallback {
+  display:grid;place-items:center;width:100%;
+  aspect-ratio:4/3;
+  border-radius:18px;
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:800;
+  color:#54715a;
+  background:linear-gradient(140deg,#ddebd7,#eff5eb);
+}
+@media(max-width:900px){
+  .leaf-experience-world__hero.has-visual{grid-template-columns:1fr}
+  .leaf-experience-world__photo{max-height:400px}
+}
+@media(max-width:620px){
+  .leaf-world-card__media{aspect-ratio:16/10}
+  .leaf-experience-world__hero.has-visual{padding:1.15rem;gap:1.2rem}
+  .leaf-experience-world__photo{max-height:300px}
+  .leaf-experience-world__hero h1{font-size:clamp(2rem,8vw,3rem)}
+  .leaf-home-entry__visual img{height:310px}
+}
