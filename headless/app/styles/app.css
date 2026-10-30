@@ -2612,3 +2612,42 @@ input, select, textarea,
 .leaf-campus-featured article span, .leaf-home-path span, .leaf-home-path p {
   opacity: 1;
 }
+
+/* Planning is a direct destination with a single level of shop navigation. */
+.header-shop-menu > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; gap: .45rem; font-size: .92rem; }
+.header-shop-menu > summary::after { content: '⌄'; }
+.header-shop-links { position: absolute; top: 100%; left: 0; min-width: 240px; list-style: none; margin: 0; padding: .65rem; background: var(--leaf-cream); border: 1px solid var(--leaf-line); border-radius: 12px; box-shadow: 0 12px 32px var(--leaf-shadow); z-index: 30; }
+.header-shop-links a { display: flex; align-items: center; min-height: 44px; padding: .5rem .75rem; text-decoration: none; }
+.header-shop-links a:hover { background: var(--leaf-surface-sage); }
+.planning-entry { padding: clamp(1.5rem, 4vw, 3rem); background: linear-gradient(var(--leaf-surface-sage), var(--leaf-cream)); border-radius: 20px; }
+.planning-entry h2, .planning-page h1 { max-width: 24ch; }
+.planning-entry__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.planning-entry__grid > a { display: block; color: var(--leaf-ink); background: var(--leaf-surface-sand); padding: clamp(1.2rem, 3vw, 2rem); border: 1px solid var(--leaf-line); border-radius: 16px; text-decoration: none; }
+.planning-entry h3 { margin-block: .65rem; font-size: clamp(1.15rem, 2vw, 1.5rem); }
+.planning-entry p, .room-planner > p { max-width: 65ch; line-height: 1.65; }
+.planning-page__shortcuts, .room-tour__controls { display: flex; flex-wrap: wrap; gap: 1rem; }
+.planning-page__shortcuts a { padding-block: .8rem; }
+.room-tour, .room-planner { padding-block: clamp(2rem, 5vw, 4rem); scroll-margin-top: 7rem; }
+.room-tour__layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.5rem; }
+.room-tour__scene { min-height: 520px; border-radius: 18px; background-image: url('https://cdn.shopify.com/s/files/1/0949/8876/3521/files/interieur-solution-pflanzenraum-panorama.png?v=1790445342'); background-size: cover; transition: background-position .6s ease; display: flex; align-items: end; padding: 1rem; }
+.room-tour__scene nav { display: flex; flex-wrap: wrap; gap: .5rem; }
+.room-tour button, .room-planner button, .room-planner input, .room-planner select { min-height: 44px; border: 1px solid var(--leaf-control-border); border-radius: 8px; padding: .6rem .8rem; font: inherit; max-width: 100%; }
+.room-tour button[aria-pressed='true'], .room-planner button[type='submit'] { background: var(--leaf-olive); color: var(--leaf-cream); }
+.room-tour__panel { padding: 1.5rem; border-radius: 18px; background: var(--leaf-surface-sage); }
+.room-tour__panel h3 { font-size: 1.4rem; margin-block: 1rem; }
+.room-tour__panel p, .room-tour__panel li { line-height: 1.65; }
+.room-tour__controls { margin-top: 1.5rem; }
+interieur-room-builder { display: block; }
+.room-planner__toolbar { display: flex; align-items: end; flex-wrap: wrap; gap: .75rem; margin-block: 1rem; }
+.room-planner__toolbar label { display: grid; gap: .4rem; min-width: 0; max-width: 100%; flex: 1 1 140px; }
+.room-planner__toolbar input, .room-planner__toolbar select { width: 100%; }
+.room-planner canvas { width: 100%; height: clamp(300px, 50vw, 580px); background: var(--leaf-surface-sage); border: 1px solid var(--leaf-line); border-radius: 18px; touch-action: pan-y; }
+.room-planner__summary { display: flex; flex-wrap: wrap; gap: 1.5rem; padding-block: 1rem; }
+.room-planner__products { padding-left: 1.2rem; }
+@media (max-width: 1099px) { .header-shop-links { position: static; box-shadow: none; min-width: 0; } }
+@media (max-width: 700px) {
+  .planning-entry__grid, .room-tour__layout { grid-template-columns: 1fr; }
+  .room-tour__scene { min-height: 380px; }
+  .room-tour__scene button { font-size: .85rem; }
+}
+@media (prefers-reduced-motion: reduce) { .room-tour__scene { transition: none; } }

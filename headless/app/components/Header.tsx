@@ -1,5 +1,6 @@
-import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from 'react-router';
+import {alternateLanguagePath} from '~/lib/navigation';
+import {Suspense, useEffect, useRef} from 'react';
+import {Await, NavLink, useAsyncValue, useLocation} from 'react-router';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -49,20 +50,13 @@ export function Header({
         locale={locale}
       />
 
-      <HeaderCtas
-        isLoggedIn={isLoggedIn}
-        cart={cart}
-        locale={locale}
-      />
+      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} locale={locale} />
     </header>
   );
 }
 
 export function HeaderMenu({
-  menu,
-  primaryDomainUrl,
   viewport,
-  publicStoreDomain,
   locale = 'de',
 }: {
   menu: HeaderProps['header']['menu'];
@@ -72,120 +66,112 @@ export function HeaderMenu({
   locale?: StorefrontLocale;
 }) {
   const className = `header-menu-${viewport}`;
+  const shopMenu = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const onEscape = (event: KeyboardEvent) => {
+      const menu = shopMenu.current;
+      if (
+        event.key === 'Escape' &&
+        menu?.open &&
+        menu.contains(document.activeElement)
+      ) {
+        menu.open = false;
+        menu.querySelector('summary')?.focus();
+        event.stopImmediatePropagation();
+      }
+    };
+    document.addEventListener('keydown', onEscape, true);
+    return () => document.removeEventListener('keydown', onEscape, true);
+  }, []);
   const {close} = useAside();
-  const items = (menu || FALLBACK_HEADER_MENU).items;
   const isEnglish = locale === 'en';
-
+  const prefix = isEnglish ? '/en' : '';
+  const categories = isEnglish
+    ? [
+        ['Substrates', '/en/substrate'],
+        ['Grow lighting', '/en/worlds/light'],
+        ['Plant containers', '/en/worlds/containers'],
+        ['Watering', '/en/worlds/water'],
+        ['Propagation', '/en/worlds/propagation'],
+        ['Interieur Solutions', '/en/collections/interieur-solutions'],
+        ['All products', '/en/collections/all'],
+      ]
+    : [
+        [
+          'Substrate',
+          '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze',
+        ],
+        ['Pflanzenbeleuchtung', '/welten/licht'],
+        ['Pflanzgefäße', '/welten/gefaesse'],
+        ['Bewässerung', '/welten/bewaesserung'],
+        ['Anzucht', '/welten/anzucht'],
+        ['Interieur Solutions', '/collections/interieur-solutions'],
+        ['Alle Produkte', '/collections/all'],
+      ];
   return (
     <nav
       className={className}
-      aria-label={
-        viewport === 'mobile'
-          ? 'Mobile Navigation'
-          : isEnglish
-            ? 'Main navigation'
-            : 'Hauptnavigation'
-      }
+      aria-label={isEnglish ? 'Main navigation' : 'Hauptnavigation'}
     >
       <ul className="header-menu-list">
-        {viewport === 'mobile' && (
-          <li>
-            <NavLink
-              end
-              onClick={close}
-              prefetch="intent"
-              style={activeLinkStyle}
-              to={isEnglish ? '/en' : '/'}
-            >
-              {isEnglish ? 'Home' : 'Start'}
-            </NavLink>
-          </li>
-        )}
-
-        {items.map((item) => {
-          if (!item.url) return null;
-
-          const url = resolveMenuUrl(
-            item.url,
-            primaryDomainUrl,
-            publicStoreDomain,
-            locale,
-          );
-          const children = item.items || [];
-
-          return (
-            <li
-              className={
-                children.length
-                  ? 'header-menu-group has-children'
-                  : 'header-menu-group'
-              }
-              key={item.id}
-            >
-              <NavLink
-                className="header-menu-item"
-                end
-                onClick={viewport === 'mobile' ? close : undefined}
-                prefetch="intent"
-                style={activeLinkStyle}
-                to={url}
-              >
-                {item.title}
-              </NavLink>
-
-              {children.length > 0 && (
-                <ul className="header-submenu">
-                  {children.map((child) => {
-                    if (!child.url) return null;
-                    const childUrl = resolveMenuUrl(
-                      child.url,
-                      primaryDomainUrl,
-                      publicStoreDomain,
-                      locale,
-                    );
-
-                    return (
-                      <li key={child.id}>
-                        <NavLink
-                          onClick={viewport === 'mobile' ? close : undefined}
-                          prefetch="intent"
-                          style={activeLinkStyle}
-                          to={childUrl}
-                        >
-                          {child.title}
-                        </NavLink>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          );
-        })}
+        <li className="header-menu-group">
+          <details ref={shopMenu} className="header-shop-menu">
+            <summary>{isEnglish ? 'Shop' : 'Produktwelten'}</summary>
+            <ul className="header-shop-links">
+              {categories.map(([label, href]) => (
+                <li key={href}>
+                  <NavLink
+                    to={href}
+                    prefetch="intent"
+                    onClick={(event) => {
+                      event.currentTarget
+                        .closest('details')
+                        ?.removeAttribute('open');
+                      close();
+                    }}
+                  >
+                    {label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </li>
+        <li>
+          <NavLink
+            className="header-menu-item"
+            to={isEnglish ? '/en/planning' : '/raumplanung'}
+            prefetch="intent"
+            onClick={close}
+          >
+            {isEnglish ? 'Room planning' : 'Raumplanung'}
+          </NavLink>
+        </li>
+        <li>
+          <button
+            className="header-menu-item reset"
+            type="button"
+            onClick={() => {
+              close();
+              window.dispatchEvent(new Event('leaf:assistant:open'));
+            }}
+          >
+            {isEnglish ? 'Ask LEAF' : 'Beratung'}
+          </button>
+        </li>
+        <li>
+          <NavLink
+            className="header-menu-item"
+            to={`${prefix}/blogs`}
+            prefetch="intent"
+            onClick={close}
+          >
+            {isEnglish ? 'Guides' : 'Ratgeber'}
+          </NavLink>
+        </li>
       </ul>
     </nav>
   );
-}
-
-function resolveMenuUrl(
-  itemUrl: string,
-  primaryDomainUrl: string,
-  publicStoreDomain: string,
-  locale: StorefrontLocale,
-) {
-  const isInternal =
-    itemUrl.includes('myshopify.com') ||
-    itemUrl.includes(publicStoreDomain) ||
-    itemUrl.includes(primaryDomainUrl);
-
-  if (!isInternal) return itemUrl;
-  const path = new URL(itemUrl).pathname;
-  if (locale !== 'en' || path === '/en' || path.startsWith('/en/')) return path;
-  if (path.startsWith('/marken/')) return path.replace('/marken/', '/en/brands/');
-  if (/^\/(collections|products|blogs|pages|policies|search|cart)(\/|$)/.test(path)) {
-    return `/en${path}`;
-  }
-  return path;
 }
 
 function HeaderCtas({
@@ -194,6 +180,7 @@ function HeaderCtas({
   locale,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart' | 'locale'>) {
   const isEnglish = locale === 'en';
+  const location = useLocation();
 
   return (
     <nav
@@ -210,28 +197,19 @@ function HeaderCtas({
         <Suspense fallback="Login">
           <Await resolve={isLoggedIn} errorElement="Login">
             {(loggedIn) =>
-              loggedIn
-                ? isEnglish
-                  ? 'Account'
-                  : 'Konto'
-                : 'Login'
+              loggedIn ? (isEnglish ? 'Account' : 'Konto') : 'Login'
             }
           </Await>
         </Suspense>
       </NavLink>
       <NavLink
-        to={isEnglish ? '/en' : '/'}
-        prefetch="intent"
-        className="header-cta-link"
+        className="header-cta-link header-language"
+        to={alternateLanguagePath(
+          location.pathname + location.search + location.hash,
+        )}
+        aria-label={isEnglish ? 'Auf Deutsch wechseln' : 'Switch to English'}
       >
-        {isEnglish ? 'Campus' : 'Campus'}
-      </NavLink>
-      <NavLink
-        to={isEnglish ? '/en#leaf-worlds' : '/#leaf-worlds'}
-        prefetch="intent"
-        className="header-cta-link"
-      >
-        {isEnglish ? 'Worlds' : 'Welten'}
+        {isEnglish ? 'DE' : 'EN'}
       </NavLink>
       <SearchToggle locale={locale} />
       <CartToggle cart={cart} locale={locale} />
@@ -239,11 +217,7 @@ function HeaderCtas({
   );
 }
 
-function HeaderMenuMobileToggle({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function HeaderMenuMobileToggle({locale = 'de'}: {locale?: StorefrontLocale}) {
   const {open} = useAside();
 
   return (
@@ -258,11 +232,7 @@ function HeaderMenuMobileToggle({
   );
 }
 
-function SearchToggle({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function SearchToggle({locale = 'de'}: {locale?: StorefrontLocale}) {
   const {open} = useAside();
   const isEnglish = locale === 'en';
 
@@ -332,58 +302,12 @@ function CartToggle({
   );
 }
 
-function CartBanner({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function CartBanner({locale = 'de'}: {locale?: StorefrontLocale}) {
   const originalCart = useAsyncValue() as CartApiQueryFragment | null;
   const cart = useOptimisticCart(originalCart);
 
   return <CartBadge count={cart?.totalQuantity ?? 0} locale={locale} />;
 }
-
-const FALLBACK_HEADER_MENU = {
-  id: 'gid://shopify/Menu/199655587896',
-  items: [
-    {
-      id: 'gid://shopify/MenuItem/461609500728',
-      resourceId: null,
-      tags: [],
-      title: 'Sortiment',
-      type: 'HTTP',
-      url: '/collections',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609533496',
-      resourceId: null,
-      tags: [],
-      title: 'Ratgeber',
-      type: 'HTTP',
-      url: '/blogs/journal',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609566264',
-      resourceId: null,
-      tags: [],
-      title: 'Rechtliches',
-      type: 'HTTP',
-      url: '/policies',
-      items: [],
-    },
-    {
-      id: 'gid://shopify/MenuItem/461609599032',
-      resourceId: 'gid://shopify/Page/92591030328',
-      tags: [],
-      title: 'Über LEAFerservice',
-      type: 'PAGE',
-      url: '/pages/about',
-      items: [],
-    },
-  ],
-};
 
 function activeLinkStyle({
   isActive,

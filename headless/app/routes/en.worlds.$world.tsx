@@ -1,3 +1,4 @@
+import {PlanningEntry} from '~/components/PlanningEntry';
 import {Link, useParams} from 'react-router';
 import type {Route} from './+types/en.worlds.$world';
 
@@ -82,6 +83,7 @@ export default function EnglishWorld() {
         <h1>{world.title}</h1>
         <p>{world.intro}</p>
       </section>
+      {slug === 'light' && <PlanningEntry locale="en" />}
       <section className="leaf-experience-world__house">
         <div>
           <p className="page-eyebrow">Brand house</p>

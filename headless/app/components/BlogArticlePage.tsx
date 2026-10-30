@@ -23,7 +23,7 @@ export function BlogArticlePage({
   blogHandle: string;
   locale: BlogLocale;
   englishIsFallback?: boolean;
-  products?: Array<ArticleCommerceProduct | null>;
+  products?: Array<ArticleCommerceProduct | null | undefined>;
 }) {
   const date = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'de-DE', {
     year: 'numeric', month: 'long', day: 'numeric',

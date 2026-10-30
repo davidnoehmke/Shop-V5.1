@@ -1,3 +1,4 @@
+import {PlanningEntry} from '~/components/PlanningEntry';
 import {Link, useLoaderData} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
 import type {Route} from './+types/en.brands.venso';
@@ -51,6 +52,7 @@ export default function EnglishVensoBrand() {
         ) : null}
       </section>
 
+      <PlanningEntry locale="en" />
       <section id="venso-range-en" aria-labelledby="venso-products-heading-en">
         <p className="page-eyebrow">Products</p>
         <h2 id="venso-products-heading-en">Venso grow lights</h2>
