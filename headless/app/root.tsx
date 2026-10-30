@@ -16,6 +16,7 @@ import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import paletteStyles from '~/styles/palette.css?url';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import enterpriseMobileStyles from '~/styles/enterprise-mobile.css?url';
 import {PageLayout} from './components/PageLayout';
 import {LeafAssistant} from './components/LeafAssistant';
 
@@ -156,6 +157,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <link rel="stylesheet" href={paletteStyles}></link>
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={enterpriseMobileStyles}></link>
         <Meta />
         <Links />
       </head>
