@@ -18,6 +18,12 @@ test('stale previews and external preview URLs cannot pass validation', () => {
   assert.throws(()=>previewReference({pull_request:{body:`<!-- leaf-preview theme_id=190712709505 source_sha=${sha} -->`,head:{sha:'b'.repeat(40)}}}),/another PR head/);
   assert.throws(()=>previewUrl('https://external.example/',{themeId:'190712709505'}),/public storefront/);
 });
+test('malformed or duplicated preview declarations cannot fall back to production', () => {
+  const marker = `<!-- leaf-preview theme_id=190712709505 source_sha=${sha} -->`;
+  for (const body of ['<!-- leaf-preview theme_id=bad -->', `${marker}\n${marker}`, `${marker}\n<!-- leaf-preview invalid -->`]) {
+    assert.throws(() => previewReference({pull_request: {body, head: {sha}}}), /valid and unique/);
+  }
+});
 test('Shopify preview cookies survive the redirect that strips the preview parameter', async () => {
   const requests = [];
   const fakeFetch = async (url, options) => {

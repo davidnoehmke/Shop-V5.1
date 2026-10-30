@@ -14,6 +14,8 @@ function runtime(key = '', vaultKey = '', datasets = {}) {
       in(column, values) { rows = rows.filter(row => values.includes(row[column])); return this; },
       eq(column, value) { rows = rows.filter(row => row[column] === value); return this; },
       order() { return this; },
+      limit(value) { rows = rows.slice(0, value); return this; },
+      maybeSingle() { return Promise.resolve({ data: rows[0] || null, error: null }); },
       range(start, end) { return Promise.resolve({ data: rows.slice(start, end + 1), error: null }); }
     };
   };
@@ -66,7 +68,11 @@ test('server creates slow natural voice with automatic interruption and prior co
   assert.equal(config.audio.input.turn_detection.interrupt_response, true);
   assert.equal(config.audio.input.turn_detection.type, 'semantic_vad');
   assert.match(config.instructions, /Alocasia/);
-  assert.match(config.instructions, /lookup_leaf_knowledge before answering/);
+  assert.match(config.instructions, /concrete shop facts call lookup_leaf_knowledge/i);
+  assert.match(config.instructions, /established horticultural principles/i);
+  assert.ok(config.tools.some(tool => tool.name === 'navigate_storefront'));
+  assert.ok(config.tools.some(tool => tool.name === 'read_leaf_article'));
+  assert.match(config.instructions, /read an article aloud/);
 });
 
 test('voice accepts only bounded audio offers and does not create video calls', async () => {
@@ -83,7 +89,7 @@ test('text replies retain follow-up context, use conversational instructions and
   assert.equal(result.capabilities.image_analysis, false);
   assert.equal(app.requests[0].store, false);
   assert.equal(app.requests[0].input[0].content, 'Was macht Bims?');
-  assert.match(app.requests[0].instructions, /short, clear sentences/);
+  assert.match(app.requests[0].instructions, /general horticultural advice/i);
 });
 
 function knowledgeFixture() {
@@ -162,6 +168,30 @@ test('relevant article passages after the old 1800-character prefix remain avail
   const app = runtime('', '', { content_articles: [{ id: 'a1', title: 'Lichtplanung', handle: 'licht', status: 'published', source_citations: ['https://example.test/lighting'], body_html: `<p>${'Einleitung ohne die konkrete Antwort. '.repeat(90)}</p><p>Alocasia braucht eine Standortprüfung und passende Beleuchtung; mehr Gießen ersetzt kein Licht.</p>` }] });
   const body = await (await app.send({ message: 'Was bedeutet Beleuchtung für Alocasia?' })).json();
   assert.match(body.answer, /mehr Gießen ersetzt kein Licht/);
+});
+
+test('article summaries use a larger approved article context than ordinary question answering', async () => {
+  const longBody = '<p>' + 'Früher Abschnitt. '.repeat(220) + '</p><p>WICHTIGER-SPAETER-ABSCHNITT</p>';
+  const app = runtime('key', '', { content_articles: [{ id: 'a1', title: 'Großer Ratgeber', handle: 'grosser-ratgeber', status: 'published', source_citations: ['https://example.test/source'], body_html: longBody }] });
+  const response = await app.send({ message: 'Fass mir den Großen Ratgeber zusammen', locale: 'de' });
+  assert.equal(response.status, 200);
+  assert.match(app.requests[0].instructions, /WICHTIGER-SPAETER-ABSCHNITT/);
+});
+
+test('article read returns approved sourced text in resumable chunks and rejects unsourced articles', async () => {
+  const sourced = '<p>' + 'A'.repeat(3500) + '</p><p>ENDE-DES-ARTIKELS</p>';
+  const app = runtime('', '', { content_articles: [
+    { id: 'a1', title: 'Lesetest', handle: 'lesetest', status: 'published', source_citations: ['https://example.test/source'], body_html: sourced },
+    { id: 'a2', title: 'Unsourced', handle: 'unsourced', status: 'published', source_citations: [], body_html: '<p>PRIVATE-NOT-READABLE</p>' }
+  ] });
+  const first = await (await app.send({ action: 'article_read', message: 'read article', handle: 'lesetest', offset: 0, locale: 'de' })).json();
+  assert.equal(first.article.done, false);
+  assert.equal(first.article.next_offset > 0, true);
+  assert.match(first.article.href, /lesetest$/);
+  const second = await (await app.send({ action: 'article_read', message: 'read article', handle: 'lesetest', offset: first.article.next_offset, locale: 'de' })).json();
+  assert.match(second.article.text, /ENDE-DES-ARTIKELS/);
+  const blocked = await app.send({ action: 'article_read', message: 'read article', handle: 'unsourced', offset: 0, locale: 'de' });
+  assert.equal(blocked.status, 404);
 });
 
 test('follow-up retains the product context but does not invent a fixed quantity', async () => {

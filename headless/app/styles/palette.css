@@ -1,0 +1,47 @@
+/*
+ * LEAFerservice canonical storefront palette.
+ * Botanical Minimalism – Warm Sage & Cream, approved 2026-10-30.
+ * Add no independent UI colors: use these tokens or their transparent mixes.
+ */
+:root {
+  --leaf-cream: #F5F0E6;
+  --leaf-sand: #DDD1BE;
+  --leaf-sage: #A3AD95;
+  --leaf-eucalyptus: #788C7B;
+  --leaf-olive: #454D3D;
+  --leaf-taupe: #A89B8B;
+
+  --leaf-ink: var(--leaf-olive);
+  --leaf-surface-sand: color-mix(in srgb, var(--leaf-cream) 65%, var(--leaf-sand));
+  --leaf-surface-sage: color-mix(in srgb, var(--leaf-cream) 75%, var(--leaf-sage));
+  --leaf-surface-water: color-mix(in srgb, var(--leaf-cream) 85%, var(--leaf-eucalyptus));
+  --leaf-surface-taupe: color-mix(in srgb, var(--leaf-cream) 80%, var(--leaf-taupe));
+  --leaf-line: color-mix(in srgb, var(--leaf-olive) 22%, transparent);
+  --leaf-control-border: var(--leaf-eucalyptus);
+  --leaf-shadow: color-mix(in srgb, var(--leaf-olive) 13%, transparent);
+
+  color-scheme: light;
+  accent-color: var(--leaf-olive);
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+}
+
+/* Form controls must not introduce browser-default gray/blue surfaces. */
+:where(button, input, select, textarea) {
+  color: var(--leaf-ink);
+  background-color: var(--leaf-cream);
+  border-color: var(--leaf-control-border);
+}
+:where(input, select, textarea)::placeholder {
+  color: var(--leaf-ink);
+  opacity: 1;
+}
+::selection {
+  background: var(--leaf-olive);
+  color: var(--leaf-cream);
+}
+:focus-visible {
+  outline: 3px solid var(--leaf-olive);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 3px var(--leaf-cream);
+}

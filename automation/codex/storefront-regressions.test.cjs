@@ -66,6 +66,14 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /data-order=/);
   assert.deepEqual(index.order.slice(0, 5), ['hero', 'leaf_listening', 'substrate_configurator', 'home_collection_journey', 'trust']);
   assert.match(index.sections.home_collection_journey.settings.heading, /Wurzelraum/);
+  assert.deepEqual(index.order.slice(0, 5), ['hero', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);
+  assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
+  assert.equal(index.sections.loox_reviews.disabled, true);
+  assert.match(index.sections.home_collection_journey.settings.heading, /Pflanzenprojekt/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Substratmischungen/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Einzelbestandteile/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Gefäße/);
+  assert.match(index.sections.home_collection_journey.settings.intro, /Pflanzenlicht/);
   assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
 });
 
@@ -254,6 +262,7 @@ test('desktop assistant exposes hover actions and keeps the collapsed launcher a
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /data-assistant-action-chat/);
   assert.match(liquid, /data-assistant-action-voice/);
+  assert.doesNotMatch(liquid, /data-assistant-action-photo/);
   assert.match(liquid, /@media \(min-width: 701px\)[\s\S]*leaf-shop-assistant:hover[\s\S]*leaf-shop-assistant__quick-actions/);
   assert.match(liquid, /right: max\(1\.5rem, env\(safe-area-inset-right\)\)/);
   assert.match(liquid, /bottom: max\(1\.5rem, env\(safe-area-inset-bottom\)\)/);

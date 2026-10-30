@@ -115,13 +115,11 @@
           </p>
         </div>
 
-        <div class="leafer-substrate__hero-media">
-          {% if hero_image != blank %}
+        {% if hero_image != blank %}
+          <div class="leafer-substrate__hero-media">
             {{ hero_image | image_url: width: 1600 | image_tag: widths: '520, 760, 1000, 1300, 1600', sizes: '(min-width: 990px) 46vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: hero_alt }}
-          {% else %}
-            {{ 'product-1' | placeholder_svg_tag }}
-          {% endif %}
-        </div>
+          </div>
+        {% endif %}
       </div>
 
       <div class="leafer-substrate__commerce page-width">
@@ -148,8 +146,36 @@
                     {% liquid
                       assign matched_profile_block = blank
                       assign option_key = option_value | strip | handleize
+                      case option_key
+                        when 'aroiden', 'aroids-tropical', 'aroids'
+                          assign option_key = 'aroids'
+                        when 'krauter', 'krauter-balkon', 'herbs-balcony'
+                          assign option_key = 'herbs'
+                        when 'kakteen', 'kakteen-sukkulenten', 'cacti-succulents'
+                          assign option_key = 'cactus'
+                        when 'orchideen', 'orchids'
+                          assign option_key = 'orchid'
+                        when 'palmen', 'palmen-grunpflanzen', 'palms-green-plants'
+                          assign option_key = 'palms'
+                        when 'anzucht', 'anzucht-jungpflanzen', 'seed-starting-seedlings'
+                          assign option_key = 'seedlings'
+                      endcase
                       for profile_block in profile_blocks
                         assign profile_key = profile_block.settings.option_value | strip | handleize
+                        case profile_key
+                        when 'aroiden', 'aroids-tropical', 'aroids'
+                          assign profile_key = 'aroids'
+                        when 'krauter', 'krauter-balkon', 'herbs-balcony'
+                          assign profile_key = 'herbs'
+                        when 'kakteen', 'kakteen-sukkulenten', 'cacti-succulents'
+                          assign profile_key = 'cactus'
+                        when 'orchideen', 'orchids'
+                          assign profile_key = 'orchid'
+                        when 'palmen', 'palmen-grunpflanzen', 'palms-green-plants'
+                          assign profile_key = 'palms'
+                        when 'anzucht', 'anzucht-jungpflanzen', 'seed-starting-seedlings'
+                          assign profile_key = 'seedlings'
+                      endcase
                         if profile_key == option_key
                           assign matched_profile_block = profile_block
                           break
@@ -158,6 +184,16 @@
                       assign profile_title = matched_profile_block.settings.title | default: option_value
                       assign profile_description = matched_profile_block.settings.description
                       assign profile_badge = matched_profile_block.settings.badge
+                      assign known_profile_keys = 'aroids,herbs,cactus,orchid,palms,seedlings' | split: ','
+                      if request.locale.iso_code == 'en' and known_profile_keys contains option_key
+                        assign profile_translation_key = 'substrate_profiles.' | append: option_key | append: '.'
+                        assign profile_title_key = profile_translation_key | append: 'title'
+                        assign profile_badge_key = profile_translation_key | append: 'badge'
+                        assign profile_description_key = profile_translation_key | append: 'description'
+                        assign profile_title = profile_title_key | t
+                        assign profile_badge = profile_badge_key | t
+                        assign profile_description = profile_description_key | t
+                      endif
                       assign profile_id = 'Profile-' | append: section.id | append: '-' | append: option_value | handleize
                     %}
                     <div class="leafer-substrate__choice" {% if matched_profile_block != blank %}{{ matched_profile_block.shopify_attributes }}{% endif %}>
@@ -170,9 +206,9 @@
                         {% if option_value == selected_profile %}checked{% endif %}
                       >
                       <label for="{{ profile_id }}">
-                        {% if profile_badge != blank %}<small>{{ profile_badge | escape }}</small>{% endif %}
-                        <strong>{{ profile_title | escape }}</strong>
-                        {% if profile_description != blank %}<span>{{ profile_description | escape }}</span>{% endif %}
+                        {% if profile_badge != blank %}<small>{{ profile_badge | escape_once }}</small>{% endif %}
+                        <strong>{{ profile_title | escape_once }}</strong>
+                        {% if profile_description != blank %}<span>{{ profile_description | escape_once }}</span>{% endif %}
                       </label>
                     </div>
                   {% endfor %}
@@ -508,14 +544,12 @@
             {% assign rendered_components = 0 %}
             {% for component_product in component_products %}
               {% if component_product.available and component_product.id != selector_product.id %}
-                <a class="leafer-substrate__component-card" href="{{ component_product.url }}">
-                  <div class="leafer-substrate__component-image">
-                    {% if component_product.featured_image != blank %}
+                <a class="leafer-substrate__component-card{% if component_product.featured_image == blank %} leafer-substrate__component-card--text-only{% endif %}" href="{{ component_product.url }}">
+                  {% if component_product.featured_image != blank %}
+                    <div class="leafer-substrate__component-image">
                       {{ component_product.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '240, 360, 480, 640', sizes: '(min-width: 990px) 30vw, (min-width: 620px) 45vw, 90vw', alt: component_product.featured_image.alt | default: component_product.title }}
-                    {% else %}
-                      {{ 'product-1' | placeholder_svg_tag }}
-                    {% endif %}
-                  </div>
+                    </div>
+                  {% endif %}
                   <div class="leafer-substrate__component-copy">
                     <span>{{ component_product.vendor | default: 'LEAFerservice' | escape }}</span>
                     <h3>{{ component_product.title | escape }}</h3>
@@ -643,6 +677,8 @@
   .leafer-substrate__options--profiles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .leafer-substrate__options--volumes { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .leafer-substrate__choice { position: relative; min-width: 0; }
+  .leafer-substrate__options--profiles .leafer-substrate__choice { display: flex; }
+  .leafer-substrate__options--profiles .leafer-substrate__choice label { width: 100%; overflow-wrap: anywhere; }
   .leafer-substrate__choice input { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
   .leafer-substrate__choice label { min-height: 0; display: flex; flex-direction: column; justify-content: flex-start; gap: .38rem; padding: .85rem 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); cursor: pointer; transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
   .leafer-substrate__choice label small { color: var(--accent); font-size: .64rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }

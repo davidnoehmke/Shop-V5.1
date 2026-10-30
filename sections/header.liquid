@@ -13,54 +13,13 @@
           <svg class="site-header__menu-icon site-header__menu-icon--close" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 5 14 14M19 5 5 19"/></svg>
         </summary>
         <nav id="MobileMenu-{{ section.id }}" class="site-header__mobile-panel" data-mobile-menu-panel>
+          {% assign mobile_language_id = section.id | append: '-mobile' %}
+          {% render 'leaf-language-selector', selector_id: mobile_language_id %}
           <ul class="site-header__mobile-list">
-            {% for link in section.settings.menu.links %}
-              <li>
-                {% if link.links != blank %}
-                  <details class="site-header__mobile-disclosure">
-                    <summary>
-                      <span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span>
-                      <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
-                    </summary>
-                    <div class="site-header__mobile-submenu">
-                      <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>
-                        <span>{% render 'leaf-localized-label', text: link.title %}</span>
-                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
-                      </a>
-                      <ul>
-                        {% for child_link in link.links %}
-                          <li>
-                            {% if child_link.links != blank %}
-                              <details class="site-header__mobile-disclosure site-header__mobile-disclosure--nested">
-                                <summary>
-                                  <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
-                                  <svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg>
-                                </summary>
-                                <div class="site-header__mobile-submenu site-header__mobile-submenu--nested">
-                                  <a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>
-                                    <span>{% render 'leaf-localized-label', text: child_link.title %}</span>
-                                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M12 6l4 4-4 4"/></svg>
-                                  </a>
-                                  <ul>
-                                    {% for grandchild_link in child_link.links %}
-                                      <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
-                                    {% endfor %}
-                                  </ul>
-                                </div>
-                              </details>
-                            {% else %}
-                              <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
-                            {% endif %}
-                          </li>
-                        {% endfor %}
-                      </ul>
-                    </div>
-                  </details>
-                {% else %}
-                  <a class="site-header__mobile-link" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}><span class="site-header__mobile-title">{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></span></a>
-                {% endif %}
-              </li>
-            {% endfor %}
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substrate & Bestandteile{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}All substrates{% else %}Gesamte Substratwelt{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Custom mix{% else %}Individuell mischen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substratbestandteile{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Plant pots & systems{% else %}Pflanzgefäße & Pflanzsysteme{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenpflege-werkzeuge' %}">{% if request.locale.iso_code == 'en' %}Plant care & accessories{% else %}Pflanzenpflege & Zubehör{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/anzucht-aussaat' %}">{% if request.locale.iso_code == 'en' %}Propagation & sowing{% else %}Anzucht & Aussaat{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenzubehor-rankhilfen' %}">{% if request.locale.iso_code == 'en' %}Plant supports{% else %}Rankhilfen{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__mobile-disclosure"><summary><span class="site-header__mobile-title"><span>{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary><div class="site-header__mobile-submenu"><a class="site-header__mobile-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlampen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: 'https://leaferservice-6-preview.vercel.app/products/venso-sunlite-xl-25w-led-pflanzenlampe/' %}">Venso SUNLiTE XL 25W</a></li>{% if collections['pflanzenlicht-zubehor-erganzungen'].id != blank %}<li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenlicht-zubehor-erganzungen' %}">{% if request.locale.iso_code == 'en' %}Lighting accessories{% else %}Licht-Zubehör & Ergänzungen{% endif %}</a></li>{% endif %}<li><a href="{% render 'leaf-localized-url', url: '/collections/starter-sets-mehrerer-arten' %}">{% if request.locale.iso_code == 'en' %}Sets & bundles{% else %}Sets & Bundles{% endif %}</a></li></ul></div></details></li>
           </ul>
         </nav>
       </details>
@@ -71,38 +30,15 @@
     {% if section.settings.menu != blank %}
       <nav class="site-header__desktop" aria-label="{{ 'accessibility.menu' | t }}">
         <ul class="site-header__desktop-list">
-          {% for link in section.settings.menu.links %}
-            <li>
-              {% if link.links != blank %}
-                <details class="site-header__desktop-disclosure" data-desktop-menu>
-                  <summary>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
-                  <div class="site-header__desktop-panel">
-                    <a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: link.title %} <span aria-hidden="true">→</span></a>
-                    <ul>
-                      {% for child_link in link.links %}
-                        <li>
-                          <a href="{% render 'leaf-localized-url', url: child_link.url %}"{% if child_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: child_link.title %}</a>
-                          {% if child_link.links != blank %}
-                            <ul class="site-header__desktop-nested">
-                              {% for grandchild_link in child_link.links %}
-                                <li><a href="{% render 'leaf-localized-url', url: grandchild_link.url %}"{% if grandchild_link.current %} aria-current="page"{% endif %}>{% render 'leaf-localized-label', text: grandchild_link.title %}</a></li>
-                              {% endfor %}
-                            </ul>
-                          {% endif %}
-                        </li>
-                      {% endfor %}
-                    </ul>
-                  </div>
-                </details>
-              {% else %}
-                <a href="{% render 'leaf-localized-url', url: link.url %}"{% if link.current %} aria-current="page"{% endif %}>{% render 'leaf-menu-icon', link: link %}<span>{% render 'leaf-localized-label', text: link.title %}</span></a>
-              {% endif %}
-            </li>
-          {% endfor %}
-        </ul>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}Substrates{% else %}Substrate{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substrate & Bestandteile{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if request.locale.iso_code == 'en' %}All substrates{% else %}Gesamte Substratwelt{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Substrate configurator{% else %}Substratkonfigurator{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Custom mix{% else %}Individuell mischen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if request.locale.iso_code == 'en' %}Ready-made mixes{% else %}Fertige Mischungen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/substrate-verbesserer' %}">{% if request.locale.iso_code == 'en' %}Substrate components{% else %}Substratbestandteile{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Pots & watering{% else %}Töpfe & Bewässerung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{% if request.locale.iso_code == 'en' %}Plant pots & systems{% else %}Pflanzgefäße & Pflanzsysteme{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenpflege-werkzeuge' %}">{% if request.locale.iso_code == 'en' %}Plant care & accessories{% else %}Pflanzenpflege & Zubehör{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/anzucht-aussaat' %}">{% if request.locale.iso_code == 'en' %}Propagation & sowing{% else %}Anzucht & Aussaat{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenzubehor-rankhilfen' %}">{% if request.locale.iso_code == 'en' %}Plant supports{% else %}Rankhilfen{% endif %}</a></li></ul></div></details></li>
+<li><details class="site-header__desktop-disclosure" data-desktop-menu><summary><span>{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary><div class="site-header__desktop-panel"><a class="site-header__desktop-overview" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lighting{% else %}Pflanzenbeleuchtung{% endif %} <span aria-hidden="true">→</span></a><ul><li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlampen{% endif %}</a></li><li><a href="{% render 'leaf-localized-url', url: 'https://leaferservice-6-preview.vercel.app/products/venso-sunlite-xl-25w-led-pflanzenlampe/' %}">Venso SUNLiTE XL 25W</a></li>{% if collections['pflanzenlicht-zubehor-erganzungen'].id != blank %}<li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenlicht-zubehor-erganzungen' %}">{% if request.locale.iso_code == 'en' %}Lighting accessories{% else %}Licht-Zubehör & Ergänzungen{% endif %}</a></li>{% endif %}<li><a href="{% render 'leaf-localized-url', url: '/collections/starter-sets-mehrerer-arten' %}">{% if request.locale.iso_code == 'en' %}Sets & bundles{% else %}Sets & Bundles{% endif %}</a></li></ul></div></details></li>
+          </ul>
       </nav>
     {% endif %}
     <div class="site-header__actions">
+      <div class="site-header__language-desktop">{% render 'leaf-language-selector', selector_id: section.id %}</div>
       <form class="site-header__search" action="{{ routes.search_url }}" method="get" role="search" data-header-search>
         <label class="visually-hidden" for="HeaderSearch-{{ section.id }}">{{ 'header.search' | t }}</label>
         <input id="HeaderSearch-{{ section.id }}" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'header.search' | t }}" autocomplete="off">
@@ -115,6 +51,10 @@
 </header>
 
 {% stylesheet %}
+  @media (max-width: 1240px) { .site-header__language-desktop { display: none; } }
+  .site-header__language { display: flex; align-items: center; gap: .25rem; margin: 0; }
+  .site-header__language select, .site-header__language button { min-height: 44px; font: inherit; font-size: .75rem; color: var(--text); background: var(--background); border: 1px solid var(--border); border-radius: 0; padding: .35rem; }
+  .site-header__language :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .site-header { position: sticky; z-index: 20; top: 0; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 3%); backdrop-filter: blur(14px); }
   .site-header__inner { min-height: 78px; display: grid; grid-template-columns: minmax(210px, .72fr) minmax(0, 1.55fr) minmax(250px, .73fr); align-items: center; gap: clamp(1rem, 2vw, 2.5rem); }
   .site-header__brand { width: min(100%, var(--logo-width)); display: inline-flex; align-items: center; gap: .55rem; font-family: var(--heading-font); font-size: 1.45rem; font-weight: 600; text-decoration: none; }

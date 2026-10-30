@@ -14,6 +14,8 @@
       <p>{{ 'leaf_listening.details_text' | t }}</p>
     </details>
     <a class="leaf-listening__link" href="{{ feedback_href }}">
+    {% assign listening_link = section.settings.link | default: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}
+    <a class="leaf-listening__link" href="{% render 'leaf-localized-url', url: listening_link %}">
       {{ 'leaf_listening.link_label' | t }} <span aria-hidden="true">→</span>
     </a>
   </div>
@@ -32,4 +34,5 @@
 {% endstylesheet %}
 {% schema %}
 {"name":"Kundenfeedback & Lernen","settings":[{"type":"url","id":"link","label":"Link zur Substratwelt"}],"presets":[{"name":"Kundenfeedback & Lernen"}]}
+{% endschema %}
 {% endschema %}

@@ -8,7 +8,6 @@
 | Storefront/Commerce | Shopify | Projektion, Checkout, Sales Channels, Rücklesequelle |
 | Orchestrierung | ChatGPT | kontrollierte Research-, Prüf- und Owner-Workflows |
 | Code/Theme/Migrationen | GitHub `davidnoehmke/Shop-V5.1` | versionierte Implementierung, PR-/CI-Release-Gate, keine Runtime |
-| `control_center/` | Legacy | Entwicklungs-/Archivartefakt, nicht produktiv |
 | Railway | ausgeschlossen | keine Runtime, kein Sync-Bus, keine Business-Logik |
 | Notion | getrennt | keine produktive Datenquelle |
 | Google Sheets / Apps Script | getrennt | Legacy, keine produktive Datenquelle |

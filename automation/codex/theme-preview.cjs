@@ -4,6 +4,12 @@ function previewReference(event) {
   if (!event.pull_request) return null;
   const marker = (event.pull_request.body || '').match(/<!-- leaf-preview theme_id=([1-9][0-9]{5,19}) source_sha=([a-f0-9]{40}) -->/);
   if (!marker) return null;
+  const body = event.pull_request.body || '';
+  const declarations = body.match(/<!--\s*leaf-preview\b/g) || [];
+  if (!declarations.length) return null;
+  const markers = [...body.matchAll(/<!-- leaf-preview theme_id=([1-9][0-9]{5,19}) source_sha=([a-f0-9]{40}) -->/g)];
+  if (declarations.length !== 1 || markers.length !== 1) throw new Error('Theme preview marker must be valid and unique.');
+  const marker = markers[0];
   if (marker[2] !== event.pull_request.head.sha) throw new Error('Theme preview belongs to another PR head; upload and verify the current candidate first.');
   return {themeId: marker[1], sha: marker[2]};
 }

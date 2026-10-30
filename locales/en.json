@@ -21,6 +21,8 @@
     }
   },
   "header": {
+    "language": "Language",
+    "change_language": "Go",
     "home": "Home",
     "search": "Search",
     "account": "Account",
@@ -111,7 +113,7 @@
       "label": "Product benefits"
     },
     "availability": {
-      "available": "In stock · ready to ship",
+      "available": "Available to order",
       "unavailable": "This variant is currently unavailable.",
       "unavailable_short": "Unavailable",
       "invalid_combination": "Combination unavailable",
@@ -207,6 +209,10 @@
       "fit": "Suitable for",
       "spec": "Key specification",
       "note": "If these points match your use case, choose the suitable variant below."
+    },
+    "editorial": {
+      "difficulty": "Care difficulty",
+      "cart_error": "This product could not be added. Please try again."
     }
   },
   "product_variant_guide": {
@@ -752,10 +758,19 @@
       "eyebrow": "Custom substrate",
       "heading": "Your plant. Your substrate mix.",
       "text": "Build your substrate mix: choose ingredients, adjust proportions with sliders and order your custom recipe.",
+      "eyebrow": "Substrate & plant lighting",
+      "heading": "The right foundation for your plants.",
+      "text": "Choose a ready-made substrate mix, build your own recipe or find plant lighting.",
       "primary": "Build your own mix",
       "secondary": "Plan a plant project",
       "world_heading": "The product worlds around your plant project",
-      "world_intro": "Custom substrate remains the core, complemented by plant lighting and interiors, planters, houseplants, propagation, bundles and care as connected product worlds."
+      "world_intro": "Custom substrate remains the core, complemented by plant lighting and interiors, planters, houseplants, propagation, bundles and care as connected product worlds.",
+      "paths_label": "Find what you need",
+      "ready": "Shop ready-made mixes",
+      "ready_help": "Choose a recipe for your plants.",
+      "custom_help": "Choose your ingredients and proportions.",
+      "light": "Find plant lighting",
+      "light_help": "Explore bulbs, fixtures and sets."
     },
     "knowledge_links": {
       "label": "Keep learning",
@@ -781,6 +796,25 @@
       "a5": "Yes. Start in the LEAF Planner with your goal, room and plant needs. The shortlist then leads into relevant product worlds, individual products and coordinated sets where available.",
       "q6": "When do I need an advanced configurator?",
       "a6": "Only when you intentionally want to fine-tune proportions or technical parameters yourself. For most projects the central LEAF Planner is the simpler starting point; specialist tools remain optional deeper steps."
+    },
+    "worlds": {
+      "ready_mix_title": "Ready-made substrate mixes",
+      "ready_mix_eyebrow": "Ready-made recipes",
+      "ready_mix_copy": "Compare ready-made recipes for different plant profiles and choose your mix directly.",
+      "ready_mix_cta": "Explore mixes",
+      "components_title": "Substrate components",
+      "components_eyebrow": "Mix your own",
+      "components_copy": "Choose individual materials and combine them for your own substrate mixes.",
+      "components_cta": "Explore components",
+      "planters_title": "Plant pots & growing systems",
+      "planters_eyebrow": "Plant pots",
+      "planters_copy": "Choose containers by size, material and planting needs.",
+      "planters_cta": "Explore plant pots",
+      "lighting_title": "LEDs & grow lighting",
+      "lighting_eyebrow": "Plant lighting",
+      "lighting_copy": "Bulbs, fixtures and sets for individual plants, shelves and larger areas.",
+      "lighting_cta": "Explore grow lighting",
+      "products": "Products"
     }
   },
   "plant_world": {
@@ -1006,6 +1040,7 @@
     "read": "Plan your green corner: lighting, pots, growing media and plants explained"
   },
   "live_labels": {
+    "about": "About us",
     "solutions": "Find a solution",
     "substrate_plan": "Plan substrate",
     "interior_plan": "Plan interiors",
@@ -1231,5 +1266,88 @@
     "details_label": "Why we are changing this",
     "details_text": "Honest feedback on packaging and product presentation helps us make our offers clearer and our shipping processes more reliable. We are reviewing our workflow and will update product copy and images before introducing the new format.",
     "link_label": "Explore substrates"
+  },
+  "led_highlights": {
+    "jump": "Jump to a plant light",
+    "from": "From",
+    "details": "Specifications & use",
+    "choose": "Choose options",
+    "tax": "Including VAT",
+    "shipping": "Shipping",
+    "description": "Description & included items",
+    "spectrum": "Spectrum",
+    "control": "Controls",
+    "coverage": "Coverage",
+    "voltage": "Voltage",
+    "connector": "Socket / connection",
+    "protection": "IP rating",
+    "use": "Suitable for",
+    "format_label": "Choose product format",
+    "format_all": "All formats",
+    "format_bulb": "Bulbs only",
+    "format_fixture": "Light fixture",
+    "format_set": "Set",
+    "format_other": "Other products",
+    "result_count": "Products shown: [count]",
+    "scope_bulb": "Bulb for a suitable light fixture, required separately.",
+    "scope_tube": "T8 tube with replacement starter. A suitable fitting is required separately.",
+    "scope_tube_set": "Tube(s) and fitting included. Power connection cable not included; intended for fixed installation.",
+    "scope_pendant_set": "Vita bulb and pendant socket with fabric cable included. No additional lampshade.",
+    "scope_set": "Plant light with a mount or stand. See delivery contents for the selected version and accessories.",
+    "scope_fixture": "Plant light fixture. See delivery contents for mounting, connection and accessories.",
+    "scope_bar": "LED bar and small power supply included. Controller optional.",
+    "scope_other": "Please check the version, connection and included accessories in the delivery contents.",
+    "scope_link": "View delivery contents"
+  },
+  "mix_highlights": {
+    "eyebrow": "Ready-made recipes by LEAFerservice",
+    "heading": "Ready-made growing mixes for your plants",
+    "intro": "Find a mix for your plants. Explore each recipe with its uses, ingredients and available sizes.",
+    "jump": "Jump to a growing mix",
+    "ready": "Ready-made mix",
+    "suitable": "Suitable for",
+    "ingredients": "Ingredients & recipe",
+    "application": "Use & care",
+    "description": "Full product details",
+    "size": "Choose size & price",
+    "choose": "Choose a mix",
+    "configure_heading": "Would you like your own mix?",
+    "configure_text": "Use the separate substrate configurator to create your individual growing mix.",
+    "configure_cta": "Configure your own mix",
+    "components_cta": "Explore individual ingredients",
+    "cart_error": "This mix could not be added. Please try again.",
+    "details": "View product details"
+  },
+  "substrate_profiles": {
+    "aroids": {
+      "title": "Aroids / Tropical",
+      "badge": "Airy & structure-stable",
+      "description": "Loose structure for the roots of Monstera, Philodendron and Alocasia."
+    },
+    "herbs": {
+      "title": "Herbs & Balcony",
+      "badge": "Balanced & free-draining",
+      "description": "For herbs and balcony plants that need even moisture and good drainage."
+    },
+    "cactus": {
+      "title": "Cacti & Succulents",
+      "badge": "Mineral & free-draining",
+      "description": "For drought-loving plants whose roots need to dry between waterings."
+    },
+    "orchid": {
+      "title": "Orchids",
+      "badge": "Porous & airy",
+      "description": "Open and airy for fine-rooted epiphytes."
+    },
+    "palms": {
+      "title": "Palms & Green Plants",
+      "badge": "Stable & balanced",
+      "description": "For firm root support and a balanced supply of water and air."
+    },
+    "seedlings": {
+      "title": "Seed Starting & Seedlings",
+      "badge": "Fine & even",
+      "description": "Fine structure for sowing and the development of young roots."
+    }
   }
 }

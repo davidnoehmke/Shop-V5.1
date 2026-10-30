@@ -119,8 +119,8 @@
             "@type": "ImageObject",
             "url": {{ article_image | image_url: width: 1600 | prepend: 'https:' | json }}
           }{% endif %},
-          "datePublished": {{ article.published_at | date_to_xmlschema | json }},
-          "dateModified": {{ article.updated_at | date_to_xmlschema | json }}
+      "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }},
+      "dateModified": {{ article.updated_at | date: '%Y-%m-%dT%H:%M:%S%z' | json }}
         }
       </script>
       {% render 'article-faq-structured-data', article: article, canonical_url: canonical_url %}
@@ -163,6 +163,8 @@
       @media (prefers-reduced-motion: no-preference) { ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .28s; animation-timing-function: var(--ease-out); } }
       @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
     </style>
+    {{ 'leaf-compact-content.css' | asset_url | stylesheet_tag }}
+    {{ 'leaf-v7-custom-theme.css' | asset_url | stylesheet_tag }}
   </head>
   <body class="template-{{ request.page_type | handle }}">
     <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
@@ -192,6 +194,34 @@
     <script src="{{ 'cart-forms.js' | asset_url }}" defer></script>
     <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
+    <script>
+      (() => {
+        const marker = 'EMPTY DOM REMOVE PROTECTOR';
+        const clean = (root = document.body) => {
+          if (!root) return;
+          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+          const remove = [];
+          while (walker.nextNode()) {
+            if (walker.currentNode.nodeValue?.trim() === marker) remove.push(walker.currentNode);
+          }
+          remove.forEach((node) => node.remove());
+        };
+        const start = () => {
+          clean();
+          const observer = new MutationObserver((records) => {
+            for (const record of records) {
+              record.addedNodes.forEach((node) => {
+                if (node.nodeType === Node.TEXT_NODE && node.nodeValue?.trim() === marker) node.remove();
+                else if (node.nodeType === Node.ELEMENT_NODE) clean(node);
+              });
+            }
+          });
+          observer.observe(document.body, { childList: true, subtree: true });
+        };
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+        else start();
+      })();
+    </script>
     <script>
       (() => {
         const sentinel = 'EMPTY DOM REMOVE PROTECTOR';
