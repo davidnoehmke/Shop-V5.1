@@ -131,3 +131,21 @@
 .leaf-compare__numeric meter::-webkit-meter-optimum-value{background:#537659;border-radius:100px}
 .leaf-compare__hint{background:#e9eee3;color:#294735;border-radius:12px;padding:10px 14px;font-size:.86rem}
 @media(max-width:650px){.leaf-compare__numeric{gap:4px}.leaf-compare__numeric meter{height:11px}}
+
+/* Five clear destinations: one global nav, not a nested maze. */
+.header-menu-desktop .header-menu-list{display:flex;align-items:center;flex-wrap:nowrap;gap:clamp(11px,1.25vw,24px);list-style:none;padding:0;margin:0}
+.header-menu-desktop .header-menu-item{display:inline-flex;align-items:center;min-height:44px;white-space:nowrap;font-size:clamp(.79rem,1vw,.95rem);font-weight:550}
+.header-menu-desktop .header-menu-item:hover{color:#457650}
+.header-menu-mobile .header-menu-list{display:flex;flex-direction:column;gap:3px;list-style:none;padding:0;margin:0}
+.header-menu-mobile .header-menu-list a{display:flex;align-items:center;min-height:50px;border-bottom:1px solid var(--leaf-line,#d5dfd2);text-decoration:none;color:var(--leaf-ink,#284731);font-weight:600;padding:10px 4px}
+@media(max-width:1179px){
+ .header-menu-desktop{display:none!important}
+ .header-menu-mobile-toggle{display:inline-flex!important;align-items:center;justify-content:center;min-width:44px;min-height:44px}
+ .header-account-link{display:none}
+ .header-ctas{gap:clamp(5px,2vw,14px)}
+ .header{gap:10px}
+}
+@media(min-width:1180px){
+ .header-menu-desktop{display:flex!important;margin-left:clamp(18px,2vw,34px)}
+ .header-menu-mobile-toggle{display:none!important}
+}
