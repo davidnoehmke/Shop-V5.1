@@ -149,3 +149,16 @@
  .header-menu-desktop{display:flex!important;margin-left:clamp(18px,2vw,34px)}
  .header-menu-mobile-toggle{display:none!important}
 }
+
+/* 320px header: keep menu, search and cart accessible without horizontal scrolling. */
+@media(max-width:600px){
+  .header{padding-inline:12px;gap:4px}
+  .header-brand{font-size:1rem!important;min-width:0}
+  .header-brand strong{font-size:1rem;letter-spacing:-.04em}
+  .header-ctas{gap:3px}
+  .header-search-toggle{display:grid;place-items:center;min-width:44px;min-height:44px;font-size:0!important}
+  .header-search-toggle::before{content:"⌕";font-size:25px;line-height:1}
+  .header-cart-link{display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;gap:2px}
+  .header-cart-link>span:first-child{display:none}
+  .header-cart-count{display:grid;place-items:center;min-width:24px;min-height:24px}
+}
