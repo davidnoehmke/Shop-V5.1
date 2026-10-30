@@ -294,7 +294,7 @@
       const sideTop = this.project(-hw, this.room.height, hd);
       this.polygon([backLeft, sideBottom, sideTop, backLeftTop], this.colors.sand, this.colors.eucalyptus);
 
-      ctx.fillStyle = this.colors.sand;
+      ctx.fillStyle = this.colors.olive;
       ctx.font = `${Math.max(12, this.canvas.width / 95)}px system-ui, sans-serif`;
       ctx.fillText(`${this.room.width.toFixed(1)} m × ${this.room.depth.toFixed(1)} m × ${this.room.height.toFixed(1)} m`, floor[3].x + 10, floor[3].y + 24);
     }
@@ -417,9 +417,14 @@
         this.ctx.setLineDash([]);
       }
 
-      this.ctx.fillStyle = this.colors.sand;
+      this.ctx.fillStyle = this.colors.olive;
       this.ctx.font = `600 ${Math.max(10,this.canvas.width/125)}px system-ui, sans-serif`;
       const label = obj.title.length > 28 ? `${obj.title.slice(0,27)}…` : obj.title;
+      const labelWidth = this.ctx.measureText(label).width;
+      const labelHeight = Math.max(10,this.canvas.width/125);
+      this.ctx.fillStyle = this.colors.cream;
+      this.ctx.fillRect(anchor.x + 5, anchor.y - labelHeight - 7, labelWidth + 6, labelHeight + 7);
+      this.ctx.fillStyle = this.colors.olive;
       this.ctx.fillText(label, anchor.x + 8, anchor.y - 4);
     }
 
@@ -429,7 +434,7 @@
       ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
       const gradient = ctx.createLinearGradient(0,0,0,this.canvas.height);
       gradient.addColorStop(0,this.colors.cream);
-      gradient.addColorStop(1,this.colors.sage);
+      gradient.addColorStop(1,this.colors.sand);
       ctx.fillStyle = gradient;
       ctx.fillRect(0,0,this.canvas.width,this.canvas.height);
       this.drawRoom();
@@ -650,7 +655,7 @@
         if (Number.isFinite(saved?.camera)) this.camera = saved.camera;
         if (Array.isArray(saved?.objects)) {
           this.objects = saved.objects.slice(0,40).filter(obj => ['x','z','width','depth','height','rotation'].every(key => Number.isFinite(obj[key]))).map(obj => {
-            obj.color = this.colors.sage;
+            obj.color = obj.kind === 'plant' ? this.colors.sage : obj.kind === 'window' ? this.colors.eucalyptus : this.colors.taupe;
             if (obj.variantId) {
               const option = [...this.querySelectorAll('[data-builder-product-select] option')].find(item => item.value === String(obj.variantId));
               if (!option) return null;
@@ -660,7 +665,7 @@
           }).filter(Boolean);
           this.objects.forEach((obj) => this.preloadImage(obj.image));
         }
-        if (Number.isFinite(saved?.objectId)) this.objectId = saved.objectId;
+        this.objectId = Math.max(0, ...this.objects.map(obj => Number(obj.id) || 0));
       } catch {}
     }
 
@@ -686,4 +691,3 @@
   if (!customElements.get('interieur-room-builder')) {
     customElements.define('interieur-room-builder',InterieurRoomBuilder);
   }
-
