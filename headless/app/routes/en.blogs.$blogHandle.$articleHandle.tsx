@@ -1,16 +1,10 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/en.blogs.$blogHandle.$articleHandle';
-import {Image} from '@shopify/hydrogen';
+import {BlogArticlePage} from '~/components/BlogArticlePage';
+import {blogArticleMeta, englishContentIsFallback} from '~/lib/blog-routing';
 
-export const meta: Route.MetaFunction = ({data, params}) => [
-  {title: `${data?.article.seo?.title || data?.article.title || 'Guide'} | LEAFerservice`},
-  ...(data?.article.seo?.description
-    ? [{name: 'description', content: data.article.seo.description.slice(0, 155)}]
-    : []),
-  ...(data?.article.handle
-    ? [{rel: 'canonical', href: `/en/blogs/${params.blogHandle || 'ratgeber'}/${data.article.handle}`}]
-    : []),
-];
+export const meta: Route.MetaFunction = ({data, params}) =>
+  blogArticleMeta(data?.article, params.blogHandle || 'leafers-nice2know-blog', 'en', data?.englishIsFallback);
 
 export async function loader({context, params}: Route.LoaderArgs) {
   const {blogHandle, articleHandle} = params;
@@ -26,34 +20,17 @@ export async function loader({context, params}: Route.LoaderArgs) {
     throw new Response('Guide not found', {status: 404});
   }
 
-  return {article: blog.articleByHandle};
+  const article = blog.articleByHandle;
+  const original = await context.storefront.query(ARTICLE_QUERY, {
+    variables: {blogHandle, articleHandle, language: 'DE'},
+  });
+  const englishIsFallback = englishContentIsFallback(article.contentHtml, original.blog?.articleByHandle?.contentHtml);
+  return {article, blogHandle, englishIsFallback};
 }
 
 export default function EnglishArticle() {
-  const {article} = useLoaderData<typeof loader>();
-  const publishedDate = new Intl.DateTimeFormat('en-GB', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(article.publishedAt));
-
-  return (
-    <article className="article page-shell">
-      <p className="page-eyebrow">LEAFerservice guide</p>
-      <h1>{article.title}</h1>
-      <p>
-        <time dateTime={article.publishedAt}>{publishedDate}</time>
-        {article.author?.name ? <> · {article.author.name}</> : null}
-      </p>
-      {article.image ? (
-        <Image data={article.image} sizes="90vw" loading="eager" />
-      ) : null}
-      <div
-        dangerouslySetInnerHTML={{__html: article.contentHtml}}
-        className="article rich-text"
-      />
-    </article>
-  );
+  const {article, blogHandle, englishIsFallback} = useLoaderData<typeof loader>();
+  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="en" englishIsFallback={englishIsFallback} />;
 }
 
 const ARTICLE_QUERY = `#graphql
@@ -69,6 +46,7 @@ const ARTICLE_QUERY = `#graphql
         handle
         title
         contentHtml
+        excerpt
         publishedAt
         author: authorV2 { name }
         image { id altText url width height }

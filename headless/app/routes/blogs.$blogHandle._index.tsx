@@ -1,6 +1,7 @@
-import {Link, useLoaderData} from 'react-router';
+import {useLoaderData, useLocation} from 'react-router';
+import {BlogArticleCard} from '~/components/BlogArticleCard';
 import type {Route} from './+types/blogs.$blogHandle._index';
-import {Image, getPaginationVariables} from '@shopify/hydrogen';
+import {getPaginationVariables} from '@shopify/hydrogen';
 import type {ArticleItemFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
@@ -63,55 +64,19 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 export default function Blog() {
   const {blog} = useLoaderData<typeof loader>();
   const {articles} = blog;
+  const isEnglish = useLocation().pathname.startsWith('/en/');
 
   return (
-    <div className="blog">
-      <h1>{blog.title}</h1>
-      <div className="blog-grid">
+    <main className="page-shell leaf-blog-list">
+      <header className="page-intro"><p className="page-eyebrow">LEAFerservice · {isEnglish ? 'Guides' : 'Ratgeber'}</p><h1>{blog.title}</h1><p className="page-lead">{isEnglish ? 'Practical insights on plants, light and substrates.' : 'Praxiswissen zu Pflanzen, Licht und Substraten.'}</p></header>
+      <div className="leaf-blog-grid">
         <PaginatedResourceSection<ArticleItemFragment> connection={articles}>
           {({node: article, index}) => (
-            <ArticleItem
-              article={article}
-              key={article.id}
-              loading={index < 2 ? 'eager' : 'lazy'}
-            />
+            <BlogArticleCard article={{...article, excerpt: article.excerpt || '', blog: article.blog}} locale={isEnglish ? 'en' : 'de'} key={article.id} loading={index < 2 ? 'eager' : 'lazy'} />
           )}
         </PaginatedResourceSection>
       </div>
-    </div>
-  );
-}
-
-function ArticleItem({
-  article,
-  loading,
-}: {
-  article: ArticleItemFragment;
-  loading?: HTMLImageElement['loading'];
-}) {
-  const publishedAt = new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(new Date(article.publishedAt!));
-  return (
-    <div className="blog-article" key={article.id}>
-      <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
-        {article.image && (
-          <div className="blog-article-image">
-            <Image
-              alt={article.image.altText || article.title}
-              aspectRatio="3/2"
-              data={article.image}
-              loading={loading}
-              sizes="(min-width: 768px) 50vw, 100vw"
-            />
-          </div>
-        )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
-      </Link>
-    </div>
+    </main>
   );
 }
 
@@ -157,6 +122,7 @@ const BLOGS_QUERY = `#graphql
       name
     }
     contentHtml
+    excerpt
     handle
     id
     image {
