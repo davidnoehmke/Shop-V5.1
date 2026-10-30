@@ -27,15 +27,19 @@ export function ProductItem({
       prefetch="intent"
       to={localizedVariantUrl}
     >
-      {image && (
-        <Image
-          alt={image.altText || product.title}
-          aspectRatio="1/1"
-          data={image}
-          loading={loading}
-          sizes="(min-width: 45em) 400px, 100vw"
-        />
-      )}
+      <div className="product-item__media">
+        {image ? (
+          <Image
+            alt={image.altText || product.title}
+            aspectRatio="1/1"
+            data={image}
+            loading={loading}
+            sizes="(min-width: 1000px) 25vw, (min-width: 640px) 33vw, 50vw"
+          />
+        ) : (
+          <div className="product-item__no-image" role="img" aria-label="Produktbild derzeit nicht verfügbar">Produktbild nicht verfügbar</div>
+        )}
+      </div>
       <h4>{product.title}</h4>
       <small>
         <Money data={product.priceRange.minVariantPrice} />
