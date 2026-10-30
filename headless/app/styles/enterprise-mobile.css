@@ -19,3 +19,13 @@
 }
 @media(max-width:380px){.leaf-mobile-shortcuts a{font-size:.8rem;padding:11px}}
 @media(prefers-reduced-motion:reduce){.leaf-mobile-shortcuts a{transition:none}.leaf-mobile-shortcuts a:hover{transform:none}}
+
+/* Quiet commerce: recommendations sit in the document, never obstruct content. */
+.leaf-quiet-advice{max-width:1380px;margin:clamp(24px,5vw,64px) auto;padding:clamp(22px,4vw,50px);display:flex;align-items:center;justify-content:space-between;gap:24px;border-radius:24px;background:var(--leaf-surface-sage,#e5eadd);color:var(--leaf-ink,#24392a)}
+.leaf-quiet-advice h2{margin:.35em 0;font-size:clamp(1.35rem,2.2vw,2rem)}
+.leaf-quiet-advice p{max-width:680px}
+.leaf-quiet-advice__actions{display:flex;flex-wrap:wrap;gap:12px;flex-shrink:0}
+.leaf-quiet-advice__actions a,.leaf-quiet-advice__actions button{display:inline-flex;align-items:center;justify-content:center;border:1px solid #527257;border-radius:999px;padding:13px 19px;min-height:48px;background:transparent;color:inherit;text-decoration:none;cursor:pointer;font:inherit;font-weight:650}
+.leaf-quiet-advice__actions a{background:#284d33;color:#fff}
+.leaf-quiet-advice__actions :is(a,button):focus-visible{outline:3px solid #527257;outline-offset:3px}
+@media(max-width:850px){.leaf-quiet-advice{margin:20px 14px;display:block;padding:24px 18px}.leaf-quiet-advice__actions{display:grid;grid-template-columns:1fr}.leaf-quiet-advice__actions a,.leaf-quiet-advice__actions button{width:100%}}
