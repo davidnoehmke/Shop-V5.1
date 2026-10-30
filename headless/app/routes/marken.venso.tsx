@@ -1,3 +1,4 @@
+import {PlanningEntry} from '~/components/PlanningEntry';
 import {Link, useLoaderData} from 'react-router';
 import {Image, Money} from '@shopify/hydrogen';
 import type {Route} from './+types/marken.venso';
@@ -30,6 +31,7 @@ export default function VensoBrand() {
         </div>
         {hero ? <Image data={hero} sizes="(min-width: 768px) 45vw, 100vw" loading="eager" /> : null}
       </section>
+      <PlanningEntry locale="de" />
       <section id="venso-sortiment" aria-labelledby="venso-products-heading">
         <p className="page-eyebrow">Dein nächster Schritt</p>
         <h2 id="venso-products-heading">Venso entdecken</h2>

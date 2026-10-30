@@ -23,7 +23,7 @@ export function BlogCommerceSection({
   products,
   locale,
 }: {
-  products: Array<ArticleCommerceProduct | null>;
+  products: Array<ArticleCommerceProduct | null | undefined>;
   locale: BlogLocale;
 }) {
   // A product that is merely ACTIVE in Admin is not necessarily purchasable.

@@ -1,4 +1,5 @@
-import {redirect, useLoaderData} from 'react-router';
+import {PlanningEntry} from '~/components/PlanningEntry';
+import {redirect, useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/collections.$handle';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -58,42 +59,65 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  const locale = useLocation().pathname.startsWith('/en/') ? 'en' : 'de';
 
   return (
     <div className="page-shell collection">
       <Breadcrumbs
         items={[
-          {label: 'Start', to: '/'},
-          {label: 'Sortiment', to: '/collections'},
+          {
+            label: locale === 'en' ? 'Home' : 'Start',
+            to: locale === 'en' ? '/en' : '/',
+          },
+          {
+            label: locale === 'en' ? 'Shop' : 'Sortiment',
+            to: locale === 'en' ? '/en/collections' : '/collections',
+          },
           {label: collection.title},
         ]}
       />
 
       <header className="page-intro collection-intro">
         <div>
-          <p className="page-eyebrow">Produktwelt</p>
+          <p className="page-eyebrow">
+            {locale === 'en' ? 'Product world' : 'Produktwelt'}
+          </p>
           <h1>{collection.title}</h1>
         </div>
         {collection.description ? (
           <p className="page-lead">{collection.description}</p>
         ) : (
           <p className="page-lead">
-            Entdecke passende Produkte und kombiniere sie zu einem stimmigen
-            Setup.
+            {locale === 'en'
+              ? 'Discover matching products and combine them into a coherent setup.'
+              : 'Entdecke passende Produkte und kombiniere sie zu einem stimmigen Setup.'}
           </p>
         )}
       </header>
 
+      {['interieur-solutions', 'pflanzenbeleuchtung'].includes(
+        collection.handle,
+      ) && <PlanningEntry locale={locale} />}
+
       <div className="section-divider" aria-hidden="true" />
 
-      <section className="collection-products" aria-labelledby="collection-products-heading">
+      <section
+        className="collection-products"
+        aria-labelledby="collection-products-heading"
+      >
         <div className="section-heading-row">
           <div>
-            <p className="page-eyebrow">Auswahl</p>
-            <h2 id="collection-products-heading">Produkte in dieser Welt</h2>
+            <p className="page-eyebrow">
+              {locale === 'en' ? 'Selection' : 'Auswahl'}
+            </p>
+            <h2 id="collection-products-heading">
+              {locale === 'en'
+                ? 'Products in this world'
+                : 'Produkte in dieser Welt'}
+            </h2>
           </div>
           <a className="text-link" href="#collection-products-grid">
-            Direkt zur Auswahl ↓
+            {locale === 'en' ? 'Go to products ↓' : 'Direkt zur Auswahl ↓'}
           </a>
         </div>
 
@@ -188,4 +212,3 @@ const COLLECTION_QUERY = `#graphql
     }
   }
 ` as const;
-

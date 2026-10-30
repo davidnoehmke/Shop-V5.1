@@ -1,3 +1,4 @@
+import {PlanningEntry} from '~/components/PlanningEntry';
 import {Link} from 'react-router';
 import type {Route} from './+types/en._index';
 import {LeafAtrium} from '~/components/LeafAtrium';
@@ -45,6 +46,8 @@ export default function EnglishHome() {
           <div className="leaf-home-entry__leafmark">LEAF</div>
         </div>
       </section>
+
+      <PlanningEntry locale="en" />
 
       <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title-en">
         <div className="leaf-home-substrate__intro">

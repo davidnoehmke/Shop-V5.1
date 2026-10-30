@@ -1,3 +1,4 @@
+import {PlanningEntry} from '~/components/PlanningEntry';
 import {Image, Money} from '@shopify/hydrogen';
 import {Link, useLoaderData} from 'react-router';
 import type {CurrencyCode} from '@shopify/hydrogen/storefront-api-types';
@@ -93,6 +94,8 @@ export default function Homepage() {
           <div className="leaf-home-entry__leafmark">LEAF</div>
         </div>
       </section>
+
+      <PlanningEntry locale="de" />
 
       <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title">
         <div className="leaf-home-substrate__intro">
