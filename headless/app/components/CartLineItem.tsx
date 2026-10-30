@@ -5,6 +5,7 @@ import {useVariantUrl} from '~/lib/variants';
 import {Link} from 'react-router';
 import {ProductPrice} from './ProductPrice';
 import {useAside} from './Aside';
+import {localizedPath} from '~/lib/locale-path';
 import type {
   CartApiQueryFragment,
   CartLineFragment,
@@ -22,10 +23,12 @@ export function CartLineItem({
   layout,
   line,
   childrenMap,
+  locale = 'de',
 }: {
   layout: CartLayout;
   line: CartLine;
   childrenMap: LineItemChildrenMap;
+  locale?: 'de' | 'en';
 }) {
   const {id, merchandise} = line;
   const {product, title, image, selectedOptions} = merchandise;
@@ -51,7 +54,7 @@ export function CartLineItem({
         <div>
           <Link
             prefetch="intent"
-            to={lineItemUrl}
+            to={localizedPath(lineItemUrl, locale === 'en' ? '/en/cart' : '/cart')}
             onClick={() => {
               if (layout === 'aside') {
                 close();
@@ -72,14 +75,17 @@ export function CartLineItem({
               </li>
             ))}
           </ul>
-          <CartLineQuantity line={line} />
+          {line.attributes?.filter(({key}) => key === 'Rezeptur').map(({key, value}) => (
+            <p key={key} className="cart-line-recipe"><strong>{locale === 'en' ? 'Recipe' : 'Rezeptur'}:</strong> {value}</p>
+          ))}
+          <CartLineQuantity line={line} locale={locale} />
         </div>
       </div>
 
       {lineItemChildren ? (
         <div>
           <p id={childrenLabelId} className="sr-only">
-            Line items with {product.title}
+            {locale === 'en' ? 'Line items with' : 'Artikel mit'} {product.title}
           </p>
           <ul aria-labelledby={childrenLabelId} className="cart-line-children">
             {lineItemChildren.map((childLine) => (
@@ -88,6 +94,7 @@ export function CartLineItem({
                 key={childLine.id}
                 line={childLine}
                 layout={layout}
+                locale={locale}
               />
             ))}
           </ul>
@@ -102,7 +109,7 @@ export function CartLineItem({
  * These controls are disabled when the line item is new, and the server
  * hasn't yet responded that it was successfully added to the cart.
  */
-function CartLineQuantity({line}: {line: CartLine}) {
+function CartLineQuantity({line, locale}: {line: CartLine; locale: 'de' | 'en'}) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const {id: lineId, quantity, isOptimistic} = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
@@ -110,10 +117,10 @@ function CartLineQuantity({line}: {line: CartLine}) {
 
   return (
     <div className="cart-line-quantity">
-      <small>Menge: {quantity} &nbsp;&nbsp;</small>
-      <CartLineUpdateButton lines={[{id: lineId, quantity: prevQuantity}]}>
+      <small>{locale === 'en' ? 'Quantity' : 'Menge'}: {quantity} &nbsp;&nbsp;</small>
+      <CartLineUpdateButton locale={locale} lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
-          aria-label="Menge verringern"
+          aria-label={locale === 'en' ? 'Decrease quantity' : 'Menge verringern'}
           disabled={quantity <= 1 || !!isOptimistic}
           name="decrease-quantity"
           value={prevQuantity}
@@ -122,9 +129,9 @@ function CartLineQuantity({line}: {line: CartLine}) {
         </button>
       </CartLineUpdateButton>
       &nbsp;
-      <CartLineUpdateButton lines={[{id: lineId, quantity: nextQuantity}]}>
+      <CartLineUpdateButton locale={locale} lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
-          aria-label="Menge erhöhen"
+          aria-label={locale === 'en' ? 'Increase quantity' : 'Menge erhöhen'}
           name="increase-quantity"
           value={nextQuantity}
           disabled={!!isOptimistic}
@@ -133,7 +140,7 @@ function CartLineQuantity({line}: {line: CartLine}) {
         </button>
       </CartLineUpdateButton>
       &nbsp;
-      <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} />
+      <CartLineRemoveButton lineIds={[lineId]} disabled={!!isOptimistic} locale={locale} />
     </div>
   );
 }
@@ -146,19 +153,21 @@ function CartLineQuantity({line}: {line: CartLine}) {
 function CartLineRemoveButton({
   lineIds,
   disabled,
+  locale,
 }: {
   lineIds: string[];
   disabled: boolean;
+  locale: 'de' | 'en';
 }) {
   return (
     <CartForm
       fetcherKey={getUpdateKey(lineIds)}
-      route="/cart"
+      route={locale === 'en' ? '/en/cart' : '/cart'}
       action={CartForm.ACTIONS.LinesRemove}
       inputs={{lineIds}}
     >
       <button disabled={disabled} type="submit">
-        Entfernen
+        {locale === 'en' ? 'Remove' : 'Entfernen'}
       </button>
     </CartForm>
   );
@@ -167,16 +176,18 @@ function CartLineRemoveButton({
 function CartLineUpdateButton({
   children,
   lines,
+  locale,
 }: {
   children: React.ReactNode;
   lines: CartLineUpdateInput[];
+  locale: 'de' | 'en';
 }) {
   const lineIds = lines.map((line) => line.id);
 
   return (
     <CartForm
       fetcherKey={getUpdateKey(lineIds)}
-      route="/cart"
+      route={locale === 'en' ? '/en/cart' : '/cart'}
       action={CartForm.ACTIONS.LinesUpdate}
       inputs={{lines}}
     >

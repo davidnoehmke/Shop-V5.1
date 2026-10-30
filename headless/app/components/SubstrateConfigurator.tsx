@@ -257,6 +257,7 @@ export function SubstrateConfigurator({
             merchandiseId: selectedVariant.id,
             quantity: 1,
             attributes,
+            selectedVariant: {...selectedVariant, product},
           }] : []}
         >
           {isEnglish ? 'Add custom substrate' : 'Individuelles Substrat hinzufügen'}

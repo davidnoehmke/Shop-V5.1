@@ -16,6 +16,17 @@ const {buildManifest} = JSON.parse(
 );
 const bundles = Object.values(buildManifest.serverBundles);
 assert.ok(bundles.length > 0, 'Vercel must emit an SSR bundle');
+let forwardedPosts = 0;
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async (input, init) => {
+  assert.equal(new URL(input).hostname, 'example.myshopify.com');
+  assert.equal(init.method, 'POST');
+  assert.equal(init.duplex, 'half', 'Node streamed proxy uploads require duplex');
+  assert.ok(init.body instanceof ReadableStream);
+  assert.match(await new Response(init.body).text(), /ensureCookies/);
+  forwardedPosts++;
+  return Response.json({data: {consentManagement: {cookies: {cookieDomain: 'preview.example'}}}});
+};
 for (const bundle of bundles) {
   assert.equal(bundle.config.runtime, 'nodejs');
   const {default: handler} = await import(pathToFileURL(resolve(bundle.file)).href);
@@ -24,5 +35,14 @@ for (const bundle of bundles) {
   assert.equal(response.status, 200);
   assert.match(await response.text(), /User-agent:/);
   assert.match(response.headers.get('X-Robots-Tag'), /noindex/);
+  const consent = await handler(new Request('https://preview.example/api/unstable/graphql.json', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({query: 'query ensureCookies { consentManagement { cookies(visitorConsent:{}) { cookieDomain } } }'}),
+  }));
+  assert.equal(consent.status, 200);
+  assert.equal((await consent.json()).data.consentManagement.cookies.cookieDomain, 'preview.example');
 }
-process.stdout.write('Vercel Node bundles accept a real Request and return a noindex robots response.\n');
+globalThis.fetch = originalFetch;
+assert.equal(forwardedPosts, bundles.length);
+process.stdout.write('Vercel Node bundles serve noindex robots and forward streamed consent POST requests.\n');
