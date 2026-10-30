@@ -65,3 +65,17 @@
  .leaf-compare__fact{grid-template-columns:minmax(80px,1fr) repeat(2,minmax(0,1fr));gap:8px;font-size:.78rem}
  .leaf-compare__facts{padding:14px 10px}
 }
+
+/* Progressive WebGL visual. Full recipe controls are always ordinary HTML. */
+.substrate-scene-3d{min-width:0;width:100%;margin:14px 0 24px;overflow:hidden;border:1px solid var(--leaf-line,#c7d2c4);border-radius:22px;background:#f1f3eb}
+.substrate-scene-3d__stage{position:relative;min-height:320px;height:clamp(320px,42vw,520px);isolation:isolate}
+.substrate-scene-3d__stage>.substrate-pot-visual{position:absolute;inset:0;width:100%;height:100%;margin:0;z-index:0}
+.substrate-scene-3d__canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;touch-action:none;cursor:grab;transition:opacity .3s ease;z-index:1}
+.substrate-scene-3d__canvas.is-ready{opacity:1}
+.substrate-scene-3d__canvas:active{cursor:grabbing}
+.substrate-scene-3d__footer{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--leaf-line,#c7d2c4)}
+.substrate-scene-3d__footer p{margin:0;font-size:.8rem;opacity:.75;line-height:1.45}
+.substrate-scene-3d__footer button{border:1px solid var(--leaf-line,#c7d2c4);color:inherit;background:transparent;border-radius:12px;min-height:44px;padding:8px 12px;cursor:pointer;font:inherit}
+.substrate-scene-3d__footer button:focus-visible{outline:3px solid #4d754f;outline-offset:2px}
+@media(max-width:650px){.substrate-scene-3d__stage{height:330px;min-height:300px}.substrate-scene-3d{border-radius:17px}}
+@media(prefers-reduced-motion:reduce){.substrate-scene-3d__canvas{transition:none}}
