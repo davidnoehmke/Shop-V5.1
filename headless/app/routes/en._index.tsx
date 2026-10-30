@@ -1,4 +1,7 @@
-import {Link} from 'react-router';
+import {Link, useLoaderData} from 'react-router';
+import {Image} from '@shopify/hydrogen';
+import {loader as sharedHomepageLoader} from './_index';
+export const loader = sharedHomepageLoader;
 import type {Route} from './+types/en._index';
 import {LeafAtrium} from '~/components/LeafAtrium';
 
@@ -12,6 +15,8 @@ export const meta: Route.MetaFunction = () => [
 ];
 
 export default function EnglishHome() {
+  const {worldImages} = useLoaderData<typeof loader>();
+  const heroImage = worldImages.knowledge ?? worldImages.substrate;
   function openLeafAssistant() {
     window.dispatchEvent(new Event('leaf:assistant:open'));
   }
@@ -39,10 +44,12 @@ export default function EnglishHome() {
             No login required · Shopify checkout · Guidance and purchasing remain separate steps
           </p>
         </div>
-        <div className="leaf-home-entry__visual" aria-hidden="true">
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
-          <div className="leaf-home-entry__leafmark">LEAF</div>
+        <div className="leaf-home-entry__visual">
+          {heroImage ? (
+            <Image data={heroImage} alt={heroImage.altText || 'Plants and supplies at LEAFerservice'} sizes="(min-width: 1100px) 550px, (min-width: 768px) 48vw, 92vw" loading="eager" />
+          ) : (
+            <div className="leaf-home-entry__fallback" aria-hidden="true">LEAF</div>
+          )}
         </div>
       </section>
 
@@ -96,7 +103,7 @@ export default function EnglishHome() {
         </div>
       </section>
 
-      <LeafAtrium locale="en" showAtrium={false} />
+      <LeafAtrium locale="en" showAtrium={false} images={worldImages} />
 
       <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title-en">
         <div>
