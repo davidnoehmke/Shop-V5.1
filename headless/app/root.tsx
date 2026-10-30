@@ -15,6 +15,7 @@ import favicon from '~/assets/favicon.svg';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
+import commerceStyles from '~/styles/commerce.css?url';
 import {PageLayout} from './components/PageLayout';
 import {LeafAssistant} from './components/LeafAssistant';
 
@@ -154,6 +155,7 @@ export function Layout({children}: {children?: React.ReactNode}) {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="stylesheet" href={resetStyles}></link>
         <link rel="stylesheet" href={appStyles}></link>
+        <link rel="stylesheet" href={commerceStyles}></link>
         <Meta />
         <Links />
       </head>

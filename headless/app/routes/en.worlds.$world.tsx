@@ -1,4 +1,5 @@
-import {Link, useParams} from 'react-router';
+import {Link, useParams, useLoaderData} from 'react-router';
+import {Image} from '@shopify/hydrogen';
 import type {Route} from './+types/en.worlds.$world';
 
 type WorldDefinition = {
@@ -60,6 +61,30 @@ const WORLDS: Record<string, WorldDefinition> = {
   },
 };
 
+const WORLD_MEDIA_HANDLES: Record<string, string> = {
+  light: 'pflanzenbeleuchtung',
+  water: 'pflanzenpflege-werkzeuge',
+  containers: 'pflanzgefasse',
+  propagation: 'anzucht-aussaat',
+};
+
+export async function loader({context, params}: Route.LoaderArgs) {
+  const handle = WORLD_MEDIA_HANDLES[params.world ?? ''];
+  if (!handle) throw new Response('World not found', {status: 404});
+  const result = await context.storefront.query(WORLD_MEDIA_QUERY, {
+    variables: {handle},
+    cache: context.storefront.CacheShort(),
+  });
+  return {image: result.collection?.image ?? null};
+}
+
+const WORLD_MEDIA_QUERY = `#graphql
+  query EnglishWorldMedia($handle: String!, $country: CountryCode, $language: LanguageCode)
+  @inContext(country: $country, language: $language) {
+    collection(handle: $handle) {image {id url altText width height}}
+  }
+` as const;
+
 export const meta: Route.MetaFunction = ({params}) => {
   const world = params.world ? WORLDS[params.world] : undefined;
   return [
@@ -68,6 +93,7 @@ export const meta: Route.MetaFunction = ({params}) => {
 };
 
 export default function EnglishWorld() {
+  const {image} = useLoaderData<typeof loader>();
   const {world: slug} = useParams();
   const world = slug ? WORLDS[slug] : undefined;
   if (!world) throw new Response('World not found', {status: 404});
@@ -77,10 +103,22 @@ export default function EnglishWorld() {
       <nav className="leaf-experience-world__breadcrumb" aria-label="Breadcrumb">
         <Link to="/en">Atrium</Link> / <span>{world.house}</span>
       </nav>
-      <section className="leaf-experience-world__hero">
-        <p className="page-eyebrow">{world.eyebrow}</p>
-        <h1>{world.title}</h1>
-        <p>{world.intro}</p>
+      <section className={'leaf-experience-world__hero' + (image ? ' has-visual' : '')}>
+        <div className="leaf-experience-world__copy">
+          <p className="page-eyebrow">{world.eyebrow}</p>
+          <h1>{world.title}</h1>
+          <p>{world.intro}</p>
+        </div>
+        {image ? (
+          <div className="leaf-experience-world__photo">
+            <Image
+              data={image}
+              alt={image.altText || world.house}
+              sizes="(min-width: 1000px) 560px, (min-width: 650px) 45vw, 90vw"
+              loading="eager"
+            />
+          </div>
+        ) : null}
       </section>
       <section className="leaf-experience-world__house">
         <div>

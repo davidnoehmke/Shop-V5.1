@@ -26,7 +26,13 @@ type HomepageProduct = {
   priceRange: {minVariantPrice: HomepageMoney};
 };
 
+type HomepageWorld = {image?: HomepageImage | null} | null;
 type HomepageQuery = {
+  lightWorld: HomepageWorld;
+  waterWorld: HomepageWorld;
+  containersWorld: HomepageWorld;
+  propagationWorld: HomepageWorld;
+  knowledgeWorld: HomepageWorld;
   collection: {
     id: string;
     title: string;
@@ -52,11 +58,20 @@ export async function loader({context}: Route.LoaderArgs) {
 
   return {
     substrateCollection: homepage.collection,
+    worldImages: {
+      substrate: homepage.collection?.image ?? null,
+      light: homepage.lightWorld?.image ?? null,
+      water: homepage.waterWorld?.image ?? null,
+      containers: homepage.containersWorld?.image ?? null,
+      propagation: homepage.propagationWorld?.image ?? null,
+      knowledge: homepage.knowledgeWorld?.image ?? null,
+    },
   };
 }
 
 export default function Homepage() {
-  const {substrateCollection} = useLoaderData<typeof loader>();
+  const {substrateCollection, worldImages} = useLoaderData<typeof loader>();
+  const heroImage = worldImages.knowledge ?? worldImages.substrate;
   const substrateProducts = substrateCollection?.products.nodes ?? [];
 
   function openLeafAssistant() {
@@ -87,10 +102,12 @@ export default function Homepage() {
             Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
           </p>
         </div>
-        <div className="leaf-home-entry__visual" aria-hidden="true">
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
-          <div className="leaf-home-entry__leafmark">LEAF</div>
+        <div className="leaf-home-entry__visual">
+          {heroImage ? (
+            <Image data={heroImage} alt={heroImage.altText || 'Pflanzen und Substrate bei LEAFerservice'} sizes="(min-width: 1100px) 550px, (min-width: 768px) 48vw, 92vw" loading="eager" />
+          ) : (
+            <div className="leaf-home-entry__fallback" aria-hidden="true">LEAF</div>
+          )}
         </div>
       </section>
 
@@ -166,7 +183,7 @@ export default function Homepage() {
         </div>
       </section>
 
-      <LeafAtrium locale="de" showAtrium={false} />
+      <LeafAtrium locale="de" showAtrium={false} images={worldImages} />
 
       <section className="leaf-campus-shortcut" aria-labelledby="leaf-shortcut-title">
         <div>
@@ -190,6 +207,11 @@ export default function Homepage() {
 const HOMEPAGE_QUERY = `#graphql
   query LeafHomepage($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
+    lightWorld: collection(handle: "pflanzenbeleuchtung") {image {id url altText width height}}
+    waterWorld: collection(handle: "pflanzenpflege-werkzeuge") {image {id url altText width height}}
+    containersWorld: collection(handle: "pflanzgefasse") {image {id url altText width height}}
+    propagationWorld: collection(handle: "anzucht-aussaat") {image {id url altText width height}}
+    knowledgeWorld: collection(handle: "zimmerpflanzen-1") {image {id url altText width height}}
     collection(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze") {
       id
       title

@@ -197,7 +197,7 @@ export default function EnglishProduct() {
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <ol>
           <li><Link to="/en">Home</Link></li>
-          <li><Link to="/en/brands/venso">Venso grow lighting</Link></li>
+          <li><Link to="/en/collections">Shop</Link></li>
           <li><span aria-current="page">{displayTitle}</span></li>
         </ol>
       </nav>
@@ -208,11 +208,11 @@ export default function EnglishProduct() {
         data-variant-id={selectedVariant?.id}
       >
         <div className="product-media-column">
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImage image={selectedVariant?.image} images={product.images.nodes} title={product.title} locale="en" />
         </div>
 
         <div className="product-main">
-          <p className="page-eyebrow">Venso · grow lighting</p>
+          <p className="page-eyebrow">{[product.vendor, product.productType].filter(Boolean).join(' · ')}</p>
           <h1>{displayTitle}</h1>
 
           {isSunliteXL ? (
@@ -401,6 +401,7 @@ const PRODUCT_FRAGMENT = `#graphql
     tags
     descriptionHtml
     description
+    images(first: 10) { nodes { __typename id url altText width height } }
     encodedVariantExistence
     encodedVariantAvailability
     options {

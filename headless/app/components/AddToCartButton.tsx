@@ -5,12 +5,13 @@ import {CartForm, type OptimisticCartLineInput} from '@shopify/hydrogen';
 
 type CartResult = {cart?: {id?: string} | null; errors?: Array<{message?: string}>};
 
-export function AddToCartButton({analytics, children, disabled, lines, onSuccess}: {
+export function AddToCartButton({analytics, children, disabled, lines, onSuccess, className}: {
   analytics?: unknown;
   children: React.ReactNode;
   disabled?: boolean;
   lines: Array<OptimisticCartLineInput>;
   onSuccess?: () => void;
+  className?: string;
 }) {
   const {pathname} = useLocation();
   return (
@@ -18,7 +19,7 @@ export function AddToCartButton({analytics, children, disabled, lines, onSuccess
       {(fetcher: FetcherWithComponents<CartResult>) => (
         <>
           <input name="analytics" type="hidden" value={JSON.stringify(analytics)} />
-          <AddToCartStatus fetcher={fetcher} disabled={disabled} onSuccess={onSuccess}>
+          <AddToCartStatus fetcher={fetcher} disabled={disabled} onSuccess={onSuccess} className={className}>
             {children}
           </AddToCartStatus>
         </>
@@ -27,11 +28,12 @@ export function AddToCartButton({analytics, children, disabled, lines, onSuccess
   );
 }
 
-function AddToCartStatus({fetcher, disabled, onSuccess, children}: {
+function AddToCartStatus({fetcher, disabled, onSuccess, children, className}: {
   fetcher: FetcherWithComponents<CartResult>;
   disabled?: boolean;
   onSuccess?: () => void;
   children: React.ReactNode;
+  className?: string;
 }) {
   const isEnglish = useLocation().pathname.startsWith('/en/');
   const pending = useRef(false);
@@ -43,7 +45,7 @@ function AddToCartStatus({fetcher, disabled, onSuccess, children}: {
   }, [fetcher.state, fetcher.data, onSuccess]);
   return (
     <>
-      <button type="submit" disabled={Boolean(disabled) || fetcher.state !== 'idle'} aria-busy={fetcher.state !== 'idle'}>
+      <button className={className} type="submit" disabled={Boolean(disabled) || fetcher.state !== 'idle'} aria-busy={fetcher.state !== 'idle'}>
         {children}
       </button>
       {fetcher.state === 'idle' && fetcher.data?.errors?.length ? (

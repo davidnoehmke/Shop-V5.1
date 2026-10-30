@@ -84,18 +84,19 @@ function CollectionItem({
   collection: CollectionFragment;
   index: number;
 }) {
+  const photo = collection.image ?? collection.products.nodes.find((item) => item.featuredImage)?.featuredImage ?? null;
   return (
     <Link
       className="collection-item"
       to={`/collections/${collection.handle}`}
       prefetch="intent"
     >
-      {collection.image ? (
+      {photo ? (
         <div className="collection-item-media">
           <Image
-            alt={collection.image.altText || collection.title}
+            alt={photo.altText || collection.title}
             aspectRatio="4/3"
-            data={collection.image}
+            data={photo}
             loading={index < 3 ? 'eager' : undefined}
             sizes="(min-width: 70em) 360px, (min-width: 45em) 45vw, 92vw"
           />
@@ -126,6 +127,7 @@ const COLLECTIONS_QUERY = `#graphql
     title
     handle
     description
+    products(first: 4) { nodes { featuredImage { id url altText width height } } }
     image {
       id
       url

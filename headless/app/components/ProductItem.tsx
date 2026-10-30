@@ -27,7 +27,7 @@ export function ProductItem({
       prefetch="intent"
       to={localizedVariantUrl}
     >
-      {image && (
+      <span className="product-item__media">{image ? (
         <Image
           alt={image.altText || product.title}
           aspectRatio="1/1"
@@ -35,11 +35,12 @@ export function ProductItem({
           loading={loading}
           sizes="(min-width: 45em) 400px, 100vw"
         />
-      )}
-      <h4>{product.title}</h4>
-      <small>
-        <Money data={product.priceRange.minVariantPrice} />
-      </small>
+      ) : <span className="product-item__fallback" aria-hidden="true">LEAF</span>}</span>
+      <span className="product-item__body">
+        {'vendor' in product && product.vendor ? <span className="product-item__vendor">{product.vendor}</span> : null}
+        <span className="product-item__title">{product.title}</span>
+        <span className="product-item__foot"><span className="product-item__price"><Money data={product.priceRange.minVariantPrice} /></span><span className="product-item__arrow" aria-hidden="true">↗</span></span>
+      </span>
     </Link>
   );
 }

@@ -1,6 +1,9 @@
 import {Link} from 'react-router';
+import {Image} from '@shopify/hydrogen';
 
 type Locale = 'de' | 'en';
+type WorldPhoto = {id: string; url: string; altText: string | null; width: number | null; height: number | null};
+export type WorldImages = Record<string, WorldPhoto | null>;
 
 type WorldCard = {
   key: string;
@@ -91,7 +94,7 @@ const WORLDS: WorldCard[] = [
   },
 ];
 
-export function LeafAtrium({locale = 'de', showAtrium = true}: {locale?: Locale; showAtrium?: boolean}) {
+export function LeafAtrium({locale = 'de', showAtrium = true, images = {}}: {locale?: Locale; showAtrium?: boolean; images?: WorldImages}) {
   const isEnglish = locale === 'en';
 
   return (
@@ -135,7 +138,14 @@ export function LeafAtrium({locale = 'de', showAtrium = true}: {locale?: Locale;
         <div className="leaf-campus-worlds__grid">
           {WORLDS.map((world) => (
             <article className={'leaf-world-card leaf-world-card--' + world.tone} key={world.key}>
-              <div>
+              <div className="leaf-world-card__media">
+                {images[world.key] ? (
+                  <Image data={images[world.key]!} alt={images[world.key]?.altText || (isEnglish ? world.titleEn : world.titleDe)} sizes="(min-width: 1000px) 580px, (min-width: 650px) 44vw, 94vw" loading="lazy" />
+                ) : (
+                  <span className="leaf-world-card__media-fallback" aria-hidden="true">LEAF</span>
+                )}
+              </div>
+              <div className="leaf-world-card__copy">
                 <p className="leaf-world-card__kicker">{isEnglish ? 'LEAF world' : 'LEAF Welt'}</p>
                 <h3>{isEnglish ? world.titleEn : world.titleDe}</h3>
                 <p>{isEnglish ? world.textEn : world.textDe}</p>

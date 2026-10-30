@@ -18,6 +18,8 @@ const EN_LABELS: Record<string, string> = {
   Weiß: 'White',
   Leistung: 'Power',
   Variante: 'Variant',
+  Durchmesser: 'Diameter',
+  Größe: 'Size',
 };
 
 function localizeLabel(value: string, locale: ProductFormLocale) {
@@ -36,6 +38,7 @@ export function ProductForm({
 }) {
   const navigate = useNavigate();
   const {open} = useAside();
+  const available = Boolean(selectedVariant?.availableForSale);
 
   return (
     <div className="product-form">
@@ -44,7 +47,7 @@ export function ProductForm({
 
         return (
           <div className="product-options" key={option.name}>
-            <h5>{localizeLabel(option.name, locale)}</h5>
+            <p className="product-options__label"><span>{localizeLabel(option.name, locale)}</span><strong>{localizeLabel(option.optionValues.find((value) => value.selected)?.name || '', locale)}</strong></p>
             <div className="product-options-grid">
               {option.optionValues.map((value) => {
                 const {
@@ -58,22 +61,17 @@ export function ProductForm({
                   swatch,
                 } = value;
                 const localizedName = localizeLabel(name, locale);
+                const className = ['product-options-item', selected ? 'is-selected' : '', !available ? 'is-unavailable' : '', swatch?.color || swatch?.image ? 'is-swatch' : ''].filter(Boolean).join(' ');
 
                 if (isDifferentProduct) {
                   return (
                     <Link
-                      className="product-options-item"
+                      className={className}
                       key={option.name + name}
                       prefetch="intent"
                       preventScrollReset
                       replace
-                      to={`/products/${handle}?${variantUriQuery}`}
-                      style={{
-                        border: selected
-                          ? '1px solid black'
-                          : '1px solid transparent',
-                        opacity: available ? 1 : 0.3,
-                      }}
+                      to={`${locale === 'en' ? '/en' : ''}/products/${handle}?${variantUriQuery}`}
                     >
                       <ProductOptionSwatch swatch={swatch} name={localizedName} />
                     </Link>
@@ -84,14 +82,8 @@ export function ProductForm({
                   <button
                     type="button"
                     aria-pressed={selected}
-                    className={`product-options-item${exists && !selected ? ' link' : ''}`}
+                    className={className}
                     key={option.name + name}
-                    style={{
-                      border: selected
-                        ? '1px solid black'
-                        : '1px solid transparent',
-                      opacity: available ? 1 : 0.3,
-                    }}
                     disabled={!exists}
                     onClick={() => {
                       if (!selected) {
@@ -107,11 +99,13 @@ export function ProductForm({
                 );
               })}
             </div>
-            <br />
+
           </div>
         );
       })}
+      <p className={'product-form__availability' + (available ? ' is-available' : '')} aria-live="polite"><span aria-hidden="true" />{available ? (locale === 'en' ? 'Available to order' : 'Bestellbar') : (locale === 'en' ? 'Currently unavailable' : 'Derzeit nicht bestellbar')}</p>
       <AddToCartButton
+        className="product-form__submit"
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onSuccess={() => {
           open('cart');

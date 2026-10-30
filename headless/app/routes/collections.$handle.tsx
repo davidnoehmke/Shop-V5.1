@@ -1,6 +1,6 @@
-import {redirect, useLoaderData} from 'react-router';
+import {redirect, useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/collections.$handle';
-import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
+import {getPaginationVariables, Analytics, Image} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import {ProductItem} from '~/components/ProductItem';
@@ -58,6 +58,11 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  const english = useLocation().pathname.startsWith('/en/');
+  const heroImage = collection.image ??
+    collection.products.nodes.find((product) => product.featuredImage)?.featuredImage ??
+    null;
+  const shortIntro = collectionIntro(collection.description);
 
   return (
     <div className="page-shell collection">
@@ -69,31 +74,44 @@ export default function Collection() {
         ]}
       />
 
-      <header className="page-intro collection-intro">
-        <div>
-          <p className="page-eyebrow">Produktwelt</p>
+      <header className="collection-editorial-hero">
+        <div className="collection-editorial-hero__copy">
+          <p className="page-eyebrow">{english ? 'Product world' : 'Produktwelt'}</p>
           <h1>{collection.title}</h1>
-        </div>
-        {collection.description ? (
-          <p className="page-lead">{collection.description}</p>
-        ) : (
-          <p className="page-lead">
-            Entdecke passende Produkte und kombiniere sie zu einem stimmigen
-            Setup.
+          <p className="collection-editorial-hero__lead">
+            {shortIntro || (english
+              ? 'Find the right products for your plant project.'
+              : 'Entdecke passende Produkte für dein Pflanzenprojekt.')}
           </p>
-        )}
+          <a className="collection-editorial-hero__cta" href="#collection-products-grid">
+            {english ? 'Explore products' : 'Produkte entdecken'}
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <div className="collection-editorial-hero__visual">
+          {heroImage ? (
+            <Image
+              data={heroImage}
+              alt={heroImage.altText || collection.title}
+              sizes="(min-width: 1000px) 560px, (min-width: 700px) 45vw, 92vw"
+              loading="eager"
+            />
+          ) : (
+            <div className="collection-editorial-hero__placeholder" aria-hidden="true">
+              <span>LEAF</span>
+            </div>
+          )}
+        </div>
       </header>
-
-      <div className="section-divider" aria-hidden="true" />
 
       <section className="collection-products" aria-labelledby="collection-products-heading">
         <div className="section-heading-row">
           <div>
-            <p className="page-eyebrow">Auswahl</p>
-            <h2 id="collection-products-heading">Produkte in dieser Welt</h2>
+            <p className="page-eyebrow">{english ? 'Selection' : 'Auswahl'}</p>
+            <h2 id="collection-products-heading">{english ? 'Products in this world' : 'Produkte in dieser Welt'}</h2>
           </div>
           <a className="text-link" href="#collection-products-grid">
-            Direkt zur Auswahl ↓
+            {english ? 'Jump to selection ↓' : 'Direkt zur Auswahl ↓'}
           </a>
         </div>
 
@@ -113,6 +131,18 @@ export default function Collection() {
         </div>
       </section>
 
+      {collection.descriptionHtml ? (
+        <section className="collection-editorial-more" aria-label={english ? 'Buying guidance' : 'Weitere Informationen'}>
+          <details>
+            <summary>{english ? 'More information and advice' : 'Mehr Informationen & Ratgeber'}</summary>
+            <div
+              className="collection-editorial-more__body rich-text"
+              dangerouslySetInnerHTML={{__html: collection.descriptionHtml}}
+            />
+          </details>
+        </section>
+      ) : null}
+
       <Analytics.CollectionView
         data={{
           collection: {
@@ -123,6 +153,15 @@ export default function Collection() {
       />
     </div>
   );
+}
+
+function collectionIntro(description?: string | null, maxLength = 190): string {
+  if (!description) return '';
+  const normalized = description.replace(/\s+/g, ' ').trim();
+  if (normalized.length <= maxLength) return normalized;
+  const words = normalized.slice(0, maxLength + 1).split(' ');
+  words.pop();
+  return words.join(' ').trimEnd() + '…';
 }
 
 const PRODUCT_ITEM_FRAGMENT = `#graphql
@@ -169,6 +208,8 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      descriptionHtml
+      image { id url altText width height }
       products(
         first: $first,
         last: $last,
