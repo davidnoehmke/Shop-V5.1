@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/en.blogs.$blogHandle.$articleHandle';
 import {BlogArticlePage} from '~/components/BlogArticlePage';
+import {articleCommerceHandles, BLOG_COMMERCE_QUERY} from '~/lib/blog-commerce';
 import {blogArticleMeta, englishContentIsFallback} from '~/lib/blog-routing';
 
 export const meta: Route.MetaFunction = ({data, params}) =>
@@ -25,12 +26,16 @@ export async function loader({context, params}: Route.LoaderArgs) {
     variables: {blogHandle, articleHandle, language: 'DE'},
   });
   const englishIsFallback = englishContentIsFallback(article.contentHtml, original.blog?.articleByHandle?.contentHtml);
-  return {article, blogHandle, englishIsFallback};
+  const handles = articleCommerceHandles(blogHandle, articleHandle);
+  const products = handles ? await context.storefront.query(BLOG_COMMERCE_QUERY, {
+    variables: {one: handles[0], two: handles[1], three: handles[2]},
+  }).then(({one, two, three}) => [one, two, three]).catch(() => []) : [];
+  return {article, blogHandle, englishIsFallback, products};
 }
 
 export default function EnglishArticle() {
-  const {article, blogHandle, englishIsFallback} = useLoaderData<typeof loader>();
-  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="en" englishIsFallback={englishIsFallback} />;
+  const {article, blogHandle, englishIsFallback, products} = useLoaderData<typeof loader>();
+  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="en" englishIsFallback={englishIsFallback} products={products} />;
 }
 
 const ARTICLE_QUERY = `#graphql

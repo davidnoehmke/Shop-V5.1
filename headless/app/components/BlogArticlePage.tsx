@@ -1,4 +1,6 @@
 import {Link} from 'react-router';
+import {BlogCommerceSection} from '~/components/BlogCommerceSection';
+import type {ArticleCommerceProduct} from '~/components/BlogCommerceSection';
 import {blogIndexPath, blogPath} from '~/lib/blog-routing';
 import type {BlogLocale} from '~/lib/blog-routing';
 
@@ -15,11 +17,13 @@ export function BlogArticlePage({
   blogHandle,
   locale,
   englishIsFallback = false,
+  products = [],
 }: {
   article: PublishedArticle;
   blogHandle: string;
   locale: BlogLocale;
   englishIsFallback?: boolean;
+  products?: Array<ArticleCommerceProduct | null>;
 }) {
   const date = new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'de-DE', {
     year: 'numeric', month: 'long', day: 'numeric',
@@ -64,6 +68,8 @@ export function BlogArticlePage({
       ) : null}
 
       <div className="leaf-blog-post__body rich-text" dangerouslySetInnerHTML={{__html: article.contentHtml}} />
+
+      <BlogCommerceSection products={products} locale={locale} />
 
       <footer className="leaf-blog-post__footer">
         <Link to={blogPath(blogHandle, locale)}>

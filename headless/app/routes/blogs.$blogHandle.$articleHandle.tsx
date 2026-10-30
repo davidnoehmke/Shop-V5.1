@@ -1,6 +1,7 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/blogs.$blogHandle.$articleHandle';
 import {BlogArticlePage} from '~/components/BlogArticlePage';
+import {articleCommerceHandles, BLOG_COMMERCE_QUERY} from '~/lib/blog-commerce';
 import {blogArticleMeta} from '~/lib/blog-routing';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
@@ -53,7 +54,11 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
 
   const article = blog.articleByHandle;
 
-  return {article, blogHandle};
+  const handles = articleCommerceHandles(blogHandle, articleHandle);
+  const products = handles ? await context.storefront.query(BLOG_COMMERCE_QUERY, {
+    variables: {one: handles[0], two: handles[1], three: handles[2]},
+  }).then(({one, two, three}) => [one, two, three]).catch(() => []) : [];
+  return {article, blogHandle, products};
 }
 
 /**
@@ -66,8 +71,8 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function Article() {
-  const {article, blogHandle} = useLoaderData<typeof loader>();
-  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="de" />;
+  const {article, blogHandle, products} = useLoaderData<typeof loader>();
+  return <BlogArticlePage article={article} blogHandle={blogHandle} locale="de" products={products} />;
 }
 
 // NOTE: https://shopify.dev/docs/api/storefront/latest/objects/blog#field-blog-articlebyhandle
