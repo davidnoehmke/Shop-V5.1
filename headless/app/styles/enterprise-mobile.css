@@ -123,3 +123,11 @@
 .leaf-studio-gateway__links span{font-size:.86rem}
 @media(max-width:720px){.leaf-studio-gateway{margin:14px;padding:18px;border-radius:17px}.leaf-studio-gateway__links{grid-template-columns:minmax(0,1fr);gap:9px}.leaf-studio-gateway__links a{min-height:74px;padding:14px;gap:6px;border-radius:14px}}
 @media(prefers-reduced-motion:reduce){.leaf-studio-gateway__links a{transition:none}.leaf-studio-gateway__links a:hover{transform:none}}
+
+/* Visual comparison encodes only verified quantitative catalog values. */
+.leaf-compare__numeric{display:flex;flex-direction:column;gap:8px;min-width:0}
+.leaf-compare__numeric meter{width:100%;height:14px;accent-color:#66866d}
+.leaf-compare__numeric meter::-webkit-meter-bar{background:#dce5d9;border:0;border-radius:100px}
+.leaf-compare__numeric meter::-webkit-meter-optimum-value{background:#537659;border-radius:100px}
+.leaf-compare__hint{background:#e9eee3;color:#294735;border-radius:12px;padding:10px 14px;font-size:.86rem}
+@media(max-width:650px){.leaf-compare__numeric{gap:4px}.leaf-compare__numeric meter{height:11px}}
