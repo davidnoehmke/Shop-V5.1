@@ -94,6 +94,13 @@ export default function Homepage() {
         </div>
       </section>
 
+      <nav className="leaf-mobile-shortcuts" aria-label="Schnelleinstieg in die Produktwelten">
+        <Link to="/collections/all" prefetch="intent">Shop entdecken <span aria-hidden="true">↗</span></Link>
+        <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Substrat mischen <span aria-hidden="true">↗</span></Link>
+        <Link to="/collections/interieur-solutions" prefetch="intent">Raum planen <span aria-hidden="true">↗</span></Link>
+        <Link to="/search" prefetch="intent">Produkte finden <span aria-hidden="true">↗</span></Link>
+      </nav>
+
       <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title">
         <div className="leaf-home-substrate__intro">
           <p className="page-eyebrow">Kernkompetenz · Substrate</p>
