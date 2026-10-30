@@ -61,7 +61,7 @@ export function ProductForm({
                   swatch,
                 } = value;
                 const localizedName = localizeLabel(name, locale);
-                const className = ['product-options-item', selected ? 'is-selected' : '', !available ? 'is-unavailable' : '', swatch?.color || swatch?.image ? 'is-swatch' : ''].filter(Boolean).join(' ');
+                const className = ['product-options-item', selected ? 'is-selected' : '', !optionAvailable ? 'is-unavailable' : '', swatch?.color || swatch?.image ? 'is-swatch' : ''].filter(Boolean).join(' ');
 
                 if (isDifferentProduct) {
                   return (
