@@ -9,13 +9,15 @@ const sizes:Record<Kind,[number,number]>={planter:[0.45,0.45],light:[0.25,0.25],
 const initial:Plan={width:4.5,depth:3.6,height:2.5,items:[]};
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 const valid=(n:number)=>Number.isFinite(n)&&n>0.5&&n<=30;
-function overlap(a:Item,b:Item){return Math.abs(a.x-b.x)<(a.width+b.width)/2&&Math.abs(a.y-b.y)<(a.depth+b.depth)/2;}
-function bounds(item:Item,plan:Plan){return item.x-item.width/2>=0&&item.x+item.width/2<=plan.width&&item.y-item.depth/2>=0&&item.y+item.depth/2<=plan.depth;}
+function corners(i:Item){const angle=i.rotation*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);return [[-i.width/2,-i.depth/2],[i.width/2,-i.depth/2],[i.width/2,i.depth/2],[-i.width/2,i.depth/2]].map(([x,y])=>({x:i.x+x*c-y*s,y:i.y+x*s+y*c}));}
+function overlap(a:Item,b:Item){const A=corners(a),B=corners(b);const axes=[...Array.from({length:4},(_,i)=>{const p=A[i],q=A[(i+1)%4];return {x:q.y-p.y,y:p.x-q.x};}),...Array.from({length:4},(_,i)=>{const p=B[i],q=B[(i+1)%4];return {x:q.y-p.y,y:p.x-q.x};})];return axes.every(axis=>{const project=(points:{x:number;y:number}[])=>points.map(p=>p.x*axis.x+p.y*axis.y);const pa=project(A),pb=project(B);return Math.max(...pa)>Math.min(...pb)+1e-7&&Math.max(...pb)>Math.min(...pa)+1e-7;});}
+function bounds(item:Item,plan:Plan){return corners(item).every(p=>p.x>=0&&p.x<=plan.width&&p.y>=0&&p.y<=plan.depth);}
 function validate(p:Plan){return p.items.flatMap(item=>{const issues=[];if(!bounds(item,p))issues.push(item.id+': außerhalb des Raums');if(p.items.some(other=>other.id!==item.id&&overlap(item,other)))issues.push(item.id+': Überschneidung');return issues;});}
 export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const [plan,setPlan]=useState<Plan>(initial);
   const [selected,setSelected]=useState<string|null>(null);
   const [view,setView]=useState<'2d'|'3d'>('2d');
+  const [snap,setSnap]=useState(true);
   const [photo,setPhoto]=useState<string|null>(null);
   const [history,setHistory]=useState<Plan[]>([]);
   const [future,setFuture]=useState<Plan[]>([]);
@@ -29,9 +31,9 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const selectedItem=plan.items.find(i=>i.id===selected);
   const add=(kind:Kind)=>{const [width,depth]=sizes[kind];const id=typeof crypto!=='undefined'&&'randomUUID'in crypto?crypto.randomUUID():String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);};
   const edit=(id:string,change:Partial<Item>)=>commit({...plan,items:plan.items.map(i=>i.id===id?{...i,...change}:i)});
-  const point=(e:React.PointerEvent<SVGSVGElement>)=>{const rect=stage.current?.getBoundingClientRect();if(!rect)return null;return {x:clamp((e.clientX-rect.left)/rect.width*plan.width,0,plan.width),y:clamp((e.clientY-rect.top)/rect.height*plan.depth,0,plan.depth)};};
+  const point=(e:React.PointerEvent<SVGSVGElement>)=>{const svg=stage.current;if(!svg)return null;const ctm=svg.getScreenCTM();if(!ctm)return null;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(ctm.inverse());return {x:clamp(p.x/100,0,plan.width),y:clamp(p.y/100,0,plan.depth)};};
   const pointerDown=(e:React.PointerEvent<SVGSVGElement>,id:string)=>{if(view!=='2d')return;const node=stage.current;if(!node)return;drag.current={id,start:plan};setSelected(id);node.setPointerCapture(e.pointerId);e.preventDefault();};
-  const pointerMove=(e:React.PointerEvent<SVGSVGElement>)=>{if(!drag.current)return;const p=point(e);if(!p)return;const id=drag.current.id;setPlan(prev=>({...prev,items:prev.items.map(i=>i.id===id?{...i,x:Math.round(p.x*20)/20,y:Math.round(p.y*20)/20}:i)}));};
+  const pointerMove=(e:React.PointerEvent<SVGSVGElement>)=>{if(!drag.current)return;const p=point(e);if(!p)return;const id=drag.current.id;setPlan(prev=>({...prev,items:prev.items.map(i=>i.id===id?{...i,x:snap?Math.round(p.x*20)/20:p.x,y:snap?Math.round(p.y*20)/20:p.y}:i)}));};
   const pointerUp=()=>{if(drag.current){setHistory(h=>[...h.slice(-39),drag.current!.start]);setFuture([]);drag.current=null;}};
   const undo=()=>{if(!history.length)return;setFuture(f=>[plan,...f]);setPlan(history[history.length-1]);setHistory(h=>h.slice(0,-1));};
   const redo=()=>{if(!future.length)return;setHistory(h=>[...h,plan]);setPlan(future[0]);setFuture(f=>f.slice(1));};
@@ -52,6 +54,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
     <section style={{margin:'18px 0',padding:16,border:'1px solid #ccd7cc',borderRadius:12}}><h2>Shopify-Produkte platzieren</h2>{catalog.length?<><select aria-label="Produkt auswählen" value={catalogId} onChange={e=>setCatalogId(e.target.value)}><option value="">Produkt auswählen</option>{catalog.map(p=><option key={p.id} value={p.id}>{p.vendor} · {p.title}{p.width&&p.depth?' · Maße hinterlegt':' · Maße fehlen'}</option>)}</select> <button type="button" disabled={!catalogId} onClick={addCatalog}>Produkt im Raum platzieren</button></>:<p>Derzeit keine passenden Shop-Produkte gefunden. Generische Planungsobjekte bleiben verfügbar.</p>}<p style={{fontSize:13}}>Nur passende Shop-Artikel werden angezeigt. Maße werden ausschließlich übernommen, wenn sie als numerische Metafelder vorliegen.</p></section>
     <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
       {(['planter','light','system'] as Kind[]).map(k=><button type="button" key={k} onClick={()=>add(k)}>+ {labels[k]}</button>)}
+      <label style={{display:'flex',alignItems:'center',gap:5}}><input type="checkbox" checked={snap} onChange={e=>setSnap(e.target.checked)}/>5-cm-Raster</label>
       <button type="button" onClick={undo} disabled={!history.length}>Rückgängig</button><button type="button" onClick={redo} disabled={!future.length}>Wiederholen</button>
       <button type="button" onClick={()=>setView(view==='2d'?'3d':'2d')}>{view==='2d'?'3D-Vorschau':'2D-Grundriss'}</button>
       <button type="button" onClick={exportPlan}>Plan als JSON speichern</button>
@@ -84,7 +87,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
         <h3>Produktliste</h3><ul>{plan.items.map(item=>{const product=catalog.find(p=>p.id===item.productId);return <li key={item.id}>{product?<a href={'/products/'+product.handle}>{product.title}</a>:labels[item.kind]+' (Planungsobjekt)'}</li>;})}</ul>
         <h3>Planungsprüfung</h3>
         {warnings.length?<ul>{warnings.map((w,i)=><li key={i}>{w}</li>)}</ul>:<p>Keine offensichtlichen Überschneidungen oder Grenzverletzungen erkannt.</p>}
-        <p style={{fontSize:13}}>Hinweis: Drehungen werden angezeigt, aber bei der Kollisionsprüfung noch nicht berücksichtigt. Produktmaße sind generische Platzhalter, keine Herstellerdaten.</p>
+        <p style={{fontSize:13}}>Kollisionen und Raumgrenzen werden einschließlich der Objektrotation geprüft. Für Produkte ohne hinterlegte Maße werden Platzhalter verwendet.</p>
         {notice&&<p role="status">{notice}</p>}
       </aside>
     </div>
