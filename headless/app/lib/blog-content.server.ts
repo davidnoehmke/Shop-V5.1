@@ -16,7 +16,7 @@ function set(node:Element,name:string,value:string){
   const a=node.attrs.find(a=>a.name===name);if(a)a.value=value;else node.attrs.push({name,value});
 }
 function safeUrl(value:string,media=false){
-  const clean=value.replace(/[\u0000-\u0020\u007f]/g,'');
+  const clean=Array.from(value).filter(char=>char.charCodeAt(0)>32 && char.charCodeAt(0)!==127).join('');
   return /^(?:https?:\/\/|\/|#)/i.test(clean)||(!media&&/^(?:mailto:|tel:)/i.test(clean));
 }
 /** Shared server-side presentation. Published facts and asset URLs are not rewritten. */
