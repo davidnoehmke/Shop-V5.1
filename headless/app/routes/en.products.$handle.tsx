@@ -208,12 +208,14 @@ export default function EnglishProduct() {
         data-variant-id={selectedVariant?.id}
       >
         <div className="product-media-column">
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImage image={selectedVariant?.image} fallbackImage={product.featuredImage} locale="en" />
         </div>
 
         <div className="product-main">
           <p className="page-eyebrow">Venso · grow lighting</p>
           <h1>{displayTitle}</h1>
+
+          {!isSunliteXL && product.description ? <p className="leaf-product-lead">{product.description.length>245 ? product.description.slice(0,242).trimEnd()+'…' : product.description}</p> : null}
 
           {isSunliteXL ? (
             <p className="product-intro-en">
@@ -401,6 +403,7 @@ const PRODUCT_FRAGMENT = `#graphql
     tags
     descriptionHtml
     description
+    featuredImage { id url altText width height }
     encodedVariantExistence
     encodedVariantAvailability
     options {

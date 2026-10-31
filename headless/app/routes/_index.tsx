@@ -84,7 +84,7 @@ export default function Homepage() {
             <a href="#leaf-worlds">Welten entdecken</a>
           </div>
           <p className="leaf-home-entry__trust">
-            Ohne Login nutzbar · Shopify-Checkout · Beratung und Einkauf bleiben getrennte Schritte
+            Ohne Login nutzbar · Keine Werbe-Pop-ups · Beratung nur auf Wunsch · Shopify-Checkout
           </p>
         </div>
         <div className="leaf-home-entry__visual" aria-hidden="true">
@@ -94,6 +94,25 @@ export default function Homepage() {
         </div>
       </section>
 
+      <nav className="leaf-mobile-shortcuts" aria-label="Schnelleinstieg in die Produktwelten">
+        <Link to="/collections/all" prefetch="intent">Shop entdecken <span aria-hidden="true">↗</span></Link>
+        <Link to="/products/leafer-substrat-konfigurator" prefetch="intent">Substrat mischen <span aria-hidden="true">↗</span></Link>
+        <Link to="/raumplaner-3d" prefetch="intent">Raum planen <span aria-hidden="true">↗</span></Link>
+        <Link to="/search" prefetch="intent">Produkte finden <span aria-hidden="true">↗</span></Link>
+      </nav>
+
+      <section className="leaf-studio-gateway" aria-label="Interaktive Pflanzentools">
+        <div>
+          <p className="page-eyebrow">LEAF Studio · Werkzeuge für deine Entscheidung</p>
+          <h2>Planen und vergleichen, bevor du kaufst.</h2>
+          <p>Nutze die Tools kostenlos und ohne Anmeldung. Wähle passende Produkte bewusst statt auf Werbeversprechen zu vertrauen.</p>
+        </div>
+        <div className="leaf-studio-gateway__links">
+          <Link to="/raumplaner-3d" prefetch="intent"><strong>3D-Raumplaner</strong><span>Sechs Bereiche erkunden →</span></Link>
+          <Link to="/pflanzenlicht-vergleich" prefetch="intent"><strong>Leuchtmittel vergleichen</strong><span>Zwei echte Produkte gegenüberstellen →</span></Link>
+          <Link to="/products/leafer-substrat-konfigurator" prefetch="intent"><strong>3D-Substratkonfigurator</strong><span>Eigene 100-%-Mischung erstellen →</span></Link>
+        </div>
+      </section>
       <section className="leaf-home-substrate" aria-labelledby="leaf-substrate-title">
         <div className="leaf-home-substrate__intro">
           <p className="page-eyebrow">Kernkompetenz · Substrate</p>
@@ -149,6 +168,17 @@ export default function Homepage() {
         ) : null}
       </section>
 
+      <section className="leaf-quiet-advice" aria-label="Freiwillige Produkthilfe">
+        <div>
+          <p className="page-eyebrow">Passende Produkte statt Werbedruck</p>
+          <h2>Finde in Ruhe, was deine Pflanzen brauchen.</h2>
+          <p>Entdecke passende Materialien im Sortiment. Wenn du Unterstützung möchtest, ist LEAF für dich da – ohne automatisch geöffnete Fenster und ohne Verkaufsdruck.</p>
+        </div>
+        <div className="leaf-quiet-advice__actions">
+          <Link to="/collections/all" prefetch="intent">Produkte ansehen →</Link>
+          <button type="button" onClick={openLeafAssistant}>Freiwillig beraten lassen</button>
+        </div>
+      </section>
       <section className="leaf-home-assistant" aria-labelledby="leaf-assistant-home-title">
         <div>
           <p className="page-eyebrow">Zweite Bedienebene · LEAF</p>

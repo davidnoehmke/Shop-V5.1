@@ -57,7 +57,7 @@ async function loadCriticalData({context, request, params}: Route.LoaderArgs) {
   const handles = articleCommerceHandles(blogHandle, articleHandle);
   const products = handles ? await context.storefront.query(BLOG_COMMERCE_QUERY, {
     variables: {one: handles[0], two: handles[1], three: handles[2]},
-  }).then(({one, two, three}) => [one, two, three]).catch(() => []) : [];
+  }).then(({one, two, three}) => [one ?? null, two ?? null, three ?? null]).catch(() => []) : [];
   return {article, blogHandle, products};
 }
 
