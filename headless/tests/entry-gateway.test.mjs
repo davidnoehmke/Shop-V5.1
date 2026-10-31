@@ -57,13 +57,13 @@ test('new styling stays token-based, responsive and reduced-motion aware', () =>
   assert.match(css, /min-height: 48px/);
 });
 test('home queries preserve commerce and load actual published editorial content separately', () => {
-  const de = read('app/routes/_index.tsx');
+  const de = read('app/lib/homepage.server.ts') + read('app/routes/_index.tsx');
   const en = read('app/routes/en._index.tsx');
   assert.match(de, /collection\(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze"\)/);
   assert.match(de, /query EntryJournal/);
   assert.match(de, /Promise\.all/);
   assert.match(de, /journal preview unavailable/);
-  assert.match(en, /export \{loader, links\} from '\.\/_index'/);
+  assert.match(en, /loadHomepage as loader/);
   assert.match(de, /locale="de"/);
   assert.match(en, /locale="en"/);
 });
