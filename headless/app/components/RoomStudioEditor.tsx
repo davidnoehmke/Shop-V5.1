@@ -1,3 +1,4 @@
+import {manufacturerLightFor} from './roomStudioManufacturerLights';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 type Kind = 'planter'|'light'|'system';
@@ -47,9 +48,12 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const onPhoto=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')||file.size>8*1024*1024){setNotice('Bitte ein Bild bis 8 MB wählen.');return;}const reader=new FileReader();reader.onload=()=>{setPhoto(String(reader.result));setNotice('Foto geladen. Bitte Raummaße manuell bestätigen; ein Foto allein liefert keine verlässlichen Maße.');};reader.readAsDataURL(file);};
   const warnings=[...validate(plan),...plan.items.filter(i=>isE27(i,catalog)&&(!i.mount||i.mount==='none'||!i.mountVerified)).map(i=>i.id+': E27-Befestigung fehlt oder ist nicht als geprüft markiert')];
   const selectedLamp=selectedItem?.kind==='light'?catalog.find(p=>p.id===selectedItem.productId):null;
+  const manufacturer=selectedLamp?manufacturerLightFor(selectedLamp.title):null;
+  const [dimming,setDimming]=useState(100);
+  const matchingMeasurement=manufacturer?.measurements.find(m=>m.distanceCm===lightDistance&&(m.dimmingPercent===undefined||m.dimmingPercent===dimming));
   const measured=selectedLamp?.ppfd&&selectedLamp?.ppfdDistanceCm;
   const exactDistance=measured&&Math.abs(lightDistance-selectedLamp!.ppfdDistanceCm!)<0.01;
-  const reading=exactDistance?selectedLamp!.ppfd!:null;
+  const reading=matchingMeasurement?.ppfd??(exactDistance?selectedLamp!.ppfd!:null);
   const lightStatus=reading===null?'Nicht ausreichend bewertbar':reading<plantMin?'Zu wenig Licht':reading>plantMax?'Zu viel Licht möglich':'Im gewählten Zielbereich';
   useEffect(()=>()=>{drag.current=null;},[]);
   return <main className="page-shell" style={{maxWidth:1280,margin:'auto',padding:'32px 20px'}}>
@@ -98,8 +102,10 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
         <label>PPFD-Zielbereich der Pflanze (µmol/m²/s), Minimum<input type="number" min="1" max="2000" value={plantMin} onChange={e=>setPlantMin(Math.max(1,Number(e.target.value)||1))}/></label>
         <label>Maximum<input type="number" min="1" max="2000" value={plantMax} onChange={e=>setPlantMax(Math.max(1,Number(e.target.value)||1))}/></label>
         <label>Abstand Leuchte–Blatt (cm)<input type="number" min="1" max="300" value={lightDistance} onChange={e=>setLightDistance(Math.max(1,Number(e.target.value)||1))}/></label>
+        <label>Dimmstufe (%)<select value={dimming} onChange={e=>setDimming(Number(e.target.value))}><option value={100}>100 %</option><option value={75}>75 %</option><option value={50}>50 %</option></select></label>
         <p role="status"><strong>{selectedLamp?lightStatus:'Bitte eine LED aus dem Katalog im Plan auswählen.'}</strong></p>
-        {selectedLamp?<p>{selectedLamp.title}: {reading!==null?reading+' µmol/m²/s bei '+lightDistance+' cm':'Keine verifizierte PPFD-Messung für genau diesen Abstand hinterlegt.'}</p>:null}
+        {selectedLamp?<p>{selectedLamp.title}: {reading!==null?reading+' µmol/m²/s bei '+lightDistance+' cm':'Kein dokumentierter PPFD-Messpunkt für diesen Abstand und diese Dimmstufe hinterlegt.'}</p>:null}
+        {manufacturer?<p style={{fontSize:13}}>Montage laut Datenblatt: {manufacturer.mounting}. Quelle: {manufacturer.source}. {manufacturer.notes||''}</p>:null}
         <p style={{fontSize:13}}>Nur hinterlegte PPFD-Messpunkte werden bewertet. Andere Abstände, mehrere Röhren, seitliche Positionen und Abschattung benötigen eine validierte Lichtverteilung; keine Hochrechnung aus Watt oder Abstand. Pflanzen-Zielwerte sind vom Nutzer einzutragen, keine artspezifische Empfehlung.</p>
         <h3>Montage-Checkliste</h3><p>{plan.items.filter(i=>isE27(i,catalog)).length} E27-Leuchtmittel · {plan.items.filter(i=>isE27(i,catalog)&&(!i.mount||i.mount==='none'||!i.mountVerified)).length} ungeklärte Befestigungen</p><p style={{fontSize:13}}>Bei LED-Röhren, Spots und Lichtleisten sind Montageart, Halterungen, Netzteil und Herstellerfreigabe ebenfalls vor dem Kauf zu prüfen. Eine automatische Zubehörzuordnung ist noch nicht vorhanden.</p>
         <h3>Produktliste</h3><ul>{plan.items.map(item=>{const product=catalog.find(p=>p.id===item.productId);return <li key={item.id}>{product?<a href={'/products/'+product.handle}>{product.title}</a>:labels[item.kind]+' (Planungsobjekt)'}</li>;})}</ul>
