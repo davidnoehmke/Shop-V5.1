@@ -40,7 +40,7 @@ export function blogArticleMeta(
   const canonical = BLOG_ORIGIN + blogArticlePath(blogHandle, article.handle, actualLocale);
   const description = (article.seo?.description || article.excerpt || article.content || '')
     .replace(/\s+/g, ' ').trim().slice(0, 155);
-  const heading = article.seo?.title || article.title;
+  const heading = (article.seo?.title || article.title).replace(/\s*[|·–—-]\s*LEAFerservice\s*$/i, '').trim();
   const tags: Array<Record<string, unknown>> = [
     {title: heading + ' | LEAFerservice'},
     {rel: 'canonical', href: canonical},
