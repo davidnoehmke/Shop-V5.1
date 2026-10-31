@@ -56,14 +56,20 @@ test('new styling stays token-based, responsive and reduced-motion aware', () =>
   assert.match(css, /max-width: 680px/);
   assert.match(css, /min-height: 48px/);
 });
-test('home queries preserve commerce and load actual published editorial content separately', () => {
+test('home queries preserve commerce with server-only data loading in both routes', () => {
   const de = read('app/routes/_index.tsx');
   const en = read('app/routes/en._index.tsx');
-  assert.match(de, /collection\(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze"\)/);
-  assert.match(de, /query EntryJournal/);
-  assert.match(de, /Promise\.all/);
-  assert.match(de, /journal preview unavailable/);
-  assert.match(en, /export \{loader, links\} from '\.\/_index'/);
+  const server = read('app/lib/entry-home.server.ts');
+  assert.match(server, /collection\(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze"\)/);
+  assert.match(server, /query EntryJournal/);
+  assert.match(server, /Promise\.all/);
+  assert.match(server, /journal preview unavailable/);
+  for (const route of [de, en]) {
+    assert.match(route, /export async function loader/);
+    assert.match(route, /return loadEntryHomepage\(context\)/);
+    assert.match(route, /entry-home\.server/);
+    assert.doesNotMatch(route, /from ['"]\.\/_index['"]/);
+  }
   assert.match(de, /locale="de"/);
   assert.match(en, /locale="en"/);
 });
