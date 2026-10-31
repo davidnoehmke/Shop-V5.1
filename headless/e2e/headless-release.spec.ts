@@ -4,11 +4,15 @@ import {test, expect} from '@playwright/test';
 test.beforeEach(async ({page, baseURL}) => {
   if (!process.env.VERCEL_QA_AUTH_FILE) return;
   const access = JSON.parse(readFileSync(process.env.VERCEL_QA_AUTH_FILE, 'utf8'));
-  if (access.origin !== new URL(baseURL!).origin) throw new Error('QA access origin mismatch');
+  if (!access || typeof access !== 'object' || !('origin' in access) ||
+      !('secret' in access) || typeof access.origin !== 'string' ||
+      typeof access.secret !== 'string') throw new Error('Invalid QA access configuration');
+  const {origin, secret}=access;
+  if (origin !== new URL(baseURL!).origin) throw new Error('QA access origin mismatch');
   await page.route('**/*', async (route) => {
     const request = route.request();
-    await route.continue(new URL(request.url()).origin === access.origin
-      ? {headers: {...request.headers(), 'x-vercel-protection-bypass': access.secret}}
+    await route.continue(new URL(request.url()).origin === origin
+      ? {headers: {...request.headers(), 'x-vercel-protection-bypass': secret}}
       : {});
   });
 });
@@ -21,13 +25,25 @@ test('German and English entry cards remain optional and link to real destinatio
     await cards.first().locator('summary').click();
     await expect(cards.first().locator('a').first()).toBeVisible();
     await expect(page.locator('h1')).toHaveCount(1);
+    for (const href of await cards.locator('a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')!))) {
+      expect((await page.request.get(href)).status(),href).toBe(200);
+    }
     const links=await page.locator('.leaf-entry__shortcuts a').evaluateAll(nodes=>nodes.map(n=>n.getAttribute('href')));
     expect(links).toContain(`${prefix}/collections/all`);
     expect(links).toContain(`${prefix}/search`);
   }
 });
 
+test('account entry reaches the existing hosted Shopify login when the embedded client is absent', async ({page}) => {
+  await page.goto('/account');
+  const host=new URL(page.url()).hostname;
+  expect(host==='account.leaferservice.com'||host==='127.0.0.1'||host.endsWith('.vercel.app')).toBe(true);
+  expect(await page.locator('body').innerText()).not.toContain('An unexpected error occurred');
+});
+
 test('commerce and planning routes render at narrow mobile and desktop widths', async ({page}) => {
+  const errors: string[]=[];
+  page.on('pageerror',error=>errors.push(error.message));
   for (const width of [375,1440]) {
     await page.setViewportSize({width,height:900});
     for (const path of ['/', '/en', '/raumplaner-3d', '/en/room-planner-3d',
@@ -39,6 +55,7 @@ test('commerce and planning routes render at narrow mobile and desktop widths', 
       expect(overflow,`${path} at ${width}px`).toBeLessThanOrEqual(2);
     }
   }
+  expect(errors).toEqual([]);
 });
 
 test('room studio supports independent plants, numeric placement and undo', async ({page}) => {
