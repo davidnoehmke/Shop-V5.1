@@ -91,9 +91,13 @@ test('four-part recipe survives cart reload and checkout handoff', async ({page}
   await expect(page.locator('.cart-line-recipe').first()).toContainText(recipe);
   const checkout=page.getByRole('link',{name:/Zur Kasse/});
   const url=new URL((await checkout.getAttribute('href'))!);
-  expect(url.protocol).toBe('https:');
-  expect(url.hostname==='leaferservice.com'||url.hostname.endsWith('.myshopify.com')||url.hostname.endsWith('.leaferservice.com')).toBe(true);
   try {
+    expect(url.protocol).toBe('https:');
+    expect(url.hostname==='leaferservice.com'||url.hostname.endsWith('.myshopify.com')||url.hostname.endsWith('.leaferservice.com')).toBe(true);
+    if (process.env.REQUIRE_HEADLESS_CHECKOUT === '1') {
+      expect(['leaferservice.com','www.leaferservice.com'],
+        'Configure a Shopify-hosted checkout subdomain before moving the storefront domain to Vercel').not.toContain(url.hostname);
+    }
     await checkout.click();
     await expect(page).toHaveURL(/checkouts?\//);
     await expect(page.locator('body')).toContainText('95%');
