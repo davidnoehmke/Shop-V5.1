@@ -1,7 +1,8 @@
 import {manufacturerLightFor} from './roomStudioManufacturerLights';
+import {parseRoomPlanDocument, placeDraggedItem} from './roomStudioPlan';
+import type {Item, Kind, Plan} from './roomStudioPlan';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-type Kind = 'planter'|'light'|'system'|'plant';
 type PlantProfile={id:string;name:string;scientific:string;lightMin:number;lightMax:number;notes:string};
 const plantProfiles:PlantProfile[]=[
 {id:'monstera',name:'Monstera deliciosa',scientific:'Monstera deliciosa',lightMin:50,lightMax:200,notes:'Orientierungsbereich, kein herstellergeprüfter Grenzwert; Standort und Gewöhnung berücksichtigen.'},
@@ -10,8 +11,6 @@ const plantProfiles:PlantProfile[]=[
 {id:'alocasia',name:'Alocasia',scientific:'Alocasia spp.',lightMin:100,lightMax:250,notes:'Nur Gattungsorientierung; Art und Sorte können stark abweichen.'}
 ];
 export type CatalogItem={id:string;title:string;handle:string;vendor:string;kind:Kind;width:number|null;depth:number|null;image?:string|null;ppfd?:number|null;ppfdDistanceCm?:number|null};
-type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number;productId?:string;plantProfileId?:string;mount?:'pendant'|'clamp'|'wall'|'floor'|'existing'|'none';mountVerified?:boolean};
-type Plan = {width:number;depth:number;height:number;items:Item[]};
 const labels:Record<Kind,string>={planter:'Pflanzgefäß',light:'LED-Leuchte',system:'Interieur-System',plant:'Pflanze'};
 const sizes:Record<Kind,[number,number]>={planter:[0.45,0.45],light:[0.25,0.25],system:[1.2,0.45],plant:[0.35,0.35]};
 const initial:Plan={width:4.5,depth:3.6,height:2.5,items:[]};
@@ -32,7 +31,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const [future,setFuture]=useState<Plan[]>([]);
   const stage=useRef<SVGSVGElement>(null);
   const importRef=useRef<HTMLInputElement>(null);
-  const drag=useRef<{id:string;start:Plan}|null>(null);
+  const drag=useRef<{id:string;pointerId:number;start:Plan;offsetX:number;offsetY:number;moved:boolean}|null>(null);
   const [notice,setNotice]=useState('');
   const [catalogId,setCatalogId]=useState('');
   const [plantMin,setPlantMin]=useState(50);
@@ -44,15 +43,54 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const selectedItem=plan.items.find(i=>i.id===selected);
   const add=(kind:Kind)=>{const [width,depth]=sizes[kind];const id=typeof crypto!=='undefined'&&'randomUUID'in crypto?crypto.randomUUID():String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);};
   const edit=(id:string,change:Partial<Item>)=>commit({...plan,items:plan.items.map(i=>i.id===id?{...i,...change}:i)});
-  const point=(e:React.PointerEvent<SVGSVGElement>)=>{const svg=stage.current;if(!svg)return null;const ctm=svg.getScreenCTM();if(!ctm)return null;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(ctm.inverse());return {x:clamp(p.x/100,0,plan.width),y:clamp(p.y/100,0,plan.depth)};};
-  const pointerDown=(e:React.PointerEvent<SVGSVGElement>,id:string)=>{if(view!=='2d')return;const node=stage.current;if(!node)return;drag.current={id,start:plan};setSelected(id);node.setPointerCapture(e.pointerId);e.preventDefault();};
-  const pointerMove=(e:React.PointerEvent<SVGSVGElement>)=>{if(!drag.current)return;const p=point(e);if(!p)return;const id=drag.current.id;setPlan(prev=>({...prev,items:prev.items.map(i=>i.id===id?{...i,x:snap?Math.round(p.x*20)/20:p.x,y:snap?Math.round(p.y*20)/20:p.y}:i)}));};
-  const pointerUp=()=>{if(drag.current){setHistory(h=>[...h.slice(-39),drag.current!.start]);setFuture([]);drag.current=null;}};
+  const point=(e:React.PointerEvent<SVGElement>)=>{const svg=stage.current;if(!svg)return null;const ctm=svg.getScreenCTM();if(!ctm)return null;const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(ctm.inverse());return {x:clamp(p.x/100,0,plan.width),y:clamp(p.y/100,0,plan.depth)};};
+  const pointerDown=(e:React.PointerEvent<SVGGElement>,id:string)=>{
+    if(view!=='2d')return;
+    const node=stage.current,p=point(e),item=plan.items.find(i=>i.id===id);
+    if(!node||!p||!item)return;
+    drag.current={id,pointerId:e.pointerId,start:plan,offsetX:p.x-item.x,offsetY:p.y-item.y,moved:false};
+    setSelected(id);
+    node.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  };
+  const pointerMove=(e:React.PointerEvent<SVGSVGElement>)=>{
+    const active=drag.current;
+    if(!active||active.pointerId!==e.pointerId)return;
+    const p=point(e);if(!p)return;
+    const offset={x:active.offsetX,y:active.offsetY};
+    if(placeDraggedItem(active.start,active.id,p,offset,snap)!==active.start)active.moved=true;
+    setPlan(prev=>placeDraggedItem(prev,active.id,p,offset,snap));
+  };
+  const pointerUp=(e:React.PointerEvent<SVGSVGElement>)=>{
+    const active=drag.current;if(!active||active.pointerId!==e.pointerId)return;
+    drag.current=null;
+    if(active.moved){setHistory(h=>[...h.slice(-39),active.start]);setFuture([]);}
+  };
+  const pointerCancel=(e:React.PointerEvent<SVGSVGElement>)=>{
+    const active=drag.current;if(!active||active.pointerId!==e.pointerId)return;
+    drag.current=null;
+    setPlan(active.start);
+  };
   const undo=()=>{if(!history.length)return;setFuture(f=>[plan,...f]);setPlan(history[history.length-1]);setHistory(h=>h.slice(0,-1));};
   const redo=()=>{if(!future.length)return;setHistory(h=>[...h,plan]);setPlan(future[0]);setFuture(f=>f.slice(1));};
   const addCatalog=()=>{const product=catalog.find(p=>p.id===catalogId);if(!product)return;const width=product.width??sizes[product.kind][0],depth=product.depth??sizes[product.kind][1];const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:product.kind,productId:product.id,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);setNotice(product.width&&product.depth?'Herstellermaße aus Katalog verwendet.':'Maße fehlen: vorläufige Platzhalter, bitte manuell korrigieren.');};
   const exportPlan=()=>{const blob=new Blob([JSON.stringify({version:1,plan,accuracy:'manual-estimate'},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='leaf-room-plan.json';a.click();URL.revokeObjectURL(url);};
-  const importPlan=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(file.size>1024*1024){setNotice('Plan-Datei ist zu groß.');return;}file.text().then(raw=>{try{const parsed=JSON.parse(raw);const p=parsed.plan as Plan;if(!p||!valid(p.width)||!valid(p.depth)||!valid(p.height)||!Array.isArray(p.items)||p.items.length>200||!p.items.every(i=>i&&typeof i.id==='string'&&['planter','light','system','plant'].includes(i.kind)&&[i.x,i.y,i.width,i.depth,i.rotation].every(Number.isFinite)&&i.width>0&&i.depth>0&&i.width<=30&&i.depth<=30)){throw Error('invalid');}commit({width:p.width,depth:p.depth,height:p.height,items:p.items.map(i=>({id:i.id,kind:i.kind,x:i.x,y:i.y,width:i.width,depth:i.depth,rotation:i.rotation,productId:typeof i.productId==='string'?i.productId:undefined,plantProfileId:typeof i.plantProfileId==='string'?i.plantProfileId:undefined,mount:i.mount,mountVerified:i.mountVerified===true}))});setSelected(null);setNotice('Raumplan erfolgreich importiert.');}catch{setNotice('Ungültige Raumplan-Datei.');}}).catch(()=>setNotice('Raumplan konnte nicht gelesen werden.'));e.target.value='';};
+  const importPlan=(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const file=e.target.files?.[0];
+    e.target.value='';
+    if(!file)return;
+    if(file.size>1024*1024){setNotice('Plan-Datei ist zu groß.');return;}
+    void file.text().then(raw=>{
+      try{
+        const parsed:unknown=JSON.parse(raw);
+        const next=parseRoomPlanDocument(parsed);
+        if(!next)throw Error('invalid');
+        commit(next);
+        setSelected(null);
+        setNotice('Raumplan erfolgreich importiert.');
+      }catch{setNotice('Ungültige Raumplan-Datei.');}
+    }).catch(()=>setNotice('Raumplan konnte nicht gelesen werden.'));
+  };
   const onPhoto=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')||file.size>8*1024*1024){setNotice('Bitte ein Bild bis 8 MB wählen.');return;}const reader=new FileReader();reader.onload=()=>{setPhoto(String(reader.result));setNotice('Foto geladen. Bitte Raummaße manuell bestätigen; ein Foto allein liefert keine verlässlichen Maße.');};reader.readAsDataURL(file);};
   const warnings=[...validate(plan),...plan.items.filter(i=>isE27(i,catalog)&&(!i.mount||i.mount==='none'||!i.mountVerified)).map(i=>i.id+': E27-Befestigung fehlt oder ist nicht als geprüft markiert')];
   const selectedPlant=selectedItem?.kind==='plant'?plantProfiles.find(p=>p.id===selectedItem.plantProfileId):null;
@@ -65,8 +103,8 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const reading=matchingMeasurement?.ppfd??(exactDistance?selectedLamp!.ppfd!:null);
   const lightStatus=reading===null?'Nicht ausreichend bewertbar':reading<plantMin?'Zu wenig Licht':reading>plantMax?'Zu viel Licht möglich':'Im gewählten Zielbereich';
   useEffect(()=>()=>{drag.current=null;},[]);
-  return <main className="page-shell" style={{maxWidth:1280,margin:'auto',padding:'32px 20px'}}>
-    <p className="page-eyebrow">LEAF Studio / Raumplanung</p><h1>Deinen Pflanzenraum planen.</h1>
+  return <section id="room-studio-editor" aria-label="Maßstabsgerechter Raumeditor" className="page-shell" style={{maxWidth:1280,margin:'auto',padding:'32px 20px'}}>
+    <p className="page-eyebrow">LEAF Studio / Raumplanung</p><h2>Deinen Pflanzenraum planen.</h2>
     <p>Raummaße erfassen, Objekte maßstäblich platzieren und den Entwurf speichern. Die 3D-Ansicht ist eine schematische Vorschau; keine Lichtberechnung.</p>
     <section style={{display:'flex',gap:12,flexWrap:'wrap',margin:'24px 0'}}>
       {([['width','Breite'],['depth','Tiefe'],['height','Höhe']] as const).map(([key,label])=><label key={key} style={{display:'grid',gap:4}}>{label} (m)<input aria-label={label+' in Metern'} type="number" min=".6" max="30" step=".1" value={plan[key]} onChange={e=>{const n=Number(e.target.value);if(valid(n))commit({...plan,[key]:n});}} style={{width:110,padding:9}}/></label>)}
@@ -85,11 +123,11 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,330px),1fr))',gap:20}}>
       <section aria-label="Raumplan" style={{background:'#edf0e9',borderRadius:12,padding:18,color:'#172a21'}}>
-        <svg ref={stage} viewBox={`0 0 ${plan.width*100} ${plan.depth*100}`} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} style={{width:'100%',aspectRatio:`${plan.width}/${plan.depth}`,touchAction:'none',background:'#fafbf8',border:'3px solid #45604c',borderRadius:3,transform:view==='3d'?'perspective(800px) rotateX(22deg)':'none'}}>
+        <svg ref={stage} viewBox={`0 0 ${plan.width*100} ${plan.depth*100}`} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerCancel} onLostPointerCapture={pointerUp} style={{width:'100%',aspectRatio:`${plan.width}/${plan.depth}`,touchAction:'none',background:'#fafbf8',border:'3px solid #45604c',borderRadius:3,transform:view==='3d'?'perspective(800px) rotateX(22deg)':'none'}}>
           <defs><pattern id="room-grid" width="50" height="50" patternUnits="userSpaceOnUse"><path d="M 50 0 L 0 0 0 50" fill="none" stroke="#dce3db" strokeWidth="1"/></pattern></defs>
           <rect width="100%" height="100%" fill="url(#room-grid)"/>
           <rect x={plan.width*22} y="-2" width={Math.min(100,plan.width*20)} height="7" fill="#80b8d1"/>
-          {plan.items.map(item=><g key={item.id} onPointerDown={e=>pointerDown(e,item.id)} transform={`translate(${item.x*100} ${item.y*100}) rotate(${item.rotation})`} style={{cursor:'grab'}}>
+          {plan.items.map(item=><g key={item.id} data-room-item-id={item.id} onPointerDown={e=>pointerDown(e,item.id)} transform={`translate(${item.x*100} ${item.y*100}) rotate(${item.rotation})`} style={{cursor:'grab'}}>
             <rect x={-item.width*50} y={-item.depth*50} width={item.width*100} height={item.depth*100} rx="4" fill={item.kind==='planter'?'#527a57':item.kind==='light'?'#d8ba66':'#98836b'} stroke={selected===item.id?'#111':'#fff'} strokeWidth={selected===item.id?4:2}/>
             <text textAnchor="middle" y="4" fontSize="13" fill="#10231a" style={{pointerEvents:'none'}}>{item.kind==='planter'?'P':item.kind==='light'?'LED':'SYS'}</text>
           </g>)}
@@ -125,5 +163,5 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
         {notice&&<p role="status">{notice}</p>}
       </aside>
     </div>
-  </main>;
+  </section>;
 }

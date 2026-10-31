@@ -1,3 +1,4 @@
+import {RoomPlanner3D} from '~/components/RoomPlanner3D';
 import {RoomStudioEditor} from '~/components/RoomStudioEditor';
 import type {CatalogItem} from '~/components/RoomStudioEditor';
 import type {Route} from './+types/raumplaner-3d';
@@ -20,4 +21,4 @@ export async function loader({context}:Route.LoaderArgs){
   try{const data=await context.storefront.query<Result>(QUERY,{cache:context.storefront.CacheShort()});const catalog:CatalogItem[]=data.products.nodes.flatMap(p=>{const k=kind(p);return k?[{id:p.id,title:p.title,handle:p.handle,vendor:p.vendor,kind:k,width:meters(p.roomWidth),depth:meters(p.roomDepth),image:p.featuredImage?.url,ppfd:positive(p.ppfd),ppfdDistanceCm:positive(p.ppfdDistance)}]:[];});return {catalog};}
   catch{return {catalog:[] as CatalogItem[]};}
 }
-export default function RoomPlannerPage(){const {catalog}=useLoaderData<typeof loader>();return <RoomStudioEditor catalog={catalog}/>;}
+export default function RoomPlannerPage(){const {catalog}=useLoaderData<typeof loader>();return <><RoomPlanner3D locale="de" editorHref="#room-studio-editor"/><RoomStudioEditor catalog={catalog}/></>;}
