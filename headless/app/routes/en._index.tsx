@@ -39,10 +39,15 @@ export default function EnglishHome() {
             No login required · Shopify checkout · Guidance and purchasing remain separate steps
           </p>
         </div>
-        <div className="leaf-home-entry__visual" aria-hidden="true">
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
-          <div className="leaf-home-entry__leafmark">LEAF</div>
+        <div className="leaf-home-entry__visual">
+          <img
+            className="leaf-home-entry__image"
+            src="/brand/homepage-hero.webp"
+            alt="Monstera plant with substrate ingredients and plant cuttings"
+            width={1672}
+            height={941}
+            fetchPriority="high"
+          />
         </div>
       </section>
 

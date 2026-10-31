@@ -87,10 +87,15 @@ export default function Homepage() {
             Ohne Login nutzbar · Keine Werbe-Pop-ups · Beratung nur auf Wunsch · Shopify-Checkout
           </p>
         </div>
-        <div className="leaf-home-entry__visual" aria-hidden="true">
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--one" />
-          <div className="leaf-home-entry__orb leaf-home-entry__orb--two" />
-          <div className="leaf-home-entry__leafmark">LEAF</div>
+        <div className="leaf-home-entry__visual">
+          <img
+            className="leaf-home-entry__image"
+            src="/brand/homepage-hero.webp"
+            alt="Pflanzenplatz mit Monstera, Substratbestandteilen und Stecklingen"
+            width={1672}
+            height={941}
+            fetchPriority="high"
+          />
         </div>
       </section>
 
