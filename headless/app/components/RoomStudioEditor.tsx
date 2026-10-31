@@ -1,12 +1,19 @@
 import {manufacturerLightFor} from './roomStudioManufacturerLights';
 import {useCallback, useEffect, useRef, useState} from 'react';
 
-type Kind = 'planter'|'light'|'system';
+type Kind = 'planter'|'light'|'system'|'plant';
+type PlantProfile={id:string;name:string;scientific:string;lightMin:number;lightMax:number;notes:string};
+const plantProfiles:PlantProfile[]=[
+{id:'monstera',name:'Monstera deliciosa',scientific:'Monstera deliciosa',lightMin:50,lightMax:200,notes:'Orientierungsbereich, kein herstellergeprüfter Grenzwert; Standort und Gewöhnung berücksichtigen.'},
+{id:'epipremnum',name:'Efeutute',scientific:'Epipremnum aureum',lightMin:40,lightMax:150,notes:'Orientierungsbereich; Sorten und Lichtgewöhnung beeinflussen den Bedarf.'},
+{id:'ficus',name:'Birkenfeige',scientific:'Ficus benjamina',lightMin:100,lightMax:300,notes:'Orientierungsbereich; keine garantierte Wachstumsprognose.'},
+{id:'alocasia',name:'Alocasia',scientific:'Alocasia spp.',lightMin:100,lightMax:250,notes:'Nur Gattungsorientierung; Art und Sorte können stark abweichen.'}
+];
 export type CatalogItem={id:string;title:string;handle:string;vendor:string;kind:Kind;width:number|null;depth:number|null;image?:string|null;ppfd?:number|null;ppfdDistanceCm?:number|null};
-type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number;productId?:string;mount?:'pendant'|'clamp'|'wall'|'floor'|'existing'|'none';mountVerified?:boolean};
+type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number;productId?:string;plantProfileId?:string;mount?:'pendant'|'clamp'|'wall'|'floor'|'existing'|'none';mountVerified?:boolean};
 type Plan = {width:number;depth:number;height:number;items:Item[]};
-const labels:Record<Kind,string>={planter:'Pflanzgefäß',light:'LED-Leuchte',system:'Interieur-System'};
-const sizes:Record<Kind,[number,number]>={planter:[0.45,0.45],light:[0.25,0.25],system:[1.2,0.45]};
+const labels:Record<Kind,string>={planter:'Pflanzgefäß',light:'LED-Leuchte',system:'Interieur-System',plant:'Pflanze'};
+const sizes:Record<Kind,[number,number]>={planter:[0.45,0.45],light:[0.25,0.25],system:[1.2,0.45],plant:[0.35,0.35]};
 const initial:Plan={width:4.5,depth:3.6,height:2.5,items:[]};
 const clamp=(n:number,a:number,b:number)=>Math.max(a,Math.min(b,n));
 const valid=(n:number)=>Number.isFinite(n)&&n>0.5&&n<=30;
@@ -29,6 +36,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const [notice,setNotice]=useState('');
   const [catalogId,setCatalogId]=useState('');
   const [plantMin,setPlantMin]=useState(50);
+  const [plantProfileId,setPlantProfileId]=useState('');
   const [plantMax,setPlantMax]=useState(200);
   const [lightDistance,setLightDistance]=useState(30);
   
@@ -44,9 +52,10 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const redo=()=>{if(!future.length)return;setHistory(h=>[...h,plan]);setPlan(future[0]);setFuture(f=>f.slice(1));};
   const addCatalog=()=>{const product=catalog.find(p=>p.id===catalogId);if(!product)return;const width=product.width??sizes[product.kind][0],depth=product.depth??sizes[product.kind][1];const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:product.kind,productId:product.id,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);setNotice(product.width&&product.depth?'Herstellermaße aus Katalog verwendet.':'Maße fehlen: vorläufige Platzhalter, bitte manuell korrigieren.');};
   const exportPlan=()=>{const blob=new Blob([JSON.stringify({version:1,plan,accuracy:'manual-estimate'},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='leaf-room-plan.json';a.click();URL.revokeObjectURL(url);};
-  const importPlan=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(file.size>1024*1024){setNotice('Plan-Datei ist zu groß.');return;}file.text().then(raw=>{try{const parsed=JSON.parse(raw);const p=parsed.plan as Plan;if(!p||!valid(p.width)||!valid(p.depth)||!valid(p.height)||!Array.isArray(p.items)||p.items.length>200||!p.items.every(i=>i&&typeof i.id==='string'&&['planter','light','system'].includes(i.kind)&&[i.x,i.y,i.width,i.depth,i.rotation].every(Number.isFinite)&&i.width>0&&i.depth>0&&i.width<=30&&i.depth<=30)){throw Error('invalid');}commit({width:p.width,depth:p.depth,height:p.height,items:p.items.map(i=>({id:i.id,kind:i.kind,x:i.x,y:i.y,width:i.width,depth:i.depth,rotation:i.rotation,productId:typeof i.productId==='string'?i.productId:undefined}))});setSelected(null);setNotice('Raumplan erfolgreich importiert.');}catch{setNotice('Ungültige Raumplan-Datei.');}}).catch(()=>setNotice('Raumplan konnte nicht gelesen werden.'));e.target.value='';};
+  const importPlan=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(file.size>1024*1024){setNotice('Plan-Datei ist zu groß.');return;}file.text().then(raw=>{try{const parsed=JSON.parse(raw);const p=parsed.plan as Plan;if(!p||!valid(p.width)||!valid(p.depth)||!valid(p.height)||!Array.isArray(p.items)||p.items.length>200||!p.items.every(i=>i&&typeof i.id==='string'&&['planter','light','system','plant'].includes(i.kind)&&[i.x,i.y,i.width,i.depth,i.rotation].every(Number.isFinite)&&i.width>0&&i.depth>0&&i.width<=30&&i.depth<=30)){throw Error('invalid');}commit({width:p.width,depth:p.depth,height:p.height,items:p.items.map(i=>({id:i.id,kind:i.kind,x:i.x,y:i.y,width:i.width,depth:i.depth,rotation:i.rotation,productId:typeof i.productId==='string'?i.productId:undefined,plantProfileId:typeof i.plantProfileId==='string'?i.plantProfileId:undefined,mount:i.mount,mountVerified:i.mountVerified===true}))});setSelected(null);setNotice('Raumplan erfolgreich importiert.');}catch{setNotice('Ungültige Raumplan-Datei.');}}).catch(()=>setNotice('Raumplan konnte nicht gelesen werden.'));e.target.value='';};
   const onPhoto=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')||file.size>8*1024*1024){setNotice('Bitte ein Bild bis 8 MB wählen.');return;}const reader=new FileReader();reader.onload=()=>{setPhoto(String(reader.result));setNotice('Foto geladen. Bitte Raummaße manuell bestätigen; ein Foto allein liefert keine verlässlichen Maße.');};reader.readAsDataURL(file);};
   const warnings=[...validate(plan),...plan.items.filter(i=>isE27(i,catalog)&&(!i.mount||i.mount==='none'||!i.mountVerified)).map(i=>i.id+': E27-Befestigung fehlt oder ist nicht als geprüft markiert')];
+  const selectedPlant=selectedItem?.kind==='plant'?plantProfiles.find(p=>p.id===selectedItem.plantProfileId):null;
   const selectedLamp=selectedItem?.kind==='light'?catalog.find(p=>p.id===selectedItem.productId):null;
   const manufacturer=selectedLamp?manufacturerLightFor(selectedLamp.title):null;
   const [dimming,setDimming]=useState(100);
@@ -64,6 +73,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
       <label style={{display:'grid',gap:4}}>Raumfoto (optional)<input type="file" accept="image/*" onChange={onPhoto}/></label>
     </section>
     {photo&&<div style={{marginBottom:12}}><img src={photo} alt="Hochgeladenes Raumfoto als visuelle Referenz" style={{maxHeight:140,maxWidth:'100%',objectFit:'contain'}}/><button type="button" onClick={()=>setPhoto(null)}>Foto entfernen</button><p>Das Foto dient nur als Referenz. Es wird nicht automatisch vermessen oder hochgeladen.</p></div>}
+    <section style={{margin:'18px 0',padding:16,border:'1px solid #ccd7cc',borderRadius:12}}><h2>Pflanzen auswählen – unabhängig vom Shop</h2><p>Pflanzen sind Planungsobjekte und müssen nicht zum Verkauf stehen.</p><select aria-label="Pflanzenart" value={plantProfileId} onChange={e=>{setPlantProfileId(e.target.value);const p=plantProfiles.find(p=>p.id===e.target.value);if(p){setPlantMin(p.lightMin);setPlantMax(p.lightMax);}}}><option value="">Pflanze wählen</option>{plantProfiles.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select> <button type="button" disabled={!plantProfileId} onClick={()=>{const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:'plant',plantProfileId,width:0.35,depth:0.35,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);}}>Pflanze platzieren</button>{plantProfiles.find(p=>p.id===plantProfileId)?<p style={{fontSize:13}}>{plantProfiles.find(p=>p.id===plantProfileId)?.notes}</p>:null}</section>
     <section style={{margin:'18px 0',padding:16,border:'1px solid #ccd7cc',borderRadius:12}}><h2>Shopify-Produkte platzieren</h2>{catalog.length?<><select aria-label="Produkt auswählen" value={catalogId} onChange={e=>setCatalogId(e.target.value)}><option value="">Produkt auswählen</option>{catalog.map(p=><option key={p.id} value={p.id}>{p.vendor} · {p.title}{p.width&&p.depth?' · Maße hinterlegt':' · Maße fehlen'}</option>)}</select> <button type="button" disabled={!catalogId} onClick={addCatalog}>Produkt im Raum platzieren</button></>:<p>Derzeit keine passenden Shop-Produkte gefunden. Generische Planungsobjekte bleiben verfügbar.</p>}<p style={{fontSize:13}}>Nur passende Shop-Artikel werden angezeigt. Maße werden ausschließlich übernommen, wenn sie als numerische Metafelder vorliegen.</p></section>
     <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
       {(['planter','light','system'] as Kind[]).map(k=><button type="button" key={k} onClick={()=>add(k)}>+ {labels[k]}</button>)}
@@ -98,7 +108,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
           <button type="button" onClick={()=>{const id=String(Date.now());commit({...plan,items:[...plan.items,{...selectedItem,id,x:clamp(selectedItem.x+.3,0,plan.width)}]});setSelected(id);}}>Duplizieren</button>
           <button type="button" onClick={()=>{commit({...plan,items:plan.items.filter(i=>i.id!==selectedItem.id)});setSelected(null);}}>Entfernen</button>
         </div>:<p>Objekt im Plan auswählen oder oben hinzufügen.</p>}
-        <h3>LED-Lichtprüfung</h3><p>Wähle eine platzierte LED, um ihren PPFD-Messpunkt mit dem Lichtziel einer Pflanze zu vergleichen.</p>
+        <h3>LED-Lichtprüfung</h3><p>Geplante Pflanzen: {plan.items.filter(i=>i.kind==='plant').map(i=>plantProfiles.find(p=>p.id===i.plantProfileId)?.name||'Unbekannte Pflanze').join(', ')||'Keine'}. Die Lichtbewertung gilt für den eingestellten Zielbereich, noch nicht automatisch für jede Pflanzenposition.</p><p>Wähle eine platzierte LED, um ihren PPFD-Messpunkt mit dem Lichtziel einer Pflanze zu vergleichen.</p>
         <label>PPFD-Zielbereich der Pflanze (µmol/m²/s), Minimum<input type="number" min="1" max="2000" value={plantMin} onChange={e=>setPlantMin(Math.max(1,Number(e.target.value)||1))}/></label>
         <label>Maximum<input type="number" min="1" max="2000" value={plantMax} onChange={e=>setPlantMax(Math.max(1,Number(e.target.value)||1))}/></label>
         <label>Abstand Leuchte–Blatt (cm)<input type="number" min="1" max="300" value={lightDistance} onChange={e=>setLightDistance(Math.max(1,Number(e.target.value)||1))}/></label>
