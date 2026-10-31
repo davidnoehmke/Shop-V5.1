@@ -1,6 +1,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 
 type Kind = 'planter'|'light'|'system';
+export type CatalogItem={id:string;title:string;handle:string;vendor:string;kind:Kind;width:number|null;depth:number|null;image?:string|null};
 type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number};
 type Plan = {width:number;depth:number;height:number;items:Item[]};
 const labels:Record<Kind,string>={planter:'Pflanzgefäß',light:'LED-Leuchte',system:'Interieur-System'};
@@ -11,7 +12,7 @@ const valid=(n:number)=>Number.isFinite(n)&&n>0.5&&n<=30;
 function overlap(a:Item,b:Item){return Math.abs(a.x-b.x)<(a.width+b.width)/2&&Math.abs(a.y-b.y)<(a.depth+b.depth)/2;}
 function bounds(item:Item,plan:Plan){return item.x-item.width/2>=0&&item.x+item.width/2<=plan.width&&item.y-item.depth/2>=0&&item.y+item.depth/2<=plan.depth;}
 function validate(p:Plan){return p.items.flatMap(item=>{const issues=[];if(!bounds(item,p))issues.push(item.id+': außerhalb des Raums');if(p.items.some(other=>other.id!==item.id&&overlap(item,other)))issues.push(item.id+': Überschneidung');return issues;});}
-export function RoomStudioEditor(){
+export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const [plan,setPlan]=useState<Plan>(initial);
   const [selected,setSelected]=useState<string|null>(null);
   const [view,setView]=useState<'2d'|'3d'>('2d');
@@ -21,6 +22,8 @@ export function RoomStudioEditor(){
   const stage=useRef<SVGSVGElement>(null);
   const drag=useRef<{id:string;start:Plan}|null>(null);
   const [notice,setNotice]=useState('');
+  const [catalogId,setCatalogId]=useState('');
+  
   const commit=useCallback((next:Plan)=>{setPlan(prev=>{setHistory(h=>[...h.slice(-39),prev]);setFuture([]);return next;});},[]);
   const selectedItem=plan.items.find(i=>i.id===selected);
   const add=(kind:Kind)=>{const [width,depth]=sizes[kind];const id=typeof crypto!=='undefined'&&'randomUUID'in crypto?crypto.randomUUID():String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);};
@@ -31,6 +34,7 @@ export function RoomStudioEditor(){
   const pointerUp=()=>{if(drag.current){setHistory(h=>[...h.slice(-39),drag.current!.start]);setFuture([]);drag.current=null;}};
   const undo=()=>{if(!history.length)return;setFuture(f=>[plan,...f]);setPlan(history[history.length-1]);setHistory(h=>h.slice(0,-1));};
   const redo=()=>{if(!future.length)return;setHistory(h=>[...h,plan]);setPlan(future[0]);setFuture(f=>f.slice(1));};
+  const addCatalog=()=>{const product=catalog.find(p=>p.id===catalogId);if(!product)return;const width=product.width??sizes[product.kind][0],depth=product.depth??sizes[product.kind][1];const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:product.kind,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);setNotice(product.width&&product.depth?'Herstellermaße aus Katalog verwendet.':'Maße fehlen: vorläufige Platzhalter, bitte manuell korrigieren.');};
   const exportPlan=()=>{const blob=new Blob([JSON.stringify({version:1,plan,accuracy:'manual-estimate'},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='leaf-room-plan.json';a.click();URL.revokeObjectURL(url);};
   const onPhoto=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')||file.size>8*1024*1024){setNotice('Bitte ein Bild bis 8 MB wählen.');return;}const reader=new FileReader();reader.onload=()=>{setPhoto(String(reader.result));setNotice('Foto geladen. Bitte Raummaße manuell bestätigen; ein Foto allein liefert keine verlässlichen Maße.');};reader.readAsDataURL(file);};
   const warnings=validate(plan);
@@ -43,6 +47,7 @@ export function RoomStudioEditor(){
       <label style={{display:'grid',gap:4}}>Raumfoto (optional)<input type="file" accept="image/*" onChange={onPhoto}/></label>
     </section>
     {photo&&<div style={{marginBottom:12}}><img src={photo} alt="Hochgeladenes Raumfoto als visuelle Referenz" style={{maxHeight:140,maxWidth:'100%',objectFit:'contain'}}/><button type="button" onClick={()=>setPhoto(null)}>Foto entfernen</button><p>Das Foto dient nur als Referenz. Es wird nicht automatisch vermessen oder hochgeladen.</p></div>}
+    <section style={{margin:'18px 0',padding:16,border:'1px solid #ccd7cc',borderRadius:12}}><h2>Shopify-Produkte platzieren</h2>{catalog.length?<><select aria-label="Produkt auswählen" value={catalogId} onChange={e=>setCatalogId(e.target.value)}><option value="">Produkt auswählen</option>{catalog.map(p=><option key={p.id} value={p.id}>{p.vendor} · {p.title}{p.width&&p.depth?' · Maße hinterlegt':' · Maße fehlen'}</option>)}</select> <button type="button" disabled={!catalogId} onClick={addCatalog}>Produkt im Raum platzieren</button></>:<p>Derzeit keine passenden Shop-Produkte gefunden. Generische Planungsobjekte bleiben verfügbar.</p>}<p style={{fontSize:13}}>Nur passende Shop-Artikel werden angezeigt. Maße werden ausschließlich übernommen, wenn sie als numerische Metafelder vorliegen.</p></section>
     <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:16}}>
       {(['planter','light','system'] as Kind[]).map(k=><button type="button" key={k} onClick={()=>add(k)}>+ {labels[k]}</button>)}
       <button type="button" onClick={undo} disabled={!history.length}>Rückgängig</button><button type="button" onClick={redo} disabled={!future.length}>Wiederholen</button>
