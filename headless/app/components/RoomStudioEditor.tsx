@@ -64,7 +64,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const reading=matchingMeasurement?.ppfd??(exactDistance?selectedLamp!.ppfd!:null);
   const lightStatus=reading===null?'Nicht ausreichend bewertbar':reading<plantMin?'Zu wenig Licht':reading>plantMax?'Zu viel Licht möglich':'Im gewählten Zielbereich';
   useEffect(()=>()=>{drag.current=null;},[]);
-  return <main className="page-shell" style={{maxWidth:1280,margin:'auto',padding:'32px 20px'}}>
+  return <main className="page-shell leaf-room-studio" style={{maxWidth:1280,margin:'auto',padding:'32px 20px'}}>
     <p className="page-eyebrow">LEAF Studio / Raumplanung</p><h1>Deinen Pflanzenraum planen.</h1>
     <p>Raummaße erfassen, Objekte maßstäblich platzieren und den Entwurf speichern. Die 3D-Ansicht ist eine schematische Vorschau; keine Lichtberechnung.</p>
     <section style={{display:'flex',gap:12,flexWrap:'wrap',margin:'24px 0'}}>

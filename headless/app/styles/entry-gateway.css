@@ -7,7 +7,7 @@
   background: var(--leaf-cream);
   overflow-wrap: anywhere;
 }
-.leaf-entry *, .leaf-entry *::before, .leaf-entry *::after { box-sizing: border-box; }
+.leaf-entry, .leaf-entry *, .leaf-entry *::before, .leaf-entry *::after { box-sizing: border-box; }
 .leaf-entry a { color: inherit; }
 .leaf-entry p { line-height: 1.65; }
 .leaf-entry h1, .leaf-entry h2, .leaf-entry h3 { font-family: inherit; color: inherit; text-wrap: balance; }
