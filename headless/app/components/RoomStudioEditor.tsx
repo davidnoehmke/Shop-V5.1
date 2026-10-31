@@ -2,7 +2,7 @@ import {useCallback, useEffect, useRef, useState} from 'react';
 
 type Kind = 'planter'|'light'|'system';
 export type CatalogItem={id:string;title:string;handle:string;vendor:string;kind:Kind;width:number|null;depth:number|null;image?:string|null};
-type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number};
+type Item = {id:string;kind:Kind;x:number;y:number;rotation:number;width:number;depth:number;productId?:string};
 type Plan = {width:number;depth:number;height:number;items:Item[]};
 const labels:Record<Kind,string>={planter:'Pflanzgefäß',light:'LED-Leuchte',system:'Interieur-System'};
 const sizes:Record<Kind,[number,number]>={planter:[0.45,0.45],light:[0.25,0.25],system:[1.2,0.45]};
@@ -20,6 +20,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const [history,setHistory]=useState<Plan[]>([]);
   const [future,setFuture]=useState<Plan[]>([]);
   const stage=useRef<SVGSVGElement>(null);
+  const importRef=useRef<HTMLInputElement>(null);
   const drag=useRef<{id:string;start:Plan}|null>(null);
   const [notice,setNotice]=useState('');
   const [catalogId,setCatalogId]=useState('');
@@ -34,8 +35,9 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
   const pointerUp=()=>{if(drag.current){setHistory(h=>[...h.slice(-39),drag.current!.start]);setFuture([]);drag.current=null;}};
   const undo=()=>{if(!history.length)return;setFuture(f=>[plan,...f]);setPlan(history[history.length-1]);setHistory(h=>h.slice(0,-1));};
   const redo=()=>{if(!future.length)return;setHistory(h=>[...h,plan]);setPlan(future[0]);setFuture(f=>f.slice(1));};
-  const addCatalog=()=>{const product=catalog.find(p=>p.id===catalogId);if(!product)return;const width=product.width??sizes[product.kind][0],depth=product.depth??sizes[product.kind][1];const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:product.kind,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);setNotice(product.width&&product.depth?'Herstellermaße aus Katalog verwendet.':'Maße fehlen: vorläufige Platzhalter, bitte manuell korrigieren.');};
+  const addCatalog=()=>{const product=catalog.find(p=>p.id===catalogId);if(!product)return;const width=product.width??sizes[product.kind][0],depth=product.depth??sizes[product.kind][1];const id=String(Date.now())+Math.random();commit({...plan,items:[...plan.items,{id,kind:product.kind,productId:product.id,width,depth,x:plan.width/2,y:plan.depth/2,rotation:0}]});setSelected(id);setNotice(product.width&&product.depth?'Herstellermaße aus Katalog verwendet.':'Maße fehlen: vorläufige Platzhalter, bitte manuell korrigieren.');};
   const exportPlan=()=>{const blob=new Blob([JSON.stringify({version:1,plan,accuracy:'manual-estimate'},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='leaf-room-plan.json';a.click();URL.revokeObjectURL(url);};
+  const importPlan=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(file.size>1024*1024){setNotice('Plan-Datei ist zu groß.');return;}file.text().then(raw=>{try{const parsed=JSON.parse(raw);const p=parsed.plan as Plan;if(!p||!valid(p.width)||!valid(p.depth)||!valid(p.height)||!Array.isArray(p.items)||p.items.length>200||!p.items.every(i=>i&&typeof i.id==='string'&&['planter','light','system'].includes(i.kind)&&[i.x,i.y,i.width,i.depth,i.rotation].every(Number.isFinite)&&i.width>0&&i.depth>0&&i.width<=30&&i.depth<=30)){throw Error('invalid');}commit({width:p.width,depth:p.depth,height:p.height,items:p.items.map(i=>({id:i.id,kind:i.kind,x:i.x,y:i.y,width:i.width,depth:i.depth,rotation:i.rotation,productId:typeof i.productId==='string'?i.productId:undefined}))});setSelected(null);setNotice('Raumplan erfolgreich importiert.');}catch{setNotice('Ungültige Raumplan-Datei.');}}).catch(()=>setNotice('Raumplan konnte nicht gelesen werden.'));e.target.value='';};
   const onPhoto=(e:React.ChangeEvent<HTMLInputElement>)=>{const file=e.target.files?.[0];if(!file)return;if(!file.type.startsWith('image/')||file.size>8*1024*1024){setNotice('Bitte ein Bild bis 8 MB wählen.');return;}const reader=new FileReader();reader.onload=()=>{setPhoto(String(reader.result));setNotice('Foto geladen. Bitte Raummaße manuell bestätigen; ein Foto allein liefert keine verlässlichen Maße.');};reader.readAsDataURL(file);};
   const warnings=validate(plan);
   useEffect(()=>()=>{drag.current=null;},[]);
@@ -53,6 +55,7 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
       <button type="button" onClick={undo} disabled={!history.length}>Rückgängig</button><button type="button" onClick={redo} disabled={!future.length}>Wiederholen</button>
       <button type="button" onClick={()=>setView(view==='2d'?'3d':'2d')}>{view==='2d'?'3D-Vorschau':'2D-Grundriss'}</button>
       <button type="button" onClick={exportPlan}>Plan als JSON speichern</button>
+      <button type="button" onClick={()=>importRef.current?.click()}>Gespeicherten Plan laden</button><input ref={importRef} type="file" accept="application/json,.json" onChange={importPlan} style={{display:'none'}}/>
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(min(100%,330px),1fr))',gap:20}}>
       <section aria-label="Raumplan" style={{background:'#edf0e9',borderRadius:12,padding:18,color:'#172a21'}}>
@@ -72,11 +75,13 @@ export function RoomStudioEditor({catalog=[]}:{catalog?:CatalogItem[]}){
         <h2>Objekte bearbeiten</h2>
         {selectedItem?<div style={{display:'grid',gap:12}}>
           <strong>{labels[selectedItem.kind]}</strong>
+          {selectedItem.productId&&catalog.find(p=>p.id===selectedItem.productId)?<a href={'/products/'+catalog.find(p=>p.id===selectedItem.productId)!.handle}>Produkt ansehen: {catalog.find(p=>p.id===selectedItem.productId)!.title}</a>:null}
           {([['x','Position X'],['y','Position Y'],['width','Breite'],['depth','Tiefe']] as const).map(([key,label])=><label key={key}>{label} (m)<input type="number" step=".05" min="0" value={selectedItem[key]} onChange={e=>{const n=Number(e.target.value);if(Number.isFinite(n)&&n>=0)edit(selectedItem.id,{[key]:n});}} style={{display:'block',width:'100%',padding:8}}/></label>)}
           <label>Drehung (°)<input type="range" min="0" max="345" step="15" value={selectedItem.rotation} onChange={e=>edit(selectedItem.id,{rotation:Number(e.target.value)})}/>{selectedItem.rotation}°</label>
           <button type="button" onClick={()=>{const id=String(Date.now());commit({...plan,items:[...plan.items,{...selectedItem,id,x:clamp(selectedItem.x+.3,0,plan.width)}]});setSelected(id);}}>Duplizieren</button>
           <button type="button" onClick={()=>{commit({...plan,items:plan.items.filter(i=>i.id!==selectedItem.id)});setSelected(null);}}>Entfernen</button>
         </div>:<p>Objekt im Plan auswählen oder oben hinzufügen.</p>}
+        <h3>Produktliste</h3><ul>{plan.items.map(item=>{const product=catalog.find(p=>p.id===item.productId);return <li key={item.id}>{product?<a href={'/products/'+product.handle}>{product.title}</a>:labels[item.kind]+' (Planungsobjekt)'}</li>;})}</ul>
         <h3>Planungsprüfung</h3>
         {warnings.length?<ul>{warnings.map((w,i)=><li key={i}>{w}</li>)}</ul>:<p>Keine offensichtlichen Überschneidungen oder Grenzverletzungen erkannt.</p>}
         <p style={{fontSize:13}}>Hinweis: Drehungen werden angezeigt, aber bei der Kollisionsprüfung noch nicht berücksichtigt. Produktmaße sind generische Platzhalter, keine Herstellerdaten.</p>
