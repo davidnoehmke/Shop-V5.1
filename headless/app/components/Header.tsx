@@ -38,7 +38,13 @@ export function Header({
         style={activeLinkStyle}
         end
       >
-        <strong>{shop.name || 'LEAFerservice'}</strong>
+        <img
+          className="header-brand__logo"
+          src="/brand/leaferservice-logo.png"
+          alt={shop.name || 'LEAFerservice'}
+          width={700}
+          height={233}
+        />
       </NavLink>
 
       <HeaderMenu
