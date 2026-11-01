@@ -12,6 +12,7 @@ test('existing six-zone 3D planner and measurable editor work together', async (
   await studio.getByRole('button', {name: '+ Pflanzgefäß'}).click();
   const item = studio.locator('svg g[data-room-item-id]').first();
   await expect(item).toHaveCount(1);
+  await item.scrollIntoViewIfNeeded();
   const before = await item.getAttribute('transform');
   const bounds = await item.boundingBox();
   expect(bounds).toBeTruthy();
@@ -62,6 +63,7 @@ test('touch dragging works without scrolling the SVG stage', async ({page}, test
   const studio = page.locator('#room-studio-editor');
   await studio.getByRole('button', {name: '+ Pflanzgefäß'}).click();
   const item = studio.locator('svg g[data-room-item-id]').first();
+  await item.scrollIntoViewIfNeeded();
   const before = await item.getAttribute('transform');
   const bounds = await item.boundingBox();
   expect(bounds).toBeTruthy();
