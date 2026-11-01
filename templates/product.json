@@ -1,12 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
     "main": {
       "type": "leaferservice-product",
-      "blocks": {},
-      "block_order": [],
       "settings": {
         "show_vendor": true
       }
+    },
+    "decision": {
+      "type": "leaf-product-decision",
+      "settings": {}
+    },
+    "component_signature": {
+      "type": "leaf-component-signature",
+      "settings": {}
+    },
+    "recipe": {
+      "type": "product-recipe",
+      "settings": {}
     },
     "seo_details": {
       "type": "product-seo-details",
@@ -14,42 +37,35 @@
     },
     "cross_sell": {
       "type": "product-cross-sell",
-      "settings": {}
-    },
-    "breadcrumbs": {
-      "type": "leaf-breadcrumbs",
-      "settings": {}
-    },
-    "decision": {
-      "type": "leaf-product-decision",
-      "settings": {}
-    },
-    "recipe": {
-      "type": "product-recipe",
-      "settings": {}
-    },
-    "component_signature": {
-      "type": "leaf-component-signature",
-      "settings": {}
+      "settings": {
+        "heading": "",
+        "collection": "",
+        "limit": 4
+      }
     },
     "loox_reviews": {
       "type": "apps",
+      "disabled": true,
+      "settings": {}
+    },
+    "1793566691bdb4dc08": {
+      "type": "apps",
       "blocks": {
-        "loox_product_reviews": {
-          "type": "shopify://apps/loox-reviews/blocks/loox-dynamic-section/5c3b337f-fd14-4df5-b1d6-80ec13e6e28e",
+        "reputon_reviews_rate_us_widget_block_UEnwD6": {
+          "type": "shopify://apps/reputon-reviews/blocks/rate-us-widget-block/5ae2d5d1-9c77-4a27-aaa7-dea75a671f2a",
           "settings": {
-            "only_photos": false,
-            "aggregated": false,
-            "hide_thumbnails": false,
-            "maxwidth": 1280
+            "widget-title": "",
+            "description": "",
+            "labelTerrible": "",
+            "labelExcellent": "",
+            "positiveRating": "4"
           }
         }
       },
       "block_order": [
-        "loox_product_reviews"
+        "reputon_reviews_rate_us_widget_block_UEnwD6"
       ],
-      "settings": {},
-      "disabled": true
+      "settings": {}
     }
   },
   "order": [
@@ -60,6 +76,7 @@
     "recipe",
     "seo_details",
     "cross_sell",
-    "loox_reviews"
+    "loox_reviews",
+    "1793566691bdb4dc08"
   ]
 }
