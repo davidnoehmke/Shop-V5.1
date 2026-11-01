@@ -1,7 +1,8 @@
-import type {createHydrogenRouterContext} from './context';
+import type {LoaderFunctionArgs} from 'react-router';
 import type {EntryImage, EntryProduct, EntryStory} from '~/components/LeafEntryGateway';
 
-type HomepageContext = Pick<Awaited<ReturnType<typeof createHydrogenRouterContext>>, 'storefront'>;
+// Match React Router's augmented context, rather than narrowing to the factory's locale.
+type HomepageContext = Pick<LoaderFunctionArgs['context'], 'storefront'>;
 
 type HomepageQuery = {
   collection: {
@@ -60,7 +61,7 @@ const ENTRY_JOURNAL_QUERY = `#graphql
     blogs(first: 6) {
       nodes {
         handle
-        articles(first: 1, sortKey: PUBLISHED_AT, reverse: true) {
+        articles(first: 3, sortKey: PUBLISHED_AT, reverse: true) {
           nodes {
             id title handle excerpt(truncateAt: 180)
             image { id url altText width height }
