@@ -33,12 +33,12 @@ type Props = {
   products?: EntryProduct[];
 };
 
-/** Server-rendered entry routes; native disclosures also work before hydration. */
+/** Server-rendered entry routes; PageLayout supplies the main landmark. */
 export function LeafEntryGateway({locale, heroImage, stories = [], products = []}: Props) {
   const text = ENTRY_COPY[locale];
   const prefix = locale === 'en' ? '/en' : '';
   return (
-    <main className="leaf-entry">
+    <div className="leaf-entry">
       <section className="leaf-entry__hero" aria-labelledby="leaf-entry-title">
         <div className="leaf-entry__hero-copy">
           <p className="leaf-entry__eyebrow">{text.eyebrow}</p>
@@ -51,7 +51,7 @@ export function LeafEntryGateway({locale, heroImage, stories = [], products = []
           <p className="leaf-entry__trust">{text.trust}</p>
         </div>
         <figure className="leaf-entry__hero-media">
-          {heroImage ? <Image data={heroImage} alt={heroImage.altText || text.imageCaption} aspectRatio="4/5" sizes="(min-width: 1000px) 42vw, 90vw" loading="eager" fetchPriority="high" /> : (
+          {heroImage ? <Image data={heroImage} alt={heroImage.altText || text.imageCaption} aspectRatio="4/5" sizes="(min-width: 1000px) 42vw, 90vw" loading="eager" fetchPriority="high" style={{height: 'auto'}} /> : (
             <div className="leaf-entry__hero-placeholder"><span aria-hidden="true">LEAF</span><p>{text.fallback}</p></div>
           )}
           <figcaption><span>{text.imageCaption}</span><span aria-hidden="true">01 / LEAF</span></figcaption>
@@ -93,7 +93,7 @@ export function LeafEntryGateway({locale, heroImage, stories = [], products = []
           {stories.slice(0, 3).map((story) => (
             <article className="leaf-entry__story" key={story.id}>
               <Link to={`${prefix}/blogs/${encodeURIComponent(story.blogHandle)}/${encodeURIComponent(story.handle)}`} prefetch="intent">
-                {story.image ? <Image data={story.image} alt={story.image.altText || story.title} aspectRatio="4/3" sizes="(min-width: 800px) 30vw, 90vw" loading="lazy" /> : null}
+                {story.image ? <Image data={story.image} alt={story.image.altText || story.title} aspectRatio="4/3" sizes="(min-width: 800px) 30vw, 90vw" loading="lazy" style={{height: 'auto'}} /> : null}
                 <h3>{story.title}</h3>
                 {story.excerpt ? <p>{story.excerpt}</p> : null}
                 <span className="leaf-entry__story-link">{text.articleAction}<span aria-hidden="true">&rarr;</span></span>
@@ -112,7 +112,7 @@ export function LeafEntryGateway({locale, heroImage, stories = [], products = []
         <div className="leaf-entry__products">
           {products.slice(0, 6).map((product) => <article className="leaf-entry__product" key={product.id}>
             <Link to={`${prefix}/products/${encodeURIComponent(product.handle)}`} prefetch="intent">
-              {product.featuredImage ? <Image data={product.featuredImage} alt={product.featuredImage.altText || product.title} aspectRatio="1/1" sizes="(min-width: 800px) 30vw, 44vw" loading="lazy" /> : <div className="leaf-entry__product-placeholder" aria-hidden="true">LEAF</div>}
+              {product.featuredImage ? <Image data={product.featuredImage} alt={product.featuredImage.altText || product.title} aspectRatio="1/1" sizes="(min-width: 800px) 30vw, 44vw" loading="lazy" style={{height: 'auto'}} /> : <div className="leaf-entry__product-placeholder" aria-hidden="true">LEAF</div>}
               <span className="leaf-entry__product-vendor">{product.vendor || 'LEAFerservice'}</span>
               <h3>{product.title}</h3>
             </Link>
@@ -138,6 +138,6 @@ export function LeafEntryGateway({locale, heroImage, stories = [], products = []
         <Link to={`${prefix}/search`} prefetch="intent">{text.search} &rarr;</Link>
         <Link to={`${prefix}/blogs`} prefetch="intent">{text.knowledgeAction} &rarr;</Link>
       </nav>
-    </main>
+    </div>
   );
 }
