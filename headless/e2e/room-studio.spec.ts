@@ -1,5 +1,6 @@
 import {test, expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
+import {parseRoomPlanDocument} from '../app/components/roomStudioPlan';
 
 test('existing six-zone 3D planner and measurable editor work together', async ({page}) => {
   const response = await page.goto('/raumplaner-3d');
@@ -40,15 +41,16 @@ test('JSON export can be reimported and malformed JSON is rejected', async ({pag
     studio.getByRole('button', {name: 'Plan als JSON speichern'}).click(),
   ]);
   const content = await readFile(await download.path());
-  const json = JSON.parse(content.toString());
-  expect(json.version).toBe(1);
-  expect(json.plan.items).toHaveLength(1);
+  const json: unknown = JSON.parse(content.toString());
+  const validatedPlan = parseRoomPlanDocument(json);
+  expect(validatedPlan?.items).toHaveLength(1);
+  if (!validatedPlan || validatedPlan.items.length !== 1) throw Error('Invalid exported room plan');
   await studio.getByRole('button', {name: 'Entfernen'}).click();
   const input = studio.locator('input[type="file"][accept="application/json,.json"]');
   await input.setInputFiles({name: 'room.json', mimeType: 'application/json', buffer: content});
   await expect(studio.getByText('Raumplan erfolgreich importiert.')).toBeVisible();
   await expect(studio.locator('svg g[data-room-item-id]')).toHaveCount(1);
-  const malicious = {version: 1, plan: {...json.plan, items: [{...json.plan.items[0], mount: '__proto__'}]}};
+  const malicious = {version: 1, plan: {...validatedPlan, items: [{...validatedPlan.items[0], mount: '__proto__'}]}};
   await input.setInputFiles({name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(malicious))});
   await expect(studio.getByText('Ungültige Raumplan-Datei.')).toBeVisible();
   await expect(studio.locator('svg g[data-room-item-id]')).toHaveCount(1);
