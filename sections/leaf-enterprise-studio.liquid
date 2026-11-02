@@ -1,12 +1,8 @@
 {% liquid
-  assign room_collection = collections['interieur-solutions']
-  assign room_url = room_collection.url | append: '#InterieurRoomBuilderHeading'
-  assign substrate_url = routes.root_url | append: '#Substrat-Konfigurator'
-  assign light_page = pages['pflanzenlicht-konfigurator']
-  assign light_url = light_page.url
-  if light_url == blank
-    assign light_url = room_collection.url
-  endif
+  assign substrate_url = '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze'
+  assign light_url = '/collections/pflanzenbeleuchtung'
+  assign vessels_url = '/collections/pflanzgefasse'
+  assign setup_url = '/collections/interieur-solutions#InterieurRoomBuilderHeading'
 %}
 <section class="leaf-enterprise-studio page-width" aria-labelledby="LeafEnterpriseStudioHeading-{{ section.id }}">
   <div class="leaf-enterprise-studio__shell">
@@ -15,10 +11,10 @@
       <p>{{ 'enterprise.studio.intro' | t }}</p>
     </div>
     <div class="leaf-enterprise-studio__grid">
-      <a class="leaf-enterprise-studio__card" href="{{ room_url }}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V7l9-4 9 4v13M3 8l9 4 9-4M12 12v8M7 14h2M15 14h2"/></svg></span><strong>{{ 'enterprise.studio.room_title' | t }}</strong><p>{{ 'enterprise.studio.room_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.room_cta' | t }}</span></a>
-      <a class="leaf-enterprise-studio__card" href="{{ substrate_url }}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14l-2 14H7L5 6ZM8 10h8M9 14h6M10 18h4"/></svg></span><strong>{{ 'enterprise.studio.substrate_title' | t }}</strong><p>{{ 'enterprise.studio.substrate_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.substrate_cta' | t }}</span></a>
-      <a class="leaf-enterprise-studio__card" href="{{ light_url }}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.3-1.1-2-2.8-2-4.5a6 6 0 1 1 12 0c0 1.8-.7 3.4-2 4.5-.8.7-1 1.2-1 2H9c0-.8-.2-1.3-1-2Z"/></svg></span><strong>{{ 'enterprise.studio.light_title' | t }}</strong><p>{{ 'enterprise.studio.light_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.light_cta' | t }}</span></a>
-      <button class="leaf-enterprise-studio__card" type="button" data-leaf-enterprise-assistant><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4V5ZM8 9h8M8 12h5"/></svg></span><strong>{{ 'enterprise.studio.assistant_title' | t }}</strong><p>{{ 'enterprise.studio.assistant_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.assistant_cta' | t }}</span></button>
+      <a class="leaf-enterprise-studio__card" href="{% render 'leaf-localized-url', url: substrate_url %}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 6h14l-2 14H7L5 6ZM8 10h8M9 14h6M10 18h4"/></svg></span><strong>{{ 'enterprise.studio.substrate_title' | t }}</strong><p>{{ 'enterprise.studio.substrate_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.substrate_cta' | t }}</span></a>
+      <a class="leaf-enterprise-studio__card" href="{% render 'leaf-localized-url', url: light_url %}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.3-1.1-2-2.8-2-4.5a6 6 0 1 1 12 0c0 1.8-.7 3.4-2 4.5-.8.7-1 1.2-1 2H9c0-.8-.2-1.3-1-2Z"/></svg></span><strong>{{ 'enterprise.studio.light_title' | t }}</strong><p>{{ 'enterprise.studio.light_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.light_cta' | t }}</span></a>
+      <a class="leaf-enterprise-studio__card" href="{% render 'leaf-localized-url', url: vessels_url %}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 9h14l-2 11H7L5 9ZM8 5h8M12 5v4"/></svg></span><strong>{{ 'enterprise.studio.vessels_title' | t }}</strong><p>{{ 'enterprise.studio.vessels_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.vessels_cta' | t }}</span></a>
+      <a class="leaf-enterprise-studio__card" href="{% render 'leaf-localized-url', url: setup_url %}"><span class="leaf-enterprise-studio__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 20V7l9-4 9 4v13M3 8l9 4 9-4M12 12v8M7 14h2M15 14h2"/></svg></span><strong>{{ 'enterprise.studio.setup_title' | t }}</strong><p>{{ 'enterprise.studio.setup_text' | t }}</p><span class="leaf-enterprise-studio__cta">{{ 'enterprise.studio.setup_cta' | t }}</span></a>
     </div>
   </div>
 </section>
