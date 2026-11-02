@@ -179,3 +179,8 @@
 .product-purchase button{min-height:48px}
 @media(max-width:720px){.product-item{padding:8px;border-radius:13px}.product-item__media{border-radius:10px}.product-item h4{font-size:.89rem}.product-image{border-radius:14px}}
 @media(prefers-reduced-motion:reduce){.product-item{transition:none}.product-item:hover{transform:none}}
+
+/* Direct scene manipulation has an equivalent keyboard and touch control. */
+.leaf-room__settings select,.leaf-room__settings button{min-height:44px;padding:.65rem;border:1px solid var(--leaf-control-border);border-radius:.6rem;font:inherit;color:var(--leaf-ink);background:var(--leaf-cream);width:100%}
+.leaf-room__move-controls{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;width:100%}
+.leaf-room__stage canvas:focus-visible{outline:3px solid var(--leaf-olive);outline-offset:-4px}
