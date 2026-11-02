@@ -17,13 +17,13 @@
         "brand_logo_width": 250,
         "image": "shopify://shop_images/tongranulat-lifestyle_2181111f-4416-4ebc-8dfd-7954152b8d85.png",
         "overlay": 75,
-        "eyebrow": "Substrate · Pflanzenlicht · Pflanzgefäße",
-        "heading": "Alles für gesunde Pflanzen. Direkt zur passenden Lösung.",
-        "text": "<p>Entdecke handgemischte Substrate, passende Pflanzgefäße und Pflanzenbeleuchtung. Wähle fertige Produkte oder stelle deine eigene Substratmischung zusammen.</p>",
-        "primary_label": "Fertige Mischungen entdecken",
-        "primary_link": "shopify://collections/pflanzsubstrate-mischungen",
-        "secondary_label": "Substrat selbst konfigurieren",
-        "secondary_link": "#shopify-section-template--substrate_configurator"
+        "eyebrow": "Wurzelraum · Pflanzenlicht · Gefäß · Setup",
+        "heading": "Alles für deine Pflanze – als System gedacht.",
+        "text": "<p>Substrat, Licht, Gefäß und Versorgung passend zusammenstellen. Starte mit deiner Aufgabe statt mit einer Produktkategorie.</p>",
+        "primary_label": "Lösung finden",
+        "primary_link": "#LeafSolutions",
+        "secondary_label": "Direkt shoppen",
+        "secondary_link": "shopify://collections/all"
       }
     },
     "home_collection_journey": {
