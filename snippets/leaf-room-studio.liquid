@@ -1,0 +1,578 @@
+{% doc %}
+Renders the mobile-first LEAF Room Studio with optional anonymous Supabase account,
+private room-photo storage, measured room planning, Shopify product placement and free PDF export.
+@param {collection} collection - Interieur collection used as the optional Shopify product library.
+@param {string} section_id - Unique section identifier.
+{% enddoc %}
+{% liquid
+  assign locale = request.locale.iso_code
+  assign is_en = false
+  if locale == 'en'
+    assign is_en = true
+  endif
+%}
+<leaf-room-studio
+  id="InterieurRoomBuilderHeading"
+  class="leaf-room-studio"
+  data-supabase-url="https://vbqimcwaxcydegqlkkgw.supabase.co"
+  data-supabase-key="sb_publishable_25iJ4M8n-lOcpAMwrcSADg_2sA96tCU"
+  data-cart-add-url="{{ routes.cart_add_url | append: '.js' }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency | escape }}"
+  data-locale="{{ request.locale.iso_code | escape }}"
+>
+  <section class="leaf-room-studio__shell" aria-labelledby="LeafRoomStudioTitle-{{ section_id }}">
+    <header class="leaf-room-studio__hero">
+      <div>
+        <p class="leaf-room-studio__eyebrow">{% if is_en %}LEAF Room Studio · optional account{% else %}LEAF Room Studio · Konto optional{% endif %}</p>
+        <h2 id="LeafRoomStudioTitle-{{ section_id }}">{% if is_en %}Turn your real room into a plant setup.{% else %}Mach aus deinem echten Raum ein Pflanzen-Setup.{% endif %}</h2>
+        <p>{% if is_en %}Upload a room photo, calibrate a known distance and plan with neutral objects or real LEAF products. Saving, personalization and product use are optional.{% else %}Raumfoto aufnehmen, eine bekannte Strecke kalibrieren und anschließend mit neutralen Objekten oder echten LEAF-Produkten planen. Speichern, Personalisierung und Produkte bleiben optional.{% endif %}</p>
+      </div>
+      <ol class="leaf-room-studio__steps" aria-label="{% if is_en %}Planning steps{% else %}Planungsschritte{% endif %}">
+        <li><b>01</b><span>{% if is_en %}Photo & measure{% else %}Foto & messen{% endif %}</span></li>
+        <li><b>02</b><span>{% if is_en %}Plan room{% else %}Raum planen{% endif %}</span></li>
+        <li><b>03</b><span>{% if is_en %}Place setup{% else %}Setup platzieren{% endif %}</span></li>
+        <li><b>04</b><span>{% if is_en %}Save / PDF{% else %}Speichern / PDF{% endif %}</span></li>
+      </ol>
+    </header>
+
+    <div class="leaf-room-studio__account" data-account-bar>
+      <div>
+        <span data-account-dot aria-hidden="true"></span>
+        <strong data-account-label>{% if is_en %}Guest mode{% else %}Gastmodus{% endif %}</strong>
+        <small data-account-copy>{% if is_en %}Plan freely. An account is only needed for cloud saving.{% else %}Frei planen. Ein Konto wird nur für Cloud-Speicherung benötigt.{% endif %}</small>
+      </div>
+      <div class="leaf-room-studio__account-actions">
+        <button type="button" class="button button--secondary" data-create-anon>{% if is_en %}Create anonymous account{% else %}Anonymes Konto anlegen{% endif %}</button>
+        <button type="button" class="button button--secondary" data-open-account hidden>{% if is_en %}Account & projects{% else %}Konto & Projekte{% endif %}</button>
+      </div>
+    </div>
+
+    <div class="leaf-room-studio__grid">
+      <section class="leaf-room-studio__panel" aria-labelledby="RoomPhotoTitle-{{ section_id }}">
+        <div class="leaf-room-studio__panel-head">
+          <span>01</span>
+          <div><h3 id="RoomPhotoTitle-{{ section_id }}">{% if is_en %}Photo & measurement{% else %}Foto & Vermessung{% endif %}</h3>
+          <p>{% if is_en %}One photo gives an estimate, not survey-grade accuracy. Calibrate with a known distance and correct dimensions at any time.{% else %}Ein Foto liefert eine Näherung, keine vermessungstechnische Genauigkeit. Kalibriere mit einer bekannten Strecke und korrigiere Maße jederzeit.{% endif %}</p></div>
+        </div>
+        <label class="leaf-room-studio__photo-upload">
+          <input type="file" accept="image/jpeg,image/png,image/webp" capture="environment" data-room-photo>
+          <span>{% if is_en %}Take or choose room photo{% else %}Raumfoto aufnehmen oder auswählen{% endif %}</span>
+          <small>{% if is_en %}The photo stays on this device unless you explicitly allow cloud storage.{% else %}Das Foto bleibt auf diesem Gerät, solange du Cloud-Speicherung nicht ausdrücklich erlaubst.{% endif %}</small>
+        </label>
+        <div class="leaf-room-studio__photo-stage" data-photo-stage hidden>
+          <canvas data-photo-canvas width="1200" height="800" aria-label="{% if is_en %}Room photo measurement{% else %}Raumfoto Vermessung{% endif %}"></canvas>
+          <p data-measure-hint>{% if is_en %}Tap two points that represent a known distance.{% else %}Tippe zwei Punkte an, deren reale Distanz du kennst.{% endif %}</p>
+        </div>
+        <div class="leaf-room-studio__measure-controls" data-measure-controls hidden>
+          <label><span>{% if is_en %}Reference length (cm){% else %}Referenzlänge (cm){% endif %}</span><input type="number" min="10" max="1000" step="1" value="100" data-reference-cm></label>
+          <button type="button" class="button button--secondary" data-set-reference>{% if is_en %}Use selected line as reference{% else %}Markierte Strecke als Referenz nutzen{% endif %}</button>
+          <button type="button" class="button button--secondary" data-measure-line disabled>{% if is_en %}Measure another line{% else %}Weitere Strecke messen{% endif %}</button>
+          <p class="leaf-room-studio__measure-result" data-measure-result aria-live="polite"></p>
+        </div>
+        <label class="leaf-room-studio__consent" data-photo-consent-wrap hidden>
+          <input type="checkbox" data-photo-consent>
+          <span>{% if is_en %}Store this room photo privately with my project. Without this consent only geometry and planning data are stored.{% else %}Dieses Raumfoto privat mit meinem Projekt speichern. Ohne diese Einwilligung werden nur Geometrie und Planungsdaten gespeichert.{% endif %}</span>
+        </label>
+      </section>
+
+      <section class="leaf-room-studio__panel" aria-labelledby="RoomDimensionsTitle-{{ section_id }}">
+        <div class="leaf-room-studio__panel-head">
+          <span>02</span>
+          <div><h3 id="RoomDimensionsTitle-{{ section_id }}">{% if is_en %}Confirm room dimensions{% else %}Raummaße bestätigen{% endif %}</h3>
+          <p>{% if is_en %}Use the photo estimate or enter known measurements directly.{% else %}Nutze die Fotomessung oder trage bekannte Maße direkt ein.{% endif %}</p></div>
+        </div>
+        <div class="leaf-room-studio__dimensions">
+          <label><span>{% if is_en %}Width (m){% else %}Breite (m){% endif %}</span><input type="number" min="1" max="20" step="0.05" value="4.20" data-room-width></label>
+          <label><span>{% if is_en %}Depth (m){% else %}Tiefe (m){% endif %}</span><input type="number" min="1" max="20" step="0.05" value="3.20" data-room-depth></label>
+          <label><span>{% if is_en %}Height (m){% else %}Höhe (m){% endif %}</span><input type="number" min="1.8" max="6" step="0.05" value="2.50" data-room-height></label>
+        </div>
+        <div class="leaf-room-studio__accuracy">
+          <strong>{% if is_en %}Measurement status{% else %}Messstatus{% endif %}</strong>
+          <span data-accuracy-label>{% if is_en %}Manually entered · verify on site{% else %}Manuell eingetragen · vor Ort prüfen{% endif %}</span>
+        </div>
+      </section>
+    </div>
+
+    <section class="leaf-room-studio__workspace" aria-labelledby="RoomPlanTitle-{{ section_id }}">
+      <div class="leaf-room-studio__workspace-head">
+        <div><span>03</span><h3 id="RoomPlanTitle-{{ section_id }}">{% if is_en %}Arrange the room{% else %}Raum einrichten{% endif %}</h3></div>
+        <p>{% if is_en %}Use neutral planning objects or add real products. Product placement is indicative until verified physical product dimensions are available.{% else %}Nutze neutrale Planungsobjekte oder füge reale Produkte hinzu. Produktplatzierungen sind Planvorschläge, solange keine verifizierten Produktmaße vorliegen.{% endif %}</p>
+      </div>
+      <div class="leaf-room-studio__tools">
+        <div class="leaf-room-studio__primitive-tools" role="group" aria-label="{% if is_en %}Planning objects{% else %}Planungsobjekte{% endif %}">
+          <button type="button" data-add-kind="plant">{% if is_en %}+ Plant{% else %}+ Pflanze{% endif %}</button>
+          <button type="button" data-add-kind="shelf">{% if is_en %}+ Shelf{% else %}+ Regal{% endif %}</button>
+          <button type="button" data-add-kind="window">{% if is_en %}+ Window{% else %}+ Fenster{% endif %}</button>
+          <button type="button" data-add-kind="planter">{% if is_en %}+ Planter{% else %}+ Gefäß{% endif %}</button>
+        </div>
+        <div class="leaf-room-studio__product-tools">
+          <label>
+            <span>{% if is_en %}Optional LEAF product{% else %}Optionales LEAF-Produkt{% endif %}</span>
+            <select data-product-select>
+              <option value="">{% if is_en %}Choose a product…{% else %}Produkt auswählen…{% endif %}</option>
+              {% for product in collection.products limit: 80 %}
+                {% assign variant = product.selected_or_first_available_variant %}
+                {% if variant != blank and product.available %}
+                  <option
+                    value="{{ variant.id }}"
+                    data-title="{{ product.title | escape }}"
+                    data-price="{{ variant.price }}"
+                    data-url="{{ product.url }}"
+                    data-search="{{ product.title | append: ' ' | append: product.type | append: ' ' | append: product.tags | downcase | escape }}"
+                    {% if product.featured_image != blank %}data-image="{{ product.featured_image | image_url: width: 320 }}"{% endif %}
+                  >{{ product.title | escape }} · {{ variant.price | money }}</option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </label>
+          <button type="button" class="button button--secondary" data-add-product>{% if is_en %}Add product{% else %}Produkt einsetzen{% endif %}</button>
+        </div>
+      </div>
+      <div class="leaf-room-studio__plan-wrap">
+        <canvas class="leaf-room-studio__plan" data-plan-canvas width="1400" height="900" aria-label="{% if is_en %}Interactive room plan{% else %}Interaktiver Raumplan{% endif %}"></canvas>
+        <div class="leaf-room-studio__selection" data-selection hidden>
+          <strong data-selection-title></strong>
+          <div>
+            <button type="button" data-rotate>{% if is_en %}Rotate{% else %}Drehen{% endif %}</button>
+            <button type="button" data-duplicate>{% if is_en %}Duplicate{% else %}Duplizieren{% endif %}</button>
+            <button type="button" data-delete>{% if is_en %}Delete{% else %}Löschen{% endif %}</button>
+          </div>
+        </div>
+      </div>
+      <div class="leaf-room-studio__summary">
+        <div><span>{% if is_en %}Objects{% else %}Objekte{% endif %}</span><strong data-summary-count>0</strong></div>
+        <div><span>{% if is_en %}LEAF products{% else %}LEAF-Produkte{% endif %}</span><strong data-summary-products>0</strong></div>
+        <div><span>{% if is_en %}Current product total{% else %}Aktueller Produktwert{% endif %}</span><strong data-summary-price>—</strong></div>
+        <button type="button" class="button" data-add-setup disabled>{% if is_en %}Add selected products to cart{% else %}Gewählte Produkte in den Warenkorb{% endif %}</button>
+      </div>
+    </section>
+
+    <section class="leaf-room-studio__project" aria-labelledby="RoomProjectTitle-{{ section_id }}">
+      <div class="leaf-room-studio__panel-head">
+        <span>04</span>
+        <div><h3 id="RoomProjectTitle-{{ section_id }}">{% if is_en %}Save, personalize or export{% else %}Speichern, personalisieren oder exportieren{% endif %}</h3>
+        <p>{% if is_en %}Nothing here is required. The PDF download is always free and does not require an account.{% else %}Nichts davon ist Pflicht. Der PDF-Download ist immer kostenlos und benötigt kein Konto.{% endif %}</p></div>
+      </div>
+      <div class="leaf-room-studio__project-actions">
+        <label class="leaf-room-studio__title-input"><span>{% if is_en %}Project name{% else %}Projektname{% endif %}</span><input type="text" maxlength="80" value="{% if is_en %}My plant room{% else %}Mein Pflanzenraum{% endif %}" data-project-title></label>
+        <button type="button" class="button" data-save-cloud>{% if is_en %}Save project{% else %}Projekt speichern{% endif %}</button>
+        <button type="button" class="button button--secondary" data-download-pdf>{% if is_en %}Download free PDF{% else %}PDF kostenlos herunterladen{% endif %}</button>
+        <button type="button" class="button button--secondary" data-open-account>{% if is_en %}Account & projects{% else %}Konto & Projekte{% endif %}</button>
+      </div>
+      <p class="leaf-room-studio__status" data-project-status aria-live="polite"></p>
+    </section>
+
+    <dialog class="leaf-room-studio__dialog" data-account-dialog>
+      <form method="dialog" class="leaf-room-studio__dialog-card">
+        <div class="leaf-room-studio__dialog-head">
+          <div><strong>{% if is_en %}LEAF account & projects{% else %}LEAF Konto & Projekte{% endif %}</strong><small>{% if is_en %}Anonymous by default. Personal details are optional.{% else %}Standardmäßig anonym. Persönliche Angaben sind optional.{% endif %}</small></div>
+          <button type="submit" aria-label="{% if is_en %}Close{% else %}Schließen{% endif %}">×</button>
+        </div>
+        <div class="leaf-room-studio__dialog-grid">
+          <section>
+            <h4>{% if is_en %}Profile{% else %}Profil{% endif %}</h4>
+            <label><span>{% if is_en %}Display name (optional){% else %}Anzeigename (optional){% endif %}</span><input type="text" maxlength="80" placeholder="{% if is_en %}e.g. Urban Jungle{% else %}z. B. Urban Jungle{% endif %}" data-display-name></label>
+            <button type="button" class="button button--secondary" data-save-profile>{% if is_en %}Save profile{% else %}Profil speichern{% endif %}</button>
+          </section>
+          <section>
+            <h4>{% if is_en %}Secure access across devices{% else %}Zugriff geräteübergreifend sichern{% endif %}</h4>
+            <p>{% if is_en %}Add an email to the same anonymous account. Your project ownership remains unchanged.{% else %}Füge demselben anonymen Konto eine E-Mail hinzu. Die Eigentümerschaft deiner Projekte bleibt unverändert.{% endif %}</p>
+            <label><span>E-Mail</span><input type="email" autocomplete="email" data-account-email></label>
+            <button type="button" class="button button--secondary" data-link-email>{% if is_en %}Send verification{% else %}Bestätigung senden{% endif %}</button>
+          </section>
+        </div>
+        <section class="leaf-room-studio__projects">
+          <div class="leaf-room-studio__projects-head"><h4>{% if is_en %}Saved rooms{% else %}Gespeicherte Räume{% endif %}</h4><button type="button" data-refresh-projects>{% if is_en %}Refresh{% else %}Aktualisieren{% endif %}</button></div>
+          <div data-project-list><p>{% if is_en %}Create an anonymous account to save rooms in the cloud.{% else %}Lege ein anonymes Konto an, um Räume in der Cloud zu speichern.{% endif %}</p></div>
+        </section>
+        <p class="leaf-room-studio__dialog-status" data-account-status aria-live="polite"></p>
+      </form>
+    </dialog>
+  </section>
+</leaf-room-studio>
+
+{% stylesheet %}
+.leaf-room-studio{display:block;margin-block:clamp(2rem,5vw,5rem);scroll-margin-top:110px}.leaf-room-studio__shell{border:1px solid var(--border);background:var(--background);overflow:hidden}.leaf-room-studio__hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr);gap:clamp(2rem,6vw,6rem);padding:clamp(1.4rem,4vw,3.4rem);background:linear-gradient(135deg,color-mix(in srgb,var(--accent-soft),white 30%),var(--background));border-bottom:1px solid var(--border)}.leaf-room-studio__eyebrow{margin:0 0 .7rem;color:var(--accent);font-size:.7rem;font-weight:850;letter-spacing:.12em;text-transform:uppercase}.leaf-room-studio__hero h2{max-width:17ch;margin:0;font-size:clamp(2rem,4vw,4rem);line-height:1.02;letter-spacing:-.05em}.leaf-room-studio__hero p:last-child{max-width:58ch;color:var(--muted);line-height:1.65}.leaf-room-studio__steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.7rem;margin:0;padding:0;list-style:none}.leaf-room-studio__steps li{min-height:84px;display:grid;grid-template-columns:34px 1fr;align-items:center;gap:.6rem;padding:.8rem;border-top:3px solid var(--accent);background:color-mix(in srgb,var(--background),transparent 12%)}.leaf-room-studio__steps b{color:var(--accent);font-size:.7rem}.leaf-room-studio__steps span{font-size:.8rem;font-weight:760}.leaf-room-studio__account{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:.85rem clamp(1rem,3vw,1.5rem);border-bottom:1px solid var(--border);background:var(--surface)}.leaf-room-studio__account>div:first-child{display:grid;grid-template-columns:12px minmax(0,1fr);gap:.1rem .55rem;align-items:center}.leaf-room-studio__account small{grid-column:2;color:var(--muted);font-size:.72rem}.leaf-room-studio__account-actions{display:flex;flex-wrap:wrap;gap:.5rem}.leaf-room-studio [data-account-dot]{width:10px;height:10px;border-radius:999px;background:var(--muted)}.leaf-room-studio.is-authenticated [data-account-dot]{background:var(--accent)}.leaf-room-studio__grid{display:grid;grid-template-columns:1.15fr .85fr}.leaf-room-studio__panel{padding:clamp(1.15rem,3vw,2rem);border-bottom:1px solid var(--border)}.leaf-room-studio__panel:first-child{border-right:1px solid var(--border)}.leaf-room-studio__panel-head{display:grid;grid-template-columns:36px 1fr;gap:.8rem;margin-bottom:1rem}.leaf-room-studio__panel-head>span,.leaf-room-studio__workspace-head>div>span{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--border);color:var(--accent);font-size:.68rem;font-weight:850}.leaf-room-studio__panel-head h3,.leaf-room-studio__workspace-head h3{margin:0;font-size:clamp(1.25rem,2vw,1.7rem);line-height:1.15}.leaf-room-studio__panel-head p,.leaf-room-studio__workspace-head p{margin:.35rem 0 0;color:var(--muted);font-size:.85rem;line-height:1.5}.leaf-room-studio__photo-upload{min-height:120px;display:grid;place-items:center;align-content:center;gap:.35rem;padding:1rem;border:1px dashed color-mix(in srgb,var(--accent),transparent 50%);background:color-mix(in srgb,var(--accent-soft),transparent 60%);text-align:center;cursor:pointer}.leaf-room-studio__photo-upload input{position:absolute;opacity:0;pointer-events:none}.leaf-room-studio__photo-upload span{font-weight:800}.leaf-room-studio__photo-upload small{max-width:46ch;color:var(--muted)}.leaf-room-studio__photo-stage{margin-top:1rem}.leaf-room-studio__photo-stage canvas{display:block;width:100%;max-height:420px;object-fit:contain;border:1px solid var(--border);background:#111;touch-action:manipulation}.leaf-room-studio__photo-stage p{margin:.5rem 0 0;color:var(--muted);font-size:.75rem}.leaf-room-studio__measure-controls{display:grid;grid-template-columns:minmax(140px,.7fr) 1fr 1fr;gap:.6rem;margin-top:.8rem;align-items:end}.leaf-room-studio label{display:grid;gap:.35rem}.leaf-room-studio label>span{font-size:.72rem;font-weight:760}.leaf-room-studio input,.leaf-room-studio select{width:100%;min-height:46px;border:1px solid var(--border);background:var(--background);color:var(--text);padding:.55rem .7rem;font:inherit}.leaf-room-studio__measure-result{grid-column:1/-1;margin:0;color:var(--accent);font-size:.78rem;font-weight:760}.leaf-room-studio__consent{display:grid!important;grid-template-columns:auto 1fr!important;gap:.55rem!important;margin-top:.8rem;padding:.7rem;border:1px solid var(--border);background:var(--surface)}.leaf-room-studio__consent input{width:18px;min-height:auto;margin-top:.15rem}.leaf-room-studio__consent span{font-size:.76rem!important;font-weight:500!important;line-height:1.45}.leaf-room-studio__dimensions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem}.leaf-room-studio__accuracy{display:flex;justify-content:space-between;gap:1rem;margin-top:1rem;padding:.75rem;border:1px solid var(--border);font-size:.76rem}.leaf-room-studio__accuracy span{color:var(--muted);text-align:right}.leaf-room-studio__workspace{padding:clamp(1.15rem,3vw,2rem);border-bottom:1px solid var(--border)}.leaf-room-studio__workspace-head{display:grid;grid-template-columns:minmax(0,.8fr) minmax(260px,1.2fr);gap:2rem;align-items:end;margin-bottom:1rem}.leaf-room-studio__workspace-head>div{display:flex;align-items:center;gap:.75rem}.leaf-room-studio__workspace-head p{margin:0}.leaf-room-studio__tools{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem}.leaf-room-studio__primitive-tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem}.leaf-room-studio__primitive-tools button,.leaf-room-studio__selection button,.leaf-room-studio__projects-head button{min-height:44px;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:.5rem;font:inherit}.leaf-room-studio__product-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.45rem;align-items:end}.leaf-room-studio__plan-wrap{position:relative}.leaf-room-studio__plan{display:block;width:100%;aspect-ratio:16/9;max-height:660px;border:1px solid var(--border);background:linear-gradient(145deg,#f4f2eb,#e8eee7);touch-action:none}.leaf-room-studio__selection{position:absolute;right:.65rem;top:.65rem;max-width:min(360px,70%);padding:.65rem;border:1px solid var(--border);background:color-mix(in srgb,var(--background),transparent 4%);backdrop-filter:blur(12px)}.leaf-room-studio__selection>div{display:flex;gap:.35rem;margin-top:.45rem}.leaf-room-studio__summary{display:grid;grid-template-columns:repeat(3,minmax(0,.65fr)) minmax(220px,1.1fr);gap:1px;margin-top:.75rem;border:1px solid var(--border);background:var(--border)}.leaf-room-studio__summary>div{min-height:72px;display:flex;flex-direction:column;justify-content:center;padding:.7rem;background:var(--surface)}.leaf-room-studio__summary span{color:var(--muted);font-size:.68rem}.leaf-room-studio__summary strong{margin-top:.2rem}.leaf-room-studio__summary>.button{border-radius:0}.leaf-room-studio__project{padding:clamp(1.15rem,3vw,2rem)}.leaf-room-studio__project-actions{display:grid;grid-template-columns:minmax(180px,1fr) repeat(3,auto);gap:.6rem;align-items:end}.leaf-room-studio__status{margin:.7rem 0 0;color:var(--muted);font-size:.78rem}.leaf-room-studio__dialog{width:min(920px,calc(100% - 1rem));max-height:88%;padding:0;border:1px solid var(--border);background:var(--background);color:var(--text)}.leaf-room-studio__dialog::backdrop{background:rgba(10,18,13,.48);backdrop-filter:blur(4px)}.leaf-room-studio__dialog-card{padding:0}.leaf-room-studio__dialog-head{display:flex;justify-content:space-between;gap:1rem;padding:1rem 1.1rem;border-bottom:1px solid var(--border)}.leaf-room-studio__dialog-head>div{display:grid}.leaf-room-studio__dialog-head small{color:var(--muted)}.leaf-room-studio__dialog-head button{width:44px;height:44px;border:0;background:var(--surface);font-size:1.4rem}.leaf-room-studio__dialog-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border)}.leaf-room-studio__dialog-grid section{display:grid;gap:.7rem;padding:1rem;background:var(--background)}.leaf-room-studio__dialog-grid h4,.leaf-room-studio__projects h4{margin:0}.leaf-room-studio__dialog-grid p{margin:0;color:var(--muted);font-size:.8rem;line-height:1.45}.leaf-room-studio__projects{padding:1rem;border-top:1px solid var(--border)}.leaf-room-studio__projects-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}.leaf-room-studio__project-list{display:grid;gap:.5rem;margin-top:.7rem}.leaf-room-studio__project-card{display:grid;grid-template-columns:1fr auto;gap:.5rem;padding:.7rem;border:1px solid var(--border);background:var(--surface)}.leaf-room-studio__project-card small{color:var(--muted)}.leaf-room-studio__dialog-status{margin:0;padding:0 1rem 1rem;color:var(--accent);font-size:.78rem}
+@media(max-width:900px){.leaf-room-studio__hero,.leaf-room-studio__grid,.leaf-room-studio__workspace-head{grid-template-columns:1fr}.leaf-room-studio__panel:first-child{border-right:0}.leaf-room-studio__tools{grid-template-columns:1fr}.leaf-room-studio__summary{grid-template-columns:repeat(3,1fr)}.leaf-room-studio__summary>.button{grid-column:1/-1;min-height:52px}.leaf-room-studio__project-actions{grid-template-columns:1fr 1fr}.leaf-room-studio__title-input{grid-column:1/-1}}
+@media(max-width:620px){.leaf-room-studio{margin-inline:-.1rem}.leaf-room-studio__hero h2{font-size:clamp(1.9rem,10vw,2.8rem)}.leaf-room-studio__steps{grid-template-columns:1fr 1fr}.leaf-room-studio__account{align-items:flex-start;flex-direction:column}.leaf-room-studio__measure-controls{grid-template-columns:1fr}.leaf-room-studio__measure-result{grid-column:1}.leaf-room-studio__dimensions{grid-template-columns:1fr 1fr}.leaf-room-studio__dimensions label:last-child{grid-column:1/-1}.leaf-room-studio__primitive-tools{grid-template-columns:1fr 1fr}.leaf-room-studio__product-tools{grid-template-columns:1fr}.leaf-room-studio__plan{aspect-ratio:1/1}.leaf-room-studio__summary{grid-template-columns:1fr 1fr}.leaf-room-studio__summary>div:nth-child(3){grid-column:1/-1}.leaf-room-studio__project-actions{grid-template-columns:1fr}.leaf-room-studio__title-input{grid-column:auto}.leaf-room-studio__dialog-grid{grid-template-columns:1fr}.leaf-room-studio__selection{left:.5rem;right:.5rem;max-width:none}.leaf-room-studio__accuracy{flex-direction:column}.leaf-room-studio__accuracy span{text-align:left}}
+{% endstylesheet %}
+
+<script>
+(() => {
+  const root = document.currentScript.previousElementSibling;
+  if (!root || root.dataset.ready === 'true') return;
+  root.dataset.ready = 'true';
+
+  const API = root.dataset.supabaseUrl;
+  const KEY = root.dataset.supabaseKey;
+  const lang = root.dataset.locale === 'en' ? 'en' : 'de';
+  const copy = (de,en) => lang === 'en' ? en : de;
+  const stateKey = 'leaf-room-studio-v2';
+  const sessionKey = 'leaf-room-supabase-session-v1';
+  const projectStatus = root.querySelector('[data-project-status]');
+  const accountStatus = root.querySelector('[data-account-status]');
+  const photoInput = root.querySelector('[data-room-photo]');
+  const photoStage = root.querySelector('[data-photo-stage]');
+  const photoCanvas = root.querySelector('[data-photo-canvas]');
+  const photoCtx = photoCanvas?.getContext('2d');
+  const plan = root.querySelector('[data-plan-canvas]');
+  const ctx = plan?.getContext('2d');
+  const productSelect = root.querySelector('[data-product-select]');
+  const accountDialog = root.querySelector('[data-account-dialog]');
+  let photoImage = null;
+  let photoFile = null;
+  let measurePoints = [];
+  let measurementMode = 'reference';
+  let pixelsPerCm = null;
+  let drag = null;
+  let selectedId = null;
+
+  const room = {width:4.2,depth:3.2,height:2.5};
+  let objects = [];
+  let projectId = crypto.randomUUID();
+  let photoPath = '';
+  let measurement = {source:'manual',reference_cm:null,measured_cm:null,estimated:true};
+
+  const safeSession = () => {
+    try { return JSON.parse(localStorage.getItem(sessionKey) || 'null'); } catch { return null; }
+  };
+  const saveSession = session => {
+    try {
+      const expiresAt = Date.now() + Math.max(60, Number(session.expires_in || 3600)) * 1000;
+      localStorage.setItem(sessionKey, JSON.stringify({...session, expires_at_ms:expiresAt}));
+    } catch {}
+  };
+  const clearSession = () => { try { localStorage.removeItem(sessionKey); } catch {} };
+
+  async function authFetch(path, options = {}) {
+    const headers = new Headers(options.headers || {});
+    headers.set('apikey', KEY);
+    headers.set('content-type', headers.get('content-type') || 'application/json');
+    const session = safeSession();
+    if (session?.access_token) headers.set('authorization', 'Bearer ' + session.access_token);
+    return fetch(API + path, {...options, headers});
+  }
+
+  async function ensureSession() {
+    let session = safeSession();
+    if (session?.access_token && Number(session.expires_at_ms || 0) > Date.now() + 60000) return session;
+    if (session?.refresh_token) {
+      const refreshed = await authFetch('/auth/v1/token?grant_type=refresh_token', {
+        method:'POST', body:JSON.stringify({refresh_token:session.refresh_token})
+      });
+      if (refreshed.ok) {
+        session = await refreshed.json();
+        saveSession(session);
+        syncAccountState();
+        return session;
+      }
+      clearSession();
+    }
+    const response = await fetch(API + '/auth/v1/signup', {
+      method:'POST',
+      headers:{apikey:KEY,'content-type':'application/json'},
+      body:JSON.stringify({data:{}})
+    });
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      throw new Error(body.msg || body.message || body.error_description || 'anonymous_auth_unavailable');
+    }
+    session = await response.json();
+    if (!session?.access_token || !session?.user?.id) throw new Error('anonymous_auth_unavailable');
+    saveSession(session);
+    syncAccountState();
+    return session;
+  }
+
+  function syncAccountState() {
+    const session = safeSession();
+    const authenticated = Boolean(session?.access_token && session?.user?.id);
+    root.classList.toggle('is-authenticated', authenticated);
+    root.querySelectorAll('[data-open-account]').forEach(button => button.hidden = false);
+    const label = root.querySelector('[data-account-label]');
+    const description = root.querySelector('[data-account-copy]');
+    const create = root.querySelector('[data-create-anon]');
+    if (authenticated) {
+      if (label) label.textContent = session.user?.is_anonymous === false ? copy('Gesichertes LEAF Konto','Secured LEAF account') : copy('Anonymes LEAF Konto','Anonymous LEAF account');
+      if (description) description.textContent = copy('Projekte können privat in der Cloud gespeichert werden.','Projects can be stored privately in the cloud.');
+      if (create) create.hidden = true;
+    } else {
+      if (label) label.textContent = copy('Gastmodus','Guest mode');
+      if (description) description.textContent = copy('Frei planen. Ein Konto wird nur für Cloud-Speicherung benötigt.','Plan freely. An account is only needed for cloud saving.');
+      if (create) create.hidden = false;
+    }
+  }
+
+  function clamp(value,min,max){ return Math.min(max,Math.max(min,value)); }
+  function money(cents){
+    try{return new Intl.NumberFormat(lang === 'en' ? 'en-DE':'de-DE',{style:'currency',currency:root.dataset.currency||'EUR'}).format(Number(cents||0)/100)}
+    catch{return (Number(cents||0)/100).toFixed(2)+' €'}
+  }
+  function sanitizePdf(text){return String(text||'').replace(/[äÄ]/g,'ae').replace(/[öÖ]/g,'oe').replace(/[üÜ]/g,'ue').replace(/ß/g,'ss').replace(/[^ -~]/g,' ')}
+  function objectPreset(kind){
+    const presets={
+      plant:{title:copy('Pflanze','Plant'),width:.55,depth:.55,color:'#5f8258'},
+      shelf:{title:copy('Regal','Shelf'),width:1.2,depth:.42,color:'#947b60'},
+      window:{title:copy('Fenster','Window'),width:1.4,depth:.16,color:'#93c2cd'},
+      planter:{title:copy('Pflanzgefäß','Planter'),width:.55,depth:.55,color:'#a78970'},
+      light:{title:copy('Leuchte','Light'),width:.45,depth:.45,color:'#c3ad63'},
+      system:{title:copy('System','System'),width:1.15,depth:.7,color:'#718176'}
+    }; return presets[kind]||presets.system;
+  }
+  function productKind(search){return /regal|station|gewächshaus|terrarium/.test(search)?'system':/topf|gefäß|planter|lechuza|elho|blomus/.test(search)?'planter':'light'}
+
+  function addObject(kind, product = null) {
+    const p=objectPreset(kind);
+    const id=crypto.randomUUID();
+    const obj={id,kind,title:product?.title||p.title,x:room.width/2,z:room.depth/2,width:p.width,depth:p.depth,rotation:0,color:p.color,variantId:product?.variantId||null,price:Number(product?.price||0),url:product?.url||'',image:product?.image||'',dimensionsVerified:false};
+    objects.push(obj); selectedId=id; persistLocal(); drawPlan(); updateSummary();
+  }
+
+  function persistLocal(){
+    try { localStorage.setItem(stateKey,JSON.stringify({projectId,room,objects,photoPath,measurement,title:root.querySelector('[data-project-title]')?.value||''})); } catch {}
+  }
+  function restoreLocal(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(stateKey)||'null');
+      if(!saved)return;
+      projectId=saved.projectId||projectId;
+      Object.assign(room,saved.room||{});
+      objects=Array.isArray(saved.objects)?saved.objects.slice(0,60):[];
+      photoPath=saved.photoPath||'';
+      measurement=saved.measurement||measurement;
+      if(saved.title && root.querySelector('[data-project-title]'))root.querySelector('[data-project-title]').value=saved.title;
+    }catch{}
+    ['width','depth','height'].forEach(k=>{const el=root.querySelector('[data-room-'+k+']');if(el)el.value=Number(room[k]).toFixed(2)});
+  }
+
+  function planMetrics(){
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const rect=plan.getBoundingClientRect();
+    const w=Math.max(1,Math.round(rect.width*dpr)),h=Math.max(1,Math.round(rect.height*dpr));
+    if(plan.width!==w||plan.height!==h){plan.width=w;plan.height=h}
+    const pad=Math.max(40*dpr,Math.min(w,h)*.08);
+    const scale=Math.min((w-pad*2)/room.width,(h-pad*2)/room.depth);
+    return {w,h,pad,scale,ox:(w-room.width*scale)/2,oy:(h-room.depth*scale)/2,dpr};
+  }
+  function drawPlan(){
+    if(!ctx)return;
+    const m=planMetrics();ctx.clearRect(0,0,m.w,m.h);
+    ctx.fillStyle='#eef0e8';ctx.fillRect(m.ox,m.oy,room.width*m.scale,room.depth*m.scale);
+    ctx.strokeStyle='#708177';ctx.lineWidth=Math.max(1,m.dpr);ctx.strokeRect(m.ox,m.oy,room.width*m.scale,room.depth*m.scale);
+    ctx.strokeStyle='rgba(70,95,79,.12)';
+    for(let x=.5;x<room.width;x+=.5){ctx.beginPath();ctx.moveTo(m.ox+x*m.scale,m.oy);ctx.lineTo(m.ox+x*m.scale,m.oy+room.depth*m.scale);ctx.stroke()}
+    for(let z=.5;z<room.depth;z+=.5){ctx.beginPath();ctx.moveTo(m.ox,m.oy+z*m.scale);ctx.lineTo(m.ox+room.width*m.scale,m.oy+z*m.scale);ctx.stroke()}
+    objects.forEach(obj=>{
+      const x=m.ox+(obj.x-obj.width/2)*m.scale,z=m.oy+(obj.z-obj.depth/2)*m.scale,w=obj.width*m.scale,h=obj.depth*m.scale;
+      ctx.save();ctx.translate(x+w/2,z+h/2);ctx.rotate((obj.rotation||0)*Math.PI/180);
+      ctx.fillStyle=obj.color||'#728177';ctx.fillRect(-w/2,-h/2,w,h);
+      ctx.strokeStyle=obj.id===selectedId?'#1f5638':'rgba(34,54,43,.4)';ctx.lineWidth=obj.id===selectedId?3*m.dpr:1*m.dpr;ctx.strokeRect(-w/2,-h/2,w,h);ctx.restore();
+      obj._hit={x,z,w,h};
+      ctx.fillStyle='#24362c';ctx.font=Math.max(11*m.dpr,Math.min(14*m.dpr,w/8))+'px system-ui';ctx.textAlign='center';
+      const title=(obj.title||'').slice(0,26);ctx.fillText(title,x+w/2,z+h/2+4*m.dpr,Math.max(40,w-8*m.dpr));
+    });
+    ctx.fillStyle='rgba(36,54,44,.72)';ctx.font=12*m.dpr+'px system-ui';ctx.textAlign='left';ctx.fillText(room.width.toFixed(2)+' m × '+room.depth.toFixed(2)+' m',m.ox,m.oy-10*m.dpr);
+    syncSelection();
+  }
+  function objectAt(clientX,clientY){
+    const rect=plan.getBoundingClientRect(),sx=plan.width/rect.width,sy=plan.height/rect.height,x=(clientX-rect.left)*sx,y=(clientY-rect.top)*sy;
+    return [...objects].reverse().find(o=>o._hit&&x>=o._hit.x&&x<=o._hit.x+o._hit.w&&y>=o._hit.z&&y<=o._hit.z+o._hit.h);
+  }
+  function canvasToRoom(clientX,clientY){
+    const rect=plan.getBoundingClientRect(),m=planMetrics(),sx=plan.width/rect.width,sy=plan.height/rect.height;
+    return {x:clamp(((clientX-rect.left)*sx-m.ox)/m.scale,0,room.width),z:clamp(((clientY-rect.top)*sy-m.oy)/m.scale,0,room.depth)};
+  }
+  function syncSelection(){
+    const box=root.querySelector('[data-selection]'),obj=objects.find(o=>o.id===selectedId);
+    if(!box)return;box.hidden=!obj;if(obj)root.querySelector('[data-selection-title]').textContent=obj.title;
+  }
+  function updateSummary(){
+    const products=objects.filter(o=>o.variantId),total=products.reduce((s,o)=>s+Number(o.price||0),0);
+    root.querySelector('[data-summary-count]').textContent=String(objects.length);
+    root.querySelector('[data-summary-products]').textContent=String(products.length);
+    root.querySelector('[data-summary-price]').textContent=products.length?money(total):'—';
+    root.querySelector('[data-add-setup]').disabled=!products.length;
+  }
+
+  function drawPhoto(){
+    if(!photoImage||!photoCtx)return;
+    const maxW=1200,maxH=800,ratio=Math.min(maxW/photoImage.naturalWidth,maxH/photoImage.naturalHeight,1);
+    photoCanvas.width=Math.round(photoImage.naturalWidth*ratio);photoCanvas.height=Math.round(photoImage.naturalHeight*ratio);
+    photoCtx.drawImage(photoImage,0,0,photoCanvas.width,photoCanvas.height);
+    if(measurePoints.length){
+      photoCtx.fillStyle='#f5fff7';photoCtx.strokeStyle='#1f7048';photoCtx.lineWidth=4;
+      measurePoints.forEach(p=>{photoCtx.beginPath();photoCtx.arc(p.x,p.y,8,0,Math.PI*2);photoCtx.fill();photoCtx.stroke()});
+      if(measurePoints.length===2){photoCtx.beginPath();photoCtx.moveTo(measurePoints[0].x,measurePoints[0].y);photoCtx.lineTo(measurePoints[1].x,measurePoints[1].y);photoCtx.stroke()}
+    }
+  }
+  function linePixels(){if(measurePoints.length!==2)return 0;return Math.hypot(measurePoints[1].x-measurePoints[0].x,measurePoints[1].y-measurePoints[0].y)}
+
+  photoInput?.addEventListener('change',()=>{
+    const file=photoInput.files?.[0];if(!file)return;
+    if(file.size>10*1024*1024){projectStatus.textContent=copy('Foto ist größer als 10 MB.','Photo is larger than 10 MB.');return}
+    photoFile=file;const url=URL.createObjectURL(file),img=new Image();
+    img.onload=()=>{photoImage=img;measurePoints=[];pixelsPerCm=null;photoStage.hidden=false;root.querySelector('[data-measure-controls]').hidden=false;root.querySelector('[data-photo-consent-wrap]').hidden=false;drawPhoto();URL.revokeObjectURL(url)};
+    img.src=url;
+  });
+  photoCanvas?.addEventListener('pointerup',event=>{
+    if(!photoImage)return;
+    const rect=photoCanvas.getBoundingClientRect(),x=(event.clientX-rect.left)*(photoCanvas.width/rect.width),y=(event.clientY-rect.top)*(photoCanvas.height/rect.height);
+    if(measurePoints.length>=2)measurePoints=[];measurePoints.push({x,y});drawPhoto();
+    if(measurePoints.length===2&&measurementMode==='measure'&&pixelsPerCm){
+      const cm=linePixels()/pixelsPerCm;measurement={...measurement,source:'photo_reference',measured_cm:Math.round(cm*10)/10,estimated:true};
+      const result=root.querySelector('[data-measure-result]');if(result)result.textContent=copy('Gemessene Strecke: ','Measured line: ')+measurement.measured_cm.toFixed(1)+' cm';
+      root.querySelector('[data-accuracy-label]').textContent=copy('Foto-Referenzmessung · Näherung, bitte prüfen','Photo reference measurement · estimate, please verify');
+      persistLocal();
+    }
+  });
+  root.querySelector('[data-set-reference]')?.addEventListener('click',()=>{
+    const px=linePixels(),cm=Number(root.querySelector('[data-reference-cm]')?.value||0);
+    if(px<=0||cm<10)return;
+    pixelsPerCm=px/cm;measurementMode='measure';measurement={source:'photo_reference',reference_cm:cm,measured_cm:null,estimated:true};
+    measurePoints=[];drawPhoto();root.querySelector('[data-measure-line]').disabled=false;
+    root.querySelector('[data-measure-result]').textContent=copy('Referenz gesetzt. Markiere jetzt eine weitere Strecke im Foto.','Reference set. Now mark another line in the photo.');
+  });
+  root.querySelector('[data-measure-line]')?.addEventListener('click',()=>{measurementMode='measure';measurePoints=[];drawPhoto()});
+
+  root.querySelectorAll('[data-room-width],[data-room-depth],[data-room-height]').forEach(input=>input.addEventListener('input',()=>{
+    const key=input.hasAttribute('data-room-width')?'width':input.hasAttribute('data-room-depth')?'depth':'height';
+    room[key]=clamp(Number(input.value||room[key]),key==='height'?1.8:1,key==='height'?6:20);persistLocal();drawPlan();
+  }));
+  root.querySelectorAll('[data-add-kind]').forEach(button=>button.addEventListener('click',()=>addObject(button.dataset.addKind)));
+  root.querySelector('[data-add-product]')?.addEventListener('click',()=>{
+    const option=productSelect?.selectedOptions?.[0];if(!option?.value)return;
+    const search=(option.dataset.search||'').toLowerCase();
+    addObject(productKind(search),{variantId:option.value,title:option.dataset.title||option.textContent.trim(),price:option.dataset.price,url:option.dataset.url,image:option.dataset.image});
+  });
+  root.querySelector('[data-rotate]')?.addEventListener('click',()=>{const o=objects.find(x=>x.id===selectedId);if(o){o.rotation=((o.rotation||0)+45)%360;persistLocal();drawPlan()}});
+  root.querySelector('[data-duplicate]')?.addEventListener('click',()=>{const o=objects.find(x=>x.id===selectedId);if(o){objects.push({...o,id:crypto.randomUUID(),x:clamp(o.x+.2,0,room.width),z:clamp(o.z+.2,0,room.depth)});selectedId=objects.at(-1).id;persistLocal();drawPlan();updateSummary()}});
+  root.querySelector('[data-delete]')?.addEventListener('click',()=>{objects=objects.filter(x=>x.id!==selectedId);selectedId=null;persistLocal();drawPlan();updateSummary()});
+  plan?.addEventListener('pointerdown',event=>{const o=objectAt(event.clientX,event.clientY);selectedId=o?.id||null;if(o){drag={id:o.id};plan.setPointerCapture?.(event.pointerId)}drawPlan()});
+  plan?.addEventListener('pointermove',event=>{if(!drag)return;const o=objects.find(x=>x.id===drag.id);if(!o)return;const p=canvasToRoom(event.clientX,event.clientY);o.x=clamp(p.x,o.width/2,room.width-o.width/2);o.z=clamp(p.z,o.depth/2,room.depth-o.depth/2);drawPlan()});
+  const stopDrag=()=>{if(drag){drag=null;persistLocal()}};
+  plan?.addEventListener('pointerup',stopDrag);plan?.addEventListener('pointercancel',stopDrag);
+
+  async function uploadPhoto(session){
+    if(!photoFile||!root.querySelector('[data-photo-consent]')?.checked)return '';
+    const ext=(photoFile.type.split('/')[1]||'jpg').replace('jpeg','jpg'),path=session.user.id+'/'+projectId+'/room.'+ext;
+    const response=await fetch(API+'/storage/v1/object/leaf-room-projects/'+path,{
+      method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':photoFile.type,'x-upsert':'true'},body:photoFile
+    });
+    if(!response.ok)throw new Error('photo_upload_failed');return path;
+  }
+  function projectPayload(session){
+    const products=objects.filter(o=>o.variantId).map(({variantId,title,price,url,x,z,rotation,width,depth,dimensionsVerified})=>({variant_id:String(variantId),title,price_cents:price,url,x,z,rotation,width_m:width,depth_m:depth,dimensions_verified:Boolean(dimensionsVerified)}));
+    return {
+      id:projectId,resume_code:projectId,mode:'project',project_kind:'room',owner_user_id:session.user.id,
+      title:(root.querySelector('[data-project-title]')?.value||copy('Mein Pflanzenraum','My plant room')).slice(0,80),
+      schema_version:1,locale:root.dataset.locale||'de',recipe:{},addons:[],
+      room_geometry:{width_m:room.width,depth_m:room.depth,height_m:room.height},
+      room_objects:objects.map(({_hit,...o})=>o),room_products:products,room_measurement:measurement,
+      room_photo_path:photoPath||null,room_photo_consent_at:photoPath?new Date().toISOString():null,
+      preferences:{product_usage_optional:true},result_summary:{object_count:objects.length,product_count:products.length,measurement_estimated:Boolean(measurement.estimated)},
+      updated_at:new Date().toISOString()
+    };
+  }
+  async function saveCloud(){
+    projectStatus.textContent=copy('Projekt wird gespeichert…','Saving project…');
+    try{
+      const session=await ensureSession();
+      if(photoFile&&root.querySelector('[data-photo-consent]')?.checked)photoPath=await uploadPhoto(session);
+      const payload=projectPayload(session);
+      const response=await fetch(API+'/rest/v1/configurator_projects?on_conflict=resume_code',{
+        method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json',prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(payload)
+      });
+      if(!response.ok)throw new Error('project_save_failed');
+      persistLocal();projectStatus.textContent=copy('Projekt privat gespeichert.','Project saved privately.');await loadProjectList();
+    }catch(error){
+      projectStatus.textContent=copy('Cloud-Speicherung ist derzeit nicht verfügbar. Dein Projekt bleibt lokal auf diesem Gerät erhalten.','Cloud saving is currently unavailable. Your project remains stored locally on this device.');
+    }
+  }
+  root.querySelector('[data-save-cloud]')?.addEventListener('click',saveCloud);
+  root.querySelector('[data-create-anon]')?.addEventListener('click',async()=>{
+    const button=root.querySelector('[data-create-anon]');button.disabled=true;
+    try{await ensureSession();projectStatus.textContent=copy('Anonymes Konto erstellt. Es enthält keine Pflichtangaben zu deiner Identität.','Anonymous account created. It contains no required identity details.');await loadProjectList()}
+    catch{projectStatus.textContent=copy('Anonyme Konten sind in Supabase noch nicht aktiviert. Du kannst den Planer trotzdem lokal und den PDF-Export vollständig nutzen.','Anonymous accounts are not enabled in Supabase yet. You can still use the planner locally and export PDFs.')}
+    finally{button.disabled=false}
+  });
+
+  async function saveProfile(){
+    try{
+      const session=await ensureSession(),name=(root.querySelector('[data-display-name]')?.value||'').trim().slice(0,80);
+      const response=await fetch(API+'/rest/v1/leaf_profiles?on_conflict=user_id',{
+        method:'POST',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json',prefer:'resolution=merge-duplicates'},body:JSON.stringify({user_id:session.user.id,display_name:name||null,profile_mode:name?'pseudonymous':'anonymous',preferences:{},updated_at:new Date().toISOString()})
+      });
+      if(!response.ok)throw new Error();accountStatus.textContent=copy('Profil gespeichert.','Profile saved.');
+    }catch{accountStatus.textContent=copy('Profil konnte nicht gespeichert werden.','Profile could not be saved.')}
+  }
+  root.querySelector('[data-save-profile]')?.addEventListener('click',saveProfile);
+
+  root.querySelector('[data-link-email]')?.addEventListener('click',async()=>{
+    const email=(root.querySelector('[data-account-email]')?.value||'').trim();
+    if(!/^[^@s]+@[^@s]+.[^@s]+$/.test(email)){accountStatus.textContent=copy('Bitte gültige E-Mail eingeben.','Please enter a valid email.');return}
+    try{
+      const session=await ensureSession();
+      const response=await fetch(API+'/auth/v1/user',{method:'PUT',headers:{apikey:KEY,authorization:'Bearer '+session.access_token,'content-type':'application/json'},body:JSON.stringify({email})});
+      const body=await response.json().catch(()=>({}));if(!response.ok)throw new Error(body.msg||body.message||'link_failed');
+      accountStatus.textContent=copy('Bestätigungs-E-Mail wurde angefordert. Nach Bestätigung bleibt dasselbe Projektkonto bestehen.','Verification email requested. After verification the same project account remains in place.');
+    }catch{accountStatus.textContent=copy('E-Mail konnte nicht verknüpft werden. Falls die Adresse bereits existiert, melde dich später mit diesem Konto an.','Email could not be linked. If the address already exists, sign in with that account later.')}
+  });
+
+  async function loadProjectList(){
+    const list=root.querySelector('[data-project-list]'),session=safeSession();if(!list||!session?.user?.id)return;
+    try{
+      const response=await fetch(API+'/rest/v1/configurator_projects?select=id,resume_code,title,room_geometry,room_objects,room_products,room_measurement,room_photo_path,updated_at&project_kind=eq.room&owner_user_id=eq.'+encodeURIComponent(session.user.id)+'&order=updated_at.desc&limit=20',{headers:{apikey:KEY,authorization:'Bearer '+session.access_token}});
+      if(!response.ok)throw new Error();const rows=await response.json();
+      list.innerHTML='';list.className='leaf-room-studio__project-list';
+      if(!rows.length){list.innerHTML='<p>'+copy('Noch keine Cloud-Projekte gespeichert.','No cloud projects saved yet.')+'</p>';return}
+      rows.forEach(row=>{
+        const card=document.createElement('div');card.className='leaf-room-studio__project-card';
+        const info=document.createElement('div'),title=document.createElement('strong'),small=document.createElement('small'),button=document.createElement('button');
+        title.textContent=row.title||copy('Pflanzenraum','Plant room');small.textContent=new Date(row.updated_at).toLocaleString(lang==='en'?'en-GB':'de-DE');
+        info.append(title,small);button.type='button';button.textContent=copy('Öffnen','Open');button.addEventListener('click',()=>loadProject(row));card.append(info,button);list.append(card);
+      });
+    }catch{list.innerHTML='<p>'+copy('Projekte konnten nicht geladen werden.','Projects could not be loaded.')+'</p>'}
+  }
+  function loadProject(row){
+    projectId=row.id||row.resume_code||crypto.randomUUID();Object.assign(room,{width:Number(row.room_geometry?.width_m||4.2),depth:Number(row.room_geometry?.depth_m||3.2),height:Number(row.room_geometry?.height_m||2.5)});
+    objects=Array.isArray(row.room_objects)?row.room_objects:[];measurement=row.room_measurement||measurement;photoPath=row.room_photo_path||'';
+    root.querySelector('[data-project-title]').value=row.title||copy('Mein Pflanzenraum','My plant room');
+    ['width','depth','height'].forEach(k=>root.querySelector('[data-room-'+k+']').value=Number(room[k]).toFixed(2));
+    selectedId=null;persistLocal();drawPlan();updateSummary();accountDialog?.close();projectStatus.textContent=copy('Gespeicherten Raum geladen.','Saved room loaded.');
+  }
+  root.querySelector('[data-refresh-projects]')?.addEventListener('click',loadProjectList);
+  root.querySelectorAll('[data-open-account]').forEach(button=>button.addEventListener('click',()=>{accountDialog?.showModal();loadProjectList()}));
+
+  root.querySelector('[data-add-setup]')?.addEventListener('click',async()=>{
+    const products=objects.filter(o=>o.variantId),button=root.querySelector('[data-add-setup]');if(!products.length)return;
+    const grouped=new Map();products.forEach(o=>grouped.set(o.variantId,(grouped.get(o.variantId)||0)+1));button.disabled=true;
+    try{
+      const response=await fetch(root.dataset.cartAddUrl||'/cart/add.js',{method:'POST',headers:{'content-type':'application/json','accept':'application/json'},body:JSON.stringify({items:[...grouped.entries()].map(([id,quantity])=>({id,quantity}))})});
+      if(!response.ok)throw new Error();window.location.href=root.dataset.cartUrl||'/cart';
+    }catch{projectStatus.textContent=copy('Produkte konnten nicht in den Warenkorb gelegt werden.','Products could not be added to cart.');button.disabled=false}
+  });
+
+  root.querySelector('[data-download-pdf]')?.addEventListener('click',async()=>{
+    const button=root.querySelector('[data-download-pdf]');button.disabled=true;projectStatus.textContent=copy('PDF wird erstellt…','Creating PDF…');
+    try{
+      const {jsPDF}=await import('https://cdn.jsdelivr.net/npm/jspdf@4.2.1/+esm');
+      const doc=new jsPDF({unit:'mm',format:'a4'}),title=sanitizePdf(root.querySelector('[data-project-title]')?.value||'LEAF Room Studio');
+      doc.setFontSize(20);doc.text('LEAF Room Studio',15,18);doc.setFontSize(13);doc.text(title,15,28);
+      doc.setFontSize(10);doc.text(sanitizePdf(copy('Raummasse: ','Room dimensions: '))+room.width.toFixed(2)+' m x '+room.depth.toFixed(2)+' m x '+room.height.toFixed(2)+' m',15,37);
+      doc.text(sanitizePdf(copy('Messung: Planvorschlag / Foto-Referenz ist eine Naeherung und vor Ort zu pruefen.','Measurement: planning estimate / photo reference must be verified on site.')),15,44,{maxWidth:180});
+      const image=plan.toDataURL('image/jpeg',.88);doc.addImage(image,'JPEG',15,54,180,116);
+      let y=178;doc.setFontSize(12);doc.text(sanitizePdf(copy('Eingesetzte LEAF-Produkte','Placed LEAF products')),15,y);y+=7;doc.setFontSize(9);
+      const products=objects.filter(o=>o.variantId);if(!products.length){doc.text(sanitizePdf(copy('Keine Produkte - reine Raumplanung.','No products - room planning only.')),15,y)}
+      else{products.slice(0,14).forEach((o,i)=>{doc.text((i+1)+'. '+sanitizePdf(o.title)+' - '+sanitizePdf(money(o.price)),15,y,{maxWidth:180});y+=6})}
+      const total=products.reduce((s,o)=>s+Number(o.price||0),0);if(products.length){y+=2;doc.setFontSize(10);doc.text(sanitizePdf(copy('Preisstand bei Export: ','Price at export: '))+sanitizePdf(money(total)),15,y)}
+      doc.setFontSize(8);doc.text(sanitizePdf(copy('Produkte und Preise muessen vor dem Kauf im Shopify-Warenkorb erneut bestaetigt werden.','Products and prices must be reconfirmed in the Shopify cart before purchase.')),15,286,{maxWidth:180});
+      doc.save('LEAF-Room-Studio-'+new Date().toISOString().slice(0,10)+'.pdf');projectStatus.textContent=copy('PDF wurde erstellt.','PDF created.');
+    }catch{projectStatus.textContent=copy('PDF-Modul konnte nicht geladen werden. Nutze vorübergehend die Druckfunktion des Browsers als PDF.','PDF module could not load. Use the browser print function as PDF for now.');window.print()}
+    finally{button.disabled=false}
+  });
+
+  restoreLocal();syncAccountState();drawPlan();updateSummary();
+  new ResizeObserver(()=>drawPlan()).observe(plan);
+})();
+</script>
