@@ -162,9 +162,15 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           import json
+          import re
           from pathlib import Path
 
-          settings = json.loads(Path('config/settings_data.json').read_text(encoding='utf-8'))
+          def parse_shopify_json(path):
+              text = Path(path).read_text(encoding='utf-8-sig')
+              text = re.sub(r'^\s*/\*.*?\*/\s*', '', text, count=1, flags=re.S)
+              return json.loads(text)
+
+          settings = parse_shopify_json('config/settings_data.json')
           blocks = (settings.get('current') or {}).get('blocks') or {}
           forbidden = ('/inbox/', '/cwill-ai-chat/')
           enabled_duplicate_chat = [
@@ -176,7 +182,7 @@ jobs:
           if enabled_duplicate_chat:
               raise SystemExit('Duplicate chat embed still enabled: ' + ', '.join(enabled_duplicate_chat))
 
-          index = json.loads(Path('templates/index.json').read_text(encoding='utf-8'))
+          index = parse_shopify_json('templates/index.json')
           if 'shop_videos' in (index.get('sections') or {}) or 'shop_videos' in (index.get('order') or []):
               raise SystemExit('Empty app-based homepage video section must not be part of the primary template.')
 
