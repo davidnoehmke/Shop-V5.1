@@ -99,6 +99,8 @@
   </header>
   {% endunless %}
 
+  {% render 'leaf-solution-gateway', collection: collection, section_id: section.id %}
+
   {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
 
   {% if collection.handle == 'interieur-solutions' %}
@@ -507,7 +509,7 @@
       </div>
 
       {% paginate collection.products by 48 %}
-        {% if collection.handle == 'pflanzenbeleuchtung' %}<span id="CollectionProducts" class="visually-hidden" aria-hidden="true"></span>{% endif %}
+        <span id="CollectionProducts" class="visually-hidden" aria-hidden="true"></span>
         <div class="main-collection__grid" id="CollectionProducts-{{ section.id }}">
           {% for product in collection.products %}<div class="leaf-editorial-item" data-product-type="{{ product.type | handleize }}">{% render 'leaf-editorial-product', product: product, section_id: section.id %}</div>{% endfor %}
         </div>
