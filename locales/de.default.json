@@ -244,6 +244,23 @@
     "editorial": {
       "difficulty": "Pflegeaufwand",
       "cart_error": "Dieses Produkt konnte nicht hinzugefügt werden. Bitte versuche es erneut."
+    },
+    "content": {
+      "label": "Produktinformationen",
+      "description": "Beschreibung",
+      "application": "Anwendung",
+      "faq": "Häufige Fragen",
+      "function": "Hauptfunktion",
+      "suitable_for": "Geeignet für",
+      "water_behavior": "Wasserverhalten",
+      "use_as": "Verwendung als:",
+      "mounting": "Montage:",
+      "care_tip": "Pflegehinweis:",
+      "notice": "Hinweis:",
+      "safety": "Sicherheit:",
+      "variant_check": "Variantenangaben werden vor dem Kauf geprüft.",
+      "manufacturer_information": "Herstellerinformationen öffnen",
+      "howto_name": "{{ product }} richtig anwenden"
     }
   },
   "product_variant_guide": {
@@ -778,14 +795,14 @@
       "choice_text": "Empfehlungen erklären das Warum und lassen Raum für eigene Entscheidungen."
     },
     "solution": {
-      "eyebrow": "Substrat & Pflanzenlicht",
-      "heading": "Die passende Basis für deine Pflanzen.",
-      "text": "Fertige Substratmischung wählen, eine eigene Rezeptur bauen oder Pflanzenlicht finden.",
-      "primary": "Eigene Mischung bauen",
-      "secondary": "Pflanzenprojekt planen",
-      "world_heading": "Das Sortiment rund um dein Pflanzenprojekt",
-      "world_intro": "Individuelle Substrate bleiben der Kern. Ergänzend findest du Pflanzenlicht und Interieur, Pflanzgefäße, Zimmerpflanzen, Anzucht, Sets und Pflege als zusammenhängende Produktwelten.",
-      "paths_label": "Direkt zum passenden Angebot",
+      "eyebrow": "Wurzelraum · Pflanzenlicht · Gefäß · Setup",
+      "heading": "Alles für deine Pflanze – als System gedacht.",
+      "text": "Substrat, Licht, Gefäß und Versorgung passend zusammenstellen. Starte mit deiner Aufgabe statt mit einer Produktkategorie.",
+      "primary": "Lösung finden",
+      "secondary": "Direkt shoppen",
+      "world_heading": "Vier Wege zu einem funktionierenden Pflanzen-Setup",
+      "world_intro": "Wurzelraum, Pflanzenlicht, Gefäß und Versorgung greifen ineinander. Wähle zuerst die Aufgabe – die passenden Produkte folgen danach.",
+      "paths_label": "Lösungsbereich wählen",
       "ready": "Fertigmischungen kaufen",
       "ready_help": "Passende Rezeptur direkt auswählen.",
       "custom_help": "Bestandteile und Anteile selbst bestimmen.",
