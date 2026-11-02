@@ -16,9 +16,9 @@
     assign hero_heading = 'home.solution.heading' | t
     assign hero_text = 'home.solution.text' | t
     assign hero_primary_label = 'home.solution.primary' | t
-    assign hero_primary_link = '#Substrat-Konfigurator'
+    assign hero_primary_link = '#LeafSolutions'
     assign hero_secondary_label = 'home.solution.secondary' | t
-    assign hero_secondary_link = '#LeafAdvisor'
+    assign hero_secondary_link = routes.collections_url | append: '/all'
   endif
 %}
 
@@ -43,13 +43,10 @@
       {% if hero_text != blank %}<div class="hero__text rte">{{ hero_text }}</div>{% else %}<p>{{ 'hero.text' | t }}</p>{% endif %}
       {% if request.page_type == 'index' %}
         <nav class="hero__paths" aria-label="{{ 'home.solution.paths_label' | t | escape }}">
-          {% assign ready_url = collections['pflanzsubstrate-mischungen'].url %}
-          {% assign light_url = collections['pflanzenbeleuchtung'].url %}
-          {% if ready_url == blank %}{% assign ready_url = routes.collections_url | append: '/pflanzsubstrate-mischungen' %}{% endif %}
-          {% if light_url == blank %}{% assign light_url = routes.collections_url | append: '/pflanzenbeleuchtung' %}{% endif %}
-          <a href="{{ ready_url }}"><strong>{{ 'home.solution.ready' | t }}</strong><span>{{ 'home.solution.ready_help' | t }}</span><b aria-hidden="true">→</b></a>
-          <a href="#Substrat-Konfigurator"><strong>{{ 'home.solution.primary' | t }}</strong><span>{{ 'home.solution.custom_help' | t }}</span><b aria-hidden="true">→</b></a>
-          <a href="{{ light_url }}"><strong>{{ 'home.solution.light' | t }}</strong><span>{{ 'home.solution.light_help' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}"><strong>{{ 'header.solution_wurzelraum_title' | t }}</strong><span>{{ 'header.solution_wurzelraum_text' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}"><strong>{{ 'header.solution_light_title' | t }}</strong><span>{{ 'header.solution_light_text' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}"><strong>{{ 'header.solution_vessels_title' | t }}</strong><span>{{ 'header.solution_vessels_text' | t }}</span><b aria-hidden="true">→</b></a>
+          <a href="{% render 'leaf-localized-url', url: '/collections/interieur-solutions#InterieurRoomBuilderHeading' %}"><strong>{{ 'header.solution_setup_title' | t }}</strong><span>{{ 'header.solution_setup_text' | t }}</span><b aria-hidden="true">→</b></a>
         </nav>
       {% else %}
       <div class="hero__buttons">
@@ -185,7 +182,7 @@
   }
   @media (max-width: 420px) { .hero { min-height: auto; } .hero__image { height: 100%; } .hero__content { padding-top: 0; } .hero__inner { min-height: 650px; } }
   @media (prefers-reduced-motion: reduce) { .hero__image { animation: none; transform: none; } }
-  .hero__paths { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; margin-top: 1.5rem; }
+  .hero__paths { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; margin-top: 1.5rem; }
   .hero__paths a { position: relative; display: grid; align-content: start; gap: .4rem; padding: 1rem 1rem 2.5rem; color: #173f2f; background: #faf9f5; text-decoration: none; line-height: 1.4; }
   .hero__paths strong { font-size: 1rem; font-weight: 700; }
   .hero__paths span { font-size: .875rem; }
