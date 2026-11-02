@@ -223,12 +223,17 @@ test('interior zone transitions decode translated entities before safe text outp
 });
 
 
-test('shop assistant keeps photo upload unavailable while voice remains accessible', () => {
+test('shop assistant exposes bounded plant photo analysis while voice remains accessible', () => {
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /utterance\.rate = \.78/);
   assert.match(liquid, /payload\.speech/);
   assert.match(liquid, /this\.resumeVoice\(\)/);
-  assert.doesNotMatch(liquid, /data-assistant-photo|type="file"/);
+  assert.match(liquid, /data-assistant-photo/);
+  assert.match(liquid, /type="file"[^>]*image\/jpeg,image\/png,image\/webp/);
+  assert.match(liquid, /files\.slice\(0, 3\)/);
+  assert.match(liquid, /maxDimension = 1280/);
+  assert.match(liquid, /canvas\.toDataURL\('image\/jpeg', quality\)/);
+  assert.match(liquid, /dataUrl\.length <= 1400000/);
   assert.match(liquid, /data-assistant-voice/);
 });
 
@@ -237,7 +242,7 @@ test('desktop assistant exposes hover actions and keeps the collapsed launcher a
   const liquid = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
   assert.match(liquid, /data-assistant-action-chat/);
   assert.match(liquid, /data-assistant-action-voice/);
-  assert.doesNotMatch(liquid, /data-assistant-action-photo/);
+  assert.match(liquid, /data-assistant-action-photo/);
   assert.match(liquid, /@media \(min-width: 701px\)[\s\S]*leaf-shop-assistant:hover[\s\S]*leaf-shop-assistant__quick-actions/);
   assert.match(liquid, /right: max\(1\.5rem, env\(safe-area-inset-right\)\)/);
   assert.match(liquid, /bottom: max\(1\.5rem, env\(safe-area-inset-bottom\)\)/);
