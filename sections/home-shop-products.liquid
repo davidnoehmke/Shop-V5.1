@@ -1,0 +1,74 @@
+{% liquid
+  assign world = section.settings.world
+  assign heading_key = 'home.shop.' | append: world | append: '_heading'
+  assign text_key = 'home.shop.' | append: world | append: '_text'
+  assign link_key = 'home.shop.' | append: world | append: '_link'
+  assign help_key = 'home.shop.' | append: world | append: '_help'
+  assign shelf_id = 'HomeSubstrates'
+  assign help_url = '#Substrat-Konfigurator'
+  if world == 'lighting'
+    assign shelf_id = 'HomeLighting'
+    assign help_url = pages['pflanzenlicht-konfigurator'].url
+  endif
+  assign shelf_products = section.settings.products
+  assign shelf_collection = section.settings.collection
+  if shelf_products == blank
+    assign shelf_products = shelf_collection.products
+  endif
+  assign shown = 0
+%}
+<section id="{{ shelf_id }}" class="home-shop page-width" aria-labelledby="HomeShopHeading-{{ section.id }}">
+  <div class="home-shop__header">
+    <div>
+      <h2 id="HomeShopHeading-{{ section.id }}">{{ heading_key | t }}</h2>
+      <p>{{ text_key | t }}</p>
+    </div>
+    {% if shelf_collection != blank %}<a class="home-shop__all" href="{{ shelf_collection.url }}">{{ link_key | t }} <span aria-hidden="true">→</span></a>{% endif %}
+  </div>
+  <div class="home-shop__grid">
+    {% for product in shelf_products limit: 8 %}
+      {% if product.available %}
+        {% render 'product-card', product: product, compact: true, home_card: true %}
+        {% assign shown = shown | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if shown == 0 %}<p>{{ 'home.shop.empty' | t }}</p>{% endif %}
+  {% if help_url != blank %}<a class="home-shop__help" href="{{ help_url }}">{{ help_key | t }} <span aria-hidden="true">→</span></a>{% endif %}
+</section>
+{% stylesheet %}
+.home-shop { padding-block: clamp(1.5rem, 4vw, 3rem); scroll-margin-top: 100px; }
+.home-shop__header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+.home-shop__header h2 { margin: 0; text-wrap: balance; }
+.home-shop__header p { max-width: 52ch; margin: .5rem 0 0; color: var(--muted); }
+.home-shop__all, .home-shop__help { display: inline-flex; align-items: center; gap: .5rem; min-height: 48px; color: var(--accent); font-weight: 650; text-underline-offset: 4px; }
+.home-shop__all { flex-shrink: 0; }
+.home-shop__help { margin-top: .75rem; }
+.home-shop__grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.home-shop .product-card { min-width: 0; }
+.home-shop .product-card__media { aspect-ratio: 1; overflow: hidden; background: #edf0e8; }
+.home-shop .product-card__media img { width: 100%; height: 100%; object-fit: contain; }
+.home-shop .product-card__copy h3 { font-size: 1rem; line-height: 1.35; }
+.home-shop a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (prefers-reduced-motion: no-preference) {
+  .home-shop .product-card__media img { transition: transform .35s ease; }
+  .home-shop .product-card__link:is(:hover, :focus-visible) img { transform: scale(1.055); }
+}
+@media (max-width: 760px) {
+  .home-shop__header { display: block; margin-bottom: .75rem; }
+  .home-shop__header p { font-size: .9rem; line-height: 1.5; }
+  .home-shop__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+  .home-shop .product-card__copy h3 { font-size: .9rem; overflow-wrap: anywhere; }
+}
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "Produkte im Fokus",
+  "settings": [
+    {"type":"select","id":"world","label":"Produktwelt","options":[{"value":"substrates","label":"Substrate"},{"value":"lighting","label":"Pflanzenlicht"}],"default":"substrates"},
+    {"type":"collection","id":"collection","label":"Kollektion"},
+    {"type":"product_list","id":"products","label":"Produktauswahl","limit":8}
+  ],
+  "presets":[{"name":"Produkte im Fokus"}]
+}
+{% endschema %}
