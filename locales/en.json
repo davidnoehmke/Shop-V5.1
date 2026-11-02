@@ -1074,7 +1074,7 @@
     "placeholder": "e.g. Which substrate suits my Alocasia?",
     "advisor": "Open LEAF Planner",
     "send": "Send",
-    "privacy": "Your voice conversation is processed by OpenAI to provide answers. It is not stored as a customer profile.",
+    "privacy": "Your voice conversation and uploaded plant photos are processed by OpenAI to provide answers, but are not stored as a customer profile. Photos are not kept in the chat history after analysis.",
     "thinking": "Checking the LEAF knowledge base …",
     "error": "I cannot answer right now. Please use the LEAF Planner or browse the range instead.",
     "voice": "Start voice conversation",
@@ -1090,7 +1090,17 @@
     "voice_connecting": "Connecting your voice conversation…",
     "voice_unavailable": "The live voice conversation is currently unavailable. You can still write your question.",
     "voice_fallback": "Browser voice mode: use the microphone button to stop the answer.",
-    "voice_paused": "Voice conversation paused. Start the microphone to continue."
+    "voice_paused": "Voice conversation paused. Start the microphone to continue.",
+    "photo_choose": "Add plant photo",
+    "photo_remove": "Remove photo",
+    "photo_selected": "Photo selected",
+    "photo_selected_plural": "Photos selected",
+    "photo_too_many": "You can analyze up to three photos at once.",
+    "photo_invalid": "Please use JPEG, PNG or WebP.",
+    "photo_prompt": "Please analyze my plant problem from these photos.",
+    "photo_privacy": "Photos are processed only for this analysis and are not stored in the LEAF chat history.",
+    "photo_analyzing": "Analyzing visible signs and comparing plausible causes …",
+    "photo_unavailable": "Image analysis is currently unavailable. Your selected photos are kept so you can try again."
   },
   "interior_guide": {
     "read": "Plan your green corner: lighting, pots, growing media and plants explained"
