@@ -244,6 +244,23 @@
     "editorial": {
       "difficulty": "Care difficulty",
       "cart_error": "This product could not be added. Please try again."
+    },
+    "content": {
+      "label": "Product information",
+      "description": "Description",
+      "application": "How to use",
+      "faq": "Frequently asked questions",
+      "function": "Purpose",
+      "suitable_for": "Suitable for",
+      "water_behavior": "Water behaviour",
+      "use_as": "Use as:",
+      "mounting": "Mounting:",
+      "care_tip": "Care tip:",
+      "notice": "Note:",
+      "safety": "Safety:",
+      "variant_check": "Variant details are verified before purchase.",
+      "manufacturer_information": "Open manufacturer information",
+      "howto_name": "How to use {{ product }}"
     }
   },
   "product_variant_guide": {
@@ -786,14 +803,14 @@
       "choice_text": "Recommendations explain the why and leave room for your own decisions."
     },
     "solution": {
-      "eyebrow": "Substrate & plant lighting",
-      "heading": "The right foundation for your plants.",
-      "text": "Choose a ready-made substrate mix, build your own recipe or find plant lighting.",
-      "primary": "Build your own mix",
-      "secondary": "Plan a plant project",
-      "world_heading": "The product worlds around your plant project",
-      "world_intro": "Custom substrate remains the core, complemented by plant lighting and interiors, planters, houseplants, propagation, bundles and care as connected product worlds.",
-      "paths_label": "Find what you need",
+      "eyebrow": "Root zone · Plant lighting · Planter · Setup",
+      "heading": "Everything your plant needs – designed as a system.",
+      "text": "Combine substrate, lighting, planter and care to fit the job. Start with what you need to solve, not with a product category.",
+      "primary": "Find a solution",
+      "secondary": "Shop directly",
+      "world_heading": "Four ways to build a working plant setup",
+      "world_intro": "Root zone, plant lighting, planter and care work together. Start with the task – then choose the products that fit.",
+      "paths_label": "Choose a solution",
       "ready": "Shop ready-made mixes",
       "ready_help": "Choose a recipe for your plants.",
       "custom_help": "Choose your ingredients and proportions.",
