@@ -62,3 +62,53 @@ attributes. Open the Shopify-returned checkout URL and confirm the test line
 and recipe survive. Remove only QA-created lines afterward; submit no order.
 Check desktop and mobile layouts, locale continuity and error states separately.
 No production merge or domain switch is justified by a build-only smoke test.
+
+## Integrated release candidate, 2026-10-31
+
+`release/headless-cutover-20261031` combines the brand/article release candidate,
+Room Studio, the English route fixes and the intent-led DE/EN homepage. It fixes
+the shared-loader client build, room-plan import types, scene colors, mobile
+overflow, offscreen room-editor controls, recipe price hydration, the broken
+lighting collection link and the unconfigured customer-account entry. Without
+an embedded Customer Account client, account entry redirects to the shop's
+verified existing `account.leaferservice.com` login.
+
+Local verification uses the emitted Vercel handler, real public Storefront
+configuration and a newly generated local signing key. It does not pull
+Production secrets. The release browser suite covers DE/EN entry destinations,
+375/1440px layouts, hydration errors, hosted account entry, plant placement and
+undo, four-part recipe balance, cart persistence, and checkout recipe retention.
+Every test cart is isolated; only QA-created lines are removed; no order is placed.
+
+```sh
+PILOT_BASE_URL=https://<exact-reviewed-deployment> npm run test:e2e -- e2e/headless-release.spec.ts
+```
+
+For a protected preview, set `VERCEL_QA_AUTH_FILE` to an uncommitted temporary JSON
+file with `origin` and a short-lived `secret`. The fixture scopes its header to
+that exact origin. Never save access files, browser state or tokens in the repo.
+
+**Cutover remains blocked.** A real cart currently returns
+`https://leaferservice.com/cart/c/...`, and checkout stays on that hostname.
+Moving its DNS to Vercel before separating checkout would break purchases.
+First connect a Shopify-managed checkout subdomain, target **Online Store**, and
+set its domain type to **Primary**, following the
+[Shopify migration guide](https://shopify.dev/docs/storefronts/headless/legacy/hydrogen/migrate).
+Update `PUBLIC_CHECKOUT_DOMAIN` only after verifying that host and confirm the
+actual Shopify-returned cart URL uses it. Changing that environment variable
+alone does not change Shopify checkout routing. Run the final gate:
+
+```sh
+REQUIRE_HEADLESS_CHECKOUT=1 PILOT_BASE_URL=https://<staged-production-deployment> npm run test:e2e -- e2e/headless-release.spec.ts
+```
+
+The Shopify connector has no DNS/domain mutation capability. Apex and `www`
+still resolve to Shopify; Vercel reports both externally managed and
+misconfigured despite their ownership verification. Domain changes therefore
+require Shopify domain administration. Preserve the `account` and checkout
+subdomains, mail records and the Liquid rollback. Before DNS changes, finish the
+staged production/rollback and indexing gates in `docs/HEADLESS_ENTERPRISE_MIGRATION.md`.
+The live sitemap contains 925 URLs; this turn verified the entry and footer
+destinations, not the full sitemap. Existing route-level noindex policies are
+retained pending that audit. English Room Studio parity and the complete
+production acceptance criteria are not established by the core browser suite.
