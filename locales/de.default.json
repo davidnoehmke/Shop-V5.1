@@ -1066,7 +1066,7 @@
     "placeholder": "z. B. Welches Substrat passt zu meiner Alocasia?",
     "advisor": "LEAF Planer öffnen",
     "send": "Senden",
-    "privacy": "Dein Sprachdialog wird von OpenAI zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert.",
+    "privacy": "Dein Sprachdialog und hochgeladene Pflanzenfotos werden von OpenAI zur Beantwortung verarbeitet, aber nicht als Kundenprofil gespeichert. Fotos werden nach der Analyse nicht im Chatverlauf gespeichert.",
     "thinking": "Ich prüfe die LEAF Wissensbasis …",
     "error": "Gerade keine Antwort möglich. Nutze alternativ den LEAF Planer oder das Sortiment.",
     "voice": "Sprachunterhaltung starten",
@@ -1082,7 +1082,17 @@
     "voice_connecting": "Ich verbinde deinen Sprachdialog …",
     "voice_unavailable": "Der Echtzeit-Sprachdialog ist gerade nicht verfügbar. Du kannst deine Frage weiterhin schreiben.",
     "voice_fallback": "Browser-Sprachmodus: Mit der Mikrofontaste kannst du die Antwort stoppen.",
-    "voice_paused": "Sprachdialog pausiert. Starte das Mikrofon, wenn du weiterreden möchtest."
+    "voice_paused": "Sprachdialog pausiert. Starte das Mikrofon, wenn du weiterreden möchtest.",
+    "photo_choose": "Pflanzenfoto hinzufügen",
+    "photo_remove": "Foto entfernen",
+    "photo_selected": "Foto ausgewählt",
+    "photo_selected_plural": "Fotos ausgewählt",
+    "photo_too_many": "Du kannst maximal drei Fotos gleichzeitig analysieren.",
+    "photo_invalid": "Bitte nutze JPEG, PNG oder WebP.",
+    "photo_prompt": "Bitte analysiere mein Pflanzenproblem anhand der Fotos.",
+    "photo_privacy": "Die Fotos werden nur für diese Analyse verarbeitet und nicht im LEAF-Chatverlauf gespeichert.",
+    "photo_analyzing": "Ich analysiere die sichtbaren Merkmale und gleiche mögliche Ursachen ab …",
+    "photo_unavailable": "Die Bildanalyse ist gerade nicht verfügbar. Deine ausgewählten Fotos bleiben erhalten – du kannst es erneut versuchen."
   },
   "interior_guide": {
     "read": "Grüne Wohnecke planen: Licht, Gefäß, Substrat und Pflanzen verständlich erklärt"
