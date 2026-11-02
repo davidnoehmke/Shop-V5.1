@@ -39,11 +39,42 @@ function runtime(key = '', vaultKey = '', datasets = {}) {
 }
 const offer = 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\n';
 
-test('images are rejected even with configured model credentials', async () => {
+const plantImage = 'data:image/jpeg;base64,ZmFrZS1wbGFudC1pbWFnZS1wYXlsb2Fk';
+
+test('plant images are forwarded to the Responses API as bounded vision input', async () => {
   const app = runtime('private-key');
-  const response = await app.send({ image: { dataUrl: 'data:image/jpeg;base64,eA==' }, message: 'Analysiere das Bild' });
-  assert.equal(response.status, 400);
-  assert.equal((await response.json()).error, 'images_disabled');
+  const response = await app.send({ images: [plantImage], message: 'Was ist auf dem Blatt sichtbar?' });
+  const result = await response.json();
+  assert.equal(response.status, 200);
+  assert.equal(result.capabilities.image_analysis, true);
+  assert.equal(result.analysis_mode, 'image');
+  assert.equal(app.requests.length, 1);
+  assert.equal(app.requests[0].store, false);
+  assert.equal(app.requests[0].input[0].content[0].type, 'input_text');
+  assert.equal(app.requests[0].input[0].content[1].type, 'input_image');
+  assert.equal(app.requests[0].input[0].content[1].image_url, plantImage);
+  assert.equal(app.requests[0].input[0].content[1].detail, 'high');
+  assert.match(app.requests[0].instructions, /separate visible observations from interpretation/i);
+  assert.match(app.requests[0].instructions, /Never present a pest, pathogen, nutrient deficiency or watering diagnosis as certain/i);
+});
+
+test('image analysis rejects unsupported files and more than three images before any model call', async () => {
+  const invalid = runtime('private-key');
+  const invalidResponse = await invalid.send({ images: ['data:image/gif;base64,ZmFrZS1pbWFnZS1wYXlsb2Fk'], message: 'Analyse' });
+  assert.equal(invalidResponse.status, 415);
+  assert.equal(invalid.requests.length, 0);
+  const many = runtime('private-key');
+  const manyResponse = await many.send({ images: [plantImage, plantImage, plantImage, plantImage], message: 'Analyse' });
+  assert.equal(manyResponse.status, 400);
+  assert.equal((await manyResponse.json()).error, 'too_many_images');
+  assert.equal(many.requests.length, 0);
+});
+
+test('image analysis never falls back to a text-only pretend diagnosis without model credentials', async () => {
+  const app = runtime();
+  const response = await app.send({ images: [plantImage], message: 'Was siehst du?' });
+  assert.equal(response.status, 503);
+  assert.equal((await response.json()).error, 'image_analysis_unavailable');
   assert.equal(app.requests.length, 0);
 });
 
@@ -60,7 +91,8 @@ test('server creates slow natural voice with automatic interruption and prior co
   const response = await app.send({ action: 'voice_connect', sdp: offer, locale: 'de', history: [{ role: 'user', content: 'Meine Alocasia braucht ein neues Substrat.' }] });
   const text = await response.text();
   assert.equal(response.status, 200);
-  assert.equal(JSON.parse(text).capabilities.image_analysis, false);
+  assert.equal(JSON.parse(text).capabilities.image_analysis, true);
+  assert.equal(JSON.parse(text).capabilities.realtime_image, false);
   assert.doesNotMatch(text, /private-vault-key/);
   const { config } = app.requests[0];
   assert.equal(config.audio.output.voice, 'marin');
@@ -82,11 +114,11 @@ test('voice accepts only bounded audio offers and does not create video calls', 
   assert.equal(app.requests.length, 0);
 });
 
-test('text replies retain follow-up context, use conversational instructions and never advertise image analysis', async () => {
+test('text replies retain follow-up context and advertise optional image analysis', async () => {
   const app = runtime('key');
   const response = await app.send({ message: 'Wie viel davon?', history: [{ role: 'user', content: 'Was macht Bims?' }], locale: 'de' });
   const result = await response.json();
-  assert.equal(result.capabilities.image_analysis, false);
+  assert.equal(result.capabilities.image_analysis, true);
   assert.equal(app.requests[0].store, false);
   assert.equal(app.requests[0].input[0].content, 'Was macht Bims?');
   assert.match(app.requests[0].instructions, /general horticultural advice/i);
