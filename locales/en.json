@@ -843,6 +843,17 @@
       "lighting_copy": "Bulbs, fixtures and sets for individual plants, shelves and larger areas.",
       "lighting_cta": "Explore grow lighting",
       "products": "Products"
+    },
+    "shop": {
+      "substrates_heading": "Choose substrates directly",
+      "substrates_text": "If you already know what you need, choose available mixes and substrate products without an extra planning step.",
+      "substrates_link": "Explore all substrates",
+      "substrates_help": "Not sure yet? Configure the root zone",
+      "lighting_heading": "Choose plant lighting directly",
+      "lighting_text": "If your requirements are already clear, compare and choose available plant lights directly.",
+      "lighting_link": "View all plant lights",
+      "lighting_help": "Not sure yet? Start the light planner",
+      "empty": "There is currently no directly available product in this selection."
     }
   },
   "plant_world": {
