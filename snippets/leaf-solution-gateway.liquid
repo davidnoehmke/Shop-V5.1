@@ -1,0 +1,77 @@
+{% liquid
+  assign solution = ''
+  assign primary_path = ''
+  assign secondary_path = ''
+  assign tertiary_path = ''
+  case collection.handle
+    when 'substratwelt-pflanzsubstrate-mischungen-zusatze'
+      assign solution = 'wurzelraum'
+      assign primary_path = '/products/leafer-substrat-konfigurator'
+      assign secondary_path = '/collections/pflanzsubstrate-mischungen'
+      assign tertiary_path = '/collections/substrate-verbesserer'
+    when 'pflanzenbeleuchtung'
+      assign solution = 'light'
+      assign primary_path = collection.url | append: '#CollectionProducts'
+      assign secondary_path = '/pages/pflanzenlicht-konfigurator'
+      assign tertiary_path = '/collections/interieur-solutions'
+    when 'pflanzgefasse'
+      assign solution = 'vessels'
+      assign primary_path = collection.url | append: '#CollectionProducts'
+      assign secondary_path = '/collections/pflanzenpflege-werkzeuge'
+      assign tertiary_path = '/collections/starter-sets-mehrerer-arten'
+    when 'interieur-solutions'
+      assign solution = 'setup'
+      assign primary_path = collection.url | append: '#InterieurRoomBuilderHeading'
+      assign secondary_path = '/collections/starter-sets-mehrerer-arten'
+      assign tertiary_path = collection.url | append: '#CollectionProducts'
+  endcase
+%}
+{% if solution != blank %}
+  {% assign eyebrow_key = 'solutions.' | append: solution | append: '.eyebrow' %}
+  {% assign heading_key = 'solutions.' | append: solution | append: '.heading' %}
+  {% assign text_key = 'solutions.' | append: solution | append: '.text' %}
+  {% assign primary_key = 'solutions.' | append: solution | append: '.primary' %}
+  {% assign secondary_key = 'solutions.' | append: solution | append: '.secondary' %}
+  {% assign tertiary_key = 'solutions.' | append: solution | append: '.tertiary' %}
+  {% assign card_1_title_key = 'solutions.' | append: solution | append: '.card_1_title' %}
+  {% assign card_1_text_key = 'solutions.' | append: solution | append: '.card_1_text' %}
+  {% assign card_2_title_key = 'solutions.' | append: solution | append: '.card_2_title' %}
+  {% assign card_2_text_key = 'solutions.' | append: solution | append: '.card_2_text' %}
+  {% assign card_3_title_key = 'solutions.' | append: solution | append: '.card_3_title' %}
+  {% assign card_3_text_key = 'solutions.' | append: solution | append: '.card_3_text' %}
+  <section class="leaf-solution-gateway" aria-labelledby="LeafSolutionHeading-{{ section_id }}">
+    <nav class="leaf-solution-gateway__nav" aria-label="{{ 'solutions.nav_label' | t }}">
+      <a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}"{% if solution == 'wurzelraum' %} aria-current="page"{% endif %}>{{ 'header.solution_wurzelraum_title' | t }}</a>
+      <a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}"{% if solution == 'light' %} aria-current="page"{% endif %}>{{ 'header.solution_light_title' | t }}</a>
+      <a href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}"{% if solution == 'vessels' %} aria-current="page"{% endif %}>{{ 'header.solution_vessels_title' | t }}</a>
+      <a href="{% render 'leaf-localized-url', url: '/collections/interieur-solutions' %}"{% if solution == 'setup' %} aria-current="page"{% endif %}>{{ 'header.solution_setup_title' | t }}</a>
+    </nav>
+    <div class="leaf-solution-gateway__hero">
+      <div>
+        <p class="leaf-solution-gateway__eyebrow">{{ eyebrow_key | t }}</p>
+        <h2 id="LeafSolutionHeading-{{ section_id }}">{{ heading_key | t }}</h2>
+      </div>
+      <div class="leaf-solution-gateway__lead">
+        <p>{{ text_key | t }}</p>
+        <div class="leaf-solution-gateway__actions">
+          <a class="button" href="{% render 'leaf-localized-url', url: primary_path %}">{{ primary_key | t }}</a>
+          <a class="button button--secondary" href="{% render 'leaf-localized-url', url: secondary_path %}">{{ secondary_key | t }}</a>
+        </div>
+      </div>
+    </div>
+    <div class="leaf-solution-gateway__paths">
+      <a href="{% render 'leaf-localized-url', url: primary_path %}"><span>01</span><strong>{{ card_1_title_key | t }}</strong><p>{{ card_1_text_key | t }}</p></a>
+      <a href="{% render 'leaf-localized-url', url: secondary_path %}"><span>02</span><strong>{{ card_2_title_key | t }}</strong><p>{{ card_2_text_key | t }}</p></a>
+      <a href="{% render 'leaf-localized-url', url: tertiary_path %}"><span>03</span><strong>{{ card_3_title_key | t }}</strong><p>{{ card_3_text_key | t }}</p></a>
+    </div>
+    <div class="leaf-solution-gateway__trust" aria-label="{{ 'solutions.trust_label' | t }}">
+      <span>{{ 'solutions.trust_1' | t }}</span>
+      <span>{{ 'solutions.trust_2' | t }}</span>
+      <span>{{ 'solutions.trust_3' | t }}</span>
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+.leaf-solution-gateway{margin:clamp(1.5rem,4vw,3.5rem) 0;border:1px solid var(--border);background:linear-gradient(135deg,color-mix(in srgb,var(--accent-soft),white 30%),var(--background));overflow:hidden}.leaf-solution-gateway__nav{display:flex;gap:.35rem;overflow-x:auto;padding:.65rem;border-bottom:1px solid var(--border);scrollbar-width:none}.leaf-solution-gateway__nav::-webkit-scrollbar{display:none}.leaf-solution-gateway__nav a{flex:0 0 auto;min-height:40px;display:inline-flex;align-items:center;padding:.5rem .8rem;border:1px solid transparent;color:var(--muted);font-size:.76rem;font-weight:760;text-decoration:none;white-space:nowrap}.leaf-solution-gateway__nav a[aria-current="page"]{border-color:color-mix(in srgb,var(--accent),transparent 55%);background:var(--background);color:var(--accent)}.leaf-solution-gateway__hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(260px,.75fr);gap:clamp(1.5rem,5vw,5rem);align-items:end;padding:clamp(1.4rem,4vw,3.2rem)}.leaf-solution-gateway__eyebrow{margin:0 0 .65rem;color:var(--accent);font-size:.7rem;font-weight:820;letter-spacing:.12em;text-transform:uppercase}.leaf-solution-gateway h2{max-width:17ch;margin:0;font-size:clamp(2rem,4vw,4rem);line-height:1.02;letter-spacing:-.05em}.leaf-solution-gateway__lead{display:grid;gap:1rem}.leaf-solution-gateway__lead p{margin:0;color:var(--muted);font-size:clamp(.96rem,1.25vw,1.08rem);line-height:1.65}.leaf-solution-gateway__actions{display:flex;flex-wrap:wrap;gap:.65rem}.leaf-solution-gateway__actions .button{min-height:46px}.leaf-solution-gateway__paths{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.leaf-solution-gateway__paths a{min-height:190px;display:flex;flex-direction:column;gap:.6rem;padding:clamp(1rem,2.5vw,1.6rem);border-right:1px solid var(--border);color:var(--text);text-decoration:none;background:color-mix(in srgb,var(--background),transparent 22%);transition:background-color .2s ease,transform .3s var(--ease-out)}.leaf-solution-gateway__paths a:last-child{border-right:0}.leaf-solution-gateway__paths a:hover{background:var(--background);transform:translateY(-3px)}.leaf-solution-gateway__paths span{color:var(--accent);font-size:.68rem;font-weight:840;letter-spacing:.08em}.leaf-solution-gateway__paths strong{font-family:var(--heading-font);font-size:1.15rem;line-height:1.2}.leaf-solution-gateway__paths p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.55}.leaf-solution-gateway__trust{display:flex;flex-wrap:wrap;gap:.45rem 1.2rem;padding:.85rem clamp(1rem,2.5vw,1.6rem);background:color-mix(in srgb,var(--text),transparent 96%);font-size:.72rem;font-weight:700}.leaf-solution-gateway__trust span::before{content:"✓";margin-right:.35rem;color:var(--accent);font-weight:900}@media(max-width:760px){.leaf-solution-gateway__hero{grid-template-columns:1fr}.leaf-solution-gateway h2{font-size:clamp(1.75rem,10vw,2.7rem)}.leaf-solution-gateway__paths{grid-template-columns:1fr}.leaf-solution-gateway__paths a{min-height:0;border-right:0;border-bottom:1px solid var(--border)}.leaf-solution-gateway__paths a:last-child{border-bottom:0}}
+{% endstylesheet %}
