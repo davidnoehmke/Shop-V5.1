@@ -198,11 +198,15 @@ jobs:
               'origin_not_allowed',
               'approved_existing',
               'approved',
-              'images_disabled',
+              'normalizeImages',
+              'MAX_IMAGES = 3',
+              'type: "input_image"',
               'interrupt_response: true',
               'source_citations',
-              'analysis_mode: "text"',
-              'image_analysis: false',
+              'analysis_mode: images.length ? "image" : "text"',
+              'image_analysis: true',
+              'realtime_image: false',
+              'store: false',
           ]
           for token in required:
               if token not in assistant:
