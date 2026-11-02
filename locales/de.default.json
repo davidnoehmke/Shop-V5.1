@@ -1355,5 +1355,24 @@
       "badge": "Fein & gleichmäßig",
       "description": "Feine Struktur für die Aussaat und die Entwicklung junger Wurzeln."
     }
+  },
+  "enterprise": {
+    "studio": {
+      "eyebrow": "LEAF Studio · Interaktive Werkzeuge",
+      "heading": "Planen, vergleichen und konfigurieren – bevor du kaufst.",
+      "intro": "Die stärksten LEAF-Funktionen an einem Ort: Raum und Licht planen, Substrat zusammenstellen oder direkt die Beratung öffnen. Ohne Login, ohne Werbe-Pop-ups und ohne Umwege.",
+      "room_title": "3D-Raumplaner",
+      "room_text": "Raummaße festlegen, Pflanzen, Regale und Leuchten platzieren und das Setup direkt im Shop zusammenstellen.",
+      "room_cta": "Raum planen",
+      "substrate_title": "Substrat-Konfigurator",
+      "substrate_text": "Pflanzenprofil und Menge wählen oder bis zu vier Komponenten zu einer eigenen Rezeptur kombinieren.",
+      "substrate_cta": "Substrat mischen",
+      "light_title": "Pflanzenlicht-Finder",
+      "light_text": "Pflanzenlicht nach Raum, Montage und Einsatzzweck auswählen – statt nur Wattzahlen zu vergleichen.",
+      "light_cta": "Licht planen",
+      "assistant_title": "LEAF Beratung",
+      "assistant_text": "Frage direkt nach Pflanze, Standort, Substrat oder Licht und springe aus der Beratung in die passenden Shop-Bereiche.",
+      "assistant_cta": "LEAF öffnen"
+    }
   }
 }
