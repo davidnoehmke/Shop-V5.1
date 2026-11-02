@@ -56,7 +56,7 @@ test('pro mixer exposes per-component sliders and material previews', () => {
 
 test('homepage mixer supports bounded auto-balance and visual drag ordering', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
-  const index = JSON.parse(fs.readFileSync('templates/index.json', 'utf8'));
+  const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));\n  const index = parseShopifyJson('templates/index.json');
   assert.match(liquid, /leafer-substrate--home-usp/);
   assert.match(liquid, /pointerdown/);
   assert.match(liquid, /reorderCustomSegments\(dragged, clientY\)/);
@@ -64,7 +64,7 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /100 - othersMax/);
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
-  assert.deepEqual(index.order.slice(0, 5), ['hero', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);
+  assert.deepEqual(index.order.slice(0, 6), ['hero', 'enterprise_studio', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);\n  assert.equal(index.sections.enterprise_studio.type, 'leaf-enterprise-studio');
   assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
   assert.equal(index.sections.loox_reviews.disabled, true);
   assert.match(index.sections.home_collection_journey.settings.heading, /Pflanzenprojekt/);
