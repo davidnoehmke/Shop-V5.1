@@ -835,6 +835,17 @@
       "lighting_copy": "Leuchtmittel, Leuchten und Sets für einzelne Pflanzen, Regale und größere Flächen.",
       "lighting_cta": "Pflanzenlicht entdecken",
       "products": "Produkte"
+    },
+    "shop": {
+      "substrates_heading": "Substrate direkt auswählen",
+      "substrates_text": "Wenn du bereits weißt, was du brauchst: verfügbare Mischungen und Substratprodukte ohne Umweg auswählen.",
+      "substrates_link": "Gesamte Substratwelt",
+      "substrates_help": "Noch unsicher? Wurzelraum konfigurieren",
+      "lighting_heading": "Pflanzenlicht direkt auswählen",
+      "lighting_text": "Wenn dein Bedarf bereits klar ist: verfügbare Pflanzenleuchten direkt vergleichen und auswählen.",
+      "lighting_link": "Alle Pflanzenlichter",
+      "lighting_help": "Noch unsicher? Lichtberater starten",
+      "empty": "Aktuell ist in dieser Auswahl kein direkt bestellbares Produkt verfügbar."
     }
   },
   "plant_world": {
