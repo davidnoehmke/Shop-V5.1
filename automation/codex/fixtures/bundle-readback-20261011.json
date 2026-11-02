@@ -1,0 +1,610 @@
+{
+  "observed_at": "2026-10-11T14:28:28.609Z",
+  "source": "Read-only Shopify Admin API and Supabase LEAFerservice-SSOT",
+  "entries": [
+    {
+      "ssot": {
+        "slug": "anzucht-pro-set",
+        "status": "active",
+        "bundle_type": "fixed",
+        "shopify_sync_status": "synced",
+        "shopify_product_gid": "gid://shopify/Product/15534338244993",
+        "components": [
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15450619347329",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55886632714625"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516063203713",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177716527489"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516187492737",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177910350209"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516050162049",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177696375169"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516068708737",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177731240321"
+          }
+        ]
+      },
+      "shopify": {
+        "id": "gid://shopify/Product/15534338244993",
+        "title": "Anzucht Pro Set",
+        "handle": "anzucht-pro-set",
+        "status": "ACTIVE",
+        "bundleComponents": {
+          "nodes": [
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15450619347329"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516063203713"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516187492737"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516050162049"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516068708737"
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        },
+        "variants": {
+          "nodes": [
+            {
+              "id": "gid://shopify/ProductVariant/56265216328065",
+              "title": "Default Title",
+              "price": "72.15",
+              "requiresComponents": true,
+              "availableForSale": true,
+              "inventoryQuantity": 0,
+              "inventoryPolicy": "CONTINUE",
+              "productVariantComponents": {
+                "nodes": [
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55886632714625",
+                      "product": {
+                        "id": "gid://shopify/Product/15450619347329"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177716527489",
+                      "product": {
+                        "id": "gid://shopify/Product/15516063203713"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177910350209",
+                      "product": {
+                        "id": "gid://shopify/Product/15516187492737"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177696375169",
+                      "product": {
+                        "id": "gid://shopify/Product/15516050162049"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177731240321",
+                      "product": {
+                        "id": "gid://shopify/Product/15516068708737"
+                      }
+                    }
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        }
+      }
+    },
+    {
+      "ssot": {
+        "slug": "anzucht-starter-set",
+        "status": "active",
+        "bundle_type": "fixed",
+        "shopify_sync_status": "synced",
+        "shopify_product_gid": "gid://shopify/Product/15534338113921",
+        "components": [
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15450619347329",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55886632681857"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516050162049",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177696342401"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516068708737",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177731207553"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15516063203713",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56177716527489"
+          }
+        ]
+      },
+      "shopify": {
+        "id": "gid://shopify/Product/15534338113921",
+        "title": "Anzucht Starter Set",
+        "handle": "anzucht-starter-set",
+        "status": "ACTIVE",
+        "bundleComponents": {
+          "nodes": [
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15450619347329"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516050162049"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516068708737"
+              }
+            },
+            {
+              "quantity": 1,
+              "componentProduct": {
+                "id": "gid://shopify/Product/15516063203713"
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        },
+        "variants": {
+          "nodes": [
+            {
+              "id": "gid://shopify/ProductVariant/56265216196993",
+              "title": "Default Title",
+              "price": "24.47",
+              "requiresComponents": true,
+              "availableForSale": true,
+              "inventoryQuantity": 0,
+              "inventoryPolicy": "CONTINUE",
+              "productVariantComponents": {
+                "nodes": [
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55886632681857",
+                      "product": {
+                        "id": "gid://shopify/Product/15450619347329"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177696342401",
+                      "product": {
+                        "id": "gid://shopify/Product/15516050162049"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177731207553",
+                      "product": {
+                        "id": "gid://shopify/Product/15516068708737"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56177716527489",
+                      "product": {
+                        "id": "gid://shopify/Product/15516063203713"
+                      }
+                    }
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        }
+      }
+    },
+    {
+      "ssot": {
+        "slug": "aroid-umtopf-set",
+        "status": "active",
+        "bundle_type": "fixed",
+        "shopify_sync_status": "synced",
+        "shopify_product_gid": "gid://shopify/Product/15547202830721",
+        "components": [
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15450619412865",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55886635368833"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15491993829761",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56066970616193"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15491994157441",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56067005022593"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15533652607361",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56262019318145"
+          }
+        ]
+      },
+      "shopify": {
+        "id": "gid://shopify/Product/15547202830721",
+        "title": "Aroid Umtopf-Set",
+        "handle": "aroid-umtopf-set",
+        "status": "ACTIVE",
+        "bundleComponents": {
+          "nodes": [],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        },
+        "variants": {
+          "nodes": [
+            {
+              "id": "gid://shopify/ProductVariant/56321947009409",
+              "title": "Default Title",
+              "price": "31.67",
+              "requiresComponents": true,
+              "availableForSale": true,
+              "inventoryQuantity": 0,
+              "inventoryPolicy": "CONTINUE",
+              "productVariantComponents": {
+                "nodes": [
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55886635368833",
+                      "product": {
+                        "id": "gid://shopify/Product/15450619412865"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56066970616193",
+                      "product": {
+                        "id": "gid://shopify/Product/15491993829761"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56067005022593",
+                      "product": {
+                        "id": "gid://shopify/Product/15491994157441"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56262019318145",
+                      "product": {
+                        "id": "gid://shopify/Product/15533652607361"
+                      }
+                    }
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        }
+      }
+    },
+    {
+      "ssot": {
+        "slug": "efeutute-hange-set",
+        "status": "active",
+        "bundle_type": "fixed",
+        "shopify_sync_status": "synced",
+        "shopify_product_gid": "gid://shopify/Product/15547202929025",
+        "components": [
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15505649926529",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56139585290625"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15451555496321",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55893179695489"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15447249781121",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55871161827713"
+          }
+        ]
+      },
+      "shopify": {
+        "id": "gid://shopify/Product/15547202929025",
+        "title": "Efeutute Hänge-Set",
+        "handle": "efeutute-hange-set",
+        "status": "ACTIVE",
+        "bundleComponents": {
+          "nodes": [],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        },
+        "variants": {
+          "nodes": [
+            {
+              "id": "gid://shopify/ProductVariant/56321947107713",
+              "title": "Default Title",
+              "price": "29.42",
+              "requiresComponents": true,
+              "availableForSale": true,
+              "inventoryQuantity": 0,
+              "inventoryPolicy": "CONTINUE",
+              "productVariantComponents": {
+                "nodes": [
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56139585290625",
+                      "product": {
+                        "id": "gid://shopify/Product/15505649926529"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55893179695489",
+                      "product": {
+                        "id": "gid://shopify/Product/15451555496321"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55871161827713",
+                      "product": {
+                        "id": "gid://shopify/Product/15447249781121"
+                      }
+                    }
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        }
+      }
+    },
+    {
+      "ssot": {
+        "slug": "sukkulenten-trio-set",
+        "status": "active",
+        "bundle_type": "fixed",
+        "shopify_sync_status": "synced",
+        "shopify_product_gid": "gid://shopify/Product/15547202961793",
+        "components": [
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15533649953153",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56261993726337"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15533650051457",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56261994611073"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15533650149761",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/56261995299201"
+          },
+          {
+            "role": "required",
+            "quantity": 1,
+            "selection_group": null,
+            "shopify_product_gid": "gid://shopify/Product/15449537905025",
+            "shopify_variant_gid": "gid://shopify/ProductVariant/55882488578433"
+          }
+        ]
+      },
+      "shopify": {
+        "id": "gid://shopify/Product/15547202961793",
+        "title": "Sukkulenten Trio Set",
+        "handle": "sukkulenten-trio-set",
+        "status": "ACTIVE",
+        "bundleComponents": {
+          "nodes": [],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        },
+        "variants": {
+          "nodes": [
+            {
+              "id": "gid://shopify/ProductVariant/56321947140481",
+              "title": "Default Title",
+              "price": "34.99",
+              "requiresComponents": true,
+              "availableForSale": true,
+              "inventoryQuantity": 0,
+              "inventoryPolicy": "CONTINUE",
+              "productVariantComponents": {
+                "nodes": [
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56261993726337",
+                      "product": {
+                        "id": "gid://shopify/Product/15533649953153"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/56261994611073",
+                      "product": {
+                        "id": "gid://shopify/Product/15533650051457"
+                      }
+                    }
+                  },
+                  {
+                    "quantity": 1,
+                    "productVariant": {
+                      "id": "gid://shopify/ProductVariant/55882488578433",
+                      "product": {
+                        "id": "gid://shopify/Product/15449537905025"
+                      }
+                    }
+                  }
+                ],
+                "pageInfo": {
+                  "hasNextPage": false
+                }
+              }
+            }
+          ],
+          "pageInfo": {
+            "hasNextPage": false
+          }
+        }
+      }
+    }
+  ],
+  "identity_checks": {
+    "crassula_old_variant_gid": "gid://shopify/ProductVariant/56261995299201",
+    "old_variant_resolves": false,
+    "current_variant_gid": "gid://shopify/ProductVariant/56387608969601",
+    "current_variant_title": "Niedrig",
+    "replacement_approved": false
+  }
+}
