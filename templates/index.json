@@ -454,10 +454,15 @@
         "reputon_reviews_coupon_widget_block_mntkMx"
       ],
       "settings": {}
+    },
+    "enterprise_studio": {
+      "type": "leaf-enterprise-studio",
+      "settings": {}
     }
   },
   "order": [
     "hero",
+    "enterprise_studio",
     "home_collection_journey",
     "substrate_configurator",
     "trust",

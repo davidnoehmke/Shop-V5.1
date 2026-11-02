@@ -1355,5 +1355,24 @@
       "badge": "Fine & even",
       "description": "Fine structure for sowing and the development of young roots."
     }
+  },
+  "enterprise": {
+    "studio": {
+      "eyebrow": "LEAF Studio · Interactive tools",
+      "heading": "Plan, compare and configure before you buy.",
+      "intro": "The strongest LEAF tools in one place: plan rooms and lighting, build a substrate mix or open guidance directly. No login, no ad pop-ups and no unnecessary detours.",
+      "room_title": "3D room planner",
+      "room_text": "Set room dimensions, place plants, shelves and lights, then build the setup directly in the store.",
+      "room_cta": "Plan a room",
+      "substrate_title": "Substrate configurator",
+      "substrate_text": "Choose a plant profile and volume or combine up to four components into a custom recipe.",
+      "substrate_cta": "Build a mix",
+      "light_title": "Plant light finder",
+      "light_text": "Choose plant lighting by room, mounting and use case instead of comparing wattage alone.",
+      "light_cta": "Plan lighting",
+      "assistant_title": "LEAF guidance",
+      "assistant_text": "Ask about your plant, location, substrate or light and jump straight to the relevant store areas.",
+      "assistant_cta": "Open LEAF"
+    }
   }
 }

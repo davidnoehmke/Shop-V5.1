@@ -106,7 +106,7 @@
     {% if interior_guide != blank %}
       <p class="main-collection__intro"><a href="{{ interior_guide.url }}">{{ 'interior_guide.read' | t }}</a></p>
     {% endif %}
-    <details class="main-collection__advanced">
+    <details class="main-collection__advanced main-collection__advanced--room" open>
       <summary>
         <span>{{ 'collection.interieur.advanced_builder_eyebrow' | t }}</span>
         <strong>{{ 'collection.interieur.advanced_builder_title' | t }}</strong>
