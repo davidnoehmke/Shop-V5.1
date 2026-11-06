@@ -15,7 +15,7 @@ function locale(name) {
 }
 
 test('literal storefront translations resolve in both published source locales', () => {
-  const sources = ['layout', 'sections', 'snippets', 'templates'].flatMap((dir) => files(path.join(root, dir)));
+  const sources = ['layout', 'sections', 'snippets', 'templates', 'blocks'].flatMap((dir) => files(path.join(root, dir)));
   const errors = [];
   for (const filename of ['de.default.json', 'en.json']) {
     const translations = locale(filename);
@@ -38,10 +38,42 @@ test('literal storefront translations resolve in both published source locales',
 
 test('literal render calls include their snippet in the theme source', () => {
   const errors = [];
-  for (const source of ['layout', 'sections', 'snippets', 'templates'].flatMap((dir) => files(path.join(root, dir)))) {
+  for (const source of ['layout', 'sections', 'snippets', 'templates', 'blocks'].flatMap((dir) => files(path.join(root, dir)))) {
     for (const match of fs.readFileSync(source, 'utf8').matchAll(/\brender\s+['"]([^'"]+)['"]/g)) {
       if (!fs.existsSync(path.join(root, 'snippets', `${match[1]}.liquid`))) errors.push(`${path.relative(root, source)}: ${match[1]}`);
     }
   }
   assert.deepEqual(errors, []);
+});
+
+test('translated content never treats image markup or merchant headings as translation keys', () => {
+  const errors = [];
+  for (const source of ['layout', 'sections', 'snippets', 'templates', 'blocks'].flatMap((dir) => files(path.join(root, dir)))) {
+    const text = fs.readFileSync(source, 'utf8');
+    for (const output of text.matchAll(/{{([\s\S]*?)}}/g)) {
+      if (/\bimage_tag\s*:/.test(output[1]) && /\|\s*t\b/.test(output[1])) errors.push(`${source}: image markup sent to translation`);
+      if (/variant_content\./.test(output[1]) && /\|\s*t\b/.test(output[1])) errors.push(`${source}: merchant heading sent to translation`);
+    }
+  }
+  assert.deepEqual(errors, []);
+});
+
+test('all section setting identifiers are unique within their scope', () => {
+  for (const source of files(path.join(root, 'sections'))) {
+    const schema = fs.readFileSync(source, 'utf8').match(/{% schema %}([\s\S]*?){% endschema %}/);
+    if (!schema) continue;
+    const data = JSON.parse(schema[1]);
+    for (const scope of [data, ...(data.blocks || [])]) {
+      const ids = (scope.settings || []).map(item => item.id).filter(Boolean);
+      assert.equal(new Set(ids).size, ids.length, path.relative(root, source));
+    }
+  }
+});
+
+test('retained product templates have their legacy translation keys in DE and EN', () => {
+  for (const name of ['de.default.json', 'en.json']) {
+    const data = locale(name);
+    for (const key of ['details_eyebrow', 'details_heading', 'guides']) assert.ok(data.product.content[key]?.trim());
+    assert.ok(data.recipe.chart_label.includes('{{ product }}'));
+  }
 });

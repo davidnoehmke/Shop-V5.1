@@ -56,7 +56,7 @@ export default function SubstrateWorld() {
                 {product.featuredImage ? <Image data={product.featuredImage} sizes="(min-width:900px) 30vw, 90vw" /> : null}
                 <h3>{product.title}</h3>
               </Link>
-              <p>Ab <Money data={product.priceRange.minVariantPrice} /></p>
+              <p>Ab <Money as="span" data={product.priceRange.minVariantPrice} /></p>
             </article>
           ))}
         </div>

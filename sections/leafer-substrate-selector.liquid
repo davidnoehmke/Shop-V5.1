@@ -997,6 +997,7 @@
     }
 
     translateIngredient(name) {
+      if (!name) return '';
       if (this.isGermanLocale()) return name;
       const normalized = String(name || '').trim().toLowerCase();
       const translations = {

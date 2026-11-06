@@ -33,9 +33,13 @@
           endif
           assign tile_link = block.settings.collection.url | default: routes.collections_url
           assign title_key = 'categories.' | append: block.settings.icon
+          assign image_alt = block.settings.title
+          if image_alt == blank
+            assign image_alt = title_key | t
+          endif
         %}
         <a class="category-grid__card" href="{{ tile_link }}" {{ block.shopify_attributes }}>
-          {% if tile_image != blank %}{{ tile_image | image_url: width: 900 | image_tag: widths: '320, 520, 700, 900', sizes: '(min-width: 900px) 16vw, 50vw', loading: 'lazy', alt: block.settings.title | default: title_key | t }}{% else %}<div class="category-grid__fallback"></div>{% endif %}
+          {% if tile_image != blank %}{{ tile_image | image_url: width: 900 | image_tag: widths: '320, 520, 700, 900', sizes: '(min-width: 900px) 16vw, 50vw', loading: 'lazy', alt: image_alt }}{% else %}<div class="category-grid__fallback"></div>{% endif %}
           <span class="category-grid__shade"></span>
           <span class="category-grid__copy">
             <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 35V19M20 29c-8-1-13-6-13-15 8 0 13 5 13 13M20 23c7-1 12-6 13-15-8 0-13 5-13 12"/></svg>

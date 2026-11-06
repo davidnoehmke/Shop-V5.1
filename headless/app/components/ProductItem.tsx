@@ -19,6 +19,7 @@ export function ProductItem({
   const variantUrl = useVariantUrl(product.handle);
   const location = useLocation();
   const localizedVariantUrl = localizedPath(variantUrl, location.pathname);
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
   const image = product.featuredImage;
   return (
     <Link
@@ -37,12 +38,12 @@ export function ProductItem({
             sizes="(min-width: 1000px) 25vw, (min-width: 640px) 33vw, 50vw"
           />
         ) : (
-          <div className="product-item__no-image" role="img" aria-label="Produktbild derzeit nicht verfügbar">Produktbild nicht verfügbar</div>
+          <div className="product-item__no-image" role="img" aria-label={isEnglish ? 'Product image currently unavailable' : 'Produktbild derzeit nicht verfügbar'}>{isEnglish ? 'Product image unavailable' : 'Produktbild nicht verfügbar'}</div>
         )}
       </div>
       <h4>{product.title}</h4>
       <small>
-        <Money data={product.priceRange.minVariantPrice} />
+        <Money as="span" data={product.priceRange.minVariantPrice} />
       </small>
     </Link>
   );
