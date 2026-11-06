@@ -49,7 +49,7 @@ export function SearchFormPredictive({
   /** Navigate to the search page with the current input value */
   function goToSearch() {
     const term = inputRef?.current?.value;
-    void navigate(searchEndpoint + (term ? `?q=${term}` : ''));
+    void navigate(searchEndpoint + (term ? `?q=${encodeURIComponent(term)}` : ''));
     aside.close();
   }
 

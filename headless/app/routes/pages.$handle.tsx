@@ -1,9 +1,9 @@
-import {useLoaderData} from 'react-router';
+import {useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/pages.$handle';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 
 export const meta: Route.MetaFunction = ({data}) => {
-  return [{title: `Hydrogen | ${data?.page.title ?? ''}`}];
+  return [{title: `${data?.page.seo?.title || data?.page.title || 'LEAFerservice'} | LEAFerservice`}];
 };
 
 export async function loader(args: Route.LoaderArgs) {
@@ -56,6 +56,8 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Page() {
   const {page} = useLoaderData<typeof loader>();
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
 
   return (
     <div className={`page-shell content-page content-page--${page.handle}`}>
@@ -64,6 +66,13 @@ export default function Page() {
         <h1>{page.title}</h1>
       </header>
       <article className="content-page__body" dangerouslySetInnerHTML={{__html: page.body}} />
+      {page.handle === 'contact' ? (
+        <p>
+          <a className="text-link" href={`https://leaferservice.com/${isEnglish ? 'en/' : ''}pages/contact`}>
+            {isEnglish ? 'Open contact form' : 'Kontaktformular öffnen'} →
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }

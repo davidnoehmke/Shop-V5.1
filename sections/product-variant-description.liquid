@@ -67,7 +67,7 @@
           {% if variant_content.steps != blank %}
             <section class="product-description__section" aria-labelledby="VariantSteps-{{ section.id }}-{{ variant.id }}">
               <h3 id="VariantSteps-{{ section.id }}-{{ variant.id }}">
-                {{ variant_content.steps_heading | default: 'product_variant_guide.steps_heading' | t }}
+                {% if variant_content.steps_heading != blank %}{{ variant_content.steps_heading | escape }}{% else %}{{ 'product_variant_guide.steps_heading' | t }}{% endif %}
               </h3>
               <ol class="product-description__steps">
                 {% for step in variant_content.steps %}
@@ -83,7 +83,7 @@
           {% if variant_content.facts != blank %}
             <section class="product-description__section" aria-labelledby="VariantFacts-{{ section.id }}-{{ variant.id }}">
               <h3 id="VariantFacts-{{ section.id }}-{{ variant.id }}">
-                {{ variant_content.facts_heading | default: 'product_variant_guide.facts_heading' | t }}
+                {% if variant_content.facts_heading != blank %}{{ variant_content.facts_heading | escape }}{% else %}{{ 'product_variant_guide.facts_heading' | t }}{% endif %}
               </h3>
               <dl class="product-description__facts">
                 {% for fact in variant_content.facts %}
@@ -99,7 +99,7 @@
           {% if variant_content.faqs != blank %}
             <section class="product-description__section" aria-labelledby="VariantFaq-{{ section.id }}-{{ variant.id }}">
               <h3 id="VariantFaq-{{ section.id }}-{{ variant.id }}">
-                {{ variant_content.faq_heading | default: 'product_variant_guide.faq_heading' | t }}
+                {% if variant_content.faq_heading != blank %}{{ variant_content.faq_heading | escape }}{% else %}{{ 'product_variant_guide.faq_heading' | t }}{% endif %}
               </h3>
               <div class="product-description__accordions">
                 {% for faq in variant_content.faqs %}

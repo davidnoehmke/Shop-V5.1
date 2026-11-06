@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Pagination} from '@shopify/hydrogen';
+import {useLocation} from 'react-router';
 
 /**
  * <PaginatedResourceSection> encapsulates the previous and next pagination behaviors throughout your application.
@@ -15,6 +16,8 @@ export function PaginatedResourceSection<NodesType>({
   ariaLabel?: string;
   resourcesClassName?: string;
 }) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   return (
     <Pagination connection={connection}>
       {({nodes, isLoading, PreviousLink, NextLink}) => {
@@ -26,10 +29,10 @@ export function PaginatedResourceSection<NodesType>({
           <div>
             <PreviousLink>
               {isLoading ? (
-                'Loading...'
+                isEnglish ? 'Loading…' : 'Wird geladen…'
               ) : (
                 <span>
-                  <span aria-hidden="true">↑</span> Load previous
+                  <span aria-hidden="true">↑</span> {isEnglish ? 'Load previous' : 'Vorherige laden'}
                 </span>
               )}
             </PreviousLink>
@@ -46,10 +49,10 @@ export function PaginatedResourceSection<NodesType>({
             )}
             <NextLink>
               {isLoading ? (
-                'Loading...'
+                isEnglish ? 'Loading…' : 'Wird geladen…'
               ) : (
                 <span>
-                  Load more <span aria-hidden="true">↓</span>
+                  {isEnglish ? 'Load more' : 'Mehr laden'} <span aria-hidden="true">↓</span>
                 </span>
               )}
             </NextLink>

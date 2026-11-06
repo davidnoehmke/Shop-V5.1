@@ -123,7 +123,7 @@ export function SubstrateConfigurator({
             </select>
           </label>
           {selectedVariant ? (
-            <p className="substrate-configurator__price"><Money data={selectedVariant.price} /></p>
+            <p className="substrate-configurator__price"><Money as="span" data={selectedVariant.price} /></p>
           ) : null}
         </div>
 
