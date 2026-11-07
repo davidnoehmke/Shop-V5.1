@@ -17,7 +17,7 @@
     <h2 id="LeafEditorialHeading-{{ section.id }}">{{ editorial_heading | strip_html | escape }}</h2>
     {% if editorial_copy != blank %}<div class="leaf-editorial__intro">{{ editorial_copy | strip_html | truncatewords: 38 | escape }}</div>{% endif %}
     <div class="leaf-editorial__actions">
-      <a class="leaf-editorial__primary" href="#CollectionProducts-{{ section.settings.product_section_id | default: 'main' }}">{% if is_english %}Shop the collection{% else %}Kollektion einkaufen{% endif %}</a>
+      <a class="leaf-editorial__primary" href="{{ collection.url }}">{% if is_english %}Shop the collection{% else %}Kollektion einkaufen{% endif %}</a>
       {% if featured != blank %}
         <a class="leaf-editorial__secondary" href="{{ featured.url }}">{% if is_english %}Explore a product{% else %}Produkt ansehen{% endif %}<span aria-hidden="true"> ↗</span></a>
       {% endif %}
@@ -47,5 +47,5 @@
 @media(prefers-reduced-motion:reduce){.leaf-editorial *{scroll-behavior:auto}}
 {% endstylesheet %}
 {% schema %}
-{"name":"LEAF Editorial Collection","settings":[{"type":"checkbox","id":"enabled","label":"Editorial section anzeigen","default":true},{"type":"text","id":"product_section_id","label":"Produktbereich Section-ID","default":"main"}],"presets":[{"name":"LEAF Editorial Collection"}]}
+{"name":"LEAF Editorial Collection","settings":[{"type":"checkbox","id":"enabled","label":"Editorial section anzeigen","default":true}],"presets":[{"name":"LEAF Editorial Collection"}]}
 {% endschema %}
