@@ -1,0 +1,51 @@
+{% liquid
+  assign editorial_image = collection.metafields.leafer.editorial_image.value | default: collection.image
+  assign editorial_heading = collection.metafields.leafer.editorial_heading.value | default: collection.title
+  assign editorial_copy = collection.metafields.leafer.editorial_intro.value | default: collection.description
+  assign featured = collection.products.first
+  assign is_english = false
+  if request.locale.iso_code == 'en'
+    assign is_english = true
+    assign editorial_heading = collection.title
+    assign editorial_copy = collection.description
+  endif
+%}
+{% if collection != blank and section.settings.enabled %}
+<section class="leaf-editorial page-width" aria-labelledby="LeafEditorialHeading-{{ section.id }}">
+  <div class="leaf-editorial__content">
+    <p class="leaf-editorial__eyebrow">{% if is_english %}Discover the collection{% else %}Kollektion entdecken{% endif %}</p>
+    <h2 id="LeafEditorialHeading-{{ section.id }}">{{ editorial_heading | strip_html | escape }}</h2>
+    {% if editorial_copy != blank %}<div class="leaf-editorial__intro">{{ editorial_copy | strip_html | truncatewords: 38 | escape }}</div>{% endif %}
+    <div class="leaf-editorial__actions">
+      <a class="leaf-editorial__primary" href="{{ collection.url }}">{% if is_english %}Shop the collection{% else %}Kollektion einkaufen{% endif %}</a>
+      {% if featured != blank %}
+        <a class="leaf-editorial__secondary" href="{{ featured.url }}">{% if is_english %}Explore a product{% else %}Produkt ansehen{% endif %}<span aria-hidden="true"> ↗</span></a>
+      {% endif %}
+    </div>
+  </div>
+  {% if editorial_image != blank %}
+    <div class="leaf-editorial__media">
+      {{ editorial_image | image_url: width: 1400 | image_tag: widths: '400,600,800,1100,1400', sizes: '(min-width: 900px) 48vw, 100vw', loading: 'lazy', alt: editorial_image.alt | default: collection.title }}
+    </div>
+  {% endif %}
+</section>
+{% endif %}
+{% stylesheet %}
+.leaf-editorial{display:flex;align-items:center;gap:clamp(1.5rem,5vw,5rem);padding-block:clamp(2rem,5vw,5rem);border-block:1px solid var(--border,#d9ded8)}
+.leaf-editorial__content{flex:1 1 48%;min-width:0}
+.leaf-editorial__eyebrow{font-size:.75rem;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--accent,#526d5a)}
+.leaf-editorial h2{font-size:clamp(2rem,4.5vw,4.5rem);line-height:1.07;letter-spacing:-.045em;margin:.6rem 0 1.2rem}
+.leaf-editorial__intro{max-width:55ch;line-height:1.65;color:var(--muted,#59645c)}
+.leaf-editorial__actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.6rem}
+.leaf-editorial__actions a{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:.8rem 1.3rem;text-decoration:none;font-weight:700;border:1px solid var(--accent,#526d5a)}
+.leaf-editorial__primary{background:var(--accent,#526d5a);color:#fff}
+.leaf-editorial__secondary{color:var(--accent,#526d5a)}
+.leaf-editorial__actions a:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+.leaf-editorial__media{flex:1 1 48%;min-width:0;overflow:hidden;border-radius:clamp(10px,1.5vw,22px);background:var(--surface,#f0f2ed)}
+.leaf-editorial__media img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}
+@media(max-width:760px){.leaf-editorial{flex-direction:column;align-items:stretch}.leaf-editorial__media{width:100%}.leaf-editorial__actions a{flex:1 1 180px}}
+@media(prefers-reduced-motion:reduce){.leaf-editorial *{scroll-behavior:auto}}
+{% endstylesheet %}
+{% schema %}
+{"name":"LEAF Editorial Collection","settings":[{"type":"checkbox","id":"enabled","label":"Editorial section anzeigen","default":true}],"presets":[{"name":"LEAF Editorial Collection"}]}
+{% endschema %}
