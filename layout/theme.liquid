@@ -193,7 +193,9 @@
     {% render 'leaf-shop-assistant' %}
     {% sections 'footer-group' %}
     <script src="{{ 'cart-forms.js' | asset_url }}" defer></script>
+    {% if request.page_type == 'index' %}
     <script src="{{ 'leaf-home-motion.js' | asset_url }}" defer></script>
+    {% endif %}
     <script src="{{ 'leaferservice-level-up.js' | asset_url }}" defer></script>
     <script src="{{ 'leaf-enterprise-v63.js' | asset_url }}" defer></script>
     <script>
@@ -222,21 +224,6 @@
         };
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
         else start();
-      })();
-    </script>
-    <script>
-      (() => {
-        const sentinel = 'EMPTY DOM REMOVE PROTECTOR';
-        const clean = (root = document.body) => {
-          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-          const stale = [];
-          while (walker.nextNode()) {
-            if (walker.currentNode.nodeValue?.trim() === sentinel) stale.push(walker.currentNode);
-          }
-          stale.forEach((node) => node.remove());
-        };
-        clean();
-        new MutationObserver(() => clean()).observe(document.body, { childList: true, subtree: true });
       })();
     </script>
   </body>
