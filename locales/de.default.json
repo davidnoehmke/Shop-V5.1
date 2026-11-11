@@ -68,8 +68,8 @@
     "text": "LEAFerservice verbindet strukturstabile Spezialmischungen, einzeln wählbare Substratbestandteile und einen nachvollziehbaren Konfigurator. Für Monstera, Philodendron, Alocasia, Orchideen, Palmen, Kakteen, Aussaat und Stecklinge.",
     "configure": "Substrat-Konfigurator",
     "benefits": {
-      "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
-      "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+      "shipping_title": "Bearbeitung: 1–4 Werktage",
+      "shipping_text": "Nach der Bearbeitung erfolgt die Übergabe an den Versanddienstleister. Versandart und voraussichtliche Transportzeit werden im Checkout angezeigt.",
       "quality_title": "Rezepturen mit System",
       "quality_text": "Anteile statt Bauchgefühl",
       "natural_title": "Struktur gezielt wählen",
@@ -120,8 +120,8 @@
     "success": "Danke für deine Anmeldung."
   },
   "services": {
-    "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
-    "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+    "shipping_title": "Bearbeitung: 1–4 Werktage",
+    "shipping_text": "Nach der Bearbeitung erfolgt die Übergabe an den Versanddienstleister. Versandart und voraussichtliche Transportzeit werden im Checkout angezeigt.",
     "payment_title": "Sichere Zahlung",
     "payment_text": "mit SSL-Verschlüsselung",
     "support_title": "Kundenservice",
