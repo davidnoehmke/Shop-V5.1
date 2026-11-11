@@ -1,0 +1,80 @@
+{% comment %}Reusable Shopify product-world navigation; configured with real collections/pages in theme editor. No external JS dependencies.{% endcomment %}
+<section class="leaf-worlds page-width" id="LeafWorlds-{{ section.id }}" aria-labelledby="LeafWorldsTitle-{{ section.id }}">
+  <header class="leaf-worlds__header">
+    <p class="leaf-worlds__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h2 id="LeafWorldsTitle-{{ section.id }}">{{ section.settings.heading | escape }}</h2>
+    {% if section.settings.intro != blank %}<p>{{ section.settings.intro | escape }}</p>{% endif %}
+  </header>
+  <div class="leaf-worlds__grid">
+    {% for block in section.blocks %}
+      {% assign destination = block.settings.destination %}
+      <article class="leaf-worlds__card" {{ block.shopify_attributes }}>
+        {% if destination != blank %}<a class="leaf-worlds__link" href="{{ destination }}" aria-label="{{ block.settings.heading | escape }}">{% endif %}
+          <div class="leaf-worlds__media">
+            {% if block.settings.image != blank %}
+              {{ block.settings.image | image_url: width: 1000 | image_tag: loading: 'lazy', widths: '320, 480, 720, 1000', sizes: '(min-width: 990px) 33vw, (min-width: 600px) 50vw, 100vw', alt: block.settings.heading }}
+            {% else %}
+              <div class="leaf-worlds__placeholder" aria-hidden="true"></div>
+            {% endif %}
+          </div>
+          <div class="leaf-worlds__content">
+            <span class="leaf-worlds__number">{{ forloop.index | prepend: '0' }}</span>
+            <h3>{{ block.settings.heading | escape }}</h3>
+            {% if block.settings.description != blank %}<p>{{ block.settings.description | escape }}</p>{% endif %}
+            <span class="leaf-worlds__action">{% if request.locale.iso_code == 'de' %}Entdecken{% else %}Explore{% endif %}<span aria-hidden="true"> →</span></span>
+          </div>
+        {% if destination != blank %}</a>{% endif %}
+      </article>
+    {% endfor %}
+  </div>
+</section>
+<style>
+  #LeafWorlds-{{ section.id }}{padding-block:clamp(2rem,5vw,5rem)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__header{max-width:64rem;margin:0 auto 2rem;text-align:center}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__eyebrow{font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;color:#526d5b;font-weight:700}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__header h2{font-size:clamp(1.8rem,3.5vw,3rem);line-height:1.15}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(.75rem,2vw,1.5rem)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__card{overflow:hidden;border-radius:18px;background:#f5f2e9;border:1px solid #dce5d9;min-width:0}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__link{display:block;height:100%;color:#24382c;text-decoration:none}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__link:focus-visible{outline:3px solid #526d5b;outline-offset:-4px}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__media{aspect-ratio:4/3;overflow:hidden;background:#dce5d9}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .55s ease}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__placeholder{height:100%;background:linear-gradient(135deg,#dce5d9,#f5f2e9)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__link:hover img,#LeafWorlds-{{ section.id }} .leaf-worlds__link:focus-visible img{transform:scale(1.065)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__content{padding:clamp(1rem,2vw,1.6rem)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__number{font-size:.75rem;color:#526d5b}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__content h3{margin:.4rem 0;font-size:clamp(1.15rem,2vw,1.55rem)}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__content p{line-height:1.5}
+  #LeafWorlds-{{ section.id }} .leaf-worlds__action{display:inline-block;margin-top:.65rem;font-weight:700;color:#385f43}
+  @media(max-width:800px){#LeafWorlds-{{ section.id }} .leaf-worlds__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:520px){#LeafWorlds-{{ section.id }} .leaf-worlds__grid{grid-template-columns:1fr}}
+  @media(prefers-reduced-motion:reduce){#LeafWorlds-{{ section.id }} .leaf-worlds__media img{transition:none}#LeafWorlds-{{ section.id }} .leaf-worlds__link:hover img{transform:none}}
+</style>
+{% schema %}
+{
+  "name": "LEAF Produktwelten",
+  "tag": "section",
+  "settings": [
+    {"type":"text","id":"eyebrow","label":"Eyebrow","default":"LEAFerservice entdecken"},
+    {"type":"text","id":"heading","label":"Überschrift","default":"Entdecke deine Pflanzenwelt"},
+    {"type":"textarea","id":"intro","label":"Einleitung","default":"Von Pflanzenlicht bis Substrat: Finde passende Lösungen für dein Zuhause."}
+  ],
+  "blocks": [
+    {"type":"world","name":"Produktwelt","settings":[
+      {"type":"text","id":"heading","label":"Titel","default":"Pflanzenwelt"},
+      {"type":"textarea","id":"description","label":"Beschreibung"},
+      {"type":"image_picker","id":"image","label":"Bild"},
+      {"type":"url","id":"destination","label":"Zielseite oder Kollektion"}
+    ]}
+  ],
+  "max_blocks": 8,
+  "presets":[{"name":"LEAF Produktwelten","blocks":[
+    {"type":"world","settings":{"heading":"Pflanzenlicht & LEDs"}},
+    {"type":"world","settings":{"heading":"Pflanzgefäße"}},
+    {"type":"world","settings":{"heading":"Anzucht & Zubehör"}},
+    {"type":"world","settings":{"heading":"Substrate & Konfigurator"}},
+    {"type":"world","settings":{"heading":"Interieur Solutions"}},
+    {"type":"world","settings":{"heading":"Ratgeber & Pflanzenwissen"}}
+  ]}]
+}
+{% endschema %}
