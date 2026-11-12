@@ -1,0 +1,124 @@
+{% liquid
+  assign language_code = request.locale.iso_code
+  assign is_en = false
+  if language_code contains 'en'
+    assign is_en = true
+  endif
+%}
+<section class="leaf-worlds" id="LeafWorlds-{{ section.id }}" aria-labelledby="LeafWorldsTitle-{{ section.id }}">
+  <div class="leaf-worlds__shell">
+    <div class="leaf-worlds__intro">
+      <span class="leaf-worlds__eyebrow">{% if is_en %}WELCOME TO LEAFERSERVICE{% else %}WILLKOMMEN BEI LEAFERSERVICE{% endif %}</span>
+      <h1 id="LeafWorldsTitle-{{ section.id }}">{% if is_en %}Your plants. Your world.{% else %}Deine Pflanzen.<br><em>Deine Welt.</em>{% endif %}</h1>
+      <p>{% if is_en %}The right substrate, lighting and planters for your green home. Discover your next step.{% else %}Substrat, Licht und Pflanzgefäße, die zusammenpassen. Entdecke deinen nächsten Schritt.{% endif %}</p>
+      <a class="leaf-worlds__jump" href="#LeafWorldsCards-{{ section.id }}">{% if is_en %}Explore plant worlds{% else %}Pflanzenwelten entdecken{% endif %}<span aria-hidden="true"> ↓</span></a>
+    </div>
+    <div class="leaf-worlds__cards" id="LeafWorldsCards-{{ section.id }}">
+      {% for block in section.blocks %}
+        {% liquid
+          assign item_image = block.settings.image
+          if item_image == blank
+            case block.settings.world
+              when 'substrates'
+                assign item_image = all_products['leafer-alocasia-mix'].featured_image
+              when 'propagation'
+                assign item_image = all_products['leafer-seed-cutting-mix'].featured_image
+              when 'lighting'
+                assign item_image = all_products['venso-sunlite-xl-25w-led-pflanzenlampe'].featured_image
+              when 'studio'
+                assign item_image = all_products['leafer-pot'].featured_image
+            endcase
+          endif
+          assign title = block.settings.title_de
+          assign subtitle = block.settings.subtitle_de
+          if is_en
+            assign title = block.settings.title_en
+            assign subtitle = block.settings.subtitle_en
+          endif
+        %}
+        <a {{ block.shopify_attributes }} class="leaf-worlds__card leaf-worlds__card--{{ block.settings.world }}" href="{{ block.settings.link | default: routes.all_products_collection_url }}" aria-label="{{ title | escape }}">
+          <div class="leaf-worlds__media">
+            {% if item_image != blank %}
+              {{ item_image | image_url: width: 1600 | image_tag: loading: 'lazy', widths: '360, 540, 750, 1100, 1600', sizes: '(min-width: 990px) 45vw, 92vw', class: 'leaf-worlds__photo', alt: title }}
+            {% else %}
+              <div class="leaf-worlds__placeholder" aria-hidden="true"></div>
+            {% endif %}
+            <div class="leaf-worlds__shade" aria-hidden="true"></div>
+            <span class="leaf-worlds__name">{{ title | escape }}</span>
+            <span class="leaf-worlds__arrow" aria-hidden="true">↗</span>
+          </div>
+          <span class="leaf-worlds__subtitle">{{ subtitle | escape }}</span>
+        </a>
+      {% endfor %}
+    </div>
+    <div class="leaf-worlds__foot">
+      <p>{% if is_en %}Not sure what your plant needs?{% else %}Du weißt noch nicht, was deine Pflanze braucht?{% endif %}</p>
+      <a href="/pages/individuelles-substrat">{% if is_en %}Create your substrate{% else %}Substrat konfigurieren{% endif %} <span aria-hidden="true">↗</span></a>
+    </div>
+  </div>
+</section>
+<style>
+  .leaf-worlds{background:#f7f5ed;color:#344d38;padding:clamp(34px,5vw,76px) 0 clamp(48px,6vw,96px);isolation:isolate}
+  .leaf-worlds *{box-sizing:border-box}
+  .leaf-worlds__shell{width:min(1440px,100%);margin-inline:auto;padding-inline:clamp(18px,4vw,64px)}
+  .leaf-worlds__intro{text-align:center;max-width:780px;margin:0 auto clamp(32px,5vw,62px)}
+  .leaf-worlds__eyebrow{font-size:.73rem;letter-spacing:.19em;font-weight:750;color:#617a60}
+  .leaf-worlds__intro h1{margin:14px 0 16px;font-size:clamp(2.55rem,6vw,5.5rem);line-height:1.03;letter-spacing:-.047em;font-weight:650;color:#344d38}
+  .leaf-worlds__intro h1 em{font-style:normal;color:#779477}
+  .leaf-worlds__intro p{font-size:clamp(1rem,1.6vw,1.18rem);line-height:1.65;margin:0 auto 22px;max-width:600px;color:#546b56}
+  .leaf-worlds__jump{display:inline-flex;align-items:center;gap:9px;color:#344d38;font-weight:700;text-underline-offset:4px}
+  .leaf-worlds__cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3.5vw,48px);align-items:start}
+  .leaf-worlds__card{display:block;color:inherit!important;text-decoration:none!important;min-width:0}
+  .leaf-worlds__card:nth-child(even){margin-top:58px}
+  .leaf-worlds__media{height:clamp(300px,42vw,520px);position:relative;overflow:hidden;background:#dfe8d9;clip-path:polygon(2% 0,98% 1%,100% 98%,1% 100%,0 4%);border-radius:12px}
+  .leaf-worlds__photo{display:block;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+  .leaf-worlds__placeholder{position:absolute;inset:0;background:radial-gradient(circle at 36% 36%,#c5d1b5,#79977a 70%,#344d38)}
+  .leaf-worlds__shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,38,19,.2),transparent 46%,rgba(18,38,19,.43))}
+  .leaf-worlds__name{position:absolute;top:clamp(16px,4vw,38px);left:clamp(16px,4vw,38px);font-size:clamp(1.65rem,3.4vw,3.65rem);line-height:1.05;font-weight:850;letter-spacing:-.03em;text-transform:uppercase;color:white;max-width:90%;text-shadow:0 2px 16px rgba(0,0,0,.22)}
+  .leaf-worlds__arrow{position:absolute;right:20px;bottom:20px;background:#fff;width:52px;height:52px;border-radius:100%;display:grid;place-items:center;color:#3b7944;font-size:2rem;transition:transform .2s}
+  .leaf-worlds__card:hover .leaf-worlds__photo{transform:scale(1.055)}
+  .leaf-worlds__card:hover .leaf-worlds__arrow{transform:translate(3px,-3px)}
+  .leaf-worlds__card:focus-visible{outline:3px solid #344d38;outline-offset:5px}
+  .leaf-worlds__subtitle{display:block;padding:12px 5px 0;font-size:.95rem;line-height:1.45;color:#5f715c}
+  .leaf-worlds__foot{text-align:center;margin-top:clamp(36px,5vw,78px)}
+  .leaf-worlds__foot p{font-size:1.1rem;margin-bottom:14px}
+  .leaf-worlds__foot a{display:inline-flex;align-items:center;gap:10px;padding:14px 24px;background:#344d38;color:#fff!important;border-radius:100px;font-weight:700;text-decoration:none}
+  @media(max-width:749px){
+    .leaf-worlds{padding-top:28px}
+    .leaf-worlds__intro{text-align:left;margin-bottom:36px}
+    .leaf-worlds__intro h1{font-size:clamp(2.65rem,12vw,4rem);letter-spacing:-.055em}
+    .leaf-worlds__cards{grid-template-columns:1fr;gap:20px}
+    .leaf-worlds__card:nth-child(even){margin-top:0}
+    .leaf-worlds__card:nth-child(even){margin-left:clamp(18px,8vw,44px)}
+    .leaf-worlds__card:nth-child(odd){margin-right:clamp(14px,5vw,30px)}
+    .leaf-worlds__media{height:clamp(265px,75vw,430px)}
+    .leaf-worlds__name{font-size:clamp(2.1rem,9vw,3.4rem)}
+    .leaf-worlds__arrow{width:49px;height:49px}
+    .leaf-worlds__subtitle{font-size:.9rem}
+  }
+  @media(prefers-reduced-motion:reduce){.leaf-worlds__photo,.leaf-worlds__arrow{transition:none!important}}
+</style>
+{% schema %}
+{
+  "name": "LEAF Erlebniswelten",
+  "tag": "section",
+  "class": "leaf-worlds-wrapper",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "world",
+      "name": "Pflanzenwelt",
+      "settings": [
+        {"type":"select","id":"world","label":"Welt","options":[{"value":"substrates","label":"Substrate"},{"value":"propagation","label":"Anzucht"},{"value":"lighting","label":"Pflanzenlicht"},{"value":"studio","label":"Raumplanung"}],"default":"substrates"},
+        {"type":"image_picker","id":"image","label":"Lifestyle-Fotografie"},
+        {"type":"text","id":"title_de","label":"Titel Deutsch","default":"Substrate"},
+        {"type":"text","id":"title_en","label":"Title English","default":"Substrates"},
+        {"type":"text","id":"subtitle_de","label":"Unterzeile Deutsch","default":"Entdecke passende Lösungen für deine Pflanzen."},
+        {"type":"text","id":"subtitle_en","label":"Subtitle English","default":"Discover the right solution for your plants."},
+        {"type":"url","id":"link","label":"Zielseite"}
+      ]
+    }
+  ],
+  "presets": [{"name":"LEAF Erlebniswelten","blocks":[{"type":"world"},{"type":"world"},{"type":"world"},{"type":"world"}]}]
+}
+{% endschema %}

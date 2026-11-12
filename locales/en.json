@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Skip to content",
@@ -1496,6 +1487,62 @@
       "card_2_text": "Use coordinated sets when several components are meant to work together.",
       "card_3_title": "Decide individually",
       "card_3_text": "Continue comparing lighting and interior products individually when needed."
+    }
+  },
+  "visual_shop": {
+    "edit": {
+      "eyebrow": "The LEAF edit",
+      "heading": "Your next green step.",
+      "intro": "Explore a considered selection for light, roots and your living space.",
+      "filter_label": "Filter products by category",
+      "results": "products in this selection",
+      "end": "More possibilities for your plants.",
+      "all": "Explore the full collection"
+    },
+    "groups": {
+      "all": "Explore all",
+      "lighting": "Grow lights",
+      "planters": "Planters",
+      "substrates": "Substrates",
+      "sets": "Sets"
+    },
+    "product": {
+      "from": "from",
+      "quick": "Quick view",
+      "quick_named": "Quick view: {{ product }}",
+      "unavailable": "Currently unavailable",
+      "close": "Close",
+      "tax": "Including VAT, plus",
+      "shipping": "shipping",
+      "variant": "Choose an option",
+      "add": "Add to cart",
+      "details": "All product details"
+    },
+    "uses": {
+      "single": "Grow light with a telescopic stand.",
+      "shelf": "A light bar for your plant shelf.",
+      "room": "Plant lighting for your living space.",
+      "planter": "A new home for your favourite plant.",
+      "water": "Watering that fits your routine.",
+      "aroid": "Specialist substrate for Alocasia and aroids.",
+      "dry": "For cacti and succulents.",
+      "seed": "For seeds and young roots.",
+      "repot": "Complementary components for your next project."
+    },
+    "living": {
+      "eyebrow": "From product to plant space",
+      "heading": "Light that makes room for green.",
+      "intro": "A considered plant space starts with three simple choices.",
+      "light_title": "The right light",
+      "light_body": "Match mounting, coverage and distance to your plants. This image shows the Aurora light bar in a shelf setting.",
+      "light_link": "Explore grow lights",
+      "pot_title": "The right planter",
+      "pot_body": "Consider the root ball, available space and drainage. A planter should suit both your plant and your routine.",
+      "pot_link": "Explore planters",
+      "soil_title": "A healthy root space",
+      "soil_body": "Choose a ready-made blend or create your own substrate. Your plant, pot and watering routine guide the choice.",
+      "soil_link": "Explore substrates",
+      "help": "Create your own substrate"
     }
   }
 }
