@@ -1,51 +1,147 @@
+{% liquid
+  assign faq_eyebrow = 'faq.eyebrow' | t
+  assign faq_heading = section.settings.heading
+  assign faq_intro = section.settings.text
+  if faq_heading == blank
+    assign faq_heading = 'faq.heading' | t
+  endif
+  if request.page_type == 'index'
+    assign faq_eyebrow = 'home.longtail_faq.eyebrow' | t
+    assign faq_heading = 'home.longtail_faq.heading' | t
+    assign faq_intro = 'home.longtail_faq.intro' | t
+  endif
+%}
+
 <section class="faq page-width" aria-labelledby="FaqHeading-{{ section.id }}">
   <header class="faq__header">
-    <p>{{ 'faq.eyebrow' | t }}</p>
-    <h2 id="FaqHeading-{{ section.id }}">{% if section.settings.heading != blank %}{{ section.settings.heading }}{% else %}{{ 'faq.heading' | t }}{% endif %}</h2>
-    {% if section.settings.text != blank %}<div class="faq__intro">{{ section.settings.text }}</div>{% else %}<p>{{ 'faq.intro' | t }}</p>{% endif %}
+    <p>{{ faq_eyebrow }}</p>
+    <h2 id="FaqHeading-{{ section.id }}">{{ faq_heading }}</h2>
+    {% if faq_intro != blank %}<div class="faq__intro">{{ faq_intro }}</div>{% else %}<p>{{ 'faq.intro' | t }}</p>{% endif %}
   </header>
+
   <div class="faq__items">
-    {% for block in section.blocks %}
-      <details name="faq-{{ section.id }}" {{ block.shopify_attributes }}>
-        <summary>
-          <span>
-            {% if block.settings.question != blank %}
-              {{ block.settings.question }}
+    {% if request.page_type == 'index' %}
+      {% for item_index in (1..6) %}
+        {% assign question_key = 'home.longtail_faq.q' | append: item_index %}
+        {% assign answer_key = 'home.longtail_faq.a' | append: item_index %}
+        <details name="faq-{{ section.id }}">
+          <summary>
+            <span>{{ question_key | t }}</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </summary>
+          <div class="faq__answer"><p>{{ answer_key | t }}</p></div>
+        </details>
+      {% endfor %}
+    {% else %}
+      {% for block in section.blocks %}
+        <details name="faq-{{ section.id }}" {{ block.shopify_attributes }}>
+          <summary>
+            <span>
+              {% if block.settings.question != blank %}
+                {{ block.settings.question }}
+              {% else %}
+                {% case block.settings.topic %}
+                  {% when 'substrate' %}{{ 'faq.substrate_question' | t }}
+                  {% when 'application' %}{{ 'faq.application_question' | t }}
+                  {% when 'plants' %}{{ 'faq.plants_question' | t }}
+                  {% else %}{{ 'faq.shipping_question' | t }}
+                {% endcase %}
+              {% endif %}
+            </span>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </summary>
+          <div class="faq__answer">
+            {% if block.settings.answer != blank %}
+              {{ block.settings.answer }}
             {% else %}
-              {% case block.settings.topic %}
-                {% when 'substrate' %}{{ 'faq.substrate_question' | t }}
-                {% when 'application' %}{{ 'faq.application_question' | t }}
-                {% when 'plants' %}{{ 'faq.plants_question' | t }}
-                {% else %}{{ 'faq.shipping_question' | t }}
-              {% endcase %}
+              <p>
+                {% case block.settings.topic %}
+                  {% when 'substrate' %}{{ 'faq.substrate_answer' | t }}
+                  {% when 'application' %}{{ 'faq.application_answer' | t }}
+                  {% when 'plants' %}{{ 'faq.plants_answer' | t }}
+                  {% else %}{{ 'faq.shipping_answer' | t }}
+                {% endcase %}
+              </p>
             {% endif %}
-          </span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
-        </summary>
-        <div class="faq__answer">
+          </div>
+        </details>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% assign faq_schema_count = 0 %}
+    {% if request.page_type == 'index' %}
+      {% for item_index in (1..6) %}
+        {% assign question_key = 'home.longtail_faq.q' | append: item_index %}
+        {% assign answer_key = 'home.longtail_faq.a' | append: item_index %}
+        {% if faq_schema_count > 0 %},{% endif %}
+        {
+          "@type": "Question",
+          "name": {{ question_key | t | strip_html | json }},
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": {{ answer_key | t | strip_html | json }}
+          }
+        }
+        {% assign faq_schema_count = faq_schema_count | plus: 1 %}
+      {% endfor %}
+    {% else %}
+      {% for block in section.blocks %}
+        {% capture schema_question %}
+          {% if block.settings.question != blank %}
+            {{ block.settings.question }}
+          {% else %}
+            {% case block.settings.topic %}
+              {% when 'substrate' %}{{ 'faq.substrate_question' | t }}
+              {% when 'application' %}{{ 'faq.application_question' | t }}
+              {% when 'plants' %}{{ 'faq.plants_question' | t }}
+              {% else %}{{ 'faq.shipping_question' | t }}
+            {% endcase %}
+          {% endif %}
+        {% endcapture %}
+        {% capture schema_answer %}
           {% if block.settings.answer != blank %}
             {{ block.settings.answer }}
           {% else %}
-            <p>
-              {% case block.settings.topic %}
-                {% when 'substrate' %}{{ 'faq.substrate_answer' | t }}
-                {% when 'application' %}{{ 'faq.application_answer' | t }}
-                {% when 'plants' %}{{ 'faq.plants_answer' | t }}
-                {% else %}{{ 'faq.shipping_answer' | t }}
-              {% endcase %}
-            </p>
+            {% case block.settings.topic %}
+              {% when 'substrate' %}{{ 'faq.substrate_answer' | t }}
+              {% when 'application' %}{{ 'faq.application_answer' | t }}
+              {% when 'plants' %}{{ 'faq.plants_answer' | t }}
+              {% else %}{{ 'faq.shipping_answer' | t }}
+            {% endcase %}
           {% endif %}
-        </div>
-      </details>
-    {% endfor %}
-  </div>
-</section>
+        {% endcapture %}
+        {% assign schema_question = schema_question | strip %}
+        {% assign schema_answer = schema_answer | strip %}
+        {% if schema_question != blank and schema_answer != blank %}
+          {% if faq_schema_count > 0 %},{% endif %}
+          {
+            "@type": "Question",
+            "name": {{ schema_question | strip_html | json }},
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": {{ schema_answer | strip_html | json }}
+            }
+          }
+          {% assign faq_schema_count = faq_schema_count | plus: 1 %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  ]
+}
+</script>
 
 {% stylesheet %}
   .faq { padding-block: var(--space-section); display: grid; grid-template-columns: minmax(240px, .75fr) minmax(0, 1.25fr); gap: clamp(2rem, 7vw, 7rem); }
   .faq__header { position: sticky; top: 130px; align-self: start; }
   .faq__header > p:first-child { margin: 0 0 .5rem; color: var(--accent); font-size: .72rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-  .faq__header h2 { margin: 0; font-size: clamp(2.2rem, 5vw, 4.5rem); line-height: 1; letter-spacing: -.04em; }
+  .faq__header h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
   .faq__header > p:last-child, .faq__intro { max-width: 430px; color: var(--muted); }
   .faq__intro > *:first-child { margin-top: 0; }
   .faq__intro > *:last-child { margin-bottom: 0; }

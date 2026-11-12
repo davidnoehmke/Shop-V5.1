@@ -1,0 +1,120 @@
+{% liquid
+  assign source_handle = article.metafields.leafer.dynamic_collection_handle.value | default: 'pflanzenbeleuchtung'
+  assign source_collection = collections[source_handle]
+  assign guide_mode = article.metafields.leafer.guide_mode.value | default: 'comparison'
+  assign max_cards = 6
+  if guide_mode == 'technical'
+    assign max_cards = 5
+  endif
+%}
+
+{% if source_collection != blank %}
+<section class="led-article-guide page-width" aria-labelledby="LedArticleGuide-{{ section.id }}">
+  <header class="led-article-guide__head">
+    <p>{{ 'led_article.dynamic_eyebrow' | t }}</p>
+    <h2 id="LedArticleGuide-{{ section.id }}">
+      {% if guide_mode == 'technical' %}
+        {{ 'led_article.technical_heading' | t }}
+      {% else %}
+        {{ 'led_article.comparison_heading' | t }}
+      {% endif %}
+    </h2>
+    <p>
+      {% if guide_mode == 'technical' %}
+        {{ 'led_article.technical_intro' | t }}
+      {% else %}
+        {{ 'led_article.comparison_intro' | t }}
+      {% endif %}
+    </p>
+  </header>
+
+  <details class="led-article-guide__mobile-info">
+    <summary><span aria-hidden="true">ⓘ</span>{{ 'led_article.mobile_info' | t }}</summary>
+    <p>{{ 'led_article.mobile_info_text' | t }}</p>
+  </details>
+
+  <div class="led-article-guide__grid">
+    {% assign shown = 0 %}
+    {% for product in source_collection.products %}
+      {% liquid
+        assign maker = product.metafields.lighting.manufacturer.value | default: product.vendor
+        assign is_accessory = false
+        if product.type contains 'Zubehör' or product.type contains 'Ständer' or product.type contains 'Halterung' or product.title contains 'Controller' or product.title contains 'Netzteil'
+          assign is_accessory = true
+        endif
+        assign approved_maker = false
+        if maker contains 'Venso' or maker contains 'NEUSIUS' or maker contains 'Neusius' or maker contains 'Soltech'
+          assign approved_maker = true
+        endif
+        assign watts = product.metafields.lighting.rated_power_w.value | default: 0 | plus: 0
+        assign distance = product.metafields.lighting.recommended_distance.value
+        assign mounting = product.metafields.lighting.mounting.value | default: product.metafields.lighting.socket_connector.value
+        assign use_cases = product.metafields.leafer.suitable_for.value | default: product.metafields.lighting.use_cases.value
+      %}
+      {% if approved_maker and is_accessory == false and shown < max_cards %}
+        {% assign shown = shown | plus: 1 %}
+        <article class="led-article-guide__card">
+          <a class="led-article-guide__media" href="{{ product.url }}">
+            {% if product.featured_image != blank %}
+              {{ product.featured_image | image_url: width: 680, height: 680, crop: 'center' | image_tag: loading: 'lazy', widths: '300,460,680', sizes: '(max-width: 749px) 78vw, 30vw', alt: product.featured_image.alt | default: product.title }}
+            {% endif %}
+          </a>
+          <div class="led-article-guide__body">
+            <div class="led-article-guide__meta"><span>{{ maker | escape }}</span><span>{{ product.price | money }}</span></div>
+            <h3><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+            {% if product.metafields.leafer.primary_function.value != blank %}
+              <p>{{ product.metafields.leafer.primary_function.value | escape }}</p>
+            {% endif %}
+            <dl>
+              {% if watts > 0 %}<div><dt>{{ 'led_article.power' | t }}</dt><dd>{{ watts }} W</dd></div>{% endif %}
+              {% if mounting != blank %}<div><dt>{{ 'led_article.mounting' | t }}</dt><dd>{{ mounting | escape | truncatewords: 10 }}</dd></div>{% endif %}
+              {% if distance != blank %}<div><dt>{{ 'led_article.distance' | t }}</dt><dd>{{ distance | escape | truncatewords: 10 }}</dd></div>{% endif %}
+              {% if use_cases != blank %}<div><dt>{{ 'led_article.use' | t }}</dt><dd>{{ use_cases | join: ', ' | escape | truncatewords: 12 }}</dd></div>{% endif %}
+            </dl>
+            <a class="led-article-guide__link" href="{{ product.url }}">{{ 'led_article.product_details' | t }} <span aria-hidden="true">→</span></a>
+          </div>
+        </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="led-article-guide__footer">
+    <p>{{ 'led_article.dynamic_note' | t }}</p>
+    <a class="button" href="{{ source_collection.url }}">{{ 'led_article.collection_cta' | t }} <span aria-hidden="true">→</span></a>
+  </div>
+</section>
+{% endif %}
+
+{% stylesheet %}
+.led-article-guide{padding-block:clamp(3rem,7vw,6rem);border-top:1px solid var(--border)}
+.led-article-guide__head{max-width:860px;margin-bottom:1.3rem}
+.led-article-guide__head>p:first-child{margin:0 0 .6rem;color:var(--accent);font-size:.72rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.led-article-guide__head h2{margin:0;font-size:clamp(1.55rem,3vw,2.5rem);line-height:1.12;letter-spacing:-.035em}
+.led-article-guide__head>p:last-child{max-width:68ch;color:var(--muted);line-height:1.65}
+.led-article-guide__mobile-info{display:none;margin-bottom:1rem;border:1px solid var(--border);background:var(--surface)}
+.led-article-guide__mobile-info summary{min-height:48px;display:flex;align-items:center;gap:.55rem;padding:.75rem .9rem;cursor:pointer;font-weight:800;list-style:none}
+.led-article-guide__mobile-info summary::-webkit-details-marker{display:none}
+.led-article-guide__mobile-info p{margin:0;padding:0 .9rem .9rem;color:var(--muted);line-height:1.55}
+.led-article-guide__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.8rem}
+.led-article-guide__card{display:flex;flex-direction:column;border:1px solid var(--border);background:var(--surface)}
+.led-article-guide__media{aspect-ratio:1;display:grid;place-items:center;background:var(--background)}
+.led-article-guide__media img{width:100%;height:100%;object-fit:contain;padding:.6rem}
+.led-article-guide__body{display:flex;flex-direction:column;gap:.5rem;height:100%;padding:1rem}
+.led-article-guide__meta{display:flex;justify-content:space-between;gap:.8rem;color:var(--muted);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase}
+.led-article-guide__card h3{margin:0;font-size:1rem;line-height:1.3}
+.led-article-guide__card h3 a{color:inherit;text-decoration:none}
+.led-article-guide__body>p{margin:0;color:var(--muted);font-size:.82rem;line-height:1.45}
+.led-article-guide__card dl{display:grid;grid-template-columns:1fr 1fr;margin:.25rem 0 0;border-top:1px solid var(--border)}
+.led-article-guide__card dl div{padding:.48rem 0;border-bottom:1px solid var(--border)}
+.led-article-guide__card dt{font-size:.6rem;color:var(--muted);font-weight:850;text-transform:uppercase}
+.led-article-guide__card dd{margin:.15rem 0 0;font-size:.75rem;line-height:1.35}
+.led-article-guide__link{margin-top:auto;color:var(--accent);font-size:.78rem;font-weight:800;text-decoration:none}
+.led-article-guide__footer{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)}
+.led-article-guide__footer p{max-width:70ch;margin:0;color:var(--muted);font-size:.76rem;line-height:1.5}
+@media(max-width:980px){.led-article-guide__grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:749px){.led-article-guide__mobile-info{display:block}.led-article-guide__grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:.3rem}.led-article-guide__card{min-width:min(82vw,310px);scroll-snap-align:start}.led-article-guide__footer{align-items:stretch;flex-direction:column}.led-article-guide__footer .button{width:100%}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"LED Ratgeber Produkte","settings":[],"presets":[{"name":"LED Ratgeber Produkte"}]}
+{% endschema %}

@@ -1,0 +1,30 @@
+name: Catalog Sync Contract Tests
+
+on:
+  pull_request:
+    paths:
+      - 'automation/catalog-sync/**'
+      - '.github/workflows/catalog-sync-contract.yml'
+  push:
+    branches:
+      - feat/unified-catalog-sync-20261011
+    paths:
+      - 'automation/catalog-sync/**'
+      - '.github/workflows/catalog-sync-contract.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  catalog-contract:
+    name: Shopify ChatGPT Supabase edit contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Run catalog sync contract unit tests
+        shell: bash
+        run: |
+          node --version
+          node --test automation/catalog-sync/core.test.mjs automation/catalog-sync/edit-surfaces.test.mjs

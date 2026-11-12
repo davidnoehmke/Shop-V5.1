@@ -1,0 +1,42 @@
+{% doc %}
+Renders FAQPage JSON-LD for visible article FAQs stored in the canonical article FAQ metafield.
+@param {article} article - Current blog article.
+@param {string} canonical_url - Canonical URL for the article.
+{% enddoc %}
+
+{% liquid
+  assign faq_items = article.metafields.custom.faq_schema.value
+  assign valid_faq_count = 0
+
+  for item in faq_items
+    if item.q != blank and item.a != blank
+      assign valid_faq_count = valid_faq_count | plus: 1
+    endif
+  endfor
+%}
+
+{% if valid_faq_count > 0 %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": {{ canonical_url | append: '#faq' | json }},
+      "mainEntity": [
+        {% assign emitted_faq_count = 0 %}
+        {% for item in faq_items %}
+          {% if item.q != blank and item.a != blank %}
+            {% assign emitted_faq_count = emitted_faq_count | plus: 1 %}
+            {
+              "@type": "Question",
+              "name": {{ item.q | json }},
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": {{ item.a | json }}
+              }
+            }{% unless emitted_faq_count == valid_faq_count %},{% endunless %}
+          {% endif %}
+        {% endfor %}
+      ]
+    }
+  </script>
+{% endif %}

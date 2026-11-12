@@ -44,7 +44,7 @@ html.leaf-motion-ready .template-index [data-leaf-reveal].is-visible { opacity: 
   .template-index .hero__inner { padding-block: 1rem 1.05rem; }
   .template-index .hero__content { padding-top: 29svh; }
   .template-index .hero__eyebrow { margin-bottom: .45rem; font-size: .68rem; }
-  .template-index .hero h1 { max-width: 14ch; margin-bottom: .65rem; font-size: clamp(2rem, 9.2vw, 3.15rem); line-height: .98; }
+  .template-index .hero h1 { max-width: 28ch; margin-bottom: .65rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; }
   .template-index .hero__text, .template-index .hero__content > p { font-size: .93rem; line-height: 1.45; }
   .template-index .hero__buttons { gap: .5rem; margin-top: .85rem; }
   .template-index .hero__buttons .button { min-height: 46px; padding-block: .65rem; }
@@ -62,7 +62,7 @@ html.leaf-motion-ready .template-index [data-leaf-reveal].is-visible { opacity: 
   .template-index .hero { min-height: clamp(570px, 76svh, 640px); }
   .template-index .hero__image { height: 35%; }
   .template-index .hero__content { padding-top: 25svh; }
-  .template-index .hero h1 { font-size: clamp(1.95rem, 9.5vw, 2.8rem); }
+  .template-index .hero h1 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {

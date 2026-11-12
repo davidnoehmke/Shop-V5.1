@@ -1,35 +1,26 @@
-# Offline validation
+# Validation
 
-## Result
+The Shopify theme lives in the repository root.
 
-The latest local Theme Check run completed against `theme/` without a Liquid
-syntax error after fixing the FAQ JSON-LD loop in
-`theme/snippets/product-faq-structured-data.liquid` and the import-time
-compatibility findings in the generated SEO/PageFly code.
+## Checks completed on 2026-10-18
 
-The current master contains 38 warnings and 0 errors. The remaining warnings
-are inherited from the working theme and generated compatibility code; they are
-recorded here rather than silently changing behavior during the repository
-split.
+- `node --test automation/codex/*.test.cjs tests/*.test.mjs`: 101 tests passed.
+- `shopify theme check --path .` (CLI 4.4.0): 0 errors, 61 existing warnings.
+- Repository/theme JSON and workflow YAML parsed successfully.
+- Isolated PostgreSQL/PGlite checks covered verification/evidence gates, blocked
+  updates, cancellation of pending queue entries, metadata-only reapproval and
+  semantic JSON comparison.
+- Liquid rendering checks covered canonical FAQ precedence, `q/a` compatibility,
+  incomplete-entry fallback, duplicate suppression and visible/JSON-LD agreement.
 
-| Check | Count | Interpretation |
-|---|---:|---|
-| `DeprecatedTag` | 1 | Legacy `include` usage in the layout |
-| `RemoteAsset` | 1 | PageFly remote asset reference |
-| `VariableName` | 11 | Naming style findings in SEO/PageFly compatibility code |
-| `HardcodedRoutes` | 4 | Collection links that can be migrated to Shopify `routes` objects |
-| `UnclosedHTMLElement` | 8 | Conditional group markup in `sections/substrate-world.liquid`; verify visually before changing |
-| `DeprecatedFilter` | 5 | Legacy PageFly/SEO compatibility filters |
-| `UndefinedObject` | 8 | Snippet context variables such as `section`; valid when rendered from the intended section context |
+Theme Check warnings remain in active compatibility code and existing templates.
+They do not justify removing integrations that are still used. Public DE/EN link
+verification and workflow expression validation also run in CI before merge.
 
-The Apps Script, manifest, JSON configuration, and standalone JavaScript
-experiment pass local syntax/JSON checks. No credentials are stored in the
-repository.
+## Release verification
 
-## Recommended next pass
-
-1. Replace hardcoded collection paths with `routes.*` values.
-2. Review the conditional markup in `substrate-world.liquid` in Shopify's
-   preview before restructuring it.
-3. Migrate legacy `include`/`img_url` usages where PageFly compatibility is no
-   longer required.
+After CI and review, merge the approved code and read back the production state.
+The `live-storefront-verify.yml` workflow checks routes, storefront markers,
+assistant responses, redirects and sitemap/internal links after native Shopify
+sync. Metafield writes additionally require Shopify read-back and a matching
+Supabase projection state; a successful code check alone does not verify content.

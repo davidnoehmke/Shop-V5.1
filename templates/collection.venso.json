@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "venso": {
+      "type": "venso-brand-landing",
+      "settings": {
+        "show_faq": true
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "venso"
+  ]
+}
