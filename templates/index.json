@@ -21,7 +21,7 @@
         "heading": "Alles für deine Pflanze – als System gedacht.",
         "text": "<p>Substrat, Licht, Gefäß und Versorgung passend zusammenstellen. Starte mit deiner Aufgabe statt mit einer Produktkategorie.</p>",
         "primary_label": "Lösung finden",
-        "primary_link": "#LeafSolutions",
+        "primary_link": "#LeafWorlds",
         "secondary_label": "Direkt shoppen",
         "secondary_link": "shopify://collections/all"
       }
@@ -458,10 +458,15 @@
     "enterprise_studio": {
       "type": "leaf-enterprise-studio",
       "settings": {}
+    },
+    "leaf_worlds": {
+      "type": "leaf-worlds-hub",
+      "settings": {}
     }
   },
   "order": [
     "hero",
+    "leaf_worlds",
     "enterprise_studio",
     "home_collection_journey",
     "substrate_configurator",
