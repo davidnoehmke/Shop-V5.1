@@ -165,7 +165,7 @@ begin
 
   return rec;
 end;
-$function$
+$function$;
 
 
 CREATE OR REPLACE FUNCTION public.trg_queue_dirty_metafield()
@@ -207,7 +207,7 @@ begin
 
   return new;
 end;
-$function$
+$function$;
 
 
 -- Clear stale internal workflow drift and obsolete queued writes.
