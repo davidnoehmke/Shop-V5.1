@@ -1,17 +1,20 @@
-import {useLoaderData, Link} from 'react-router';
+import {useLoaderData, useLocation, Link} from 'react-router';
+import {localizedPath} from '~/lib/locale-path';
 import type {Route} from './+types/collections._index';
 import {getPaginationVariables, Image} from '@shopify/hydrogen';
 import type {CollectionFragment} from 'storefrontapi.generated';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
 import {Breadcrumbs} from '~/components/Breadcrumbs';
 
-export const meta: Route.MetaFunction = () => {
+export const meta: Route.MetaFunction = ({location}) => {
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
   return [
-    {title: 'Sortiment & Produktwelten | LEAFerservice'},
+    {title: isEnglish ? 'Shop & product worlds | LEAFerservice' : 'Sortiment & Produktwelten | LEAFerservice'},
     {
       name: 'description',
-      content:
-        'Entdecke Substrate, Pflanzgefäße, Beleuchtung, Pflanzen und Zubehör nach Produktwelt geordnet.',
+      content: isEnglish
+        ? 'Discover substrates, planters, lighting, plants and accessories by product world.'
+        : 'Entdecke Substrate, Pflanzgefäße, Beleuchtung, Pflanzen und Zubehör nach Produktwelt geordnet.',
     },
   ];
 };
@@ -40,24 +43,26 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 }
 
 export default function Collections() {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   const {collections} = useLoaderData<typeof loader>();
 
   return (
     <div className="page-shell collections">
       <Breadcrumbs
         items={[
-          {label: 'Start', to: '/'},
-          {label: 'Sortiment'},
+          {label: isEnglish ? 'Home' : 'Start', to: isEnglish ? '/en' : '/'},
+          {label: isEnglish ? 'Shop' : 'Sortiment'},
         ]}
       />
 
       <header className="page-intro">
-        <p className="page-eyebrow">Produktwelten</p>
-        <h1>Vom Projekt zur passenden Lösung.</h1>
+        <p className="page-eyebrow">{isEnglish ? 'Product worlds' : 'Produktwelten'}</p>
+        <h1>{isEnglish ? 'From your project to the right solution.' : 'Vom Projekt zur passenden Lösung.'}</h1>
         <p className="page-lead">
-          Starte mit einer Produktwelt und gehe anschließend gezielt tiefer.
-          So bleiben Substrate, Gefäße, Pflanzen, Licht und Zubehör auch bei
-          wachsendem Sortiment schnell erfassbar.
+          {isEnglish
+            ? 'Start with a product world, then explore the details. Find substrates, planters, plants, lighting and accessories as the range grows.'
+            : 'Starte mit einer Produktwelt und gehe anschließend gezielt tiefer. So bleiben Substrate, Gefäße, Pflanzen, Licht und Zubehör auch bei wachsendem Sortiment schnell erfassbar.'}
         </p>
       </header>
 
@@ -84,10 +89,12 @@ function CollectionItem({
   collection: CollectionFragment;
   index: number;
 }) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   return (
     <Link
       className="collection-item"
-      to={`/collections/${collection.handle}`}
+      to={localizedPath(`/collections/${collection.handle}`, pathname)}
       prefetch="intent"
     >
       {collection.image ? (
@@ -107,14 +114,14 @@ function CollectionItem({
       )}
 
       <div className="collection-item-copy">
-        <span className="collection-item-label">Produktwelt</span>
+        <span className="collection-item-label">{isEnglish ? 'Product world' : 'Produktwelt'}</span>
         <h2>{collection.title}</h2>
         {collection.description ? (
           <p>{collection.description}</p>
         ) : (
-          <p>Produkte, Empfehlungen und passende Ergänzungen entdecken.</p>
+          <p>{isEnglish ? 'Discover products, recommendations and matching accessories.' : 'Produkte, Empfehlungen und passende Ergänzungen entdecken.'}</p>
         )}
-        <span className="text-link">Entdecken →</span>
+        <span className="text-link">{isEnglish ? 'Explore' : 'Entdecken'} →</span>
       </div>
     </Link>
   );

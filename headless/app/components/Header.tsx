@@ -49,11 +49,7 @@ export function Header({
         locale={locale}
       />
 
-      <HeaderCtas
-        isLoggedIn={isLoggedIn}
-        cart={cart}
-        locale={locale}
-      />
+      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} locale={locale} />
     </header>
   );
 }
@@ -72,21 +68,77 @@ export function HeaderMenu({
   const {close} = useAside();
   const isEnglish = locale === 'en';
   const destinations = [
-    {de:'Shop',en:'Shop',hrefDe:'/collections/all',hrefEn:'/en/collections/all'},
-    {de:'Substrate',en:'Substrates',hrefDe:'/collections/substratwelt-pflanzsubstrate-mischungen-zusatze',hrefEn:'/en/substrate'},
-    {de:'Pflanzenlicht',en:'Grow lights',hrefDe:'/pflanzenlicht-vergleich',hrefEn:'/en/worlds/light'},
-    {de:'3D Raumplaner',en:'3D Room Planner',hrefDe:'/raumplaner-3d',hrefEn:'/en/room-planner-3d'},
-    {de:'Pflanzenwissen',en:'Plant knowledge',hrefDe:'/blogs',hrefEn:'/en/blogs'},
+    {
+      de: 'Shop',
+      en: 'Shop',
+      hrefDe: '/collections/all',
+      hrefEn: '/en/collections/all',
+    },
+    {
+      de: 'Substrate',
+      en: 'Substrates',
+      hrefDe: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze',
+      hrefEn: '/en/substrate',
+    },
+    {
+      de: 'Pflanzenlicht',
+      en: 'Grow lights',
+      hrefDe: '/pflanzenlicht-vergleich',
+      hrefEn: '/en/worlds/light',
+    },
+    {
+      de: '3D Raumplaner',
+      en: '3D Room Planner',
+      hrefDe: '/raumplaner-3d',
+      hrefEn: '/en/room-planner-3d',
+    },
+    {
+      de: 'Pflanzenwissen',
+      en: 'Plant knowledge',
+      hrefDe: '/blogs',
+      hrefEn: '/en/blogs',
+    },
   ];
   return (
-    <nav className={className} aria-label={viewport==='mobile'?'Mobile Navigation':isEnglish?'Main navigation':'Hauptnavigation'}>
+    <nav
+      className={className}
+      aria-label={
+        viewport === 'mobile'
+          ? isEnglish
+            ? 'Mobile navigation'
+            : 'Mobile Navigation'
+          : isEnglish
+            ? 'Main navigation'
+            : 'Hauptnavigation'
+      }
+    >
       <ul className="header-menu-list">
-        {viewport==='mobile' ? <li className="header-menu-group"><NavLink end onClick={close} prefetch="intent" to={isEnglish?'/en':'/'}>{isEnglish?'Home':'Start'}</NavLink></li> : null}
-        {destinations.map(item=><li className="header-menu-group" key={item.hrefDe}>
-          <NavLink className="header-menu-item" end onClick={viewport==='mobile'?close:undefined} prefetch="intent" style={activeLinkStyle} to={isEnglish?item.hrefEn:item.hrefDe}>
-            {isEnglish?item.en:item.de}
-          </NavLink>
-        </li>)}
+        {viewport === 'mobile' ? (
+          <li className="header-menu-group">
+            <NavLink
+              end
+              onClick={close}
+              prefetch="intent"
+              to={isEnglish ? '/en' : '/'}
+            >
+              {isEnglish ? 'Home' : 'Start'}
+            </NavLink>
+          </li>
+        ) : null}
+        {destinations.map((item) => (
+          <li className="header-menu-group" key={item.hrefDe}>
+            <NavLink
+              className="header-menu-item"
+              end
+              onClick={viewport === 'mobile' ? close : undefined}
+              prefetch="intent"
+              style={activeLinkStyle}
+              to={isEnglish ? item.hrefEn : item.hrefDe}
+            >
+              {isEnglish ? item.en : item.de}
+            </NavLink>
+          </li>
+        ))}
       </ul>
     </nav>
   );
@@ -114,11 +166,7 @@ function HeaderCtas({
         <Suspense fallback="Login">
           <Await resolve={isLoggedIn} errorElement="Login">
             {(loggedIn) =>
-              loggedIn
-                ? isEnglish
-                  ? 'Account'
-                  : 'Konto'
-                : 'Login'
+              loggedIn ? (isEnglish ? 'Account' : 'Konto') : 'Login'
             }
           </Await>
         </Suspense>
@@ -129,11 +177,7 @@ function HeaderCtas({
   );
 }
 
-function HeaderMenuMobileToggle({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function HeaderMenuMobileToggle({locale = 'de'}: {locale?: StorefrontLocale}) {
   const {open} = useAside();
 
   return (
@@ -148,11 +192,7 @@ function HeaderMenuMobileToggle({
   );
 }
 
-function SearchToggle({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function SearchToggle({locale = 'de'}: {locale?: StorefrontLocale}) {
   const {open} = useAside();
   const isEnglish = locale === 'en';
 
@@ -163,7 +203,18 @@ function SearchToggle({
       onClick={() => open('search')}
       type="button"
     >
-      {isEnglish ? 'Search' : 'Suche'}
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        aria-hidden="true"
+      >
+        <circle cx="10.5" cy="10.5" r="6.5" />
+        <path d="m16 16 5 5" />
+      </svg>
     </button>
   );
 }
@@ -223,11 +274,7 @@ function CartToggle({
   );
 }
 
-function CartBanner({
-  locale = 'de',
-}: {
-  locale?: StorefrontLocale;
-}) {
+function CartBanner({locale = 'de'}: {locale?: StorefrontLocale}) {
   const originalCart = useAsyncValue() as CartApiQueryFragment | null;
   const cart = useOptimisticCart(originalCart);
 

@@ -316,3 +316,26 @@ test('assistant factual context requires sourced approved knowledge and sourced 
   assert.match(assistant, /Array\.isArray\(row\.source_citations\) && row\.source_citations\.length > 0/);
   assert.doesNotMatch(assistant, /if \(!hasImage\) return true;/);
 });
+
+test('empty custom-mix slots render safely before and after selecting components in DE/EN', () => {
+  const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
+  let Selector;
+  vm.runInNewContext(liquid.split('{% javascript %}')[1].split('{% endjavascript %}')[0], {
+    HTMLElement: class {},
+    customElements: {get() {}, define(name, value) {Selector = value;}}
+  });
+  for (const locale of ['de', 'en']) {
+    const instance = new Selector();
+    instance.dataset = {locale};
+    assert.equal(instance.translateIngredient(undefined), '');
+    assert.equal(instance.translateIngredient(''), '');
+    assert.equal(instance.translateIngredient('Perlite'), 'Perlite');
+    instance.t = key => key;
+    instance.formatText = (key, data) => `${data.name}: ${data.share}`;
+    const slot = name => ({dataset: name ? {name, share: '25'} : {}, style: {removeProperty() {}}, setAttribute() {}});
+    instance.customSegments = [slot('Perlite'), slot(), slot(), slot()];
+    instance.updateCustomSegmentVisuals();
+    assert.match(instance.customSegments[0].textContent, /25%/);
+    assert.equal(instance.customSegments[1].textContent, '');
+  }
+});

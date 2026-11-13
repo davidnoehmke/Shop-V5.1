@@ -43,7 +43,7 @@ export default function VensoBrand() {
                 <h3>{product.title}</h3>
               </Link>
               {product.shortClaim?.value ? <p>{product.shortClaim.value}</p> : null}
-              <p className="venso-price">Ab <Money data={product.priceRange.minVariantPrice} /></p>
+              <p className="venso-price">Ab <Money as="span" data={product.priceRange.minVariantPrice} /></p>
               <Link className="venso-product-link" to={`/products/${product.handle}`} prefetch="intent">Produkt & Varianten ansehen →</Link>
             </article>
           ))}
