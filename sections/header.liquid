@@ -20,6 +20,7 @@
               <details class="site-header__mobile-disclosure">
                 <summary><span class="site-header__mobile-title"><span>{{ 'header.solutions_label' | t }}</span></span><svg class="site-header__chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m5 7.5 5 5 5-5"/></svg></summary>
                 <div class="site-header__mobile-submenu site-header__mobile-solutions">
+                  <a class="site-header__mobile-worlds-overview" href="{{ routes.root_url }}#LeafWorlds">{% if request.locale.iso_code == 'en' %}Explore all worlds{% else %}Alle Pflanzenwelten entdecken{% endif %}<span aria-hidden="true">↓</span></a>
                   <ul>
                     <li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}"><span><strong>{{ 'header.solution_wurzelraum_title' | t }}</strong><small>{{ 'header.solution_wurzelraum_text' | t }}</small></span><span aria-hidden="true">→</span></a></li>
                     <li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}"><span><strong>{{ 'header.solution_light_title' | t }}</strong><small>{{ 'header.solution_light_text' | t }}</small></span><span aria-hidden="true">→</span></a></li>
@@ -68,6 +69,7 @@
               <summary><span>{{ 'header.solutions_label' | t }}</span><svg class="site-header__chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
               <div class="site-header__desktop-panel site-header__desktop-panel--solutions">
                 <div class="site-header__solution-intro"><span>{{ 'header.solutions_label' | t }}</span><strong>{{ 'header.solutions_intro' | t }}</strong></div>
+                <a class="site-header__worlds-overview" href="{{ routes.root_url }}#LeafWorlds">{% if request.locale.iso_code == 'en' %}Explore all worlds{% else %}Alle Pflanzenwelten entdecken{% endif %}<span aria-hidden="true">↓</span></a>
                 <ul class="site-header__solution-grid">
                   <li><a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}"><span class="site-header__solution-number">01</span><span><strong>{{ 'header.solution_wurzelraum_title' | t }}</strong><small>{{ 'header.solution_wurzelraum_text' | t }}</small></span></a></li>
                   <li><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}"><span class="site-header__solution-number">02</span><span><strong>{{ 'header.solution_light_title' | t }}</strong><small>{{ 'header.solution_light_text' | t }}</small></span></a></li>
@@ -226,6 +228,9 @@
   .site-header__solution-number { color: var(--accent); font-size: .7rem; font-weight: 840; letter-spacing: .08em; }
   .site-header__mobile-solutions a { justify-content: space-between; align-items: flex-start; gap: 1rem; padding-block: .8rem; }
   .site-header__mobile-solutions a > span:first-child { min-width: 0; }
+  .site-header__worlds-overview, .site-header__mobile-worlds-overview { display: flex; align-items: center; justify-content: space-between; gap: .75rem; border: 1px solid color-mix(in srgb, var(--accent), transparent 52%); background: color-mix(in srgb, var(--accent), transparent 95%); color: var(--accent); font-weight: 820; text-decoration: none; }
+  .site-header__worlds-overview { min-height: 46px; margin: 0 0 1rem; padding: .65rem .7rem; }
+  .site-header__mobile-worlds-overview { min-height: 48px; margin: .15rem 0 .65rem; padding: .6rem .7rem; }
   @media (max-width: 1080px) { .site-header__desktop-panel--solutions > .site-header__solution-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 {% endstylesheet %}
 
