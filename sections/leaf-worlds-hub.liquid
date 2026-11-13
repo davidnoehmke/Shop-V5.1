@@ -1,0 +1,210 @@
+{% liquid
+  if request.locale.iso_code == 'en'
+    assign hub_eyebrow = 'Explore by project'
+    assign hub_heading = 'Choose the next useful step for your plants.'
+    assign hub_intro = 'Shop directly when you know what you need, or open a world to understand light, root space, vessels and care in context.'
+    assign shop_label = 'Shop directly'
+    assign learn_label = 'Explore'
+    assign nav_label = 'Jump to a world'
+    assign notice = 'Interactive views remain optional. Product pages, prices and the cart stay directly accessible.'
+  else
+    assign hub_eyebrow = 'LEAF Pflanzenwelten'
+    assign hub_heading = 'Starte mit deinem Pflanzenprojekt.'
+    assign hub_intro = 'Kaufe direkt, wenn du schon weißt, was du brauchst – oder entdecke Licht, Wurzelraum, Gefäße und Pflege als zusammenhängendes System.'
+    assign shop_label = 'Direkt entdecken'
+    assign learn_label = 'Zusammenhänge verstehen'
+    assign nav_label = 'Pflanzenwelt auswählen'
+    assign notice = 'Interaktive Ansichten sind freiwillig. Produkte, Preise und Warenkorb bleiben immer direkt erreichbar.'
+  endif
+%}
+
+<section id="LeafWorlds" class="leaf-worlds" aria-labelledby="LeafWorldsHeading-{{ section.id }}">
+  <div class="page-width">
+    <header class="leaf-worlds__head">
+      <div>
+        <p class="leaf-worlds__eyebrow">{{ hub_eyebrow }}</p>
+        <h2 id="LeafWorldsHeading-{{ section.id }}">{{ hub_heading }}</h2>
+        <p>{{ hub_intro }}</p>
+      </div>
+      <p class="leaf-worlds__notice">{{ notice }}</p>
+    </header>
+
+    <nav class="leaf-worlds__nav" aria-label="{{ nav_label }}">
+      <a href="#LeafWorldRoot">{% if request.locale.iso_code == 'en' %}Root space{% else %}Wurzelraum{% endif %}</a>
+      <a href="#LeafWorldLight">{% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlicht{% endif %}</a>
+      <a href="#LeafWorldVessels">{% if request.locale.iso_code == 'en' %}Planters{% else %}Pflanzgefäße{% endif %}</a>
+      <a href="#LeafWorldCare">{% if request.locale.iso_code == 'en' %}Care{% else %}Pflege{% endif %}</a>
+      <a href="#LeafWorldGrow">{% if request.locale.iso_code == 'en' %}Propagation{% else %}Anzucht{% endif %}</a>
+      <a href="#LeafWorldPlants">{% if request.locale.iso_code == 'en' %}Plants{% else %}Zimmerpflanzen{% endif %}</a>
+      <a href="#LeafWorldRoom">{% if request.locale.iso_code == 'en' %}Room planner{% else %}Raumplanung{% endif %}</a>
+      <a href="#LeafWorldKnowledge">{% if request.locale.iso_code == 'en' %}Knowledge{% else %}Wissen{% endif %}</a>
+    </nav>
+
+    <div class="leaf-worlds__grid">
+      <article id="LeafWorldRoot" class="leaf-worlds__card leaf-worlds__card--root">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">01 · {% if request.locale.iso_code == 'en' %}Root space{% else %}Wurzelraum{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Build the right foundation{% else %}Das richtige Fundament bauen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Ready mixes and individual ingredients for a root zone with a clear function.{% else %}Fertige Mischungen und einzelne Bestandteile für einen Wurzelraum mit klarer Funktion.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{{ shop_label }}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Create a mix{% else %}Mischung konfigurieren{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}Structure, air and moisture work together. Use a ready mix for a fast start or adjust your own recipe only when you need that depth.{% else %}Struktur, Luft und Feuchtigkeit wirken zusammen. Wähle für den schnellen Start eine fertige Mischung oder passe deine Rezeptur nur an, wenn du diese Tiefe wirklich brauchst.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldLight" class="leaf-worlds__card leaf-worlds__card--light">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">02 · {% if request.locale.iso_code == 'en' %}Grow lights{% else %}Pflanzenlicht{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Make every plant place usable{% else %}Jeden Pflanzenplatz nutzbar machen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Choose lights by surface, distance, mounting and your actual room situation.{% else %}Leuchten nach Fläche, Abstand, Montage und deiner echten Raumsituation auswählen.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{{ shop_label }}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/pages/pflanzenlicht-konfigurator' %}">{% if request.locale.iso_code == 'en' %}Find a light{% else %}Lichtfinder öffnen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}Beam angle, mounting distance and illuminated area matter alongside electrical power. Compare only documented facts for the concrete setup.{% else %}Abstrahlwinkel, Montageabstand und beleuchtete Fläche zählen neben der elektrischen Leistung. Vergleiche nur dokumentierte Werte für dein konkretes Setup.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldVessels" class="leaf-worlds__card leaf-worlds__card--vessels">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">03 · {% if request.locale.iso_code == 'en' %}Planters{% else %}Pflanzgefäße{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Choose vessels as part of the system{% else %}Gefäße als Teil des Systems wählen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Dimensions, inner pot, drainage and watering system should fit the plant and the room.{% else %}Maße, Innentopf, Ablauf und Bewässerungssystem müssen zu Pflanze und Raum passen.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/pflanzgefasse' %}">{{ shop_label }}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/collections/interieur-solutions' %}">{% if request.locale.iso_code == 'en' %}Plan a setup{% else %}Setup planen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}A decorative cachepot, a planter with drainage and a self-watering system do different jobs. The useful choice starts with the root ball, not colour alone.{% else %}Übertopf, Gefäß mit Ablauf und Selbstbewässerung erfüllen verschiedene Aufgaben. Die sinnvolle Wahl beginnt beim Wurzelballen, nicht allein bei der Farbe.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldCare" class="leaf-worlds__card leaf-worlds__card--care">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">04 · {% if request.locale.iso_code == 'en' %}Care{% else %}Pflege & Zubehör{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Make care work in everyday life{% else %}Pflege alltagstauglich machen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Watering, support and tools for a routine that matches plants and daily life.{% else %}Bewässerung, Rankhilfen und Werkzeuge für eine Routine, die zu Pflanze und Alltag passt.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenpflege-werkzeuge' %}">{{ shop_label }}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/blogs/leafers-nice2know-blog' %}">{% if request.locale.iso_code == 'en' %}Read care guides{% else %}Pflegeratgeber lesen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}Good care does not mean a complicated schedule. It means noticing light, root condition and watering behaviour before adding another product.{% else %}Gute Pflege bedeutet keinen komplizierten Plan. Entscheidend sind Licht, Wurzelzustand und Gießverhalten, bevor ein weiteres Produkt nötig wird.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldGrow" class="leaf-worlds__card leaf-worlds__card--grow">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">05 · {% if request.locale.iso_code == 'en' %}Propagation{% else %}Anzucht & Aussaat{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Give new growth a controlled start{% else %}Neuem Wachstum kontrolliert starten helfen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Media, humidity and light for seeds, cuttings and young plants.{% else %}Medien, Feuchtigkeit und Licht für Aussaat, Stecklinge und Jungpflanzen.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/anzucht-aussaat' %}">{{ shop_label }}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/blogs/leafers-nice2know-blog' %}">{% if request.locale.iso_code == 'en' %}Understand propagation{% else %}Anzucht verstehen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}At the beginning, even moisture and oxygen around young roots matter more than a complex equipment list.{% else %}Am Anfang sind gleichmäßige Feuchtigkeit und Sauerstoff an jungen Wurzeln wichtiger als eine lange Liste an Technik.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldPlants" class="leaf-worlds__card leaf-worlds__card--plants">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">06 · {% if request.locale.iso_code == 'en' %}Indoor plants{% else %}Zimmerpflanzen{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Use plants as a living reference{% else %}Pflanzen als lebendige Referenz nutzen{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Discover plants by their location and care needs. Not every reference plant is available to buy from LEAF.{% else %}Entdecke Pflanzen nach Standort und Pflegebedarf. Nicht jede Referenzpflanze ist bei LEAF kaufbar.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/zimmerpflanzen-1' %}">{% if request.locale.iso_code == 'en' %}Shop available plants{% else %}Verfügbare Pflanzen ansehen{% endif %}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/blogs/leafers-nice2know-blog' %}">{% if request.locale.iso_code == 'en' %}Plant knowledge{% else %}Pflanzenwissen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}Reference plants can explain an indoor setting and link to suitable lights, vessels or substrate without pretending that the plant itself is for sale.{% else %}Referenzpflanzen erklären einen Standort und führen zu passenden Leuchten, Gefäßen oder Substraten, ohne den Eindruck zu erwecken, die Pflanze selbst sei kaufbar.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldRoom" class="leaf-worlds__card leaf-worlds__card--room">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">07 · {% if request.locale.iso_code == 'en' %}Complete setup{% else %}Komplettes Setup{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Plan the room before buying pieces{% else %}Den Raum planen, bevor Einzelteile gekauft werden{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Combine room, light, vessel and root space into one usable plant place.{% else %}Raum, Licht, Gefäß und Wurzelraum zu einem nutzbaren Pflanzenplatz verbinden.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/collections/interieur-solutions#InterieurRoomBuilderHeading' %}">{% if request.locale.iso_code == 'en' %}Open room planner{% else %}Raumplanung öffnen{% endif %}</a>
+            <a class="leaf-worlds__link" href="{% render 'leaf-localized-url', url: '/collections/interieur-solutions' %}">{% if request.locale.iso_code == 'en' %}View solutions{% else %}Lösungen ansehen{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}The planning studio remains optional. You can always shop individual products directly.{% else %}Das Planungsstudio bleibt freiwillig. Einzelne Produkte lassen sich jederzeit direkt kaufen.{% endif %}</p></details>
+        </div>
+      </article>
+
+      <article id="LeafWorldKnowledge" class="leaf-worlds__card leaf-worlds__card--knowledge">
+        <div class="leaf-worlds__scene" aria-hidden="true"><span></span><i></i><b></b></div>
+        <div class="leaf-worlds__body">
+          <p class="leaf-worlds__index">08 · {% if request.locale.iso_code == 'en' %}Knowledge{% else %}Pflanzenwissen{% endif %}</p>
+          <h3>{% if request.locale.iso_code == 'en' %}Learn only as deeply as you need{% else %}Nur so tief lernen, wie du es gerade brauchst{% endif %}</h3>
+          <p>{% if request.locale.iso_code == 'en' %}Short answers, practical guides and optional context around plant habitats, light and root space.{% else %}Kurze Antworten, Praxisratgeber und optionaler Kontext zu Pflanzenherkunft, Licht und Wurzelraum.{% endif %}</p>
+          <div class="leaf-worlds__actions">
+            <a class="button" href="{% render 'leaf-localized-url', url: '/blogs/leafers-nice2know-blog' %}">{% if request.locale.iso_code == 'en' %}Read guides{% else %}Ratgeber lesen{% endif %}</a>
+            <a class="leaf-worlds__link" href="#LeafWorldRoot">{% if request.locale.iso_code == 'en' %}Start with root space{% else %}Mit Wurzelraum starten{% endif %} <span aria-hidden="true">→</span></a>
+          </div>
+          <details><summary>{{ learn_label }}</summary><p>{% if request.locale.iso_code == 'en' %}Interactive maps, visualisations and deeper articles stay optional layers. Clear purchase paths remain available throughout.{% else %}Interaktive Karten, Visualisierungen und tiefere Artikel bleiben optionale Ebenen. Klare Kaufwege bleiben überall verfügbar.{% endif %}</p></details>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .leaf-worlds { padding-block: clamp(3.5rem, 8vw, 7rem); background: linear-gradient(155deg, color-mix(in srgb, var(--surface), #eef2e7 44%), var(--background)); }
+  .leaf-worlds__head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, .42fr); gap: clamp(1rem, 4vw, 4rem); align-items: end; margin-bottom: 1.5rem; }
+  .leaf-worlds__eyebrow, .leaf-worlds__index { margin: 0 0 .7rem; color: var(--accent); font-size: .73rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .leaf-worlds h2 { max-width: 17ch; margin: 0; font-size: clamp(2rem, 4vw, 4rem); line-height: .98; letter-spacing: -.045em; }
+  .leaf-worlds__head p:not(.leaf-worlds__eyebrow):not(.leaf-worlds__notice) { max-width: 58ch; margin: 1rem 0 0; color: var(--muted); line-height: 1.65; }
+  .leaf-worlds__notice { margin: 0; padding: 1rem 1.1rem; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--background), transparent 18%); color: var(--muted); font-size: .88rem; line-height: 1.5; }
+  .leaf-worlds__nav { display: flex; gap: .5rem; overflow-x: auto; margin: 0 -1rem 1.25rem; padding: 0 1rem .35rem; scrollbar-width: thin; }
+  .leaf-worlds__nav a { flex: 0 0 auto; min-height: 42px; display: inline-flex; align-items: center; padding: .55rem .8rem; border: 1px solid color-mix(in srgb, var(--text), transparent 78%); border-radius: 999px; color: var(--text); font-size: .8rem; font-weight: 760; text-decoration: none; }
+  .leaf-worlds__nav a:hover, .leaf-worlds__nav a:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .leaf-worlds__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.85rem, 2vw, 1.35rem); }
+  .leaf-worlds__card { position: relative; min-height: 390px; display: grid; grid-template-columns: minmax(150px, .58fr) minmax(0, 1fr); overflow: clip; border: 1px solid color-mix(in srgb, var(--text), transparent 80%); border-radius: 20px; background: color-mix(in srgb, var(--background), white 26%); box-shadow: 0 22px 50px color-mix(in srgb, var(--text), transparent 93%); scroll-margin-top: 7rem; }
+  .leaf-worlds__scene { position: relative; min-height: 100%; overflow: hidden; background: var(--world-surface, #e5eadc); isolation: isolate; }
+  .leaf-worlds__scene::before, .leaf-worlds__scene::after, .leaf-worlds__scene span, .leaf-worlds__scene i, .leaf-worlds__scene b { position: absolute; display: block; content: ''; transform-style: preserve-3d; }
+  .leaf-worlds__scene::before { width: 120%; height: 42%; left: -15%; bottom: -15%; border-radius: 50% 50% 0 0; background: var(--world-base, #91a27c); box-shadow: 0 -18px 40px color-mix(in srgb, var(--world-base, #91a27c), transparent 52%); transform: rotate(-8deg); }
+  .leaf-worlds__scene::after { width: 58%; aspect-ratio: 1; left: 21%; top: 16%; border-radius: 50%; background: var(--world-object, #476d47); box-shadow: inset -18px -18px 30px color-mix(in srgb, #182618, transparent 55%), 0 22px 36px color-mix(in srgb, var(--world-object, #476d47), transparent 55%); }
+  .leaf-worlds__scene span { width: 105%; height: 46%; left: -4%; top: 12%; border: 1px solid color-mix(in srgb, #fff, transparent 45%); border-radius: 50%; opacity: .68; transform: rotate(-18deg); }
+  .leaf-worlds__scene i { width: 42%; aspect-ratio: .52; left: 27%; top: 27%; border: 1px solid color-mix(in srgb, #fff, transparent 38%); border-radius: 48% 52% 44% 56%; transform: rotate(18deg); }
+  .leaf-worlds__scene b { width: 11px; height: 11px; right: 17%; top: 20%; border-radius: 50%; background: color-mix(in srgb, #fff, transparent 12%); box-shadow: -38px 64px 0 -2px color-mix(in srgb, #fff, transparent 28%), 12px 123px 0 -3px color-mix(in srgb, #fff, transparent 15%); }
+  .leaf-worlds__card--root { --world-surface:#e7dec7; --world-base:#b07b51; --world-object:#6e5137; }
+  .leaf-worlds__card--light { --world-surface:#e5ece6; --world-base:#7ca07a; --world-object:#e3bf5b; }
+  .leaf-worlds__card--vessels { --world-surface:#e9e0dc; --world-base:#c18f77; --world-object:#876455; }
+  .leaf-worlds__card--care { --world-surface:#e1ebe7; --world-base:#7cae94; --world-object:#4f836f; }
+  .leaf-worlds__card--grow { --world-surface:#e7e9d6; --world-base:#9eb66a; --world-object:#6b8e4b; }
+  .leaf-worlds__card--plants { --world-surface:#e5eee3; --world-base:#789367; --world-object:#31583d; }
+  .leaf-worlds__card--room { --world-surface:#ece5d5; --world-base:#a38467; --world-object:#637c58; }
+  .leaf-worlds__card--knowledge { --world-surface:#e3e7e5; --world-base:#93a4a0; --world-object:#405a55; }
+  .leaf-worlds__body { display: flex; flex-direction: column; align-items: flex-start; padding: clamp(1.2rem, 2.5vw, 2rem); }
+  .leaf-worlds__body h3 { margin: 0; font-size: clamp(1.35rem, 2.4vw, 2rem); line-height: 1.05; letter-spacing: -.035em; }
+  .leaf-worlds__body > p:not(.leaf-worlds__index) { margin: .8rem 0 1.25rem; color: var(--muted); line-height: 1.55; }
+  .leaf-worlds__actions { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem 1rem; margin-top: auto; }
+  .leaf-worlds__actions .button { min-height: 44px; font-size: .84rem; }
+  .leaf-worlds__link { color: var(--accent); font-size: .85rem; font-weight: 800; text-decoration: none; }
+  .leaf-worlds__link:hover, .leaf-worlds__link:focus-visible { text-decoration: underline; text-underline-offset: .2em; }
+  .leaf-worlds details { width: 100%; margin-top: 1rem; border-top: 1px solid color-mix(in srgb, var(--text), transparent 86%); }
+  .leaf-worlds summary { min-height: 42px; display: flex; align-items: center; color: var(--text); cursor: pointer; font-size: .8rem; font-weight: 800; }
+  .leaf-worlds details p { margin: 0 0 .25rem; color: var(--muted); font-size: .86rem; line-height: 1.55; }
+  .leaf-worlds summary::marker { color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) { .leaf-worlds__card { transition: transform .25s var(--ease-out), box-shadow .25s var(--ease-out), border-color .25s var(--ease-out); } .leaf-worlds__card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent), transparent 55%); box-shadow: 0 28px 55px color-mix(in srgb, var(--text), transparent 88%); } .leaf-worlds__card:hover .leaf-worlds__scene::after { animation: leaf-worlds-float 3s ease-in-out infinite; } @keyframes leaf-worlds-float { 50% { transform: translateY(-7px) rotate(3deg); } } }
+  @media (max-width: 800px) { .leaf-worlds { padding-block: 3.5rem; } .leaf-worlds__head { grid-template-columns: 1fr; gap: 1.1rem; } .leaf-worlds h2 { max-width: 12ch; } .leaf-worlds__grid { grid-template-columns: 1fr; } .leaf-worlds__card { min-height: 0; grid-template-columns: minmax(125px, .38fr) minmax(0, 1fr); border-radius: 16px; } .leaf-worlds__scene { min-height: 240px; } .leaf-worlds__body { padding: 1.1rem; } .leaf-worlds__body h3 { font-size: 1.42rem; } .leaf-worlds__body > p:not(.leaf-worlds__index) { font-size: .9rem; } }
+  @media (max-width: 480px) { .leaf-worlds__card { grid-template-columns: 108px minmax(0, 1fr); } .leaf-worlds__scene { min-height: 100%; } .leaf-worlds__body { min-height: 330px; } .leaf-worlds__actions { align-items: flex-start; flex-direction: column; gap: .55rem; } .leaf-worlds__actions .button { width: 100%; justify-content: center; } .leaf-worlds__scene::after { top: 22%; } }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAF Pflanzenwelten",
+  "tag": "section",
+  "class": "section-leaf-worlds",
+  "settings": [],
+  "presets": [{"name": "LEAF Pflanzenwelten"}]
+}
+{% endschema %}
