@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "hero": {
@@ -458,6 +449,105 @@
     "enterprise_studio": {
       "type": "leaf-enterprise-studio",
       "settings": {}
+    },
+    "visual_shop": {
+      "type": "leaf-visual-shop",
+      "blocks": {
+        "light1": {
+          "type": "product",
+          "settings": {
+            "product": "sunlite-7w-led-pflanzenlampe-mit-teleskopstab",
+            "category": "lighting",
+            "use": "single"
+          }
+        },
+        "light2": {
+          "type": "product",
+          "settings": {
+            "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
+            "category": "lighting",
+            "use": "shelf"
+          }
+        },
+        "light3": {
+          "type": "product",
+          "settings": {
+            "product": "venso-sunlite-xl-25w-led-pflanzenlampe",
+            "category": "lighting",
+            "use": "room"
+          }
+        },
+        "pot1": {
+          "type": "product",
+          "settings": {
+            "product": "elho-b-for-soft-round",
+            "category": "planters",
+            "use": "planter"
+          }
+        },
+        "pot2": {
+          "type": "product",
+          "settings": {
+            "product": "elho-amiga-round",
+            "category": "planters",
+            "use": "planter"
+          }
+        },
+        "soil1": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-alocasia-mix",
+            "category": "substrates",
+            "use": "aroid"
+          }
+        },
+        "soil2": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-seed-cutting-mix",
+            "category": "substrates",
+            "use": "seed"
+          }
+        },
+        "set1": {
+          "type": "product",
+          "settings": {
+            "product": "aroid-umtopf-set",
+            "category": "sets",
+            "use": "repot"
+          }
+        },
+        "set2": {
+          "type": "product",
+          "settings": {
+            "product": "anzucht-starter-set",
+            "category": "sets",
+            "use": "seed"
+          }
+        }
+      },
+      "block_order": [
+        "light1",
+        "light2",
+        "light3",
+        "pot1",
+        "pot2",
+        "soil1",
+        "soil2",
+        "set1",
+        "set2"
+      ],
+      "settings": {}
+    },
+    "living_edit": {
+      "type": "leaf-living-edit",
+      "settings": {
+        "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
+        "lighting": "pflanzenbeleuchtung",
+        "planters": "pflanzgefasse",
+        "substrates": "pflanzsubstrate-mischungen",
+        "help_link": "shopify://pages/individuelles-substrat"
+      }
     }
   },
   "order": [
@@ -467,6 +557,8 @@
     "substrate_configurator",
     "trust",
     "led_home_finder",
+    "visual_shop",
+    "living_edit",
     "leaf_listening",
     "home_guides",
     "faq",

@@ -1,12 +1,3 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin language editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "accessibility": {
     "skip_to_content": "Zum Inhalt springen",
@@ -1496,6 +1487,62 @@
       "card_2_text": "Abgestimmte Sets nutzen, wenn mehrere Bestandteile direkt zusammenpassen sollen.",
       "card_3_title": "Einzeln entscheiden",
       "card_3_text": "Licht- und Interieur-Produkte weiterhin einzeln vergleichen und gezielt ergänzen."
+    }
+  },
+  "visual_shop": {
+    "edit": {
+      "eyebrow": "Die LEAF Auswahl",
+      "heading": "Dein nächster grüner Schritt.",
+      "intro": "Entdecke ausgewählte Produkte für Licht, Wurzeln und deinen Wohnraum.",
+      "filter_label": "Produkte nach Bereich auswählen",
+      "results": "Produkte in der Auswahl",
+      "end": "Mehr Möglichkeiten für deine Pflanzen.",
+      "all": "Das gesamte Sortiment"
+    },
+    "groups": {
+      "all": "Alles entdecken",
+      "lighting": "Pflanzenlicht",
+      "planters": "Gefäße",
+      "substrates": "Substrate",
+      "sets": "Sets"
+    },
+    "product": {
+      "from": "ab",
+      "quick": "Schnell ansehen",
+      "quick_named": "{{ product }} schnell ansehen",
+      "unavailable": "Derzeit nicht bestellbar",
+      "close": "Schließen",
+      "tax": "Inkl. MwSt., zzgl.",
+      "shipping": "Versandkosten",
+      "variant": "Ausführung wählen",
+      "add": "In den Warenkorb",
+      "details": "Alle Produktdetails"
+    },
+    "uses": {
+      "single": "Pflanzenlicht mit Teleskopstab.",
+      "shelf": "Lichtleiste für dein Pflanzenregal.",
+      "room": "Pflanzenlicht als Teil deines Wohnraums.",
+      "planter": "Ein neuer Platz für deine Lieblingspflanze.",
+      "water": "Bewässerung passend zu deinem Alltag.",
+      "aroid": "Spezialsubstrat für Alocasien und Aroiden.",
+      "dry": "Für Kakteen und Sukkulenten.",
+      "seed": "Für Aussaat und junge Wurzeln.",
+      "repot": "Passende Komponenten für dein nächstes Projekt."
+    },
+    "living": {
+      "eyebrow": "Vom Produkt zum Pflanzenplatz",
+      "heading": "Licht, das Raum für Grün schafft.",
+      "intro": "Ein stimmiger Pflanzenplatz beginnt mit drei einfachen Entscheidungen.",
+      "light_title": "Das passende Licht",
+      "light_body": "Wähle Montage, beleuchtete Fläche und Abstand passend zu deinen Pflanzen. Die Aurora-Lichtleiste siehst du hier in einer Regalanwendung.",
+      "light_link": "Pflanzenlicht entdecken",
+      "pot_title": "Das richtige Gefäß",
+      "pot_body": "Achte auf Wurzelballen, Stellfläche und Wasserablauf. Ein Gefäß soll zu deiner Pflanze und deinem Alltag passen.",
+      "pot_link": "Gefäße entdecken",
+      "soil_title": "Ein guter Wurzelraum",
+      "soil_body": "Wähle eine fertige Mischung oder stelle dein Substrat selbst zusammen. Entscheidend sind Pflanze, Topf und Gießroutine.",
+      "soil_link": "Substrate entdecken",
+      "help": "Dein eigenes Substrat zusammenstellen"
     }
   }
 }
