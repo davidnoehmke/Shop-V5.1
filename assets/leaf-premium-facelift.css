@@ -161,3 +161,26 @@ main { isolation: isolate; }
   .featured__product,
   .collection-product-card { transition: none; }
 }
+
+.site-header :is(.site-header__mobile-disclosure > summary, .site-header__mobile-link, .site-header__mobile-submenu a, .site-header__desktop-disclosure > summary, .site-header__desktop-link, .site-header__desktop-panel a) {
+  transition: background-color 160ms ease, color 160ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-header :is(.site-header__mobile-disclosure > summary, .site-header__mobile-link, .site-header__mobile-submenu a, .site-header__desktop-disclosure > summary, .site-header__desktop-link, .site-header__desktop-panel a):hover {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+}
+.site-header :is(.site-header__mobile-disclosure > summary, .site-header__mobile-link, .site-header__mobile-submenu a, .site-header__desktop-disclosure > summary, .site-header__desktop-link, .site-header__desktop-panel a):focus-visible {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.site-header :is(.site-header__mobile-disclosure > summary, .site-header__mobile-link, .site-header__mobile-submenu a, .site-header__desktop-disclosure > summary, .site-header__desktop-link, .site-header__desktop-panel a):active {
+  background-color: var(--accent-soft);
+  color: var(--accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header :is(.site-header__mobile-disclosure > summary, .site-header__mobile-link, .site-header__mobile-submenu a, .site-header__desktop-disclosure > summary, .site-header__desktop-link, .site-header__desktop-panel a) { transition: none; }
+}
