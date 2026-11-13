@@ -1,0 +1,40 @@
+/* LEAF release polish: styling-only enhancement. No commerce logic changes. */
+.leafer-substrate{--leaf-polish-ink:#263c30;--leaf-polish-sage:#506b54;--leaf-polish-cream:#f6f3eb;--leaf-polish-border:#d8dfd3}
+.leafer-substrate__page{background:linear-gradient(180deg,#faf9f5 0%,#f3f5ef 66%,#faf9f5 100%)}
+.leafer-substrate__hero{gap:clamp(1.5rem,4vw,4.5rem)}
+.leafer-substrate__hero h1,.leafer-substrate__hero h2{font-size:clamp(1.9rem,3.1vw,3.25rem);max-width:22ch;line-height:1.12;letter-spacing:-.04em;text-wrap:balance;color:var(--leaf-polish-ink)}
+.leafer-substrate__intro{max-width:57ch;line-height:1.65}
+.leafer-substrate__hero-media{background:radial-gradient(circle at 55% 40%,#fcfdf8 0%,#e8ede1 68%,#dee6d9 100%);border:1px solid var(--leaf-polish-border);border-radius:24px;box-shadow:0 20px 55px rgba(29,52,36,.07)}
+.leafer-substrate__purchase-panel{border:1px solid var(--leaf-polish-border);border-radius:22px;background:#fff;box-shadow:0 10px 40px rgba(32,54,39,.055)}
+.leafer-substrate__recipe-panel{border-radius:22px;box-shadow:0 16px 44px rgba(29,52,36,.12)}
+.leafer-substrate__progress{border-radius:14px;gap:.65rem;line-height:1.4}
+.leafer-substrate__choice label{border-radius:14px;min-height:56px;transition:border-color .18s ease,box-shadow .18s ease,background-color .18s ease}
+.leafer-substrate__choice input:checked+label{box-shadow:inset 0 0 0 1px var(--accent),0 5px 18px rgba(50,88,61,.09)}
+.leafer-substrate__advanced{border-radius:18px}
+.leafer-substrate__advanced-summary{min-height:48px;line-height:1.4}
+.leafer-substrate__customizer{border-radius:18px}
+.leafer-substrate__custom-option{min-width:0}
+.leafer-substrate__custom-option-copy{min-width:0;overflow-wrap:anywhere}
+.leafer-substrate__material-thumb{border-radius:12px;overflow:hidden}
+.leafer-substrate__pot-slider{filter:drop-shadow(0 14px 16px rgba(32,54,39,.12))}
+.leafer-substrate__buy-row button,.leafer-substrate__form button[type="submit"]{min-height:48px}
+.leafer-substrate :is(button,input,select,summary,a):focus-visible{outline:3px solid #426e4d;outline-offset:3px}
+@media(max-width:620px){
+ .leafer-substrate__page{padding-block:32px 44px}
+ .leafer-substrate__hero{gap:20px}
+ .leafer-substrate__hero h1,.leafer-substrate__hero h2{font-size:clamp(1.65rem,7.1vw,2.15rem)}
+ .leafer-substrate__hero-media{border-radius:16px;padding:16px}
+ .leafer-substrate__commerce{gap:18px}
+ .leafer-substrate__purchase-panel,.leafer-substrate__recipe-panel{border-radius:16px;padding:clamp(14px,4vw,22px)}
+ .leafer-substrate__choice label{padding:12px;min-height:52px}
+ .leafer-substrate__choice label span{line-height:1.35}
+ .leafer-substrate__progress{font-size:.68rem}
+}
+/* The world gallery is a secondary discovery layer: conversion entry remains first. */
+.template-index .leaf-worlds{padding-block:clamp(28px,4vw,64px)}
+.template-index .leaf-worlds__intro h1,.template-index .leaf-worlds__intro h2{font-size:clamp(1.6rem,3.1vw,2.7rem);line-height:1.14}
+.template-index .leaf-worlds__intro{max-width:860px}
+@media(prefers-reduced-motion:reduce){
+ .leafer-substrate__choice label{transition:none}
+ .leafer-substrate__pot-slider{filter:none}
+}
