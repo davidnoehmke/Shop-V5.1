@@ -1,0 +1,20 @@
+<leaf-soil-globe data-texture="https://cdn.shopify.com/s/files/1/0949/8876/3521/files/leaf-earth-nasa-blue-marble-2048.jpg?v=1794531585" data-stylesheet="{{ 'leaf-soil-globe.css' | asset_url }}" data-language="{{ request.locale.iso_code | escape }}" data-product-root="{% render 'leaf-localized-url', url: '/products/' %}">
+  <div class="page-width" style="padding:32px 20px">
+    <h2>{{ 'soil_globe.heading' | t }}</h2>
+    <p>{{ 'soil_globe.intro' | t }}</p>
+    <a href="{% render 'leaf-localized-url', url: '/products/leafer-substrat-konfigurator' %}">{{ 'soil_globe.cta' | t }}</a>
+  </div>
+  {% render 'leaf-soil-products' %}
+</leaf-soil-globe>
+<script src="{{ 'leaf-soil-globe.js' | asset_url }}" defer="defer"></script>
+{% schema %}
+{
+  "name": "Bodenwelten · 3D-Globus",
+  "tag": "section",
+  "enabled_on": { "templates": ["index"] },
+  "settings": [],
+  "presets": [{ "name": "Bodenwelten · 3D-Globus" }]
+}
+{% endschema %}
+
+

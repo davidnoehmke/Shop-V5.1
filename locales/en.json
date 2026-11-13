@@ -1497,5 +1497,15 @@
       "card_3_title": "Decide individually",
       "card_3_text": "Continue comparing lighting and interior products individually when needed."
     }
+  },
+  "soil_globe": {
+    "heading": "Explore the world of soils.",
+    "intro": "Explore soils and habitats – and find suitable components for your plant pot.",
+    "cta": "Open substrate configurator"
+  },
+  "soil_globe_products": {
+    "heading": "Choose your substrate components",
+    "note": "Components for potting mixes. The regions shown do not indicate product origin or a recipe for recreating natural soils.",
+    "link": "View product"
   }
 }

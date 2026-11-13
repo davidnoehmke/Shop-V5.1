@@ -1497,5 +1497,15 @@
       "card_3_title": "Einzeln entscheiden",
       "card_3_text": "Licht- und Interieur-Produkte weiterhin einzeln vergleichen und gezielt ergänzen."
     }
+  },
+  "soil_globe": {
+    "heading": "Entdecke die Bodenwelten.",
+    "intro": "Erkunde Böden und Lebensräume – und finde passende Komponenten für deinen Pflanzentopf.",
+    "cta": "Zum Substrat-Konfigurator"
+  },
+  "soil_globe_products": {
+    "heading": "Passende Substratbausteine entdecken",
+    "note": "Bausteine für Topfsubstrate. Die gezeigten Regionen sind keine Herkunftsangabe und keine Anleitung zum Nachbau natürlicher Böden.",
+    "link": "Zum Produkt"
   }
 }
