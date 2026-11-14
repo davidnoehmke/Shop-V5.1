@@ -84,12 +84,28 @@ function createLeafEarthRenderer(image) {
       float latitude = asin(clamp(point.y * c + z * s, -1.0, 1.0));
       float longitude = rotation.x + atan(point.x, z * c - point.y * s);
       vec2 uv = vec2(fract(longitude / (2.0 * PI) + 0.5), 0.5 - latitude / PI);
-      vec3 colour = texture2D(earth, uv).rgb;
-      vec3 normal = vec3(point, z);
-      float daylight = 0.38 + 0.62 * max(dot(normal, normalize(vec3(-0.45, 0.6, 1.0))), 0.0);
-      vec3 atmosphere = vec3(0.18, 0.49, 0.76) * pow(1.0 - z, 3.0) * 0.65;
-      float edge = 1.0 - smoothstep(0.987, 1.0, radius);
-      gl_FragColor = vec4((colour * daylight + atmosphere) * edge, edge);
+      vec3 albedo = texture2D(earth, uv).rgb;
+      vec3 normal = normalize(vec3(point, z));
+      vec3 sun = normalize(vec3(-0.46, 0.52, 0.86));
+      float illumination = dot(normal, sun);
+      float day = smoothstep(-0.14, 0.18, illumination);
+      float diffuseLight = max(illumination, 0.0);
+      // A gentle twilight transition retains detail without an unrealistic flat fill.
+      vec3 shaded = albedo * (0.12 + 0.88 * diffuseLight);
+      shaded *= mix(0.38, 1.0, day);
+      // Distinguish probable open water from land using the existing Blue Marble image.
+      // This is a visual heuristic, not a geographical or scientific water mask.
+      float ocean = smoothstep(0.02, 0.18, albedo.b - albedo.r);
+      ocean *= smoothstep(0.0, 0.16, albedo.b - albedo.g * 0.85);
+      vec3 reflected = reflect(-sun, normal);
+      float highlight = pow(max(reflected.z, 0.0), 56.0);
+      shaded += vec3(0.82, 0.92, 1.0) * highlight * ocean * day * 0.42;
+      // Fresnel-inspired atmospheric scattering, strongest near the silhouette.
+      float rim = pow(1.0 - z, 3.0);
+      float litRim = mix(0.35, 1.0, day);
+      shaded += vec3(0.13, 0.38, 0.67) * rim * litRim * 0.62;
+      float edge = 1.0 - smoothstep(0.986, 1.0, radius);
+      gl_FragColor = vec4(shaded * edge, edge);
     }
   `);
     const program = gl.createProgram();
