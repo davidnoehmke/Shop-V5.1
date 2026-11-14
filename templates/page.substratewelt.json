@@ -191,12 +191,19 @@
         "heading": "Substrat passend zu Pflanze, Wurzelraum und Menge",
         "intro": "<p>Starte mit Pflanzenprofil und Menge. LEAF zeigt dir die feste Grundrezeptur und erklärt die Bestandteile. Den Profi-Modus öffnest du nur, wenn du die Mischung bewusst selbst fein abstimmen möchtest.</p>"
       }
+    },
+    "material_studio": {
+      "type": "leaf-substrate-material-studio",
+      "settings": {
+        "source_product": "leafer-substrat-konfigurator"
+      }
     }
   },
   "order": [
     "breadcrumbs",
     "page_heading",
     "main",
+    "material_studio",
     "product_recipe_bzM3LF"
   ]
 }
