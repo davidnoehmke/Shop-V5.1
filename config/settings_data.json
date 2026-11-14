@@ -50,12 +50,12 @@
       },
       "11531005611096603357": {
         "type": "shopify://apps/zalify-pixel-popups-emails/blocks/popup-embed/0f5e9b69-424e-42a3-8bd7-8d5b75dd8130",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "2118589882331710876": {
         "type": "shopify://apps/essential-trust-badges/blocks/app-embed/0ff65b25-07e1-408e-950f-f54dd3d1751b",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "13768625480086291342": {
@@ -230,7 +230,7 @@
       },
       "5134484470793087125": {
         "type": "shopify://apps/vitals/blocks/app-embed/aeb48102-2a5a-4f39-bdbd-d8d49f4e20b8",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "3010291245489324502": {

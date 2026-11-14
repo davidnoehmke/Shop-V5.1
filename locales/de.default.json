@@ -260,7 +260,10 @@
       "safety": "Sicherheit:",
       "variant_check": "Variantenangaben werden vor dem Kauf geprüft.",
       "manufacturer_information": "Herstellerinformationen öffnen",
-      "howto_name": "{{ product }} richtig anwenden"
+      "howto_name": "{{ product }} richtig anwenden",
+      "details_eyebrow": "Produktwissen",
+      "details_heading": "Eigenschaften und Anwendung",
+      "guides": "Ratgeber und Produktwissen"
     }
   },
   "product_variant_guide": {

@@ -260,7 +260,10 @@
       "safety": "Safety:",
       "variant_check": "Variant details are verified before purchase.",
       "manufacturer_information": "Open manufacturer information",
-      "howto_name": "How to use {{ product }}"
+      "howto_name": "How to use {{ product }}",
+      "details_eyebrow": "Product knowledge",
+      "details_heading": "Features and use",
+      "guides": "Guides and product knowledge"
     }
   },
   "product_variant_guide": {
