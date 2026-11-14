@@ -4,6 +4,7 @@ import {
   NavLink,
   Outlet,
   useLoaderData,
+  redirect,
 } from 'react-router';
 import type {Route} from './+types/account';
 import {CUSTOMER_DETAILS_QUERY} from '~/graphql/customer-account/CustomerDetailsQuery';
@@ -13,6 +14,10 @@ export function shouldRevalidate() {
 }
 
 export async function loader({context}: Route.LoaderArgs) {
+  if (!context.env.PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID || !context.env.SHOP_ID) {
+    // This is the shop's verified existing Shopify-hosted customer account.
+    throw redirect('https://account.leaferservice.com', {headers: {'Cache-Control': 'no-store'}});
+  }
   const {customerAccount} = context;
   const {data, errors} = await customerAccount.query(CUSTOMER_DETAILS_QUERY, {
     variables: {
