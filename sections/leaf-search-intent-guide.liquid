@@ -1,0 +1,69 @@
+{% liquid
+ assign topic = section.settings.topic
+ if topic == 'auto'
+  if page.handle == 'nature-explorer'
+   assign topic = 'nature'
+  elsif page.handle == 'individuelles-substrat'
+   assign topic = 'substrate'
+  else
+   assign topic = 'lighting'
+  endif
+ endif
+ assign is_en = false
+ if request.locale.iso_code contains 'en'
+  assign is_en = true
+ endif
+%}
+<section class="leaf-intent-guide page-width" aria-labelledby="LeafIntent-{{ section.id }}">
+{% case topic %}
+{% when 'lighting' %}
+ {% if is_en %}
+  <header><p class="leaf-intent-guide__eyebrow">Practical indoor plant lighting</p><h2 id="LeafIntent-{{ section.id }}">Choose plant lighting for a living room, shelf or single plant</h2><p>Find a plant light that fits the foliage and your living space. Compare actual coverage, mounting height and whether the LED can be seen from your sofa.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Grow lights without direct glare</h3><p>Consider shielding and the view from your seated position. Beam angle alone cannot guarantee comfort.</p></article><article><h3>Single-plant spot or LED strip?</h3><p>A directional spotlight suits targeted placement. A linear fixture may suit a plant shelf; verify the product's mounting instructions.</p></article><article><h3>Power, distance and PPFD</h3><p>Rated watts are not a direct measure of the light reaching leaves. Manufacturer PPFD data and the plant's needs matter.</p></article></div>
+  <details><summary>Does a wider beam always mean better plant lighting?</summary><p>No. A wider beam can cover a larger area, but intensity also depends on output and the distance to foliage.</p></details>
+  <details><summary>How close should a grow light be to plants?</summary><p>There is no universal distance. Follow the manufacturer's clearance instructions and compare measured light levels for the intended plant.</p></details>
+ {% else %}
+  <header><p class="leaf-intent-guide__eyebrow">Pflanzenbeleuchtung für echte Wohnsituationen</p><h2 id="LeafIntent-{{ section.id }}">Pflanzenlampe fürs Wohnzimmer, Pflanzenregal oder eine große Monstera finden</h2><p>Gutes Pflanzenlicht muss zur Pflanze und zur Einrichtung passen. Vergleiche die Lichtverteilung am Blatt, den Montageabstand und den Sehkomfort vom Sofa aus, bevor du dich für eine LED entscheidest.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Pflanzenlampe neben dem Sofa ohne störende Blendung</h3><p>Eine direkt sichtbare helle LED kann im Blickfeld unangenehm sein. Entscheidend sind Abschirmung, Position, Blickrichtung und die konkrete Leuchte – nicht nur der Abstrahlwinkel.</p></article><article><h3>Solitärpflanzen-Spot oder LED-Leiste für das Regal?</h3><p>Ein gerichteter Spot lässt sich auf eine einzelne Blattfläche ausrichten. LED-Leisten eignen sich häufig für Regalböden und Pflanzenreihen. Prüfe immer die vorgesehene Montageart.</p></article><article><h3>Wie hoch muss eine LED-Pflanzenleuchte hängen?</h3><p>Mit dem Abstand verändern sich Lichtverteilung und Intensität an den Blättern. Verlässlicher als ein pauschaler Zentimeterwert sind Herstellerangaben und PPFD-Messdaten.</p></article></div>
+  <details><summary>Kann eine LED-Pflanzenlampe zu stark oder zu schwach sein?</summary><p>Ja. Pflanzenart, Beleuchtungsdauer, Standort und tatsächliche Lichtintensität entscheiden. Die Nennleistung in Watt reicht für eine sichere Bewertung nicht aus.</p></details>
+  <details><summary>Ist ein 120-Grad-Abstrahlwinkel besser als 60 Grad?</summary><p>Nicht grundsätzlich. Ein breiterer Winkel kann eine größere Fläche abdecken, während ein engerer Spot das Licht gezielter bündelt. Entscheidend ist die gesamte Lichtverteilung der Leuchte.</p></details>
+  <details><summary>Welches Pflanzenlicht eignet sich für eine dunkle Wohnzimmerecke?</summary><p>Das hängt von der Pflanzenart, dem vorhandenen Tageslicht und dem Abstand zur Lampe ab. Suche nach belastbaren Lichtdaten für den konkreten Aufbau statt ausschließlich nach Wattzahlen.</p></details>
+ {% endif %}
+ <p class="leaf-intent-guide__cta"><a href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if is_en %}Browse plant lighting{% else %}Pflanzenbeleuchtung entdecken{% endif %} ↗</a></p>
+{% when 'substrate' %}
+ {% if is_en %}
+  <header><p class="leaf-intent-guide__eyebrow">Custom potting substrates</p><h2 id="LeafIntent-{{ section.id }}">Compare growing media for Monstera, orchids and succulents</h2><p>Root aeration, water retention and the growing container should guide your mix, not a universal percentage recipe.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Aroid substrate with an airy structure</h3><p>Coarse components can help keep space for air around roots. Water needs still vary by plant and pot.</p></article><article><h3>Perlite, bark, pumice and lava</h3><p>Components differ in particle size, weight and water behavior. Match each one to a purpose.</p></article><article><h3>Ready-made or custom mix?</h3><p>Choose ready-made when suitable; customize to meet specific needs and growing conditions.</p></article></div>
+  <details><summary>Can all indoor plants use the same potting mix?</summary><p>No. Roots, pot dimensions, temperature and watering routines vary substantially.</p></details>
+ {% else %}
+  <header><p class="leaf-intent-guide__eyebrow">Individuelle Kultursubstrate</p><h2 id="LeafIntent-{{ section.id }}">Substrat für Monstera, Alocasia, Orchideen oder Sukkulenten richtig mischen</h2><p>Eine passende Mischung berücksichtigt Wurzelbelüftung, Wasserspeicherung, Korngröße und dein Gießverhalten. Der Konfigurator unterstützt den Vergleich von fertigen Mischungen und einzelnen Bestandteilen.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Luftiges Monstera- und Aroid-Substrat</h3><p>Pinienrinde und strukturgebende Zuschläge können Luftporen im Wurzelraum fördern. Der erforderliche Feuchtehaushalt richtet sich trotzdem nach Pflanze und Standort.</p></article><article><h3>Perlite, Bims, Lava und Kokosfaser</h3><p>Die Bestandteile unterscheiden sich in Korngröße, Dichte und Wasserführung. Eine Rezeptur sollte die gewünschten Eigenschaften erfüllen, nicht bloß eine starre Prozentliste.</p></article><article><h3>Fertigmischung oder selbst konfigurieren?</h3><p>Eine passende Fertigmischung spart Arbeit. Eine eigene Mischung kann bei besonderen Gefäßen, Pflanzenarten und Pflegebedingungen sinnvoll sein.</p></article></div>
+  <details><summary>Welche Substratmischung eignet sich für Alocasia?</summary><p>Oft ist ein ausgewogener Wurzelraum hilfreich, der Feuchtigkeit hält und zugleich belüftet bleibt. Topf, Temperatur, Wurzelzustand und Gießverhalten bestimmen die Eignung.</p></details>
+  <details><summary>Ist Gartenerde für Zimmerpflanzen im Topf geeignet?</summary><p>Ein natürlich gewachsener Boden hat andere Bedingungen als ein kleines Gefäß. Dort sind Strukturstabilität, Luftversorgung und Wasserabzug besonders wichtig.</p></details>
+  <details><summary>Ist eine Drainageschicht aus Blähton zwingend nötig?</summary><p>Nein. Eine grobe Schicht allein verhindert keine Staunässe. Entscheidend sind passende Substratstruktur, Wasserführung und ein Topf mit geeignetem Abzug.</p></details>
+ {% endif %}
+ <p class="leaf-intent-guide__cta"><a href="{% render 'leaf-localized-url', url: '/collections/pflanzsubstrate-mischungen' %}">{% if is_en %}Browse ready-made substrate mixes{% else %}Fertige Substratmischungen ansehen{% endif %} ↗</a></p>
+{% when 'nature' %}
+ {% if is_en %}
+  <header><p class="leaf-intent-guide__eyebrow">Ecosystems and root environments</p><h2 id="LeafIntent-{{ section.id }}">What natural habitats can teach us about indoor plants</h2><p>Explore examples from tropical forests, northern forests and dry landscapes. A natural soil is not automatically a suitable potting recipe.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Monstera and forest light</h3><p>Climbing growth and differences in available light help explain plant behavior.</p></article><article><h3>Conifers, roots and fungi</h3><p>Forest organisms and fungal partnerships connect the ecosystem above and below ground.</p></article><article><h3>Dry regions and water</h3><p>Arid habitats differ in soils, rainfall and evaporation.</p></article></div>
+  <details><summary>Should indoor substrate copy natural forest soil?</summary><p>No. A container has different drainage, air and root-volume conditions.</p></details>
+ {% else %}
+  <header><p class="leaf-intent-guide__eyebrow">Ökosysteme und Bodenkunde verstehen</p><h2 id="LeafIntent-{{ section.id }}">Was Regenwald, Nadelwald und Trockengebiete über Pflanzenwurzeln verraten</h2><p>Erkunde vereinfachte Lebensräume und lerne, wie Licht, Wasser, Boden und Wurzeln zusammenwirken. Natürliche Standorte geben Hinweise, sind aber keine universellen Anleitungen für die Zimmerpflanzenpflege.</p></header>
+  <div class="leaf-intent-guide__grid"><article><h3>Monstera im mittelamerikanischen Regenwald</h3><p>Kletterverhalten und Lichtgefälle zwischen Waldboden und höheren Bereichen helfen beim Verständnis dieser Pflanze – ohne eine allgemeine Pflegeformel daraus abzuleiten.</p></article><article><h3>Nadelwald: Fichten, Wurzeln und Mykorrhiza</h3><p>Pilzpartner und Zersetzungsprozesse verbinden Vegetation und Boden. Die Darstellung erklärt ein Prinzip und zeigt keine gemessenen Netzwerke.</p></article><article><h3>Trockene Lebensräume und Wasserspeicherung</h3><p>Trockenheit bedeutet nicht überall denselben Bodentyp. Auch Verdunstung, Gestein und lokale Standortbedingungen spielen eine Rolle.</p></article></div>
+  <details><summary>Ist Regenwaldboden das beste Substrat für Monstera?</summary><p>Nicht automatisch. Ein Pflanztopf hat deutlich andere Bedingungen für Wurzelraum, Wasser und Luft als ein natürlicher Waldboden.</p></details>
+  <details><summary>Was unterscheidet Naturboden und Kultursubstrat?</summary><p>Naturböden entwickeln sich aus Gestein, organischem Material und Standortfaktoren. Kultursubstrate werden gezielt für Eigenschaften im begrenzten Gefäßvolumen zusammengestellt.</p></details>
+ {% endif %}
+ <p class="leaf-intent-guide__cta"><a href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">{% if is_en %}Explore the substrate configurator{% else %}Substrat-Konfigurator entdecken{% endif %} ↗</a></p>
+{% endcase %}
+</section>
+<style>
+.leaf-intent-guide{max-width:1320px;margin:clamp(24px,5vw,65px) auto;padding:clamp(24px,4vw,50px) clamp(18px,3vw,45px);border-top:1px solid #d8e0d5;color:#284536}
+.leaf-intent-guide__eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.13em;font-weight:700;color:#6b8370;margin:0 0 12px}.leaf-intent-guide h2{font-size:clamp(24px,3.3vw,40px);font-weight:500;letter-spacing:-.025em;line-height:1.17;max-width:27ch;margin:0 0 15px}.leaf-intent-guide header>p:last-child{line-height:1.7;max-width:75ch;color:#526658}
+.leaf-intent-guide__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(15px,2.8vw,32px);padding:25px 0 18px}.leaf-intent-guide__grid article{border-top:2px solid #9db9a0;padding:15px 0}.leaf-intent-guide__grid h3{font-size:18px;line-height:1.3;margin:0 0 10px}.leaf-intent-guide__grid p{font-size:14px;line-height:1.65;color:#526658}
+.leaf-intent-guide details{border-bottom:1px solid #d8e0d5;padding:12px 0}.leaf-intent-guide summary{cursor:pointer;font-size:15px;font-weight:650;min-height:36px}.leaf-intent-guide details p{max-width:85ch;line-height:1.7;color:#526658}.leaf-intent-guide__cta{margin-top:22px}.leaf-intent-guide__cta a{font-weight:700;min-height:44px;display:inline-flex;align-items:center;text-underline-offset:5px;color:#28553b}
+@media(max-width:740px){.leaf-intent-guide__grid{grid-template-columns:1fr;gap:0}.leaf-intent-guide__grid article{padding:14px 0}.leaf-intent-guide{margin:24px 16px;padding:20px 0}}
+</style>
+{% schema %}
+{"name":"LEAF Longtail Guide","settings":[{"type":"select","id":"topic","label":"Suchintention","default":"auto","options":[{"value":"auto","label":"Automatisch nach Seite"},{"value":"lighting","label":"Pflanzenbeleuchtung"},{"value":"substrate","label":"Substrate"},{"value":"nature","label":"Nature Explorer"}]}],"presets":[{"name":"LEAF Longtail Guide"}]}
+{% endschema %}

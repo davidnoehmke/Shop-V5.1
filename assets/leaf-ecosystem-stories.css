@@ -1,0 +1,25 @@
+.leaf-ecosystems{--eco-ink:#274638;--eco-accent:#52775c;max-width:1360px;margin:0 auto;padding:clamp(30px,5vw,70px) clamp(16px,4vw,52px);color:var(--eco-ink);font-family:inherit}
+.leaf-ecosystems *{box-sizing:border-box}.leaf-ecosystems [hidden]{display:none!important}
+.leaf-ecosystems__intro{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(240px,.75fr);gap:30px;align-items:end;margin-bottom:22px}
+.leaf-ecosystems__intro h2{font:400 clamp(29px,3.7vw,52px)/1.1 Georgia,serif;letter-spacing:-.028em;margin:.3rem 0}
+.leaf-ecosystems__intro>p{color:#5d7166;line-height:1.7;margin:0;max-width:45ch;font-size:14px}
+.leaf-ecosystems__eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;color:#52755b}
+.leaf-ecosystems__picker,.leaf-ecosystems__layers{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.leaf-ecosystems button{font-size:13px;font-weight:650;line-height:1.4;font-family:inherit;cursor:pointer;min-height:44px;padding:10px 15px;border:1px solid #b6c7b5;background:#f4f5ed;color:#274638;border-radius:999px;transition:background .18s,transform .18s}
+.leaf-ecosystems button[aria-pressed=true]{background:#274638;color:#fff;border-color:#274638}.leaf-ecosystems button:active{transform:scale(.97)}.leaf-ecosystems button:focus-visible,.leaf-ecosystems a:focus-visible{outline:3px solid #b58d42;outline-offset:3px}
+.leaf-ecosystems__explorer{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);border:1px solid #d9dfd3;background:#fbfaf5;border-radius:14px;overflow:hidden}
+.leaf-ecosystems__art{padding:clamp(14px,2.6vw,24px);background:#e6eee5}.leaf-ecosystems__art svg{display:block;width:100%;height:auto;border-radius:12px;overflow:hidden}
+.leaf-ecosystems__detail{padding:clamp(20px,3vw,35px);display:flex;flex-direction:column;justify-content:center}
+.leaf-ecosystems__detail h3{font:400 clamp(27px,3vw,36px)/1.12 Georgia,serif;margin:0 0 16px}
+.leaf-ecosystems__detail [data-leaf-text]{color:#4f6255;font-size:15px;line-height:1.75;min-height:115px}
+.leaf-ecosystems__detail a{display:inline-flex;align-items:center;min-height:44px;border-bottom:1px solid #52775c;color:#274638;font-weight:700;font-size:13px;text-decoration:none}
+.leaf-ecosystems__source,.leaf-ecosystems__illustration-note{color:#65766a;font-size:11px;line-height:1.55}
+.leaf-ecosystems__illustration-note{margin:8px 2px 0}
+.leaf-ecosystems__forest,.leaf-ecosystems__conifers,.leaf-ecosystems__desert{transition:opacity .32s cubic-bezier(.16,1,.3,1)}.leaf-ecosystems__conifers,.leaf-ecosystems__desert{opacity:0}
+.leaf-ecosystems__explorer[data-active-region=boreal] .leaf-ecosystems__forest,.leaf-ecosystems__explorer[data-active-region=sahara] .leaf-ecosystems__forest{opacity:0}
+.leaf-ecosystems__explorer[data-active-region=boreal] .leaf-ecosystems__conifers,.leaf-ecosystems__explorer[data-active-region=sahara] .leaf-ecosystems__desert{opacity:1}
+.leaf-ecosystems__roots,.leaf-ecosystems__signals{transition:opacity .25s}.leaf-ecosystems__signals{opacity:.14}.leaf-ecosystems__explorer[data-active-layer=roots] .leaf-ecosystems__roots{stroke-width:6}.leaf-ecosystems__explorer[data-active-layer=roots] .leaf-ecosystems__signals{opacity:1}.leaf-ecosystems__explorer[data-active-layer=conditions] .leaf-ecosystems__roots{opacity:.18}
+.leaf-ecosystems__marker{fill:#e9d999;stroke:#345943;stroke-width:3;opacity:.46}.leaf-ecosystems__explorer[data-active-layer=plants] .leaf-ecosystems__marker--plant,.leaf-ecosystems__explorer[data-active-layer=roots] .leaf-ecosystems__marker--roots,.leaf-ecosystems__explorer[data-active-layer=conditions] .leaf-ecosystems__marker--conditions{opacity:1;stroke-width:6}
+@media(max-width:800px){.leaf-ecosystems__intro,.leaf-ecosystems__explorer{grid-template-columns:1fr}.leaf-ecosystems__detail [data-leaf-text]{min-height:0}.leaf-ecosystems__picker{display:grid;grid-template-columns:1fr}.leaf-ecosystems__picker button{text-align:left}}
+@media(prefers-reduced-motion:reduce){.leaf-ecosystems *{transition:none!important;animation:none!important}}
+.leaf-ecosystems__references{margin-top:18px;padding:15px 0;border-top:1px solid #dce2d6;font-size:12px;color:#597060}.leaf-ecosystems__references summary{cursor:pointer;font-weight:700;min-height:36px}.leaf-ecosystems__references a{border-bottom:1px solid #6c9374}

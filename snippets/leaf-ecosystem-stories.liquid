@@ -1,0 +1,69 @@
+{% liquid
+  assign is_en = false
+  if request.locale.iso_code contains 'en'
+    assign is_en = true
+  endif
+%}
+<section class="leaf-ecosystems" data-leaf-ecosystems aria-labelledby="LeafEcosystems-{{ section.id }}">
+ <div class="leaf-ecosystems__intro">
+  <div><p class="leaf-ecosystems__eyebrow">LEAF LIVING LAB · NATURE EXPLORER</p><h2 id="LeafEcosystems-{{ section.id }}">{% if is_en %}An ecosystem is more than a place on a map.{% else %}Ein Ökosystem ist mehr als ein Punkt auf der Karte.{% endif %}</h2></div>
+  <p>{% if is_en %}Choose a habitat. Follow the plants, roots and their environment, then find the right next step for your home. Illustrative models, not site measurements.{% else %}Wähle einen Lebensraum. Entdecke Pflanzen, Wurzeln und Umwelt im Zusammenspiel – und finde danach eine sinnvolle Lösung für zu Hause. Vereinfachte Modelle, keine Standortmessungen.{% endif %}</p>
+ </div>
+ <div class="leaf-ecosystems__picker" role="group" aria-label="{% if is_en %}Select habitat{% else %}Lebensraum auswählen{% endif %}">
+  <button type="button" data-leaf-region="mittelamerika" aria-pressed="true">{% if is_en %}Central American forest{% else %}Mittelamerikanischer Wald{% endif %}</button>
+  <button type="button" data-leaf-region="boreal" aria-pressed="false">{% if is_en %}Northern conifer forest{% else %}Nördlicher Nadelwald{% endif %}</button>
+  <button type="button" data-leaf-region="sahara" aria-pressed="false">{% if is_en %}Arid landscapes{% else %}Trockene Landschaften{% endif %}</button>
+ </div>
+ <div class="leaf-ecosystems__explorer" data-active-region="mittelamerika" data-active-layer="plants">
+  <div class="leaf-ecosystems__art">
+   <svg viewBox="0 0 620 380" role="img" aria-labelledby="LeafEcosystems-arttitle-{{ section.id }}">
+    <title id="LeafEcosystems-arttitle-{{ section.id }}">{% if is_en %}Illustrated habitat: plant life, surface and root layers{% else %}Illustrierter Lebensraum mit Pflanzen, Boden- und Wurzelschicht{% endif %}</title>
+    <defs><linearGradient id="leafEcoSky-{{ section.id }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d2e2d2"/><stop offset="1" stop-color="#eef1dc"/></linearGradient><linearGradient id="leafEcoSoil-{{ section.id }}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d6652"/><stop offset="1" stop-color="#4a3a32"/></linearGradient></defs>
+    <rect width="620" height="380" rx="20" fill="url(#leafEcoSky-{{ section.id }})"/>
+    <circle cx="490" cy="75" r="34" fill="#f7e8b0" opacity=".85"/>
+    <path d="M0 220Q100 170 230 208T440 208T620 190V285H0Z" fill="#a2bba0"/>
+    <g class="leaf-ecosystems__forest">
+     <path d="M80 230V70M180 235V110M350 228V48M490 228V95" stroke="#67543a" stroke-width="15" stroke-linecap="round"/>
+     <g fill="#397c57"><ellipse cx="80" cy="84" rx="76" ry="48"/><ellipse cx="180" cy="99" rx="70" ry="48"/><ellipse cx="350" cy="60" rx="96" ry="53"/><ellipse cx="490" cy="110" rx="78" ry="48"/></g>
+     <g fill="#8db777" opacity=".9"><ellipse cx="35" cy="105" rx="32" ry="20"/><ellipse cx="145" cy="120" rx="30" ry="16"/><ellipse cx="302" cy="79" rx="40" ry="20"/><ellipse cx="532" cy="128" rx="33" ry="17"/></g>
+    </g>
+    <g class="leaf-ecosystems__conifers" fill="#385c4d"><path d="M98 220L143 30L190 220Z"/><path d="M205 223L253 75L303 223Z"/><path d="M337 227L404 20L465 227Z"/><path d="M466 224L512 85L554 224Z"/></g>
+    <g class="leaf-ecosystems__desert" fill="#b9a46e"><path d="M0 230Q110 170 210 205Q310 178 421 224T620 202V280H0Z"/><path d="M70 237L70 213M70 220L48 208M70 221L89 206M70 230L39 227M340 235L340 204M340 217L319 204M340 216L365 199M340 226L304 229" fill="none" stroke="#5d805c" stroke-width="6" stroke-linecap="round"/></g>
+    <path d="M0 235H620V380H0Z" fill="url(#leafEcoSoil-{{ section.id }})"/>
+    <path d="M0 260Q160 249 310 263T620 255" stroke="#be9775" stroke-width="5" opacity=".5" fill="none"/>
+    <g class="leaf-ecosystems__roots" fill="none" stroke="#dec49d" stroke-width="3" stroke-linecap="round"><path d="M170 234Q165 270 133 290L104 325M170 234Q191 275 222 307L240 353M170 234Q180 284 157 343M350 238Q334 274 308 298L291 343M350 238Q376 277 415 310L433 363M490 236Q474 284 455 337M490 236Q522 286 558 341"/></g>
+    <g class="leaf-ecosystems__signals" fill="none" stroke="#e2c77d" stroke-width="2.5" stroke-dasharray="7 8"><path d="M112 280Q175 307 242 280T390 281T515 290"/></g>
+    <circle class="leaf-ecosystems__marker leaf-ecosystems__marker--plant" cx="310" cy="115" r="13"/><circle class="leaf-ecosystems__marker leaf-ecosystems__marker--roots" cx="320" cy="299" r="13"/><circle class="leaf-ecosystems__marker leaf-ecosystems__marker--conditions" cx="510" cy="54" r="13"/>
+    <path d="M0 235H620" stroke="#e7debd" stroke-width="3"/>
+   </svg>
+   <div class="leaf-ecosystems__layers" role="group" aria-label="{% if is_en %}Explore habitat layers{% else %}Ebenen auswählen{% endif %}">
+    <button type="button" data-leaf-layer="plants" aria-pressed="true">{% if is_en %}Plants & life{% else %}Pflanzen & Leben{% endif %}</button>
+    <button type="button" data-leaf-layer="roots" aria-pressed="false">{% if is_en %}Roots & soil{% else %}Wurzeln & Boden{% endif %}</button>
+    <button type="button" data-leaf-layer="conditions" aria-pressed="false">{% if is_en %}Light & water{% else %}Licht & Wasser{% endif %}</button>
+   </div>
+   <p class="leaf-ecosystems__illustration-note">{% if is_en %}Conceptual illustration, not a simulation or species-specific field record.{% else %}Schematische Illustration, keine physikalische Simulation oder artspezifische Feldaufnahme.{% endif %}</p>
+  </div>
+  <div class="leaf-ecosystems__detail" aria-live="polite" aria-atomic="true">
+   <div data-leaf-story="mittelamerika"><h3>{% if is_en %}Central American forests{% else %}Mittelamerikanische Wälder{% endif %}</h3>
+    <p data-leaf-text="plants">{% if is_en %}Climbing plants such as Monstera use trees for support. Their growth changes with the light available at different heights.{% else %}Kletterpflanzen wie Monstera nutzen Bäume als Stütze. Mit der Höhe ändern sich auch die verfügbaren Lichtbedingungen.{% endif %}</p>
+    <p data-leaf-text="roots" hidden>{% if is_en %}Water, air spaces, organisms and organic matter interact in natural forest soils. A pot needs a suitable structure, not a copy of forest soil.{% else %}Wasser, Luftporen, Bodenorganismen und organisches Material wirken zusammen. Im Topf zählt eine passende Struktur statt einer Kopie des Waldbodens.{% endif %}</p>
+    <p data-leaf-text="conditions" hidden>{% if is_en %}Light under dense foliage differs from light above it. Indoor growing light must match plant requirements and actual placement.{% else %}Unter dichtem Blätterdach ist Licht anders verteilt als darüber. Indoor-Beleuchtung muss zur Pflanze und zum tatsächlichen Standort passen.{% endif %}</p>
+    <a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}Explore suitable substrate options{% else %}Substratoptionen entdecken{% endif %} ↗</a>
+   </div>
+   <div data-leaf-story="boreal" hidden><h3>{% if is_en %}Northern conifer forests{% else %}Nördliche Nadelwälder{% endif %}</h3>
+    <p data-leaf-text="plants">{% if is_en %}Conifers, understory plants, fungi and soil organisms share different levels of a forest ecosystem.{% else %}Nadelbäume, Unterwuchspflanzen, Pilze und Bodenorganismen besiedeln unterschiedliche Ebenen eines Waldökosystems.{% endif %}</p>
+    <p data-leaf-text="roots" hidden>{% if is_en %}Many conifers form partnerships with ectomycorrhizal fungi. The illustrated roots represent a process, not measured underground networks.{% else %}Viele Nadelbäume leben mit Ektomykorrhiza-Pilzen zusammen. Das Wurzelbild erklärt ein Prinzip, kein gemessenes unterirdisches Netzwerk.{% endif %}</p>
+    <p data-leaf-text="conditions" hidden>{% if is_en %}Seasonality and cool temperatures shape growth and decomposition. This cannot directly be transferred as an indoor care recipe.{% else %}Jahreszeiten und kühle Temperaturen beeinflussen Wachstum und Zersetzung. Daraus folgt kein allgemeines Rezept für Zimmerpflanzen.{% endif %}</p>
+    <a href="{% render 'leaf-localized-url', url: '/blogs/leafers-nice2know-blog' %}">{% if is_en %}Read more plant knowledge{% else %}Pflanzenwissen entdecken{% endif %} ↗</a>
+   </div>
+   <div data-leaf-story="sahara" hidden><h3>{% if is_en %}Dry landscapes{% else %}Trockene Landschaften{% endif %}</h3>
+    <p data-leaf-text="plants">{% if is_en %}Plants in arid habitats use different strategies to manage scarce water. The illustration does not identify any specific native species.{% else %}Pflanzen trockener Standorte nutzen unterschiedliche Strategien bei Wasserknappheit. Die Illustration zeigt bewusst keine bestimmte heimische Pflanzenart.{% endif %}</p>
+    <p data-leaf-text="roots" hidden>{% if is_en %}Sandy, gravelly, rocky and sometimes saline soils occur in arid regions. Their diversity is not equivalent to a cactus potting mix.{% else %}Sandige, kiesige, felsige und teils salzhaltige Böden kommen in Trockengebieten vor. Sie sind nicht mit einer Kakteen-Topfmischung gleichzusetzen.{% endif %}</p>
+    <p data-leaf-text="conditions" hidden>{% if is_en %}Low and irregular rainfall is only one part of the picture: evaporation and local site conditions matter as well.{% else %}Niedriger, unregelmäßiger Niederschlag ist nur ein Teil des Bildes: Auch Verdunstung und lokale Standortbedingungen zählen.{% endif %}</p>
+    <a href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}Explore mineral substrate options{% else %}Mineralische Substratoptionen entdecken{% endif %} ↗</a>
+   </div>
+   <details class="leaf-ecosystems__references"><summary>{% if is_en %}References and context{% else %}Quellen und Einordnung{% endif %}</summary><p>{% if is_en %}Illustrations and general explanations are not a substitute for a species assessment or local field observations.{% else %}Illustrationen und allgemeine Erklärungen ersetzen keine Artbestimmung oder lokalen Felddaten.{% endif %} <a href="https://isric.org/all-about-soil/world-soil-distribution/" rel="noopener" target="_blank">ISRIC · World soil distribution</a> · <a href="https://www.rhs.org.uk/plants/types/houseplants/growing-guide" rel="noopener" target="_blank">RHS · Houseplants</a></p></details>
+   <p class="leaf-ecosystems__source">{% if is_en %}Learning illustration: broad ecology context only. Regional detail and individual species require verified sources before publication.{% else %}Lernillustration: allgemeine ökologische Zusammenhänge. Regionale Detailaussagen und konkrete Arten brauchen vor Veröffentlichung geprüfte Quellen.{% endif %}</p>
+  </div>
+ </div>
+</section>
