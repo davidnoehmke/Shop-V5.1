@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "editorial": {
+      "type": "leaf-editorial-collection",
+      "settings": {
+        "enabled": true
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "hide_hero": true,
+        "show_type_filters": true
+      }
+    },
+    "trust": {
+      "type": "trust-bar",
+      "settings": {}
+    },
+    "guide": {
+      "type": "leaf-collection-guide",
+      "settings": {}
+    },
+    "seo": {
+      "type": "collection-seo-copy",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "editorial",
+    "main",
+    "trust",
+    "guide",
+    "seo"
+  ]
+}
