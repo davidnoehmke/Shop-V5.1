@@ -31,7 +31,7 @@
   },
   "header": {
     "language": "Sprache",
-    "change_language": "Sprache ändern",
+    "change_language": "OK",
     "home": "Startseite",
     "search": "Suche",
     "account": "Kundenkonto",
@@ -57,7 +57,12 @@
     "planner_substrate": "Substrat konfigurieren",
     "planner_light": "Pflanzenlicht planen",
     "planner_room": "3D-Raumplanung",
-    "knowledge_label": "Wissen"
+    "knowledge_label": "Wissen",
+    "flow_shop": "Shop",
+    "flow_substrates": "Substrate",
+    "flow_lighting": "Pflanzenlicht",
+    "flow_room": "3D Raumplaner",
+    "flow_knowledge": "Pflanzenwissen"
   },
   "announcement": {
     "label": "Shop-Vorteile",
@@ -68,8 +73,8 @@
     "text": "LEAFerservice verbindet strukturstabile Spezialmischungen, einzeln wählbare Substratbestandteile und einen nachvollziehbaren Konfigurator. Für Monstera, Philodendron, Alocasia, Orchideen, Palmen, Kakteen, Aussaat und Stecklinge.",
     "configure": "Substrat-Konfigurator",
     "benefits": {
-      "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
-      "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+      "shipping_title": "Bearbeitungszeit: 1–4 Werktage",
+      "shipping_text": "Die Bearbeitungszeit gilt für verfügbare Artikel, sofern beim Produkt keine abweichende Frist angegeben ist. Die anschließende Transportzeit hängt vom Lieferland und der Versandart ab.",
       "quality_title": "Rezepturen mit System",
       "quality_text": "Anteile statt Bauchgefühl",
       "natural_title": "Struktur gezielt wählen",
@@ -120,8 +125,8 @@
     "success": "Danke für deine Anmeldung."
   },
   "services": {
-    "shipping_title": "Lieferzeit: derzeit bis zu 7 Werktage (hohe Auslastung)",
-    "shipping_text": "Lieferung derzeit innerhalb von bis zu 7 Werktagen (hohe Auslastung)",
+    "shipping_title": "Bearbeitungszeit: 1–4 Werktage",
+    "shipping_text": "Die Bearbeitungszeit gilt für verfügbare Artikel, sofern beim Produkt keine abweichende Frist angegeben ist. Die anschließende Transportzeit hängt vom Lieferland und der Versandart ab.",
     "payment_title": "Sichere Zahlung",
     "payment_text": "mit SSL-Verschlüsselung",
     "support_title": "Kundenservice",
@@ -246,9 +251,6 @@
       "cart_error": "Dieses Produkt konnte nicht hinzugefügt werden. Bitte versuche es erneut."
     },
     "content": {
-      "details_eyebrow": "Produktwissen",
-      "details_heading": "Eigenschaften und Anwendung",
-      "guides": "Passende Ratgeber",
       "label": "Produktinformationen",
       "description": "Beschreibung",
       "application": "Anwendung",
@@ -263,7 +265,10 @@
       "safety": "Sicherheit:",
       "variant_check": "Variantenangaben werden vor dem Kauf geprüft.",
       "manufacturer_information": "Herstellerinformationen öffnen",
-      "howto_name": "{{ product }} richtig anwenden"
+      "howto_name": "{{ product }} richtig anwenden",
+      "guides": "Passende Ratgeber",
+      "details_eyebrow": "WISSEN FÜR DEINE AUSWAHL",
+      "details_heading": "Produktdetails und Anwendung"
     }
   },
   "product_variant_guide": {
@@ -447,13 +452,13 @@
     }
   },
   "recipe": {
-    "chart_label": "Zusammensetzung von {{ product }}",
     "eyebrow": "Transparent gemischt",
     "heading": "Rezeptur & Bestandteile",
     "intro": "Die Zusammensetzung wird direkt aus den gepflegten Produktdaten geladen und bleibt dadurch auf allen Produktseiten einheitlich.",
     "ratio": "Mischverhältnis",
     "ingredients": "Bestandteile",
-    "note": "Volumenanteile sind Richtwerte. Pflanze, Topf, Standort und Gießverhalten können eine Anpassung erfordern."
+    "note": "Volumenanteile sind Richtwerte. Pflanze, Topf, Standort und Gießverhalten können eine Anpassung erfordern.",
+    "chart_label": "Zusammensetzung von {{ product }}"
   },
   "cross_sell": {
     "eyebrow": "Sinnvoll ergänzen",
@@ -519,7 +524,7 @@
     "plants_question": "Wie werden Pflanzen für den Versand vorbereitet?",
     "plants_answer": "Pflanzen werden sorgfältig kontrolliert, transportsicher verpackt und möglichst kompakt geschützt. Leichte Veränderungen an Blättern oder Wuchs sind bei lebenden Naturprodukten normal.",
     "shipping_question": "Wie schnell wird meine Bestellung versendet?",
-    "shipping_answer": "Verfügbare Artikel werden in der Regel zügig vorbereitet. Die konkrete Lieferzeit hängt von Produkt, Wetter, Versanddienstleister und Zieladresse ab und wird im Bestellprozess angezeigt."
+    "shipping_answer": "Bearbeitungszeit: 1–4 Werktage. Die Bearbeitungszeit gilt für verfügbare Artikel, sofern beim Produkt keine abweichende Frist angegeben ist. Die anschließende Transportzeit hängt vom Lieferland und der Versandart ab."
   },
   "cart": {
     "title": "Warenkorb",
@@ -1502,14 +1507,150 @@
       "card_3_text": "Licht- und Interieur-Produkte weiterhin einzeln vergleichen und gezielt ergänzen."
     }
   },
+  "visual_shop": {
+    "edit": {
+      "eyebrow": "Die LEAF Auswahl",
+      "heading": "Dein nächster grüner Schritt.",
+      "intro": "Entdecke ausgewählte Produkte für Licht, Wurzeln und deinen Wohnraum.",
+      "filter_label": "Produkte nach Bereich auswählen",
+      "results": "Produkte in der Auswahl",
+      "end": "Mehr Möglichkeiten für deine Pflanzen.",
+      "all": "Das gesamte Sortiment"
+    },
+    "groups": {
+      "all": "Alles entdecken",
+      "lighting": "Pflanzenlicht",
+      "planters": "Gefäße",
+      "substrates": "Substrate",
+      "sets": "Sets"
+    },
+    "product": {
+      "from": "ab",
+      "quick": "Schnell ansehen",
+      "quick_named": "{{ product }} schnell ansehen",
+      "unavailable": "Derzeit nicht bestellbar",
+      "close": "Schließen",
+      "tax": "Inkl. MwSt., zzgl.",
+      "shipping": "Versandkosten",
+      "variant": "Ausführung wählen",
+      "add": "In den Warenkorb",
+      "details": "Alle Produktdetails"
+    },
+    "uses": {
+      "single": "Pflanzenlicht mit Teleskopstab.",
+      "shelf": "Lichtleiste für dein Pflanzenregal.",
+      "room": "Pflanzenlicht als Teil deines Wohnraums.",
+      "planter": "Ein neuer Platz für deine Lieblingspflanze.",
+      "water": "Bewässerung passend zu deinem Alltag.",
+      "aroid": "Spezialsubstrat für Alocasien und Aroiden.",
+      "dry": "Für Kakteen und Sukkulenten.",
+      "seed": "Für Aussaat und junge Wurzeln.",
+      "repot": "Passende Komponenten für dein nächstes Projekt."
+    },
+    "living": {
+      "eyebrow": "Vom Produkt zum Pflanzenplatz",
+      "heading": "Licht, das Raum für Grün schafft.",
+      "intro": "Ein stimmiger Pflanzenplatz beginnt mit drei einfachen Entscheidungen.",
+      "light_title": "Das passende Licht",
+      "light_body": "Wähle Montage, beleuchtete Fläche und Abstand passend zu deinen Pflanzen. Die Aurora-Lichtleiste siehst du hier in einer Regalanwendung.",
+      "light_link": "Pflanzenlicht entdecken",
+      "pot_title": "Das richtige Gefäß",
+      "pot_body": "Achte auf Wurzelballen, Stellfläche und Wasserablauf. Ein Gefäß soll zu deiner Pflanze und deinem Alltag passen.",
+      "pot_link": "Gefäße entdecken",
+      "soil_title": "Ein guter Wurzelraum",
+      "soil_body": "Wähle eine fertige Mischung oder stelle dein Substrat selbst zusammen. Entscheidend sind Pflanze, Topf und Gießroutine.",
+      "soil_link": "Substrate entdecken",
+      "help": "Dein eigenes Substrat zusammenstellen"
+    }
+  },
   "soil_globe": {
-    "heading": "Entdecke die Bodenwelten.",
-    "intro": "Erkunde Böden und Lebensräume – und finde passende Komponenten für deinen Pflanzentopf.",
-    "cta": "Zum Substrat-Konfigurator"
+    "heading": "Jede Pflanze hat eine Herkunft.",
+    "intro": "Entdecke typische Böden, Klima und passende Substrate auf unserem interaktiven Globus.",
+    "cta": "Passendes Substrat auswählen"
+  },
+  "botanical_room": {
+    "eyebrow": "LEAFERSERVICE · DEIN GRÜNER RAUM",
+    "heading": "Deine Pflanzen. Deine Welt.",
+    "intro": "Entdecke Pflanzen, Licht, Gefäße und Substrate direkt im Raum. Jeder Punkt öffnet eine eigene Themenwelt mit Produkten, Wissen und Werkzeugen.",
+    "scene_hint": "Wähle einen Punkt und entdecke deine Themenwelt.",
+    "scene_label": "EIN RAUM · VIELE MÖGLICHKEITEN",
+    "image_note": "KI-generiertes Inspirationsbild. Die abgebildete Einrichtung ist ein Beispiel; verbindliche Produktbilder und Angaben findest du am jeweiligen Artikel.",
+    "image_missing": "Wähle ein Raumbild im Theme-Editor.",
+    "navigation": "Produktwelten im Pflanzenraum",
+    "collection_link": "Ganze Produktwelt entdecken",
+    "product_image_missing": "Produktbild folgt",
+    "from_price": "Ab",
+    "check_variants": "Varianten & Verfügbarkeit am Produkt",
+    "unavailable": "Derzeit nicht verfügbar",
+    "product_cta": "Produkt ansehen",
+    "empty": "In dieser Auswahl sind aktuell keine Produkte mit veröffentlichtem Preis vorhanden.",
+    "unconfigured": "Für diesen Bereich ist noch keine Kollektion ausgewählt.",
+    "featured_label": "UNSER INTERAKTIVER RAUMGUIDE",
+    "featured_title": "Dein Pflanzenplatz. Alles, was zusammengehört.",
+    "featured_copy": "Entdecke im interaktiven Raumguide, wie Pflanze, Licht, Gefäß und Substrat zu deinem Zuhause passen.",
+    "featured_cta": "Pflanzenraum entdecken",
+    "all_guides": "Alle Ratgeber & Pflanzenwissen",
+    "worlds": {
+      "plants": "Pflanzen",
+      "lighting": "Pflanzenlicht",
+      "planters": "Gefäße",
+      "substrates": "Substrate",
+      "propagation": "Anzucht",
+      "knowledge": "Pflanzenwissen"
+    },
+    "copy": {
+      "plants": "Pflanzen nach Raum, Licht und Pflegealltag auswählen.",
+      "lighting": "Das passende Pflanzenlicht für deinen Standort entdecken.",
+      "planters": "Gefäße für Raumwirkung, Wurzelraum und Wasserführung.",
+      "substrates": "Fertige Mischungen und Bestandteile für deine Pflanzen.",
+      "propagation": "Anzuchtmedien und praktische Helfer für den ersten Start.",
+      "knowledge": "Im Bücherregal beginnt das Wissen für deinen nächsten grünen Schritt."
+    },
+    "listen": "Ausgewählten Bereich anhören",
+    "voice": "Stimme",
+    "rate": "Sprechtempo",
+    "read": "Vorlesen",
+    "pause": "Pause",
+    "resume": "Weiter",
+    "stop": "Stopp",
+    "audio_note": "Startet nur auf deinen Klick. Beim Wechsel der Produktwelt stoppt die Wiedergabe. Stimmen und Pausenfunktion hängen von deinem Gerät ab; manche Stimmen verwenden einen Onlinedienst.",
+    "audio_states": {
+      "ready": "Bereit zum Vorlesen.",
+      "speaking": "Wird vorgelesen.",
+      "paused": "Vorlesen pausiert.",
+      "ended": "Vorlesen beendet.",
+      "no_voice": "Keine passende deutsche Stimme verfügbar. Alle Inhalte bleiben als Text lesbar.",
+      "no_support": "Dein Browser unterstützt die Vorlesefunktion nicht. Alle Inhalte bleiben als Text lesbar.",
+      "error": "Die Sprachausgabe konnte nicht gestartet werden. Prüfe die Sprachstimmen deines Geräts."
+    },
+    "scene_alt": "KI-generierte Raumillustration: Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
+    "setup_cta": "Pflanzenraum planen",
+    "open_world": "Themenwelt öffnen",
+    "primary_cta": "Themenwelten entdecken",
+    "shop_cta": "Alle Produkte"
+  },
+  "shipping_notice": {
+    "title": "Bearbeitungszeit: 1–4 Werktage",
+    "detail": "Die Bearbeitungszeit gilt für verfügbare Artikel, sofern beim Produkt keine abweichende Frist angegeben ist. Die anschließende Transportzeit hängt vom Lieferland und der Versandart ab.",
+    "link": "Versand- und Lieferinformationen",
+    "special_title": "Bestellartikel: abweichende Versandfrist",
+    "special_detail": "Für diesen Artikel gelten die Beschaffungs- und Versandangaben in der Produktbeschreibung. Die allgemeine Bearbeitungszeit von 1–4 Werktagen gilt hier nicht pauschal. Die Transportzeit kommt nach dem Versand hinzu.",
+    "cart_title": "Bearbeitungs- und Lieferzeiten",
+    "cart_detail": "Beachte die Angaben bei jedem Artikel. Bei Bestellartikeln gelten abweichende Beschaffungs- und Versandfristen. Die Bearbeitungszeit ist keine Gesamtlieferzeit; die Transportzeit kommt hinzu."
   },
   "soil_globe_products": {
     "heading": "Passende Substratbausteine entdecken",
     "note": "Bausteine für Topfsubstrate. Die gezeigten Regionen sind keine Herkunftsangabe und keine Anleitung zum Nachbau natürlicher Böden.",
     "link": "Zum Produkt"
+  },
+  "world_resources": {
+    "eyebrow": "Weiter entdecken",
+    "heading": "Wissen, Werkzeuge und Pflanzenwelten.",
+    "intro": "Vertiefe dein Projekt dort, wo es dir hilft – vom interaktiven Pflanzenraum bis zum Blick auf natürliche Lebensräume.",
+    "nature": "Nature Explorer",
+    "nature_copy": "Lebensräume, Wurzeln und Böden auf dem Globus und in interaktiven Lernwelten erkunden.",
+    "community_copy": "Pflanzenprojekte und gemeinsames Grün entdecken.",
+    "tools": "Werkzeuge für dein Projekt",
+    "tools_copy": "Substrat, Licht und Raum mit den vorhandenen LEAF Werkzeugen planen."
   }
 }

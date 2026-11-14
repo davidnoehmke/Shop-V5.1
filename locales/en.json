@@ -31,7 +31,7 @@
   },
   "header": {
     "language": "Language",
-    "change_language": "Change language",
+    "change_language": "Go",
     "home": "Home",
     "search": "Search",
     "account": "Account",
@@ -57,19 +57,24 @@
     "planner_substrate": "Configure substrate",
     "planner_light": "Plan plant lighting",
     "planner_room": "3D room planning",
-    "knowledge_label": "Guides"
+    "knowledge_label": "Guides",
+    "flow_shop": "Shop",
+    "flow_substrates": "Substrates",
+    "flow_lighting": "Plant lights",
+    "flow_room": "3D room planner",
+    "flow_knowledge": "Plant knowledge"
   },
   "announcement": {
     "label": "Store benefits",
-    "text": "Hand-mixed in Germany · Fast shipping · Secure payment"
+    "text": "Hand-mixed in Germany · Shipping information available · Secure payment"
   },
   "hero": {
     "heading": "Hand-mixed substrates for healthy plants & strong roots",
     "text": "Natural ingredients. Thoughtful blends. For houseplants, herbs, vegetables and more.",
     "configure": "Substrate configurator",
     "benefits": {
-      "shipping_title": "Delivery time: currently up to 7 business days (high demand)",
-      "shipping_text": "Delivery is currently within up to 7 business days (high demand)",
+      "shipping_title": "Processing time: 1–4 business days",
+      "shipping_text": "Processing time applies to available items unless a different lead time is stated on the product page. Transit time after dispatch depends on the destination and shipping method.",
       "quality_title": "Hand-mixed quality",
       "quality_text": "carefully made",
       "natural_title": "Natural ingredients",
@@ -120,8 +125,8 @@
     "success": "Thanks for subscribing."
   },
   "services": {
-    "shipping_title": "Delivery time: currently up to 7 business days (high demand)",
-    "shipping_text": "Delivery is currently within up to 7 business days (high demand)",
+    "shipping_title": "Processing time: 1–4 business days",
+    "shipping_text": "Processing time applies to available items unless a different lead time is stated on the product page. Transit time after dispatch depends on the destination and shipping method.",
     "payment_title": "Secure payment",
     "payment_text": "with SSL encryption",
     "support_title": "Customer service",
@@ -246,9 +251,6 @@
       "cart_error": "This product could not be added. Please try again."
     },
     "content": {
-      "details_eyebrow": "Product knowledge",
-      "details_heading": "Features and use",
-      "guides": "Related guides",
       "label": "Product information",
       "description": "Description",
       "application": "How to use",
@@ -263,7 +265,10 @@
       "safety": "Safety:",
       "variant_check": "Variant details are verified before purchase.",
       "manufacturer_information": "Open manufacturer information",
-      "howto_name": "How to use {{ product }}"
+      "howto_name": "How to use {{ product }}",
+      "guides": "Related guides",
+      "details_eyebrow": "KNOWLEDGE FOR YOUR CHOICE",
+      "details_heading": "Product details and use"
     }
   },
   "product_variant_guide": {
@@ -447,13 +452,13 @@
     }
   },
   "recipe": {
-    "chart_label": "Composition of {{ product }}",
     "eyebrow": "Transparently mixed",
     "heading": "Recipe and ingredients",
     "intro": "The composition is loaded from maintained product data for consistent information across every product page.",
     "ratio": "Mixing ratio",
     "ingredients": "Ingredients",
-    "note": "Volume shares are guidelines. Plant, pot, location and watering habits may require adjustments."
+    "note": "Volume shares are guidelines. Plant, pot, location and watering habits may require adjustments.",
+    "chart_label": "Composition of {{ product }}"
   },
   "cross_sell": {
     "eyebrow": "Useful additions",
@@ -519,7 +524,7 @@
     "plants_question": "How are plants prepared for shipping?",
     "plants_answer": "Plants are carefully checked, securely packed and protected as compactly as possible. Minor changes to leaves or growth are normal for living natural products.",
     "shipping_question": "How quickly will my order ship?",
-    "shipping_answer": "Available items are usually prepared promptly. The exact delivery time depends on the product, weather, carrier and destination and is shown during checkout."
+    "shipping_answer": "Processing time: 1–4 business days. Processing time applies to available items unless a different lead time is stated on the product page. Transit time after dispatch depends on the destination and shipping method."
   },
   "cart": {
     "title": "Cart",
@@ -1502,14 +1507,150 @@
       "card_3_text": "Continue comparing lighting and interior products individually when needed."
     }
   },
+  "visual_shop": {
+    "edit": {
+      "eyebrow": "The LEAF edit",
+      "heading": "Your next green step.",
+      "intro": "Explore a considered selection for light, roots and your living space.",
+      "filter_label": "Filter products by category",
+      "results": "products in this selection",
+      "end": "More possibilities for your plants.",
+      "all": "Explore the full collection"
+    },
+    "groups": {
+      "all": "Explore all",
+      "lighting": "Grow lights",
+      "planters": "Planters",
+      "substrates": "Substrates",
+      "sets": "Sets"
+    },
+    "product": {
+      "from": "from",
+      "quick": "Quick view",
+      "quick_named": "Quick view: {{ product }}",
+      "unavailable": "Currently unavailable",
+      "close": "Close",
+      "tax": "Including VAT, plus",
+      "shipping": "shipping",
+      "variant": "Choose an option",
+      "add": "Add to cart",
+      "details": "All product details"
+    },
+    "uses": {
+      "single": "Grow light with a telescopic stand.",
+      "shelf": "A light bar for your plant shelf.",
+      "room": "Plant lighting for your living space.",
+      "planter": "A new home for your favourite plant.",
+      "water": "Watering that fits your routine.",
+      "aroid": "Specialist substrate for Alocasia and aroids.",
+      "dry": "For cacti and succulents.",
+      "seed": "For seeds and young roots.",
+      "repot": "Complementary components for your next project."
+    },
+    "living": {
+      "eyebrow": "From product to plant space",
+      "heading": "Light that makes room for green.",
+      "intro": "A considered plant space starts with three simple choices.",
+      "light_title": "The right light",
+      "light_body": "Match mounting, coverage and distance to your plants. This image shows the Aurora light bar in a shelf setting.",
+      "light_link": "Explore grow lights",
+      "pot_title": "The right planter",
+      "pot_body": "Consider the root ball, available space and drainage. A planter should suit both your plant and your routine.",
+      "pot_link": "Explore planters",
+      "soil_title": "A healthy root space",
+      "soil_body": "Choose a ready-made blend or create your own substrate. Your plant, pot and watering routine guide the choice.",
+      "soil_link": "Explore substrates",
+      "help": "Create your own substrate"
+    }
+  },
   "soil_globe": {
-    "heading": "Explore the world of soils.",
-    "intro": "Explore soils and habitats – and find suitable components for your plant pot.",
-    "cta": "Open substrate configurator"
+    "heading": "Every plant has an origin.",
+    "intro": "Explore example soils, climate and suitable potting mixes on our interactive globe.",
+    "cta": "Choose suitable substrate"
+  },
+  "botanical_room": {
+    "eyebrow": "LEAFERSERVICE · YOUR GREEN SPACE",
+    "heading": "Your plants. Your world.",
+    "intro": "Explore plants, lighting, planters and substrates directly in the room. Each point opens its own world with products, guides and tools.",
+    "scene_hint": "Choose a point to explore your plant world.",
+    "scene_label": "ONE ROOM · MANY POSSIBILITIES",
+    "image_note": "AI-generated inspiration image. The furnishings are illustrative; find the actual product images and specifications on each product page.",
+    "image_missing": "Choose a room image in the theme editor.",
+    "navigation": "Explore plant product worlds",
+    "collection_link": "Explore this product world",
+    "product_image_missing": "Product image coming soon",
+    "from_price": "From",
+    "check_variants": "Check options & availability on the product page",
+    "unavailable": "Currently unavailable",
+    "product_cta": "View product",
+    "empty": "No products with a published price are currently available in this selection.",
+    "unconfigured": "No collection has been selected for this category yet.",
+    "featured_label": "OUR INTERACTIVE ROOM GUIDE",
+    "featured_title": "Your plant space. Everything that belongs together.",
+    "featured_copy": "Explore how plants, lighting, planters and potting media can work together in your home with our interactive room guide.",
+    "featured_cta": "Explore the plant room",
+    "all_guides": "All plant guides & knowledge",
+    "worlds": {
+      "plants": "Plants",
+      "lighting": "Grow lights",
+      "planters": "Planters",
+      "substrates": "Substrates",
+      "propagation": "Propagation",
+      "knowledge": "Plant knowledge"
+    },
+    "copy": {
+      "plants": "Choose plants for your room, light levels and care routine.",
+      "lighting": "Explore plant lighting for your growing space.",
+      "planters": "Planters for interior style, root space and water management.",
+      "substrates": "Ready mixes and substrate components for your plants.",
+      "propagation": "Propagation media and practical tools for getting started.",
+      "knowledge": "The bookcase opens the knowledge behind your next green step."
+    },
+    "listen": "Listen to the selected area",
+    "voice": "Voice",
+    "rate": "Reading speed",
+    "read": "Read aloud",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "audio_note": "Starts only when you select Read aloud. Changing the product world stops playback. Voices and pause support depend on your device; some voices use an online service.",
+    "audio_states": {
+      "ready": "Ready to read.",
+      "speaking": "Reading aloud.",
+      "paused": "Reading paused.",
+      "ended": "Reading finished.",
+      "no_voice": "No matching English voice is available. All content remains readable.",
+      "no_support": "Your browser does not support read-aloud. All content remains readable.",
+      "error": "Speech could not start. Check your device speech voices."
+    },
+    "scene_alt": "AI-generated room illustration: plants, subtle plant lighting and planters in front of an old wooden bookcase filled with botanical books.",
+    "setup_cta": "Plan your plant space",
+    "open_world": "Open plant world",
+    "primary_cta": "Explore plant worlds",
+    "shop_cta": "All products"
+  },
+  "shipping_notice": {
+    "title": "Processing time: 1–4 business days",
+    "detail": "Processing time applies to available items unless a different lead time is stated on the product page. Transit time after dispatch depends on the destination and shipping method.",
+    "link": "Shipping and delivery information",
+    "special_title": "Special-order item: different dispatch time",
+    "special_detail": "The sourcing and dispatch information in the product description applies to this item. The general processing time of 1–4 business days does not apply as a blanket promise. Transit time is additional after dispatch.",
+    "cart_title": "Processing and delivery times",
+    "cart_detail": "Check the information for each item. Special-order items have different sourcing and dispatch times. Processing time is not the total delivery time; transit time is additional."
   },
   "soil_globe_products": {
     "heading": "Choose your substrate components",
     "note": "Components for potting mixes. The regions shown do not indicate product origin or a recipe for recreating natural soils.",
     "link": "View product"
+  },
+  "world_resources": {
+    "eyebrow": "Explore further",
+    "heading": "Knowledge, tools and plant worlds.",
+    "intro": "Take your project further with an interactive plant room or an exploration of natural habitats.",
+    "nature": "Nature Explorer",
+    "nature_copy": "Explore habitats, roots and soils on the globe and in interactive learning worlds.",
+    "community_copy": "Discover plant projects and shared green spaces.",
+    "tools": "Tools for your project",
+    "tools_copy": "Plan substrates, lighting and your room with the LEAF tools."
   }
 }

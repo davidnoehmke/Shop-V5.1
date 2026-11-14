@@ -41,22 +41,22 @@
         </div>
       </article>
       <article class="substratwelt-path substratwelt-path--accent">
-        <a class="substratwelt-path__image" href="{{ configurator.url }}" aria-label="Substrat individuell konfigurieren">
+        <a class="substratwelt-path__image" href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}" aria-label="Substrat individuell konfigurieren">
           {% if configurator.featured_image %}{{ configurator.featured_image | image_url: width: 900 | image_tag: loading: 'lazy', widths: '450,700,900', alt: configurator.title }}{% endif %}
         </a>
         <div class="substratwelt-path__body">
           <p class="substratwelt-guide__eyebrow">Individuell planen</p>
-          <h3><a href="{{ configurator.url }}">Substrat konfigurieren</a></h3>
+          <h3><a href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">Substrat konfigurieren</a></h3>
           {% if configurator.metafields.leafer.intro.value != blank %}<p>{{ configurator.metafields.leafer.intro.value }}</p>{% else %}<p>Stelle deine Mischung passend zu Pflanze, Standort, Gefäß und Gießverhalten zusammen.</p>{% endif %}
           {% if configurator.metafields.leafer.usp_1.value != blank %}<span class="substratwelt-path__meta">{{ configurator.metafields.leafer.usp_1.value }} · {{ configurator.metafields.leafer.usp_2.value }} · Bis 100&nbsp;% abstimmbar</span>{% endif %}
-          <a class="substratwelt-path__link" href="{{ configurator.url }}">Konfigurator öffnen <span aria-hidden="true">→</span></a>
+          <a class="substratwelt-path__link" href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">Konfigurator öffnen <span aria-hidden="true">→</span></a>
         </div>
       </article>
     </div>
     <div class="substratwelt-guide__method">
       <div><strong>Warum mehrere Bestandteile?</strong><span>Ein gutes Substrat ist ein System: Luftführung, Wasserführung und Struktur müssen zur Pflanze und zu deinen Bedingungen passen.</span></div>
       <div><strong>Fertig oder individuell?</strong><span>Nutze eine Fertigmischung für einen einfachen Einstieg oder passe einzelne Komponenten gezielt an.</span></div>
-      <a href="{{ configurator.url }}">Meine Mischung zusammenstellen <span aria-hidden="true">→</span></a>
+      <a href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">Meine Mischung zusammenstellen <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>
