@@ -16,6 +16,30 @@
           <p>{% if is_english %}Explore genuine product photos and details before choosing your recipe. The mix and checkout remain in the configurator above.{% else %}Entdecke echte Produktbilder und Eigenschaften, bevor du deine Rezeptur auswählst. Mischung und Kauf bleiben im Konfigurator darüber.{% endif %}</p>
         </div>
       </div>
+      <leaf-material-structure class="leaf-material-studio__structure" aria-labelledby="leaf-material-structure-heading-{{ section.id }}">
+        <div class="leaf-material-studio__viewer-head">
+          <div>
+            <h3 id="leaf-material-structure-heading-{{ section.id }}">{% if is_english %}Explore the grain in 3D{% else %}Körnung in 3D entdecken{% endif %}</h3>
+            <p>{% if is_english %}Illustrative geometry based on the visual character of each material, not a 3D scan. Real product photos remain available below.{% else %}Schematische Geometrie nach dem sichtbaren Materialcharakter, kein 3D-Scan. Echte Produktbilder findest du weiterhin darunter.{% endif %}</p>
+          </div>
+          <strong data-structure-name aria-live="polite"></strong>
+        </div>
+        <div class="leaf-material-studio__viewer">
+          <div class="leaf-material-studio__canvas-wrap">
+            <canvas width="600" height="380" tabindex="0" role="img" aria-label="{% if is_english %}Three-dimensional material texture. Drag to rotate, or use the arrow keys.{% else %}Dreidimensionale Materialstruktur. Zum Drehen ziehen oder Pfeiltasten verwenden.{% endif %}"></canvas>
+            <div class="leaf-material-studio__structure-fallback" data-structure-fallback>
+              <img data-structure-photo alt="" loading="lazy" width="600" height="380">
+            </div>
+          </div>
+          <div class="leaf-material-studio__structure-controls" role="group" aria-label="{% if is_english %}Choose material for the 3D illustration{% else %}Material für die 3D-Darstellung auswählen{% endif %}">
+            {% for ingredient in ingredients limit: 8 %}
+              {% if ingredient != blank %}
+                <button type="button" data-material="{{ ingredient.handle | escape }}" data-title="{{ ingredient.title | escape }}" {% if ingredient.featured_image != blank %}data-image="{{ ingredient.featured_image | image_url: width: 960 | escape }}"{% endif %} aria-pressed="{% if forloop.first %}true{% else %}false{% endif %}">{{ ingredient.title | escape }}</button>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </leaf-material-structure>
       <div class="leaf-material-studio__grid">
         {% for ingredient in ingredients limit: 8 %}
           {% if ingredient != blank %}
@@ -43,6 +67,7 @@
       </div>
     </div>
   </section>
+  <script src="{{ 'leaf-material-structure.js' | asset_url }}" defer="defer"></script>
 {% endif %}
 {% stylesheet %}
 .leaf-material-studio{padding:clamp(36px,5vw,76px) 0;background:#f5f3eb;color:#26372f}
@@ -50,6 +75,25 @@
 .leaf-material-studio__eyebrow{color:#607d6c;font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
 .leaf-material-studio h2{margin:.55rem 0 1rem;font-size:clamp(1.65rem,3.3vw,2.75rem);line-height:1.13;letter-spacing:-.035em}
 .leaf-material-studio__head p:last-child{font-size:clamp(.95rem,1.2vw,1.05rem);line-height:1.65;color:#52645a}
+.leaf-material-studio__structure{display:block;margin:0 0 clamp(24px,3vw,42px);padding:clamp(16px,2.5vw,30px);border:1px solid #dae3d9;border-radius:20px;background:#eff1e9}
+.leaf-material-studio__viewer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.leaf-material-studio__viewer-head h3{font-size:clamp(1.15rem,2vw,1.5rem);margin:0 0 .4rem}
+.leaf-material-studio__viewer-head p{font-size:.9rem;max-width:650px;line-height:1.5;color:#586a5b}
+.leaf-material-studio__viewer-head strong{font-size:.89rem;color:#315e43}
+.leaf-material-studio__viewer{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(180px,.65fr);gap:16px;align-items:start}
+.leaf-material-studio__canvas-wrap{position:relative;min-width:0;aspect-ratio:16/10;overflow:hidden;border-radius:14px;background:#f2f1e9}
+.leaf-material-studio__canvas-wrap canvas{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.leaf-material-studio__canvas-wrap canvas:active{cursor:grabbing}
+.leaf-material-studio__canvas-wrap canvas:focus-visible{outline:3px solid #376d4b;outline-offset:-3px}
+.leaf-material-studio__structure-fallback{position:absolute;inset:0;background:#e9eee5;display:grid;place-items:center}
+.leaf-material-studio__structure-fallback[hidden]{display:none}
+.leaf-material-studio__structure-fallback img{max-width:100%;width:100%;height:100%;object-fit:cover}
+.leaf-material-studio__structure-controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.leaf-material-studio__structure-controls button{border:1px solid #d2ddd1;background:#fff;color:#344a3e;border-radius:9px;padding:11px 9px;min-height:44px;font:inherit;font-size:.86rem;line-height:1.25;text-align:left;cursor:pointer;overflow-wrap:anywhere}
+.leaf-material-studio__structure-controls button[aria-pressed="true"]{border-color:#4d7654;background:#e1eee0;box-shadow:inset 0 0 0 1px #4d7654}
+.leaf-material-studio__structure-controls button:focus-visible{outline:3px solid #376d4b;outline-offset:2px}
+@media(max-width:760px){.leaf-material-studio__viewer{grid-template-columns:1fr}.leaf-material-studio__structure-controls{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:400px){.leaf-material-studio__structure{padding:12px}.leaf-material-studio__canvas-wrap{aspect-ratio:4/3}}
 .leaf-material-studio__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.7vw,22px)}
 .leaf-material-studio__card{min-width:0;overflow:hidden;border-radius:16px;background:#fff;border:1px solid #e0e5de;transition:transform .22s ease,box-shadow .22s ease}
 .leaf-material-studio__link{display:block;height:100%;color:inherit;text-decoration:none}
