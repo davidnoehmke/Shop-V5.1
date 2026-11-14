@@ -107,7 +107,7 @@ function drawRoom(canvas:HTMLCanvasElement,view:View,plants:number,lamps:number)
   return true;
 }
 
-export function RoomPlanner3D({locale='de'}:{locale?:'de'|'en'}){
+export function RoomPlanner3D({locale='de',editorHref}:{locale?:'de'|'en';editorHref?:string}){
   const canvas=useRef<HTMLCanvasElement>(null);
   const drag=useRef<{x:number;y:number}|null>(null);
   const [active,setActive]=useState(0);
@@ -139,6 +139,7 @@ export function RoomPlanner3D({locale='de'}:{locale?:'de'|'en'}){
       <p className="page-eyebrow">LEAF Studio · {isEnglish?'3D room planning':'Interaktive 3D-Raumplanung'}</p>
       <h1>{isEnglish?'Shape your green interior.':'Gestalte deinen Pflanzenraum.'}</h1>
       <p>{isEnglish?'Explore six zones in a real 3D scene. This is an illustrative preview, not a precise lighting or room measurement.':'Erkunde sechs Erlebniszonen in einer interaktiven 3D-Szene. Die Darstellung ist eine Gestaltungs-Vorschau, keine maßstabsgetreue Raum- oder Lichtberechnung.'}</p>
+      {editorHref?<p><a href={editorHref}>{isEnglish?'Open the measurable room editor':'Maßstabsgetreuen Raumeditor öffnen'} →</a></p>:null}
     </header>
     <div className="leaf-room__layout">
       <section className="leaf-room__stage" aria-label={isEnglish ? "3D room scene" : "3D-Raumansicht"}>
