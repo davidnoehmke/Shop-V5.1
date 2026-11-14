@@ -1,4 +1,5 @@
-import {redirect, useLoaderData} from 'react-router';
+import {redirect, useLoaderData, useLocation} from 'react-router';
+import {localizedPath} from '~/lib/locale-path';
 import type {Route} from './+types/collections.$handle';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
@@ -58,28 +59,31 @@ function loadDeferredData({context}: Route.LoaderArgs) {
 
 export default function Collection() {
   const {collection} = useLoaderData<typeof loader>();
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
 
   return (
     <div className="page-shell collection">
       <Breadcrumbs
         items={[
-          {label: 'Start', to: '/'},
-          {label: 'Sortiment', to: '/collections'},
+          {label: isEnglish ? 'Home' : 'Start', to: isEnglish ? '/en' : '/'},
+          {label: isEnglish ? 'Collections' : 'Sortiment', to: localizedPath('/collections', pathname)},
           {label: collection.title},
         ]}
       />
 
       <header className="page-intro collection-intro">
         <div>
-          <p className="page-eyebrow">Produktwelt</p>
+          <p className="page-eyebrow">{isEnglish ? 'Product world' : 'Produktwelt'}</p>
           <h1>{collection.title}</h1>
         </div>
         {collection.description ? (
           <p className="page-lead">{collection.description}</p>
         ) : (
           <p className="page-lead">
-            Entdecke passende Produkte und kombiniere sie zu einem stimmigen
-            Setup.
+            {isEnglish
+              ? 'Discover matching products and combine them into a cohesive setup.'
+              : 'Entdecke passende Produkte und kombiniere sie zu einem stimmigen Setup.'}
           </p>
         )}
       </header>
@@ -89,11 +93,11 @@ export default function Collection() {
       <section className="collection-products" aria-labelledby="collection-products-heading">
         <div className="section-heading-row">
           <div>
-            <p className="page-eyebrow">Auswahl</p>
-            <h2 id="collection-products-heading">Produkte in dieser Welt</h2>
+            <p className="page-eyebrow">{isEnglish ? 'Selection' : 'Auswahl'}</p>
+            <h2 id="collection-products-heading">{isEnglish ? 'Products in this world' : 'Produkte in dieser Welt'}</h2>
           </div>
           <a className="text-link" href="#collection-products-grid">
-            Direkt zur Auswahl ↓
+            {isEnglish ? 'Jump to products ↓' : 'Direkt zur Auswahl ↓'}
           </a>
         </div>
 

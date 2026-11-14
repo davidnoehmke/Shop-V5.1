@@ -1,4 +1,4 @@
-import {useLoaderData} from 'react-router';
+import {useLoaderData, useLocation} from 'react-router';
 import type {Route} from './+types/search';
 import {getPaginationVariables, Analytics} from '@shopify/hydrogen';
 import {SearchForm} from '~/components/SearchForm';
@@ -13,8 +13,9 @@ import type {
   PredictiveSearchQuery,
 } from 'storefrontapi.generated';
 
-export const meta: Route.MetaFunction = () => {
-  return [{title: `Hydrogen | Search`}];
+export const meta: Route.MetaFunction = ({location}) => {
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
+  return [{title: `${isEnglish ? 'Search' : 'Suche'} | LEAFerservice`}];
 };
 
 export async function loader({request, context}: Route.LoaderArgs) {
@@ -37,28 +38,31 @@ export async function loader({request, context}: Route.LoaderArgs) {
  * Renders the /search route
  */
 export default function SearchPage() {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   const {type, term, result, error} = useLoaderData<typeof loader>();
   if (type === 'predictive') return null;
 
   return (
     <div className="search">
-      <h1>Search</h1>
+      <h1>{isEnglish ? 'Search' : 'Suche'}</h1>
       <SearchForm>
         {({inputRef}) => (
           <>
             <input
               defaultValue={term}
               name="q"
-              placeholder="Search…"
+              placeholder={isEnglish ? 'Search…' : 'Suchen…'}
+              aria-label={isEnglish ? 'Search products and guides' : 'Produkte und Ratgeber suchen'}
               ref={inputRef}
               type="search"
             />
             &nbsp;
-            <button type="submit">Search</button>
+            <button type="submit">{isEnglish ? 'Search' : 'Suchen'}</button>
           </>
         )}
       </SearchForm>
-      {error && <p style={{color: 'red'}}>{error}</p>}
+      {error && <p role="alert">{isEnglish ? 'Search is temporarily unavailable. Please try again.' : 'Die Suche ist vorübergehend nicht verfügbar. Bitte versuche es noch einmal.'}</p>}
       {!term || !result?.total ? (
         <SearchResults.Empty />
       ) : (
@@ -136,6 +140,7 @@ const SEARCH_ARTICLE_FRAGMENT = `#graphql
   fragment SearchArticle on Article {
     __typename
     handle
+    blog { handle }
     id
     title
     trackingParameters

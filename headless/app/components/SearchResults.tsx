@@ -1,4 +1,5 @@
-import {Link} from 'react-router';
+import {Link, useLocation} from 'react-router';
+import {localizedPath} from '~/lib/locale-path';
 import {Image, Money, Pagination} from '@shopify/hydrogen';
 import {urlWithTrackingParams, type RegularSearchReturn} from '~/lib/search';
 
@@ -34,17 +35,19 @@ function SearchResultsArticles({
   term,
   articles,
 }: PartialSearchResult<'articles'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!articles?.nodes.length) {
     return null;
   }
 
   return (
     <div className="search-result">
-      <h2>Articles</h2>
+      <h2>{isEnglish ? 'Articles' : 'Ratgeber'}</h2>
       <div>
         {articles?.nodes?.map((article) => {
           const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.handle}`,
+            baseUrl: localizedPath(`/blogs/${article.blog.handle}/${article.handle}`, pathname),
             trackingParams: article.trackingParameters,
             term,
           });
@@ -64,17 +67,19 @@ function SearchResultsArticles({
 }
 
 function SearchResultsPages({term, pages}: PartialSearchResult<'pages'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!pages?.nodes.length) {
     return null;
   }
 
   return (
     <div className="search-result">
-      <h2>Pages</h2>
+      <h2>{isEnglish ? 'Pages' : 'Seiten'}</h2>
       <div>
         {pages?.nodes?.map((page) => {
           const pageUrl = urlWithTrackingParams({
-            baseUrl: `/pages/${page.handle}`,
+            baseUrl: localizedPath(`/pages/${page.handle}`, pathname),
             trackingParams: page.trackingParameters,
             term,
           });
@@ -97,18 +102,20 @@ function SearchResultsProducts({
   term,
   products,
 }: PartialSearchResult<'products'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!products?.nodes.length) {
     return null;
   }
 
   return (
     <div className="search-result">
-      <h2>Products</h2>
+      <h2>{isEnglish ? 'Products' : 'Produkte'}</h2>
       <Pagination connection={products}>
         {({nodes, isLoading, NextLink, PreviousLink}) => {
           const ItemsMarkup = nodes.map((product) => {
             const productUrl = urlWithTrackingParams({
-              baseUrl: `/products/${product.handle}`,
+              baseUrl: localizedPath(`/products/${product.handle}`, pathname),
               trackingParams: product.trackingParameters,
               term,
             });
@@ -124,7 +131,7 @@ function SearchResultsProducts({
                   )}
                   <div>
                     <p>{product.title}</p>
-                    <small>{price && <Money data={price} />}</small>
+                    <small>{price && <Money as="span" data={price} />}</small>
                   </div>
                 </Link>
               </div>
@@ -135,7 +142,7 @@ function SearchResultsProducts({
             <div>
               <div>
                 <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
+                  {isLoading ? (isEnglish ? 'Loading…' : 'Wird geladen…') : <span>↑ {isEnglish ? 'Load previous' : 'Vorherige laden'}</span>}
                 </PreviousLink>
               </div>
               <div>
@@ -144,7 +151,7 @@ function SearchResultsProducts({
               </div>
               <div>
                 <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+                  {isLoading ? (isEnglish ? 'Loading…' : 'Wird geladen…') : <span>{isEnglish ? 'Load more' : 'Mehr laden'} ↓</span>}
                 </NextLink>
               </div>
             </div>
@@ -157,6 +164,8 @@ function SearchResultsProducts({
 }
 
 function SearchResultsEmpty() {
-  return <p>No results, try a different search.</p>;
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
+  return <p>{isEnglish ? 'No results. Try a different search.' : 'Keine Ergebnisse. Versuche einen anderen Suchbegriff.'}</p>;
 }
 

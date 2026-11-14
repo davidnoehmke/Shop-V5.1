@@ -31,7 +31,7 @@
   },
   "header": {
     "language": "Sprache",
-    "change_language": "OK",
+    "change_language": "Sprache ändern",
     "home": "Startseite",
     "search": "Suche",
     "account": "Kundenkonto",
@@ -246,6 +246,9 @@
       "cart_error": "Dieses Produkt konnte nicht hinzugefügt werden. Bitte versuche es erneut."
     },
     "content": {
+      "details_eyebrow": "Produktwissen",
+      "details_heading": "Eigenschaften und Anwendung",
+      "guides": "Passende Ratgeber",
       "label": "Produktinformationen",
       "description": "Beschreibung",
       "application": "Anwendung",
@@ -444,6 +447,7 @@
     }
   },
   "recipe": {
+    "chart_label": "Zusammensetzung von {{ product }}",
     "eyebrow": "Transparent gemischt",
     "heading": "Rezeptur & Bestandteile",
     "intro": "Die Zusammensetzung wird direkt aus den gepflegten Produktdaten geladen und bleibt dadurch auf allen Produktseiten einheitlich.",

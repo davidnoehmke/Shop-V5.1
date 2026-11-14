@@ -95,7 +95,7 @@ export default function EnglishRombergBrand() {
                     <h3>{product.title}</h3>
                   </Link>
                   {product.shortClaim?.value ? <p>{product.shortClaim.value}</p> : null}
-                  <p className="romberg-price">From <Money data={product.priceRange.minVariantPrice} /></p>
+                  <p className="romberg-price">From <Money as="span" data={product.priceRange.minVariantPrice} /></p>
                   <Link className="romberg-product-link" to={`/en/products/${product.handle}`}>View product →</Link>
                 </article>
               ))

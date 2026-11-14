@@ -1,6 +1,8 @@
-import {useEffect, useMemo, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import type {CSSProperties, FormEvent, PointerEvent as ReactPointerEvent} from 'react';
 import {useLocation, useNavigate} from 'react-router';
+import {ASSISTANT_COPY, type AssistantStatus} from '~/lib/assistant-copy';
+import {localizedPath} from '~/lib/locale-path';
 
 type ChatMessage = {role: 'user' | 'assistant'; content: string};
 type AssistantLink = {label: string; href: string};
@@ -29,17 +31,18 @@ function safePath(value: unknown) {
 export function LeafAssistant() {
   const navigate = useNavigate();
   const location = useLocation();
+  const locale = location.pathname === '/en' || location.pathname.startsWith('/en/') ? 'en' : 'de';
+  const text = ASSISTANT_COPY[locale];
   const [open, setOpen] = useState(false);
   const [minimized, setMinimized] = useState(false);
   const [position, setPosition] = useState<Position>({x: 0, y: 0});
   const [voiceActive, setVoiceActive] = useState(false);
   const [busy, setBusy] = useState(false);
   const [input, setInput] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<AssistantStatus | ''>('');
+  const statusText = status ? text.statuses[status] : '';
   const [links, setLinks] = useState<AssistantLink[]>([]);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {role: 'assistant', content: 'Was möchtest du finden, verstehen oder auf der Seite erledigen?'},
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const historyRef = useRef<ChatMessage[]>([]);
   const dragRef = useRef<{pointerId: number; clientX: number; clientY: number; position: Position} | null>(null);
   const peerRef = useRef<RTCPeerConnection | null>(null);
@@ -52,11 +55,18 @@ export function LeafAssistant() {
   const callsRef = useRef(new Set<string>());
   const turnRef = useRef(0);
 
-  const locale = useMemo(() => location.pathname.startsWith('/en') ? 'en' : 'de', [location.pathname]);
   const assistantStyle = {'--leaf-assistant-x': `${position.x}px`, '--leaf-assistant-y': `${position.y}px`} as CSSProperties;
 
   useEffect(() => {
-    return () => stopVoice();
+    const openAssistant = () => {
+      setOpen(true);
+      setMinimized(false);
+    };
+    window.addEventListener('leaf:assistant:open', openAssistant);
+    return () => {
+      window.removeEventListener('leaf:assistant:open', openAssistant);
+      stopVoice();
+    };
   }, []);
 
   function clampPosition(next: Position) {
@@ -129,8 +139,9 @@ export function LeafAssistant() {
   }
 
   function executeNavigation(destination: unknown) {
-    const path = safePath(destination);
-    if (!path) return {ok: false, error: 'destination_not_allowed'};
+    const destinationPath = safePath(destination);
+    if (!destinationPath) return {ok: false, error: 'destination_not_allowed'};
+    const path = localizedPath(destinationPath, location.pathname);
     void navigate(path);
     if (!voiceActive) {
       setOpen(false);
@@ -148,13 +159,13 @@ export function LeafAssistant() {
     append('user', message);
     setInput('');
     setBusy(true);
-    setStatus('LEAF denkt …');
+    setStatus('thinking');
     try {
       const payload = await api({message, history: historyRef.current.slice(0, -1)});
       if (typeof payload.answer === 'string') append('assistant', payload.answer);
       setLinks(Array.isArray(payload.links) ? payload.links.filter((item: any) => safePath(item?.href)) : []);
     } catch {
-      append('assistant', 'Das hat gerade nicht funktioniert. Versuch es bitte noch einmal.');
+      append('assistant', text.retry);
     } finally {
       setBusy(false);
       setStatus('');
@@ -200,10 +211,10 @@ export function LeafAssistant() {
       if (responseRef.current) cancelledRef.current.add(responseRef.current);
       responseRef.current = null;
       pendingTranscriptRef.current = null;
-      setStatus('Ich höre zu …');
+      setStatus('listening');
     } else if (event.type === 'output_audio_buffer.started') {
       responseRef.current = event.response_id || null;
-      setStatus('LEAF spricht …');
+      setStatus('speaking');
     } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
       append('user', String(event.transcript || ''));
     } else if (event.type === 'response.output_audio_transcript.done' && !cancelledRef.current.has(event.response_id)) {
@@ -215,14 +226,14 @@ export function LeafAssistant() {
       }
       pendingTranscriptRef.current = null;
       responseRef.current = null;
-      setStatus('Ich höre zu …');
+      setStatus('listening');
     } else if (event.type === 'response.done' && event.response?.status === 'completed') {
       const turn = turnRef.current;
       const calls = (event.response.output || []).filter((item: any) => item.type === 'function_call' && item.status === 'completed');
       for (const call of calls) await handleToolCall(call);
       if (calls.length && turn === turnRef.current) sendRealtime({type: 'response.create'});
     } else if (event.type === 'error') {
-      setStatus('Sprachmodus nicht verfügbar');
+      setStatus('unavailable');
     }
   }
 
@@ -232,12 +243,12 @@ export function LeafAssistant() {
       return;
     }
     if (!window.RTCPeerConnection || !navigator.mediaDevices?.getUserMedia) {
-      setStatus('Dieser Browser unterstützt den Realtime-Sprachmodus nicht.');
+      setStatus('unsupported');
       return;
     }
     setOpen(true);
     setMinimized(false);
-    setStatus('Sprachmodus wird verbunden …');
+    setStatus('connecting');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {echoCancellation: true, noiseSuppression: true, autoGainControl: true},
@@ -251,7 +262,7 @@ export function LeafAssistant() {
       audioRef.current = audio;
       peer.ontrack = (event) => {
         audio.srcObject = event.streams[0];
-        audio.play().catch(() => setStatus('Audiowiedergabe blockiert'));
+        audio.play().catch(() => setStatus('playbackBlocked'));
       };
       stream.getAudioTracks().forEach((track) => peer.addTrack(track, stream));
       const channel = peer.createDataChannel('oai-events');
@@ -260,12 +271,12 @@ export function LeafAssistant() {
         try {
           void handleRealtimeEvent(JSON.parse(event.data));
         } catch {
-          setStatus('Sprachereignis konnte nicht verarbeitet werden.');
+          setStatus('eventFailed');
         }
       });
       channel.addEventListener('open', () => {
         setVoiceActive(true);
-        setStatus('Ich höre zu …');
+        setStatus('listening');
       });
       const offer = await peer.createOffer();
       await peer.setLocalDescription(offer);
@@ -277,7 +288,7 @@ export function LeafAssistant() {
       await peer.setRemoteDescription({type: 'answer', sdp: payload.sdp});
     } catch {
       stopVoice();
-      setStatus('Sprachmodus konnte nicht gestartet werden.');
+      setStatus('connectionFailed');
     }
   }
 
@@ -302,7 +313,7 @@ export function LeafAssistant() {
   }
 
   return (
-    <div role="complementary" className="leaf-assistant" aria-label="LEAF Assistent" style={assistantStyle}>
+    <div role="complementary" className="leaf-assistant" aria-label={text.label} style={assistantStyle}>
       {!open ? (
         <button
           className="leaf-assistant__trigger"
@@ -315,15 +326,15 @@ export function LeafAssistant() {
           }}
         >
           <span aria-hidden="true">LEAF</span>
-          <span className="sr-only">Assistent öffnen</span>
+          <span className="sr-only">{text.open}</span>
         </button>
       ) : minimized ? (
         <div className={'leaf-assistant__minimized' + (voiceActive ? ' is-live' : '')}>
           <button
             className="leaf-assistant__drag-handle"
             type="button"
-            aria-label="LEAF verschieben"
-            title="Ziehen oder mit Pfeiltasten verschieben"
+            aria-label={text.move}
+            title={text.drag}
             onPointerDown={beginDrag}
             onPointerMove={drag}
             onPointerUp={endDrag}
@@ -336,12 +347,12 @@ export function LeafAssistant() {
             className="leaf-assistant__restore"
             type="button"
             onClick={() => setMinimized(false)}
-            aria-label="LEAF wieder öffnen"
+            aria-label={text.restore}
           >
             <span>LEAF</span>
-            <small>{voiceActive ? (status || 'Sprachgespräch aktiv') : 'Assistent öffnen'}</small>
+            <small>{voiceActive ? (statusText || text.activeVoice) : text.open}</small>
           </button>
-          {voiceActive ? <span className="leaf-assistant__live-dot" aria-label="Sprachgespräch aktiv" /> : null}
+          {voiceActive ? <span className="leaf-assistant__live-dot" aria-label={text.activeVoice} /> : null}
         </div>
       ) : (
         <section id="leaf-assistant-panel" className="leaf-assistant__panel" aria-live="polite">
@@ -349,8 +360,8 @@ export function LeafAssistant() {
             <button
               className="leaf-assistant__drag-handle"
               type="button"
-              aria-label="LEAF verschieben"
-              title="Ziehen oder mit Pfeiltasten verschieben"
+              aria-label={text.move}
+              title={text.drag}
               onPointerDown={beginDrag}
               onPointerMove={drag}
               onPointerUp={endDrag}
@@ -360,23 +371,23 @@ export function LeafAssistant() {
               ⋮⋮
             </button>
             <div className="leaf-assistant__header-copy">
-              <p className="page-eyebrow">LEAF · Finden, verstehen, navigieren</p>
-              <h2>Wobei kann ich helfen?</h2>
+              <p className="page-eyebrow">{text.eyebrow}</p>
+              <h2>{text.title}</h2>
             </div>
             <div className="leaf-assistant__window-actions">
               <button
                 type="button"
                 onClick={() => setPosition({x: 0, y: 0})}
-                aria-label="LEAF auf Standardposition zurücksetzen"
-                title="Position zurücksetzen"
+                aria-label={text.reset}
+                title={text.resetTitle}
               >
                 ↺
               </button>
               <button
                 type="button"
                 onClick={() => setMinimized(true)}
-                aria-label="LEAF minimieren"
-                title={voiceActive ? 'Minimieren – Sprachgespräch läuft weiter' : 'Minimieren'}
+                aria-label={text.minimize}
+                title={voiceActive ? text.minimizeLive : text.minimizeTitle}
               >
                 −
               </button>
@@ -390,8 +401,8 @@ export function LeafAssistant() {
                     setMinimized(false);
                   }
                 }}
-                aria-label={voiceActive ? 'LEAF minimieren; Sprachgespräch läuft weiter' : 'Assistent schließen'}
-                title={voiceActive ? 'Sprachgespräch läuft weiter' : 'Schließen'}
+                aria-label={voiceActive ? text.minimizeLive : text.close}
+                title={voiceActive ? text.continuing : text.closeTitle}
               >
                 ×
               </button>
@@ -399,16 +410,20 @@ export function LeafAssistant() {
           </header>
 
           <div className="leaf-assistant__messages">
+            <div className="leaf-assistant__message leaf-assistant__message--assistant">
+              <strong>LEAF</strong>
+              <p>{text.greeting}</p>
+            </div>
             {messages.map((message, index) => (
               <div className={'leaf-assistant__message leaf-assistant__message--' + message.role} key={index}>
-                <strong>{message.role === 'assistant' ? 'LEAF' : 'Du'}</strong>
+                <strong>{message.role === 'assistant' ? 'LEAF' : text.you}</strong>
                 <p>{message.content}</p>
               </div>
             ))}
           </div>
 
           {links.length ? (
-            <div className="leaf-assistant__links" aria-label="Passende Inhalte">
+            <div className="leaf-assistant__links" aria-label={text.links}>
               {links.map((link) => (
                 <button key={link.href} type="button" onClick={() => executeNavigation(link.href)}>
                   {link.label}
@@ -418,24 +433,24 @@ export function LeafAssistant() {
           ) : null}
 
           <form className="leaf-assistant__composer" onSubmit={(event) => { void submit(event); }}>
-            <label htmlFor="leaf-assistant-input" className="sr-only">Nachricht an LEAF</label>
+            <label htmlFor="leaf-assistant-input" className="sr-only">{text.message}</label>
             <textarea
               id="leaf-assistant-input"
               rows={2}
               maxLength={1600}
               value={input}
               onChange={(event) => setInput(event.currentTarget.value)}
-              placeholder="z. B. „Finde den Artikel über braune Flecken“"
+              placeholder={text.placeholder}
             />
             <div className="leaf-assistant__actions">
               <button type="button" className={voiceActive ? 'is-active' : ''} onClick={() => void startVoice()}>
-                {voiceActive ? 'Sprachmodus stoppen' : 'Mit LEAF sprechen'}
+                {voiceActive ? text.stopVoice : text.startVoice}
               </button>
-              <button type="submit" disabled={busy || !input.trim()}>Senden</button>
+              <button type="submit" disabled={busy || !input.trim()}>{text.send}</button>
             </div>
           </form>
-          <p className="leaf-assistant__status" role="status">{status}</p>
-          <p className="leaf-assistant__privacy">Ohne Login nutzbar. LEAF ist ein KI-Assistent und kein Mensch.</p>
+          <p className="leaf-assistant__status" role="status">{statusText}</p>
+          <p className="leaf-assistant__privacy">{text.privacy}</p>
         </section>
       )}
     </div>

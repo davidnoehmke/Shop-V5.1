@@ -93,7 +93,7 @@ export default function EnglishBlumatBrand() {
                       <h4>{product.title}</h4>
                     </Link>
                     {product.shortClaim?.value ? <p>{product.shortClaim.value}</p> : null}
-                    <p className="blumat-price">From <Money data={product.priceRange.minVariantPrice} /></p>
+                    <p className="blumat-price">From <Money as="span" data={product.priceRange.minVariantPrice} /></p>
                     <Link className="blumat-product-link" to={`/en/products/${product.handle}`} prefetch="intent">
                       View product →
                     </Link>

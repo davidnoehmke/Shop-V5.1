@@ -33,6 +33,9 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
   // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') return true;
 
+  const isEnglishPath = (url: URL) => /^\/en(?:\/|$)/.test(url.pathname);
+  if (isEnglishPath(currentUrl) !== isEnglishPath(nextUrl)) return true;
+
   // revalidate when manually revalidating via useRevalidator
   if (currentUrl.toString() === nextUrl.toString()) return true;
 

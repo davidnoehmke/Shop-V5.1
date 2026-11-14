@@ -166,7 +166,7 @@ function SearchAside({locale}: {locale: StorefrontLocale}) {
                 {term.current && total ? (
                   <Link
                     onClick={closeSearch}
-                    to={`${isEnglish ? '/en/search' : SEARCH_ENDPOINT}?q=${term.current}`}
+                    to={`${isEnglish ? '/en/search' : SEARCH_ENDPOINT}?q=${encodeURIComponent(term.current)}`}
                   >
                     <p>
                       {isEnglish ? 'View all results for' : 'Alle Ergebnisse für'}{' '}

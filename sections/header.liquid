@@ -307,7 +307,7 @@
       };
 
       const syncMenu = () => {
-        const isOpen = menu.open && window.innerWidth <= desktopBreakpoint;
+        const isOpen = menu.open && getComputedStyle(menu).display !== 'none';
         if (!isOpen) {
           closeMenu();
           return;
@@ -336,7 +336,7 @@
         if (event.key === 'Escape' && menu.open) closeMenu(true);
       }, { signal });
       window.addEventListener('resize', () => {
-        if (window.innerWidth > desktopBreakpoint) closeMenu();
+        if (getComputedStyle(menu).display === 'none') closeMenu();
         else if (menu.open) setPanelHeight();
       }, { signal });
       window.addEventListener('pageshow', () => closeMenu(), { signal });

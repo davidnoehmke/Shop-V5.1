@@ -240,7 +240,7 @@ Title and Description
 {%- endcomment -%}
 {%- if ba_secondary_market -%}
   {%- comment -%} Secondary market: serve the native translated title untouched, unless the theme already emits its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_title -%}<title>{{ page_title | escape_once }}</title>{%- endunless -%}
+  {%- unless leaf_emits_native_title -%}<title>{{ page_title | escape_once }}</title>{%- endunless -%}
 {%- elsif booster_title != blank -%}
   {%- assign booster_title = booster_title | replace: "[title]", booster_item.title -%}
   {%- if baType == 'product' -%}
@@ -257,7 +257,7 @@ Title and Description
   <title>{{ booster_title | escape_once }}</title>
 {%- else -%}
   {%- comment -%} No Booster-managed title (meta off): emit the default page_title only when the theme is not already outputting its own, else we duplicate it. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_title -%}
+  {%- unless leaf_emits_native_title -%}
   <title>{{ page_title -}}
   {%- if current_tags -%} –
   {%- assign meta_tags = current_tags | join: ', ' -%}
@@ -288,7 +288,7 @@ Title and Description
 {%- endcomment -%}
 {%- if ba_secondary_market -%}
   {%- comment -%} Secondary market: serve the native translated description untouched, unless the theme already emits its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_desc -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
+  {%- unless leaf_emits_native_description -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
 {%- elsif booster_desc != blank -%}
   {%- assign formatted_price = product.variants[0].price | money -%}
   {%- assign booster_desc = booster_desc | replace: "[description]", booster_item.description -%}
@@ -304,7 +304,7 @@ Title and Description
   <meta name="description" content="{{ booster_desc | strip | strip_newlines | escape_once }}" />
 {%- else -%}
   {%- comment -%} No Booster-managed description (meta off): emit the default only when the theme is not already outputting its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_desc -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
+  {%- unless leaf_emits_native_description -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
 {%- endif -%}
 {%- comment -%}booster:desc:end{%- endcomment -%}
 

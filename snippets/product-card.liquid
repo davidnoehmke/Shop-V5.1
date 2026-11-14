@@ -178,7 +178,7 @@ Renders a product card with an optional compact layout and variant-safe quick ad
   .product-card__copy h3,
   .product-card__copy p,
   .product-card__copy strong { display: block; margin: 0; font-family: inherit; }
-  .product-card__copy h3 { display: -webkit-box; min-height: 2.8em; overflow: hidden; font-size: .95rem; font-weight: 750; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+  .product-card__copy h3 { display: -webkit-box; min-height: 2.8em; overflow: hidden; font-size: .95rem; font-weight: 750; overflow-wrap: anywhere; hyphens: none; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   .product-card__copy p { min-height: 1.3em; color: var(--muted); font-size: .78rem; }
   .product-card__decision { display: grid; gap: .3rem; margin-top: .65rem; }
   .product-card__decision span { min-width: 0; display: flex; align-items: center; gap: .4rem; color: var(--muted); font-size: .7rem; line-height: 1.35; }
@@ -213,7 +213,7 @@ Renders a product card with an optional compact layout and variant-safe quick ad
     .product-card__media { aspect-ratio: 1 / 1; padding: .3rem; }
     .product-card__copy { padding: .75rem .1rem 0; }
     .product-card--quick-add .product-card__copy { padding-right: .1rem; padding-bottom: 3.25rem; }
-    .product-card__copy h3 { min-height: 3.6em; font-size: .88rem; line-height: 1.2; -webkit-line-clamp: 3; hyphens: auto; }
+    .product-card__copy h3 { min-height: 3.6em; font-size: .88rem; line-height: 1.2; -webkit-line-clamp: 3; hyphens: none; }
     .product-card__copy p { display: block; min-height: 1.3em; margin-top: .35rem; font-size: .7rem; }
     .product-card__decision { gap: .22rem; margin-top: .5rem; }
     .product-card__decision span { font-size: .66rem; }

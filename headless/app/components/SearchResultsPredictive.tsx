@@ -1,4 +1,5 @@
-import {Link, useFetcher, type Fetcher} from 'react-router';
+import {Link, useFetcher, useLocation, type Fetcher} from 'react-router';
+import {localizedPath} from '~/lib/locale-path';
 import {Image, Money} from '@shopify/hydrogen';
 import React, {useRef, useEffect} from 'react';
 import {
@@ -85,15 +86,17 @@ function SearchResultsPredictiveArticles({
   articles,
   closeSearch,
 }: PartialPredictiveSearchResult<'articles'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!articles.length) return null;
 
   return (
     <div className="predictive-search-result" key="articles">
-      <h5>Articles</h5>
+      <h5>{isEnglish ? 'Articles' : 'Ratgeber'}</h5>
       <ul>
         {articles.map((article) => {
           const articleUrl = urlWithTrackingParams({
-            baseUrl: `/blogs/${article.blog.handle}/${article.handle}`,
+            baseUrl: localizedPath(`/blogs/${article.blog.handle}/${article.handle}`, pathname),
             trackingParams: article.trackingParameters,
             term: term.current ?? '',
           });
@@ -126,15 +129,17 @@ function SearchResultsPredictiveCollections({
   collections,
   closeSearch,
 }: PartialPredictiveSearchResult<'collections'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!collections.length) return null;
 
   return (
     <div className="predictive-search-result" key="collections">
-      <h5>Collections</h5>
+      <h5>{isEnglish ? 'Collections' : 'Produktwelten'}</h5>
       <ul>
         {collections.map((collection) => {
           const collectionUrl = urlWithTrackingParams({
-            baseUrl: `/collections/${collection.handle}`,
+            baseUrl: localizedPath(`/collections/${collection.handle}`, pathname),
             trackingParams: collection.trackingParameters,
             term: term.current,
           });
@@ -167,15 +172,17 @@ function SearchResultsPredictivePages({
   pages,
   closeSearch,
 }: PartialPredictiveSearchResult<'pages'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!pages.length) return null;
 
   return (
     <div className="predictive-search-result" key="pages">
-      <h5>Pages</h5>
+      <h5>{isEnglish ? 'Pages' : 'Seiten'}</h5>
       <ul>
         {pages.map((page) => {
           const pageUrl = urlWithTrackingParams({
-            baseUrl: `/pages/${page.handle}`,
+            baseUrl: localizedPath(`/pages/${page.handle}`, pathname),
             trackingParams: page.trackingParameters,
             term: term.current,
           });
@@ -200,15 +207,17 @@ function SearchResultsPredictiveProducts({
   products,
   closeSearch,
 }: PartialPredictiveSearchResult<'products'>) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!products.length) return null;
 
   return (
     <div className="predictive-search-result" key="products">
-      <h5>Products</h5>
+      <h5>{isEnglish ? 'Products' : 'Produkte'}</h5>
       <ul>
         {products.map((product) => {
           const productUrl = urlWithTrackingParams({
-            baseUrl: `/products/${product.handle}`,
+            baseUrl: localizedPath(`/products/${product.handle}`, pathname),
             trackingParams: product.trackingParameters,
             term: term.current,
           });
@@ -228,7 +237,7 @@ function SearchResultsPredictiveProducts({
                 )}
                 <div>
                   <p>{product.title}</p>
-                  <small>{price && <Money data={price} />}</small>
+                  <small>{price && <Money as="span" data={price} />}</small>
                 </div>
               </Link>
             </li>
@@ -263,13 +272,15 @@ function SearchResultsPredictiveEmpty({
 }: {
   term: React.MutableRefObject<string>;
 }) {
+  const {pathname} = useLocation();
+  const isEnglish = pathname === '/en' || pathname.startsWith('/en/');
   if (!term.current) {
     return null;
   }
 
   return (
     <p>
-      No results found for <q>{term.current}</q>
+      {isEnglish ? 'No results found for' : 'Keine Ergebnisse für'} <q>{term.current}</q>
     </p>
   );
 }

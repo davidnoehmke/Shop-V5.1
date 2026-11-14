@@ -82,7 +82,7 @@ export default function EnglishElhoBrand() {
                 <h3>{product.title}</h3>
               </Link>
               {product.shortClaim?.value ? <p>{product.shortClaim.value}</p> : null}
-              <p className="elho-price">From <Money data={product.priceRange.minVariantPrice} /></p>
+              <p className="elho-price">From <Money as="span" data={product.priceRange.minVariantPrice} /></p>
               <Link className="elho-product-link" to={`/en/products/${product.handle}`} prefetch="intent">
                 View product & sizes →
               </Link>

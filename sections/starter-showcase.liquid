@@ -8,8 +8,14 @@
     <div class="starter-showcase__cards">
       {% for block in section.blocks %}
         {% assign card_key = 'starter.' | append: block.settings.type %}
+        {% liquid
+          assign image_alt = block.settings.title
+          if image_alt == blank
+            assign image_alt = card_key | t
+          endif
+        %}
         <a href="{{ block.settings.link | default: routes.collections_url }}" class="starter-showcase__card" {{ block.shopify_attributes }}>
-          {% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 760 | image_tag: widths: '320, 520, 760', loading: 'lazy', alt: block.settings.title | default: card_key | t }}{% else %}<span class="starter-showcase__fallback"></span>{% endif %}
+          {% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 760 | image_tag: widths: '320, 520, 760', loading: 'lazy', alt: image_alt }}{% else %}<span class="starter-showcase__fallback"></span>{% endif %}
           <span class="starter-showcase__shade"></span>
           <strong>{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ card_key | t }}{% endif %}</strong>
         </a>
