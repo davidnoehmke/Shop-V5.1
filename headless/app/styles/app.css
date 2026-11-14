@@ -2429,12 +2429,8 @@ img,
 .leaf-home-entry__actions a:hover,.leaf-home-entry__actions button:hover{transform:translateY(-2px);box-shadow:0 14px 35px color-mix(in srgb, var(--leaf-olive) 10%, transparent)}
 .leaf-home-entry__trust{margin-top:1rem;color:var(--leaf-ink);font-size:.84rem}
 .leaf-home-entry__visual{position:relative;min-height:480px;display:grid;place-items:center}
-.leaf-home-entry__orb{position:absolute;border-radius:50%;filter:blur(1px);will-change:transform}
-.leaf-home-entry__orb--one{width:min(34vw,470px);aspect-ratio:1;background:radial-gradient(circle at 35% 30%,var(--leaf-sage) 0%,var(--leaf-eucalyptus) 38%,var(--leaf-ink) 72%,var(--leaf-ink) 100%);box-shadow:0 38px 90px color-mix(in srgb, var(--leaf-olive) 20%, transparent);animation:leaf-home-drift 10s ease-in-out infinite alternate}
-.leaf-home-entry__orb--two{width:min(24vw,320px);aspect-ratio:1;right:0;bottom:7%;background:radial-gradient(circle at 35% 30%,var(--leaf-sand) 0%,var(--leaf-sage) 40%,var(--leaf-eucalyptus) 100%);opacity:.72;filter:blur(14px);animation:leaf-home-drift-two 12s ease-in-out infinite alternate}
-.leaf-home-entry__leafmark{position:relative;z-index:1;color:var(--leaf-cream);font-size:clamp(2rem,6vw,5rem);font-weight:850;letter-spacing:-.08em;text-shadow:0 6px 28px color-mix(in srgb, var(--leaf-olive) 26%, transparent)}
-@keyframes leaf-home-drift{from{transform:translate3d(0,8px,0) scale(1)}to{transform:translate3d(-14px,-12px,0) scale(1.035)}}
-@keyframes leaf-home-drift-two{from{transform:translate3d(0,0,0)}to{transform:translate3d(-18px,-12px,0)}}
+.leaf-home-entry__image{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:78% center;border-radius:1.5rem}
+.header-brand__logo{display:block;width:clamp(140px,16vw,220px);height:auto}
 
 .leaf-home-substrate{padding:clamp(4rem,9vw,8rem) max(1rem,calc((100vw - 1320px)/2));background:var(--leaf-ink);color:var(--leaf-cream)}
 .leaf-home-substrate__intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.75fr);gap:clamp(2rem,7vw,7rem);align-items:end;margin-bottom:2.2rem}
@@ -2468,8 +2464,7 @@ img,
   .leaf-home-entry,.leaf-home-substrate__intro,.leaf-home-assistant{grid-template-columns:1fr}
   .leaf-home-entry{min-height:auto}
   .leaf-home-entry__visual{min-height:320px}
-  .leaf-home-entry__orb--one{width:min(66vw,430px)}
-  .leaf-home-entry__orb--two{width:min(42vw,260px)}
+  .leaf-home-entry__image{aspect-ratio:16/9}
   .leaf-home-substrate__products{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 @media(max-width:700px){
@@ -2482,7 +2477,6 @@ img,
   .leaf-home-substrate__products{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){
-  .leaf-home-entry__orb--one,.leaf-home-entry__orb--two{animation:none}
   .leaf-home-entry__actions a,.leaf-home-entry__actions button,.leaf-home-path,.leaf-home-assistant__examples button{transition:none}
 }
 
