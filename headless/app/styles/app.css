@@ -2612,3 +2612,62 @@ input, select, textarea,
 .leaf-campus-featured article span, .leaf-home-path span, .leaf-home-path p {
   opacity: 1;
 }
+
+
+/* Dedicated LEAF substrate studio: adaptive, progressively enhanced commerce. */
+.substrate-configurator-page{max-width:1540px;margin-inline:auto;padding:clamp(.7rem,2vw,1.8rem) clamp(.75rem,3vw,2rem) 6rem}
+.substrate-configurator{gap:clamp(2rem,4vw,4rem)}
+.substrate-configurator__hero{position:relative;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);min-height:400px;padding:clamp(1.5rem,4vw,4rem);gap:clamp(1rem,4vw,4rem);border-radius:22px;background:linear-gradient(118deg,var(--leaf-cream),var(--leaf-surface-sage) 85%);overflow:hidden}
+.substrate-configurator__hero h1{max-width:14ch;font-weight:650;font-size:clamp(2.2rem,5vw,5.2rem);line-height:1.02;letter-spacing:-.055em;text-wrap:balance}
+.substrate-configurator__hero p:not(.page-eyebrow){max-width:55ch;line-height:1.65}
+.substrate-configurator__hero img{width:100%;height:100%;max-height:480px;aspect-ratio:5/4;object-fit:contain;background:transparent}
+.substrate-configurator__hero-cta{display:inline-flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.25rem;min-height:50px;padding:.85rem 1.4rem;border-radius:999px;background:var(--leaf-ink);color:var(--leaf-cream);font-weight:750;text-decoration:none}
+.substrate-configurator__hero-cta:hover{filter:brightness(1.12)}
+.substrate-configurator__hero-highlights{display:flex;flex-wrap:wrap;gap:.65rem;margin-top:1.4rem}
+.substrate-configurator__hero-highlights span{display:inline-flex;border:1px solid color-mix(in srgb,var(--leaf-ink) 16%,transparent);border-radius:999px;padding:.45rem .75rem;font-size:.78rem;font-weight:650}
+.substrate-configurator__commerce{scroll-margin-top:7rem;grid-template-columns:minmax(260px,.7fr) minmax(0,1.3fr);gap:clamp(1rem,3vw,2rem);padding:clamp(1rem,2.5vw,2.3rem);border:1px solid var(--leaf-surface-sage);border-radius:20px;background:var(--leaf-cream)}
+.substrate-configurator__commerce h2,.substrate-configurator__how h2,.substrate-configurator__ingredients h2{font-size:clamp(1.4rem,2.4vw,2.2rem);letter-spacing:-.035em}
+.substrate-component-picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:.65rem}
+.substrate-component-option{min-width:0;border-radius:14px;min-height:96px;transition:background-color .2s,border-color .2s}
+.substrate-component-option img{width:68px;height:68px;object-fit:contain}
+.substrate-mixer{border-radius:20px;padding:clamp(1rem,2.5vw,2.3rem);background:linear-gradient(120deg,var(--leaf-surface-sage),var(--leaf-cream))}
+.substrate-mixer .substrate-scene-3d{max-width:780px;margin-inline:auto}
+.substrate-sliders label{min-height:52px}
+.substrate-sliders input[type=range]{accent-color:var(--leaf-ink);min-height:34px;cursor:pointer}
+.substrate-configurator__how,.substrate-configurator__ingredients{min-width:0}
+.substrate-configurator__steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1.5rem}
+.substrate-configurator__step{border:1px solid var(--leaf-surface-sage);background:var(--leaf-cream);border-radius:17px;padding:1.4rem}
+.substrate-configurator__step-number{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--leaf-ink);color:var(--leaf-cream);font-weight:800}
+.substrate-configurator__step h3{font-size:1.15rem;margin:1rem 0 .5rem}
+.substrate-configurator__step p{margin:0;line-height:1.55}
+.substrate-configurator__ingredients-head{display:flex;justify-content:space-between;align-items:end;gap:1.5rem;margin-bottom:1.5rem}
+.substrate-configurator__ingredients-head p:last-child{max-width:72ch;line-height:1.6}
+.substrate-configurator__show-more{min-height:44px;padding:.7rem 1rem;border:1px solid var(--leaf-ink);border-radius:999px;background:transparent;color:var(--leaf-ink);font:inherit;font-weight:700;cursor:pointer}
+.substrate-configurator__ingredient-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(.65rem,1.5vw,1.2rem)}
+.substrate-configurator__ingredient{min-width:0;border:1px solid var(--leaf-surface-sage);border-radius:16px;overflow:hidden;background:var(--leaf-cream);display:flex;flex-direction:column}
+.substrate-configurator__ingredient-media{display:grid;place-items:center;height:clamp(120px,15vw,215px);background:var(--leaf-surface-sand)}
+.substrate-configurator__ingredient-media img{width:100%;height:100%;object-fit:contain}
+.substrate-configurator__ingredient h3{font-size:1rem;line-height:1.3;padding:.9rem 1rem 0;margin:0;overflow-wrap:anywhere}
+.substrate-configurator__ingredient button{margin:auto 1rem 1rem;text-align:left;padding:.8rem 0 0;background:transparent;border:0;color:var(--leaf-ink);text-decoration:underline;text-underline-offset:3px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.substrate-configurator__ingredient button:disabled{cursor:not-allowed;opacity:.45}
+.substrate-configurator__checkout{border-radius:20px;gap:1.5rem;background:var(--leaf-surface-sage)}
+.substrate-configurator__checkout-action{display:grid;gap:.6rem;justify-items:end}
+.substrate-configurator__sticky-price{font-size:1.4rem}
+.substrate-configurator :is(button,a,input,select):focus-visible{outline:3px solid var(--leaf-ink);outline-offset:3px}
+@media(max-width:1050px){.substrate-configurator__ingredient-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:760px){
+  .substrate-configurator-page{padding-inline:.7rem;padding-bottom:7rem}
+  .substrate-configurator__hero{grid-template-columns:1fr;padding:1.4rem;border-radius:18px;gap:1rem}
+  .substrate-configurator__hero h1{max-width:100%;font-size:clamp(2.1rem,9vw,3.4rem)}
+  .substrate-configurator__hero img{max-height:300px;aspect-ratio:4/3}
+  .substrate-configurator__hero-cta{width:100%}
+  .substrate-configurator__commerce{grid-template-columns:1fr;padding:1.1rem}
+  .substrate-component-picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .substrate-configurator__steps{grid-template-columns:1fr}
+  .substrate-configurator__ingredients-head{align-items:start;flex-direction:column}
+  .substrate-configurator__ingredient-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .substrate-configurator__ingredient-media{height:150px}
+  .substrate-configurator__checkout{display:block;padding:1.2rem}
+  .substrate-configurator__checkout-action{position:sticky;bottom:0;z-index:6;background:var(--leaf-cream);border:1px solid var(--leaf-surface-sage);border-radius:14px;padding:.75rem;margin-top:1rem;justify-items:stretch}
+}
+@media(prefers-reduced-motion:reduce){.substrate-component-option{transition:none}}
