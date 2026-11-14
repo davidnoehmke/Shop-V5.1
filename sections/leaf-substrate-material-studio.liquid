@@ -1,0 +1,77 @@
+{% liquid
+  assign source_product = section.settings.source_product
+  assign ingredients = source_product.metafields.bundle.component_products.value
+  assign is_english = false
+  if request.locale.iso_code == 'en'
+    assign is_english = true
+  endif
+%}
+{% if source_product != blank and ingredients != blank %}
+  <section class="leaf-material-studio" aria-labelledby="leaf-material-studio-title-{{ section.id }}">
+    <div class="page-width">
+      <div class="leaf-material-studio__head">
+        <div>
+          <p class="leaf-material-studio__eyebrow">{% if is_english %}LEAF · real materials{% else %}LEAF · echte Bestandteile{% endif %}</p>
+          <h2 id="leaf-material-studio-title-{{ section.id }}">{% if is_english %}Know what goes into your mix{% else %}Entdecke die Bestandteile deiner Mischung{% endif %}</h2>
+          <p>{% if is_english %}Explore genuine product photos and details before choosing your recipe. The mix and checkout remain in the configurator above.{% else %}Entdecke echte Produktbilder und Eigenschaften, bevor du deine Rezeptur auswählst. Mischung und Kauf bleiben im Konfigurator darüber.{% endif %}</p>
+        </div>
+      </div>
+      <div class="leaf-material-studio__grid">
+        {% for ingredient in ingredients limit: 8 %}
+          {% if ingredient != blank %}
+            {% liquid
+              assign ingredient_image = ingredient.featured_image
+              assign ingredient_alt = ingredient_image.alt | default: ingredient.title
+            %}
+            <article class="leaf-material-studio__card">
+              <a href="{{ ingredient.url }}" class="leaf-material-studio__link" aria-label="{{ ingredient.title | escape }}">
+                <div class="leaf-material-studio__media">
+                  {% if ingredient_image != blank %}
+                    {{ ingredient_image | image_url: width: 680 | image_tag: loading: 'lazy', widths: '240, 360, 520, 680', sizes: '(min-width: 1100px) 22vw, (min-width: 640px) 44vw, 90vw', alt: ingredient_alt }}
+                  {% else %}
+                    <span class="leaf-material-studio__no-image" aria-hidden="true">{% if is_english %}Material{% else %}Bestandteil{% endif %}</span>
+                  {% endif %}
+                </div>
+                <div class="leaf-material-studio__card-content">
+                  <h3>{{ ingredient.title | escape }}</h3>
+                  <span class="leaf-material-studio__more">{% if is_english %}Discover material{% else %}Material entdecken{% endif %} <span aria-hidden="true">→</span></span>
+                </div>
+              </a>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endif %}
+{% stylesheet %}
+.leaf-material-studio{padding:clamp(36px,5vw,76px) 0;background:#f5f3eb;color:#26372f}
+.leaf-material-studio__head{max-width:760px;margin-bottom:clamp(22px,3vw,36px)}
+.leaf-material-studio__eyebrow{color:#607d6c;font-size:.76rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+.leaf-material-studio h2{margin:.55rem 0 1rem;font-size:clamp(1.65rem,3.3vw,2.75rem);line-height:1.13;letter-spacing:-.035em}
+.leaf-material-studio__head p:last-child{font-size:clamp(.95rem,1.2vw,1.05rem);line-height:1.65;color:#52645a}
+.leaf-material-studio__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.7vw,22px)}
+.leaf-material-studio__card{min-width:0;overflow:hidden;border-radius:16px;background:#fff;border:1px solid #e0e5de;transition:transform .22s ease,box-shadow .22s ease}
+.leaf-material-studio__link{display:block;height:100%;color:inherit;text-decoration:none}
+.leaf-material-studio__media{aspect-ratio:4/3;background:#e9eee5;overflow:hidden;display:grid;place-items:center}
+.leaf-material-studio__media img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .35s ease}
+.leaf-material-studio__no-image{color:#5d7868;font-weight:600;font-size:.9rem}
+.leaf-material-studio__card-content{padding:clamp(12px,1.5vw,20px)}
+.leaf-material-studio__card h3{font-size:clamp(.94rem,1.25vw,1.12rem);line-height:1.35;margin:0 0 .65rem;overflow-wrap:anywhere}
+.leaf-material-studio__more{font-size:.87rem;color:#41674e;font-weight:600}
+.leaf-material-studio__link:focus-visible{outline:3px solid #376d4b;outline-offset:-3px}
+@media(hover:hover){.leaf-material-studio__card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(35,58,41,.1)}.leaf-material-studio__card:hover img{transform:scale(1.045)}}
+@media(max-width:1000px){.leaf-material-studio__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.leaf-material-studio__grid{grid-template-columns:1fr}.leaf-material-studio__card{border-radius:13px}.leaf-material-studio__media{aspect-ratio:16/9}}
+@media(prefers-reduced-motion:reduce){.leaf-material-studio__card,.leaf-material-studio__media img{transition:none}.leaf-material-studio__card:hover{transform:none}.leaf-material-studio__card:hover img{transform:none}}
+{% endstylesheet %}
+{% schema %}
+{
+  "name": "LEAF Materialstudio",
+  "tag": "section",
+  "settings": [
+    {"type": "product", "id": "source_product", "label": "Konfigurator-Produkt (Metafeld bundle.component_products)"}
+  ],
+  "presets": [{"name": "LEAF Materialstudio"}]
+}
+{% endschema %}
