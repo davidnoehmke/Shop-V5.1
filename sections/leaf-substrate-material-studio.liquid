@@ -62,7 +62,7 @@
 .leaf-material-studio__link:focus-visible{outline:3px solid #376d4b;outline-offset:-3px}
 @media(hover:hover){.leaf-material-studio__card:hover{transform:translateY(-3px);box-shadow:0 12px 26px rgba(35,58,41,.1)}.leaf-material-studio__card:hover img{transform:scale(1.045)}}
 @media(max-width:1000px){.leaf-material-studio__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:520px){.leaf-material-studio__grid{grid-template-columns:1fr}.leaf-material-studio__card{border-radius:13px}.leaf-material-studio__media{aspect-ratio:16/9}}
+@media(max-width:520px){.leaf-material-studio__grid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(240px,78vw);grid-template-columns:none;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x proximity;scroll-padding-inline:4px;padding:3px 3px 14px;scrollbar-width:thin}.leaf-material-studio__card{border-radius:13px;scroll-snap-align:start}.leaf-material-studio__media{aspect-ratio:4/3}}
 @media(prefers-reduced-motion:reduce){.leaf-material-studio__card,.leaf-material-studio__media img{transition:none}.leaf-material-studio__card:hover{transform:none}.leaf-material-studio__card:hover img{transform:none}}
 {% endstylesheet %}
 {% schema %}
