@@ -1,1 +1,18 @@
-{"sections":{"main":{"type":"main-page","settings":{}}},"order":["main"]}
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "material_studio": {
+      "type": "leaf-substrate-material-studio",
+      "settings": {
+        "source_product": "leafer-substrat-konfigurator"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "material_studio"
+  ]
+}
