@@ -1,0 +1,35 @@
+{% liquid
+  assign topic = section.settings.topic
+  assign featured = section.settings.article
+%}
+<section class="leaf-world-resources page-width" aria-labelledby="WorldResources-{{ section.id }}">
+  <div class="leaf-world-resources__intro">
+    <p class="leaf-world-resources__eyebrow">{{ 'world_resources.eyebrow' | t }}</p>
+    <h2 id="WorldResources-{{ section.id }}">{{ 'world_resources.heading' | t }}</h2>
+    <p>{{ 'world_resources.intro' | t }}</p>
+  </div>
+  <div class="leaf-world-resources__links">
+    {% if featured != blank %}
+      <a href="{{ featured.url }}" class="leaf-world-resources__feature">
+        <strong>{{ 'botanical_room.featured_title' | t }}</strong>
+        <span>{{ 'botanical_room.featured_copy' | t }}</span>
+        <b>{{ 'botanical_room.featured_cta' | t }} ↗</b>
+      </a>
+    {% endif %}
+    {% if topic == 'knowledge' %}
+      <a href="{% render 'leaf-localized-url', url: '/pages/nature-explorer' %}"><strong>{{ 'world_resources.nature' | t }}</strong><span>{{ 'world_resources.nature_copy' | t }}</span><b>↗</b></a>
+      <a href="{% render 'leaf-localized-url', url: '/pages/social-greens' %}"><strong>Social Greens</strong><span>{{ 'world_resources.community_copy' | t }}</span><b>↗</b></a>
+      <a href="{% render 'leaf-localized-url', url: '/pages/labs' %}"><strong>{{ 'world_resources.tools' | t }}</strong><span>{{ 'world_resources.tools_copy' | t }}</span><b>↗</b></a>
+    {% endif %}
+  </div>
+</section>
+{% stylesheet %}
+.leaf-world-resources{padding-block:clamp(30px,5vw,64px);color:#183c31}
+.leaf-world-resources__intro{max-width:660px;margin-bottom:24px}.leaf-world-resources__eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#60705f;font-weight:700}
+.leaf-world-resources h2{font:500 clamp(26px,3vw,42px)/1.1 'Helvetica Neue',Helvetica,Arial,sans-serif;letter-spacing:-.035em;margin:10px 0 16px}.leaf-world-resources__intro>p:last-child{font-size:15px;line-height:1.7;color:#596b5e}
+.leaf-world-resources__links{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}.leaf-world-resources__links a{display:flex;flex-direction:column;gap:14px;min-height:170px;padding:24px;border:1px solid #dce1d6;border-radius:14px;background:#f3f4eb;color:#183c31;text-decoration:none}.leaf-world-resources__links strong{font-size:18px;line-height:1.3}.leaf-world-resources__links span{font-size:14px;line-height:1.6;color:#596b5e}.leaf-world-resources__links b{margin-top:auto;font-size:13px}.leaf-world-resources__links a:hover{background:#e9eede}.leaf-world-resources__links a:focus-visible{outline:3px solid #b17e3d;outline-offset:4px}.leaf-world-resources__feature{border-color:#98ad8c!important}
+{% endstylesheet %}
+{% schema %}
+{"name":"Themenwelt · Wissen","settings":[{"type":"select","id":"topic","label":"Themenwelt","default":"knowledge","options":[{"value":"knowledge","label":"Pflanzenwissen"},{"value":"interieur","label":"Interieur Solutions"}]},{"type":"article","id":"article","label":"Interaktiver Pflanzenraum-Ratgeber"}],"presets":[{"name":"Themenwelt · Wissen"}]}
+{% endschema %}
+

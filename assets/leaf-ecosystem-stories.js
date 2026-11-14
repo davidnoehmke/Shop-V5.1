@@ -20,3 +20,4 @@ function init(){document.querySelectorAll('[data-leaf-ecosystems]').forEach(setu
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 document.addEventListener('shopify:section:load',init);
 })();
+

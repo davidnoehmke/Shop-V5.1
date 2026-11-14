@@ -1,6 +1,5 @@
-{% comment %}
-LEAF Living Lab Nature Explorer: standalone editorial / educational destination.
-The experience remains optional and separate from checkout and the storefront home.
-{% endcomment %}
 {% section 'leaf-soil-globe' %}
+{{ 'leaf-ecosystem-stories.css' | asset_url | stylesheet_tag }}
+{% render 'leaf-ecosystem-stories' %}
+<script src="{{ 'leaf-ecosystem-stories.js' | asset_url }}" defer></script>
 {% section 'leaf-search-intent-guide' %}

@@ -23,3 +23,4 @@
 @media(max-width:800px){.leaf-ecosystems__intro,.leaf-ecosystems__explorer{grid-template-columns:1fr}.leaf-ecosystems__detail [data-leaf-text]{min-height:0}.leaf-ecosystems__picker{display:grid;grid-template-columns:1fr}.leaf-ecosystems__picker button{text-align:left}}
 @media(prefers-reduced-motion:reduce){.leaf-ecosystems *{transition:none!important;animation:none!important}}
 .leaf-ecosystems__references{margin-top:18px;padding:15px 0;border-top:1px solid #dce2d6;font-size:12px;color:#597060}.leaf-ecosystems__references summary{cursor:pointer;font-weight:700;min-height:36px}.leaf-ecosystems__references a{border-bottom:1px solid #6c9374}
+
