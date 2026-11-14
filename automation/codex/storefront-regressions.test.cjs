@@ -54,7 +54,7 @@ test('pro mixer exposes per-component sliders and material previews', () => {
 });
 
 
-test('homepage mixer supports bounded auto-balance and visual drag ordering', () => {
+test('dedicated mixer supports bounded auto-balance and visual drag ordering', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
   const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
   const index = parseShopifyJson('templates/index.json');
@@ -65,16 +65,28 @@ test('homepage mixer supports bounded auto-balance and visual drag ordering', ()
   assert.match(liquid, /100 - othersMax/);
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
-  assert.deepEqual(index.order.slice(0, 6), ['hero', 'enterprise_studio', 'home_collection_journey', 'substrate_configurator', 'trust', 'led_home_finder']);
-  assert.equal(index.sections.enterprise_studio.type, 'leaf-enterprise-studio');
-  assert.equal(index.sections.leaf_listening.type, 'leaf-listening');
-  assert.equal(index.sections.loox_reviews.disabled, true);
-  assert.match(index.sections.home_collection_journey.settings.heading, /Pflanzenprojekt/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Substratmischungen/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Einzelbestandteile/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Gefäße/);
-  assert.match(index.sections.home_collection_journey.settings.intro, /Pflanzenlicht/);
-  assert.match(index.sections.substrate_configurator.settings.intro, /Drag & Drop/);
+  const activeSections = index.order.filter(id => !index.sections[id].disabled);
+  assert.deepEqual(activeSections, ['leaf_worlds']);
+  const world = index.sections.leaf_worlds;
+  assert.equal(world.type, 'leaf-botanical-room');
+  assert.deepEqual(world.block_order, ['plants', 'lighting', 'planters', 'substrates', 'propagation', 'knowledge']);
+  const targets = {
+    plants: '/collections/zimmerpflanzen-1',
+    lighting: '/pages/pflanzenlicht-konfigurator',
+    planters: '/collections/pflanzgefasse',
+    substrates: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze',
+    propagation: '/collections/anzucht-aussaat',
+    knowledge: '/blogs/leafers-nice2know-blog'
+  };
+  for (const [id, target] of Object.entries(targets)) {
+    assert.equal(world.blocks[id].settings.landing_url, target);
+    assert.equal(world.blocks[id].settings.show_hotspot, true);
+  }
+  assert.equal(world.settings.setup_url, '/collections/interieur-solutions');
+  const landing = parseShopifyJson('templates/page.substratewelt.json');
+  assert.equal(landing.sections.main.type, 'leafer-substrate-selector');
+  assert.ok(landing.order.includes('main'));
+
 });
 
 
@@ -83,7 +95,6 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
   const parseShopifyJson = path => JSON.parse(fs.readFileSync(path, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
   const de = parseShopifyJson('locales/de.default.json');
   const en = parseShopifyJson('locales/en.json');
-  const index = fs.readFileSync('templates/index.json', 'utf8');
   const substrateWorld = fs.readFileSync('templates/page.substratewelt.json', 'utf8');
   assert.match(liquid, /data-max-components="4"/);
   assert.match(liquid, /\{% for pot_index in \(1\.\.4\) %\}/);
@@ -92,7 +103,7 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
   assert.doesNotMatch(liquid, /bis zu fünf Komponenten/i);
   assert.match(de.configurator.advanced.intro, /vier Komponenten/i);
   assert.match(en.configurator.advanced.intro, /four components/i);
-  assert.match(index, /bis zu vier Bestandteile/i);
+  assert.match(substrateWorld, /bis zu vier auswählbare Komponenten/i);
   assert.doesNotMatch(substrateWorld, /bis zu fünf auswählbare Komponenten/i);
 });
 
