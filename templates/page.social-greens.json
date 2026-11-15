@@ -11,7 +11,9 @@
             "title_de": "Grünes Lernzimmer",
             "title_en": "Green learning room",
             "text_de": "Robuste Pflanzen, sichere Stellplätze und ein einfacher Pflegeplan für Bildungseinrichtungen.",
-            "text_en": "Resilient plants, safe placement and a simple care plan for learning environments."
+            "text_en": "Resilient plants, safe placement and a simple care plan for learning environments.",
+            "image": "shopify://shop_images/social-greens-gruenes-lernen-konzept.png",
+            "is_illustration": true
           }
         },
         "care": {
