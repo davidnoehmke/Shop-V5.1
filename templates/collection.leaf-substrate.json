@@ -1,0 +1,38 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "guide": {
+      "type": "substratwelt-guide",
+      "settings": {
+        "heading": "Substrate nach Wurzelraum und Wasserführung auswählen",
+        "text": "<p>Vergleiche fertige Substratmischungen und einzelne Komponenten anhand ihrer Eigenschaften.</p>"
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_type_filters": true
+      }
+    },
+    "brands": {
+      "type": "leaf-brand-curation",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "seo": {
+      "type": "collection-seo-copy",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "guide",
+    "main",
+    "brands",
+    "seo"
+  ]
+}
