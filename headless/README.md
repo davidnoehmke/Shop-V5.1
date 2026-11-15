@@ -62,3 +62,61 @@ attributes. Open the Shopify-returned checkout URL and confirm the test line
 and recipe survive. Remove only QA-created lines afterward; submit no order.
 Check desktop and mobile layouts, locale continuity and error states separately.
 No production merge or domain switch is justified by a build-only smoke test.
+
+## Supabase portal authentication
+
+The headless app now has server-rendered `/auth/login`, POST-only `/auth/logout`,
+and a protected `/portal` landing page. Use `?lang=en` for English UI. Shopify's
+`/account/*` continues to manage Shopify orders, addresses and customer profiles.
+A Supabase session does not grant Shopify account access.
+
+Set these server runtime variables in the intended Preview environment before
+building/deploying the branch:
+
+- `SUPABASE_URL=https://vbqimcwaxcydegqlkkgw.supabase.co`
+- `SUPABASE_PUBLISHABLE_KEY`: the enabled **default publishable key** from the
+  project's API Keys page. Never use a secret or `service_role` key.
+
+Missing variables return HTTP 503 on the new authentication routes. Guest
+shopping remains available without these variables. No secrets are serialized
+into loader data or browser bundles. The integration uses email/password sign-in
+with existing Supabase Auth users; it does not send invitation emails or add a
+registration/password-recovery flow. Provision portal users through the existing
+Supabase Auth administration process. Password login requires no callback URL.
+
+`requirePortalUser(request, context.env)` verifies the user through Supabase Auth
+on every protected loader/action and rejects anonymous Auth users. Every ordinary
+verified Supabase user can access this initial portal, which displays only their
+own email and a sign-out button. This is not an administrative authorization role.
+Do not add operational/CRM/shop data to it without defining authorization and RLS.
+
+For future protected routes, invoke this helper in **each loader and action**;
+React Router parent and child loaders run in parallel. Preserve its returned
+headers on data, redirect and error responses so rotated/cleared cookies survive.
+Never trust a cookie's embedded user or `user_metadata` for authorization. Use a
+user-scoped Supabase client with ownership-based RLS for private database data.
+No database grants or existing RLS policies were changed by this implementation.
+
+Sessions use request-scoped clients, HttpOnly cookies, SameSite=Lax, Secure on
+HTTPS, and no-store response headers. Login/logout require same-origin POSTs;
+login redirects accept only local `/portal` paths. Authentication cookies append
+to Hydrogen's existing session cookies. Logout ends the local Supabase session;
+other devices and already issued access tokens retain Supabase's normal lifetimes.
+
+Validation: the test suite covers anonymous navigation, forged-cookie rejection,
+verified/anonymous Auth users, refresh-cookie propagation, logout, CSRF,
+redirect sanitization and missing configuration. Typecheck/build are separate
+from a real login test. Before release, verify login with an existing account,
+reload `/portal`, inspect cookie flags and no-store headers, sign out, and confirm
+direct navigation redirects again. Also confirm Shopify customer login and guest
+cart still work in the configured Preview. Do not mark these browser checks
+complete based only on mocked Auth tests or a build.
+
+Connected-project read-only check (2026-11-15): Auth settings returned HTTP 200,
+email authentication enabled, signups enabled and email confirmation required.
+No test accounts were created. Security advisors returned informational notices
+for 58 RLS-enabled tables without policies; no broad access policies were added.
+See the [Supabase explanation](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+
+References: [Supabase SSR clients](https://supabase.com/docs/guides/auth/server-side/creating-a-client),
+[Hydrogen account routing examples](https://shopify.dev/docs/storefronts/headless/legacy/hydrogen/cookbook/legacy-customer-account-flow).
