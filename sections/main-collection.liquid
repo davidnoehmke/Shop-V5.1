@@ -99,6 +99,36 @@
   </header>
   {% endunless %}
 
+  <div class="main-collection__tools" id="CollectionFilters-{{ section.id }}">
+    {% if section.settings.show_type_filters and product_types.size > 1 %}
+      <div class="main-collection__filter-landscape">
+        <p class="main-collection__landscape-label">{{ landscape_label }}</p>
+        <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
+        <button type="button" class="main-collection__filter" data-product-filter="all" aria-pressed="true">
+          <span class="main-collection__filter-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+          </span>
+          <span>{{ 'collection.all' | t }}</span>
+        </button>
+        {% for product_type in product_types %}
+          {% assign product_type_downcase = product_type | downcase %}
+          <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" aria-pressed="false">
+            <span class="main-collection__filter-icon" aria-hidden="true">
+              {% if product_type_downcase contains 'licht' or product_type_downcase contains 'led' or product_type_downcase contains 'lamp' %}
+                <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
+              {% elsif product_type_downcase contains 'substrat' or product_type_downcase contains 'mix' %}
+                <svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg>
+              {% elsif product_type_downcase contains 'topf' or product_type_downcase contains 'gefäß' or product_type_downcase contains 'gefass' %}
+                <svg viewBox="0 0 24 24"><path d="M7 8h10l-1 12H8L7 8ZM5 5h14v3H5z"/></svg>
+              {% elsif product_type_downcase contains 'pflanz' %}
+                <svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
+              {% else %}
+                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 10h8M8 14h5"/></svg>
+              {% endif %}
+            </span>
+            <span>{{ product_type | escape }}</span>
+          </button>
+        {% endfor %}
   {% render 'leaf-solution-gateway', collection: collection, section_id: section.id %}
 
   {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
@@ -396,6 +426,11 @@
   .main-collection__media-note { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .75rem .9rem; border: 1px solid color-mix(in srgb, white, transparent 45%); background: color-mix(in srgb, var(--background), transparent 10%); backdrop-filter: blur(12px); }
   .main-collection__media-note span { color: var(--muted); font-size: .72rem; }
   .main-collection__media-note strong { font-size: .78rem; text-align: right; }
+  .main-collection__tools { scroll-margin-top: 110px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: end; margin-bottom: 1.5rem; padding-block: 1rem; border-block: 1px solid var(--border); }
+  .main-collection__filter-landscape { min-width: 0; }
+  .main-collection__landscape-label { margin: 0 0 .55rem; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+  .main-collection__filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: .5rem; }
+  .main-collection__filter { min-height: 58px; display: inline-flex; align-items: center; justify-content: flex-start; gap: .65rem; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .65rem .8rem; font-size: .75rem; text-align: left; }
   .main-collection__catalog { min-width: 0; }
   .main-collection__catalog--filtered { display: grid; grid-template-columns: minmax(210px, 240px) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 2.75rem); align-items: start; }
   .main-collection__sidebar { scroll-margin-top: 110px; position: sticky; top: 96px; min-width: 0; padding-right: 1.2rem; border-right: 1px solid var(--border); }
@@ -483,6 +518,8 @@
     .main-collection__active-context { width: 100%; min-width: 0; }
     .main-collection__sort { width: 100%; justify-content: stretch; margin-left: 0; }
     .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .main-collection__filters { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(150px, 64vw); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding-bottom: .25rem; }
+    .main-collection__filter { min-height: 54px; scroll-snap-align: start; }
     .main-collection__filters { grid-auto-columns: minmax(148px, 58vw); scroll-padding-inline:.2rem; }
     .main-collection__filter { min-height: 50px; padding-inline:.8rem; }
     .main-collection__sort select { width: 100%; min-width: 0; }
