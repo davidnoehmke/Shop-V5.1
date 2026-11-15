@@ -1,18 +1,205 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "hero": {
-      "type": "hero",
+    "leaf_conversion": {
+      "type": "leaf-conversion-home",
+      "blocks": {
+        "cat_lighting": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzenbeleuchtung",
+            "title_de": "Pflanzenlicht",
+            "title_en": "Grow lights",
+            "intro_de": "Pflanzenlampen und Leuchten vergleichen.",
+            "intro_en": "Compare grow lights and plant lamps."
+          }
+        },
+        "cat_substrates": {
+          "type": "category",
+          "settings": {
+            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "title_de": "Substrate",
+            "title_en": "Substrates",
+            "intro_de": "Fertige Mischungen und einzelne Bestandteile.",
+            "intro_en": "Ready-made mixes and individual components."
+          }
+        },
+        "cat_planters": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzgefasse",
+            "title_de": "Pflanzgefäße",
+            "title_en": "Planters",
+            "intro_de": "Töpfe und Pflanzgefäße für deinen Standort.",
+            "intro_en": "Choose pots and planters for your space."
+          }
+        },
+        "cat_seed": {
+          "type": "category",
+          "disabled": true,
+          "settings": {
+            "collection": "interieur-solutions",
+            "title_de": "Anzucht",
+            "title_en": "Propagation",
+            "intro_de": "Zubehör für Aussaat und Stecklinge.",
+            "intro_en": "Equipment for seeds and cuttings."
+          }
+        },
+        "prod_venso": {
+          "type": "product",
+          "settings": {
+            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
+          }
+        },
+        "prod_alocasia": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-alocasia-mix"
+          }
+        },
+        "prod_elho": {
+          "type": "product",
+          "settings": {
+            "product": "elho-b-for-soft-round"
+          }
+        }
+      },
+      "block_order": [
+        "cat_lighting",
+        "cat_substrates",
+        "cat_planters",
+        "cat_seed",
+        "prod_venso",
+        "prod_alocasia",
+        "prod_elho"
+      ],
       "settings": {
-        "image": "shopify://shop_images/tongranulat-lifestyle_2181111f-4416-4ebc-8dfd-7954152b8d85.png",
-        "overlay": 75,
-        "eyebrow": "Pflanzenversorgung, die zusammenpasst",
-        "heading": "Pflanzenpflege beginnt im Wurzelraum.",
-        "text": "<p>Finde Substrat, Gefäß, Licht und Pflege, die als System zu deiner Pflanze und deinem Raum passen.</p>",
-        "primary_label": "Substratwelt entdecken",
-        "primary_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
-        "secondary_label": "Interieur Solutions",
-        "secondary_link": "shopify://collections/interieur-solutions"
+        "eyebrow_de": "LEAFerservice · Pflanzenbedarf",
+        "eyebrow_en": "LEAFerservice · Plant care essentials",
+        "heading_de": "Alles für deine Pflanze – als System gedacht",
+        "heading_en": "Grow lights, potting substrates and planters for indoor plants",
+        "intro_de": "Entdecke Pflanzenlicht, fertige Substratmischungen und einzelne Bestandteile sowie passende Pflanzgefäße. Starte direkt in der Produktwelt, die du gerade brauchst.",
+        "intro_en": "Find suitable plant lighting, potting mixes and planters. Compare real products and explore care guides before you decide.",
+        "primary_cta_de": "Produktwelten entdecken",
+        "primary_cta_en": "Explore grow lights",
+        "secondary_cta_de": "Substrate und Mischungen entdecken",
+        "secondary_cta_en": "Explore substrates",
+        "categories_title_de": "Was brauchst du für deine Pflanzen?",
+        "categories_title_en": "Shop by plant care need",
+        "products_title_de": "Ausgewählte Produkte",
+        "products_title_en": "Selected products"
       }
+    },
+    "leaf_led_finder": { "type": "leaf-led-home-finder", "settings": {} },
+    "leaf_worlds": {
+      "type": "leaf-botanical-room",
+      "blocks": {
+        "plants": {
+          "type": "world",
+          "settings": {
+            "world": "plants",
+            "landing_url": "/collections/zimmerpflanzen-1",
+            "collection": "zimmerpflanzen-1",
+            "title_de": "Zimmerpflanzen",
+            "title_en": "Houseplants",
+            "show_hotspot": true,
+            "x": 22,
+            "y": 39
+          }
+        },
+        "lighting": {
+          "type": "world",
+          "settings": {
+            "world": "lighting",
+            "landing_url": "/pages/pflanzenlicht-konfigurator",
+            "collection": "pflanzenbeleuchtung",
+            "title_de": "Pflanzenlicht",
+            "title_en": "Grow lights",
+            "show_hotspot": true,
+            "x": 32,
+            "y": 12
+          }
+        },
+        "planters": {
+          "type": "world",
+          "settings": {
+            "world": "planters",
+            "landing_url": "/collections/pflanzgefasse",
+            "collection": "pflanzgefasse",
+            "title_de": "Pflanzgefäße",
+            "title_en": "Planters",
+            "show_hotspot": true,
+            "x": 56,
+            "y": 64
+          }
+        },
+        "substrates": {
+          "type": "world",
+          "settings": {
+            "world": "substrates",
+            "landing_url": "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "title_de": "Substrate & Zusätze",
+            "title_en": "Substrates & additives",
+            "show_hotspot": true,
+            "x": 24,
+            "y": 82
+          }
+        },
+        "propagation": {
+          "type": "world",
+          "settings": {
+            "world": "propagation",
+            "landing_url": "/collections/anzucht-aussaat",
+            "collection": "anzucht-aussaat",
+            "title_de": "Anzucht & Aussaat",
+            "title_en": "Propagation & sowing",
+            "show_hotspot": true,
+            "x": 44,
+            "y": 48
+          }
+        },
+        "knowledge": {
+          "type": "world",
+          "settings": {
+            "world": "knowledge",
+            "landing_url": "/blogs/leafers-nice2know-blog",
+            "collection": "starter-sets-mehrerer-arten",
+            "title_de": "Pflanzenwissen",
+            "title_en": "Plant knowledge",
+            "show_hotspot": true,
+            "x": 79,
+            "y": 24
+          }
+        }
+      },
+      "block_order": [
+        "plants",
+        "lighting",
+        "planters",
+        "substrates",
+        "propagation",
+        "knowledge"
+      ],
+      "settings": {
+        "scene_image": "shopify://shop_images/leaf-botanische-bibliothek-pflanzenraum-20261113.png",
+        "scene_alt": "Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
+        "setup_url": "/collections/interieur-solutions",
+        "knowledge_blog": "leafers-nice2know-blog"
+      }
+    },
+    "leaf_soil_globe": {
+      "type": "leaf-soil-globe",
+      "disabled": true,
+      "settings": {}
     },
     "trust": {
       "type": "trust-bar",
@@ -21,32 +208,32 @@
           "type": "benefit",
           "settings": {
             "icon": "handmade",
-            "heading": "Verständlich erklärt",
-            "text": "Produktdaten, Funktionen und Anwendung übersichtlich aufbereitet."
+            "heading": "Deine Rezeptur",
+            "text": "Profil wählen oder selbst konfigurieren."
           }
         },
         "function": {
           "type": "benefit",
           "settings": {
             "icon": "natural",
-            "heading": "Funktion im Fokus",
-            "text": "Bestandteile und Produkte mit klar benannter Aufgabe."
+            "heading": "Klar beschrieben",
+            "text": "Eigenschaften und Anwendung am Produkt."
           }
         },
         "sizes": {
           "type": "benefit",
           "settings": {
             "icon": "small_batches",
-            "heading": "Passend kombinieren",
-            "text": "Substrat, Gefäß, Licht und Pflege als zusammenhängendes System."
+            "heading": "Passende Menge",
+            "text": "Die verfügbaren Größen direkt auswählen."
           }
         },
         "range": {
           "type": "benefit",
           "settings": {
             "icon": "versatile",
-            "heading": "Transparent auswählen",
-            "text": "Preis, Varianten und Verfügbarkeit direkt am Produkt."
+            "heading": "Preis direkt sichtbar",
+            "text": "Aktuelle Preise und Varianten am Produkt."
           }
         }
       },
@@ -56,470 +243,74 @@
         "sizes",
         "range"
       ],
+      "disabled": true,
       "settings": {}
-    },
-    "home_collection_journey": {
-      "type": "home-collection-journey",
-      "blocks": {
-        "substrate": {
-          "type": "collection",
-          "settings": {
-            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "category": "substrate",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "fallback_title": "Substratwelt",
-            "fallback_copy": ""
-          }
-        },
-        "interieur": {
-          "type": "collection",
-          "settings": {
-            "collection": "interieur-solutions",
-            "category": "interieur",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/interieur-solutions",
-            "fallback_title": "Interieur Solutions",
-            "fallback_copy": ""
-          }
-        },
-        "grow": {
-          "type": "collection",
-          "settings": {
-            "collection": "anzucht-aussaat",
-            "category": "grow",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/anzucht-aussaat",
-            "fallback_title": "Anzucht & Aussaat",
-            "fallback_copy": ""
-          }
-        },
-        "planters": {
-          "type": "collection",
-          "settings": {
-            "collection": "pflanzgefasse",
-            "category": "equipment",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/pflanzgefasse",
-            "fallback_title": "Pflanzgefäße & Töpfe",
-            "fallback_copy": ""
-          }
-        },
-        "care": {
-          "type": "collection",
-          "settings": {
-            "collection": "pflanzenpflege-werkzeuge",
-            "category": "equipment",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/pflanzenpflege-werkzeuge",
-            "fallback_title": "Pflanzenpflege & Zubehör",
-            "fallback_copy": ""
-          }
-        },
-        "sets": {
-          "type": "collection",
-          "settings": {
-            "collection": "starter-sets-mehrerer-arten",
-            "category": "grow",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/starter-sets-mehrerer-arten",
-            "fallback_title": "Sets & Bundles",
-            "fallback_copy": ""
-          }
-        }
-      },
-      "block_order": [
-        "substrate",
-        "interieur",
-        "grow",
-        "planters",
-        "care",
-        "sets"
-      ],
-      "settings": {
-        "eyebrow": "Nach deinem Projekt",
-        "heading": "Finde den passenden Einstieg",
-        "intro": "<p>Substrat, Raumgestaltung, Anzucht oder Ausstattung: Wähle deinen nächsten sinnvollen Schritt.</p>",
-        "filter_label": "Sortiment filtern",
-        "filter_all": "Alles",
-        "filter_substrate": "Substrat & Wurzelraum",
-        "filter_interieur": "Interieur Solutions",
-        "filter_grow": "Anzucht & Aussaat",
-        "filter_equipment": "Gefäße & Pflege",
-        "result_prefix": "Sichtbar:",
-        "result_suffix": "Bereiche",
-        "product_label": "Produkte",
-        "card_cta": "Entdecken",
-        "empty_label": "Für diesen Filter sind aktuell keine Bereiche hinterlegt.",
-        "all_label": "Gesamtes Sortiment ansehen",
-        "all_link": "shopify://collections/all"
-      }
-    },
-    "home_choice": {
-      "type": "home-choice-band",
-      "settings": {
-        "image": "shopify://shop_images/LEAFers_Bl_hton_die_perfekte_Drainage.jpg",
-        "eyebrow": "Substrat verstehen und auswählen",
-        "heading": "Bewährte Rezeptur oder eigener Mix",
-        "text": "<p>Vergleiche die passende Grundrezeptur mit deiner eigenen Mischung: Wähle Pflanzentyp, Komponenten und Volumen und sieh direkt, was sich im Wurzelraum verändert.</p>",
-        "primary_label": "Konfigurator öffnen",
-        "primary_link": "shopify://pages/individuelles-substrat",
-        "secondary_label": "Substratwelt entdecken",
-        "secondary_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
-      }
     },
     "home_guides": {
       "type": "home-guides",
+      "disabled": true,
       "settings": {
-        "eyebrow": "Ratgeber aus dem Shop",
-        "heading": "Verstehen, bevor du mischst",
-        "text": "<p>Praxiswissen zu Wurzelraum, Substratstruktur, Pflanzgefäßen und Pflege – damit du Entscheidungen nachvollziehen kannst.</p>",
+        "eyebrow": "Wissen passend zu deinem Projekt",
+        "heading": "Verstehen, bevor du entscheidest",
+        "text": "<p>Praxiswissen zu Zimmerpflanzen, Substrat, Wurzelraum, Pflanzenlicht, Gefäßen und Pflege – verknüpft mit den passenden Produktwelten.</p>",
         "blog": "leafers-nice2know-blog",
         "articles_to_show": 3,
         "link_label": "Alle Ratgeber lesen"
       }
     },
-    "faq": {
-      "type": "faq",
-      "blocks": {
-        "substrate": {
-          "type": "question",
-          "settings": {
-            "topic": "substrate",
-            "question": "Welches Substrat passt zu meiner Pflanze?",
-            "answer": "<p>Orientiere dich an Wurzeltyp, Standort und Gießroutine. Fertige Mischungen geben dir einen abgestimmten Startpunkt; einzelne Bestandteile verändern gezielt Luftführung, Drainage oder Feuchtepuffer.</p>"
-          }
-        },
-        "application": {
-          "type": "question",
-          "settings": {
-            "topic": "application",
-            "question": "Wann brauche ich einen Substratzusatz?",
-            "answer": "<p>Wenn du eine konkrete Eigenschaft verändern möchtest. Beginne mit einer klaren Funktion pro Bestandteil und passe die Anteile schrittweise an.</p>"
-          }
-        },
-        "plants": {
-          "type": "question",
-          "settings": {
-            "topic": "plants",
-            "question": "Wie finde ich die passende Topfgröße?",
-            "answer": "<p>Wähle die nächste sinnvolle Größe über dem aktuellen Wurzelballen. Ablauf, Material und Gießroutine sollten zusammenpassen.</p>"
-          }
-        },
-        "availability": {
-          "type": "question",
-          "settings": {
-            "topic": "shipping",
-            "question": "Wo sehe ich Preis und Verfügbarkeit?",
-            "answer": "<p>Preis, Varianten und aktuelle Verfügbarkeit stehen direkt am jeweiligen Produkt. Nicht verfügbare Varianten lassen sich nicht auswählen.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "substrate",
-        "application",
-        "plants",
-        "availability"
-      ],
-      "settings": {
-        "heading": "Fragen vor der Auswahl",
-        "text": "<p>Kurze Entscheidungshilfen zu Substrat, Zusätzen, Gefäßen und Verfügbarkeit.</p>"
-      }
-    },
-    "shop_videos": {
-      "type": "apps",
-      "blocks": {
-        "space_before": {
-          "type": "shopify://apps/section-store/blocks/block-space-divide/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "height": 24,
-            "background_color": "rgba(0,0,0,0)",
-            "show_line": true,
-            "line_style": "solid",
-            "line_width": 25,
-            "line_thickness": 1,
-            "line_roundness": 0,
-            "line_color": "#e0e0e0",
-            "custom_css": ""
-          }
-        },
-        "video_carousel": {
-          "type": "shopify://apps/section-store/blocks/block-video-carousel/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "video_1": "shopify://files/videos/47551-451623797.mp4",
-            "video_2": "shopify://files/videos/instagram-video_34ae078c-ab95-4320-9d44-48b3b3ed5d95.mp4",
-            "video_4": "shopify://files/videos/254112.mp4",
-            "slider_style": "none",
-            "modal_style": "side",
-            "video_autoplay": "true",
-            "play_button_position": "none",
-            "play_button_size": "small",
-            "item_border_style": "none",
-            "item_border_width": 1,
-            "item_border_color": "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-            "item_border_radius": 96,
-            "item_padding": 0,
-            "grid_items": "3",
-            "thumbnail_shape": "rectangle",
-            "block_border_style": "none",
-            "block_border_width": 1,
-            "block_border_color": "#d7d7d7",
-            "block_border_radius": 16,
-            "block_bg_color": "",
-            "block_padding_vertical": 8,
-            "block_padding_horizontal": 0,
-            "custom_css": ""
-          }
-        },
-        "space_after": {
-          "type": "shopify://apps/section-store/blocks/block-space-divide/d7a2e423-ea88-4344-b866-6d0fb487c3dd",
-          "settings": {
-            "height": 42,
-            "background_color": "rgba(0,0,0,0)",
-            "show_line": true,
-            "line_style": "solid",
-            "line_width": 70,
-            "line_thickness": 1,
-            "line_roundness": 0,
-            "line_color": "#e0e0e0",
-            "custom_css": ""
-          }
-        }
-      },
-      "block_order": [
-        "space_before",
-        "video_carousel",
-        "space_after"
-      ],
-      "settings": {}
-    },
-    "community": {
-      "type": "community-gallery",
-      "blocks": {
-        "image_1": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/98154BE7-8D71-4BDE-8E7E-DE1C7F267A6E.jpg",
-            "alt_text": "",
-            "link": ""
-          }
-        },
-        "image_2": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/IMG_0717.jpg",
-            "alt_text": "",
-            "link": ""
-          }
-        },
-        "image_3": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/7168J-ylbOS_99c2dfdf-820a-4b9d-9460-09a2151f471e.jpg",
-            "alt_text": "",
-            "link": ""
-          }
-        },
-        "image_4": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/IMG_0722.jpg",
-            "alt_text": "",
-            "link": ""
-          }
-        },
-        "image_5": {
-          "type": "image",
-          "settings": {
-            "image": "shopify://shop_images/LEAFers_Bl_hton_die_perfekte_Drainage.jpg",
-            "alt_text": "",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "image_1",
-        "image_2",
-        "image_3",
-        "image_4",
-        "image_5"
-      ],
-      "settings": {
-        "heading": "Pflanzenprojekte aus dem Shop",
-        "handle": "",
-        "text": "Substrate, Pflanzen und Setups aus dem vorhandenen LEAFerservice Bildarchiv.",
-        "cta_label": "Zimmerpflanzen entdecken",
-        "cta_link": "shopify://collections/zimmerpflanzen-1",
-        "show_archive_image": true,
-        "archive_asset_filename": "drive-aglaonema-pink-lady.jpg",
-        "archive_alt": "Aglaonema mit rosa-grüner Panaschierung im Pflanztopf",
-        "archive_link": ""
-      }
-    },
-    "positioning": {
+    "home_positioning_HgRGfq": {
       "type": "home-positioning",
       "blocks": {
-        "p1": {
+        "pillar_88KPCx": {
           "type": "pillar",
           "settings": {
             "heading": "Substrat mit Funktion",
             "text": "Mischungen und Einzelbestandteile mit klarer Aufgabe: Luft, Drainage und Feuchtepuffer.",
             "link_label": "Substrate entdecken",
-            "link": "shopify://collections/substrate-verbesserer"
+            "link": "/collections/substrate-verbesserer"
           }
         },
-        "p2": {
+        "pillar_fUjN8c": {
           "type": "pillar",
           "settings": {
             "heading": "System statt Einzelprodukt",
             "text": "Gefäß, Licht und Pflege werden passend zum Wurzelraum gedacht – nicht zufällig zusammengestellt.",
             "link_label": "Lösungen ansehen",
-            "link": "shopify://collections/interieur-solutions"
+            "link": "/collections/interieur-solutions"
           }
         },
-        "p3": {
+        "pillar_xzHRaQ": {
           "type": "pillar",
           "settings": {
             "heading": "Verstehen und selbst entscheiden",
-            "text": "Ratgeber, Rezepturen und Konfigurator geben dir die Grundlage für eine eigene, sichere Entscheidung.",
+            "text": "Ratgeber und Konfigurator helfen dir, Informationen zu sammeln und passende Möglichkeiten zu vergleichen.",
             "link_label": "Ratgeber lesen",
-            "link": "shopify://blogs/leafers-nice2know-blog"
+            "link": "/blogs/leafers-nice2know-blog"
           }
         }
       },
       "block_order": [
-        "p1",
-        "p2",
-        "p3"
+        "pillar_88KPCx",
+        "pillar_fUjN8c",
+        "pillar_xzHRaQ"
       ],
+      "disabled": true,
+      "name": "LEAF Positionierung",
       "settings": {
-        "eyebrow": "Mehr als ein Pflanzenshop",
-        "heading": "Pflanzenpflege beginnt im Wurzelraum.",
-        "text": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>"
-      }
-    },
-    "home_discovery_path": {
-      "type": "home-discovery-path",
-      "settings": {
-        "eyebrow": "Kurz erklärt, dann passend weiter",
-        "heading": "Finde deinen nächsten sinnvollen Schritt",
-        "text": "<p>Entdecke die Idee hinter einer Lösung und direkt danach ein passendes Highlight aus dem Sortiment. Du entscheidest selbst, wie tief du einsteigst.</p>",
-        "filter_label": "Themen filtern",
-        "filter_all": "Alle Themen",
-        "filter_substrate": "Substrat",
-        "filter_interieur": "Interieur Solutions",
-        "filter_grow": "Anzucht & Aussaat",
-        "filter_care": "Gefäß & Bewässerung",
-        "highlight_label": "Highlight aus dem Sortiment",
-        "details_label": "Details ansehen",
-        "empty_label": "Für diesen Themenfilter sind aktuell keine Bereiche hinterlegt.",
-        "service_eyebrow": "Auch für größere Projekte",
-        "service_heading": "Lieferung und Aufbau nach Absprache",
-        "service_text": "Bei größeren Pflanzenwelten, Regalen, Gewächshäusern oder Terrarien arrangiere ich gerne die Lieferung und – sofern möglich – auch den Aufbau vor Ort.",
-        "service_cta": "Kooperationen & Projekte anfragen",
-        "service_link": "/pages/kooperationen-pflanzenprojekte"
-      }
-    },
-    "phone_call": {
-      "type": "phone-call",
-      "settings": {
-        "eyebrow": "Persönliche Hilfe",
-        "heading": "Du möchtest lieber telefonieren?",
-        "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
-        "button_label": "Rückruf anfragen"
-      }
-    },
-    "leaf_method": {
-      "type": "home-leaf-method",
-      "blocks": {
-        "ready": {
-          "type": "path",
-          "settings": {
-            "label": "Schnell starten",
-            "heading": "Fertige Mischung",
-            "text": "Abgestimmte Rezeptur auswählen und direkt bestellen.",
-            "detail": "Für eine klare Empfehlung ohne eigene Rezeptarbeit.",
-            "link_label": "Substrate entdecken",
-            "link": "shopify://collections/substrate-verbesserer"
-          }
-        },
-        "pro": {
-          "type": "path",
-          "settings": {
-            "label": "Selbst bestimmen",
-            "heading": "Profi-Konfigurator",
-            "text": "Komponenten und Anteile selbst festlegen – mit fachlichen Grenzen statt starrer Vorgaben.",
-            "detail": "Für alle, die ihre Mischung bewusst steuern möchten.",
-            "link_label": "Eigene Mischung bauen",
-            "link": "/pages/individuelles-substrat#Profi-Konfigurator"
-          }
-        },
-        "project": {
-          "type": "path",
-          "settings": {
-            "label": "Ganzheitlich planen",
-            "heading": "Pflanzprojekt",
-            "text": "Pflanze, Standort, Gießverhalten, Gefäß und Substrat gemeinsam betrachten.",
-            "detail": "Für ein Setup, bei dem die Komponenten als System zusammenpassen.",
-            "link_label": "Projekt planen",
-            "link": "/pages/individuelles-substrat#Projekt-Konfigurator"
-          }
-        }
-      },
-      "block_order": [
-        "ready",
-        "pro",
-        "project"
-      ],
-      "settings": {
-        "eyebrow": "Die LEAF Methode",
-        "heading": "Nicht jeder braucht dieselbe Lösung.",
-        "text": "<p>Wähle, wie viel Führung du möchtest: eine fertige Mischung, volle Kontrolle über deine Rezeptur oder ein komplettes Pflanzprojekt.</p>"
+        "eyebrow": "Alles für deine Pflanze, als System gedacht",
+        "heading": "Pflanzenpflege im Zusammenhang verstehen",
+        "text": "<p>Substrat, Gefäß, Licht und Wissen gehören zusammen. Entdecke passende Produktwelten und informiere dich, wie die Bereiche zusammenspielen.</p>"
       }
     }
   },
   "order": [
-    "hero",
-    "phone_call",
+    "leaf_conversion",
+    "leaf_led_finder",
+    "leaf_worlds",
+    "leaf_soil_globe",
     "trust",
-    "home_collection_journey",
-    "home_discovery_path",
-    "positioning",
-    "leaf_method",
-    "home_choice",
     "home_guides",
-    "community",
-    "faq",
-    "shop_videos"
+    "home_positioning_HgRGfq"
   ]
 }
+

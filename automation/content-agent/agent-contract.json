@@ -83,6 +83,18 @@
       "explicit_owner_approval"
     ],
     "change_strategy": "smallest_safe_change",
-    "require_post_change_verification": true
+    "require_post_change_verification": true,
+    "live_verification": {
+      "trigger": "successful_LEAF_CI_push_on_main",
+      "live_verification": true,
+      "required_live_invariants": [
+        "no_liquid_error",
+        "shared_advisor_visible_on_homepage",
+        "global_shop_assistant_present",
+        "global_shop_assistant_returns_answer"
+      ],
+      "artifact": "github_actions_verification_result",
+      "workflow": ".github/workflows/live-storefront-verify.yml"
+    }
   }
 }

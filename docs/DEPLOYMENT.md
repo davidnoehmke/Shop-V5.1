@@ -1,21 +1,21 @@
 # Theme-Deployment
 
-Das kanonische Theme liegt unter `theme/` in
+Das kanonische Theme liegt im Repository-Stamm von
 [davidnoehmke/Shop-V5.1](https://github.com/davidnoehmke/Shop-V5.1).
-Dieses Repository enthält zusätzlich die Integrations-Dokumentation und
-optionale Beispiele; ein normaler Commit veröffentlicht nichts automatisch.
+Ein Merge nach `main` wird über die native Shopify-GitHub-Anbindung übernommen.
+Der separate CLI-Workflow liefert nach erfolgreicher CI in das feste Staging-Theme.
 
 ## Sicherer Standard
 
 ```bash
 git clone https://github.com/davidnoehmke/Shop-V5.1.git
 cd Shop-V5.1
-shopify theme check --path theme
-shopify theme push --unpublished --store="$SHOPIFY_STORE" --path theme
+shopify theme check --path .
+shopify theme push --theme "$SHOPIFY_STAGING_THEME_ID" --store="$SHOPIFY_STORE" --path .
 ```
 
-Das Live-Theme wird erst nach visueller Prüfung der unveröffentlichten Kopie
-und einer expliziten Freigabe angesprochen. Tokens, Shop-Domain und Theme-ID
+Die unveröffentlichte Kopie muss vor dem Merge visuell geprüft werden, da `main`
+über die native Anbindung bereits das Live-Theme aktualisiert. Tokens, Shop-Domain und Theme-ID
 gehören ausschließlich in Shopify CLI bzw. Secret-Variablen.
 
 ## Vor der Veröffentlichung

@@ -25,9 +25,8 @@ zum produktiven Datenpfad.
 
 | Pfad | Inhalt |
 | --- | --- |
-| `theme/` | Shopify Online Store 2.0 Theme |
+| `assets/`, `blocks/`, `config/`, `layout/`, `locales/`, `sections/`, `snippets/`, `templates/` | Shopify Online Store 2.0 Theme im Repository-Stamm |
 | `supabase/migrations/` | versionierte Supabase-Schema-/Policy-Änderungen |
-| `control_center/` | Legacy-/Entwicklungsartefakt; keine produktive Runtime |
 | `automation/content-agent/` | Verträge und Vorlagen für kontrollierte Content-Vorbereitung |
 | `automation/codex/` | Policy-/Delivery-Helfer und Tests für CI, kein Scheduler |
 | `.github/workflows/ci.yml` | Validierung/Tests bei PR und Push |
@@ -67,11 +66,18 @@ Ausnahmen sind nur zulässig, wenn mindestens einer dieser Punkte erfüllt ist:
 
 Jede Ausnahme folgt weiterhin: Ist-Zustand prüfen -> kleinste sichere Änderung -> CI/QA -> Live-Verifikation.
 
+Nach einem erfolgreichen `LEAF CI`-Push auf `main` prüft
+`.github/workflows/live-storefront-verify.yml` die reale Storefront nach der nativen
+Shopify-GitHub-Synchronisierung. Die Prüfung umfasst zentrale Routen, Liquid-Fehler,
+Berater und Shop-Assistent sowie öffentliche DE-/EN-Links. Das Ergebnis steht im
+zugehörigen Actions-Lauf; automatische Freeze-Tags oder Beststand-Branches werden
+nicht erzeugt.
+
 ## Entwicklung
 
 ```bash
-shopify theme check --path theme
-shopify theme push --unpublished --store="$SHOPIFY_STORE" --path theme
+shopify theme check --path .
+shopify theme push --unpublished --store="$SHOPIFY_STORE" --path .
 ```
 
 Vor einer Veröffentlichung die Checkliste in `docs/DEPLOYMENT.md` ausführen.

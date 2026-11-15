@@ -1,22 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
     "main": {
       "type": "leaferservice-product",
-      "blocks": {
-        "shipping": {
-          "type": "detail",
-          "settings": {
-            "heading": "Versand & Hinweise",
-            "text": "<p>Sorgfältig verpackt. Produktspezifische Pflege- und Anwendungshinweise findest du in der Beschreibung.</p>"
-          }
-        }
-      },
-      "block_order": [
-        "shipping"
-      ],
       "settings": {
         "show_vendor": true
       }
+    },
+    "decision": {
+      "type": "leaf-product-decision",
+      "settings": {}
+    },
+    "component_signature": {
+      "type": "leaf-component-signature",
+      "settings": {}
+    },
+    "recipe": {
+      "type": "product-recipe",
+      "settings": {}
     },
     "seo_details": {
       "type": "product-seo-details",
@@ -24,57 +37,34 @@
     },
     "cross_sell": {
       "type": "product-cross-sell",
+      "settings": {
+        "heading": "",
+        "collection": "",
+        "limit": 4
+      }
+    },
+    "loox_reviews": {
+      "type": "apps",
+      "disabled": true,
       "settings": {}
     },
-    "breadcrumbs": {
-      "type": "leaf-breadcrumbs",
-      "settings": {}
-    },
-    "decision": {
-      "type": "leaf-product-decision",
-      "settings": {}
-    },
-    "recipe": {
-      "type": "product-recipe",
-      "settings": {}
-    },
-    "trust_master": {
-      "type": "trust-bar",
+    "1793566691bdb4dc08": {
+      "type": "apps",
       "blocks": {
-        "shipping": {
-          "type": "benefit",
+        "reputon_reviews_rate_us_widget_block_UEnwD6": {
+          "type": "shopify://apps/reputon-reviews/blocks/rate-us-widget-block/5ae2d5d1-9c77-4a27-aaa7-dea75a671f2a",
           "settings": {
-            "icon": "small_batches",
-            "heading": "Kostenloser Versand",
-            "text": "Deutschlandweit ohne Versandkosten."
-          }
-        },
-        "knowledge": {
-          "type": "benefit",
-          "settings": {
-            "icon": "natural",
-            "heading": "Nachvollziehbare Produktdaten",
-            "text": "Eigenschaften, Anwendung und Rezepturen transparent erklärt."
-          }
-        },
-        "support": {
-          "type": "benefit",
-          "settings": {
-            "icon": "versatile",
-            "heading": "Persönliche Hilfe",
-            "text": "Bei Fragen zu Mischung oder Anwendung kannst du Unterstützung anfragen."
+            "widget-title": "",
+            "description": "",
+            "labelTerrible": "",
+            "labelExcellent": "",
+            "positiveRating": "4"
           }
         }
       },
       "block_order": [
-        "shipping",
-        "knowledge",
-        "support"
+        "reputon_reviews_rate_us_widget_block_UEnwD6"
       ],
-      "settings": {}
-    },
-    "component_signature": {
-      "type": "leaf-component-signature",
       "settings": {}
     }
   },
@@ -86,6 +76,7 @@
     "recipe",
     "seo_details",
     "cross_sell",
-    "trust_master"
+    "loox_reviews",
+    "1793566691bdb4dc08"
   ]
 }

@@ -1,15 +1,43 @@
 <section class="main-404 page-width">
-  <p>404</p>
+  <p class="main-404__code">404</p>
   <h1>{{ 'page_404.title' | t }}</h1>
-  <p>{{ 'page_404.text' | t }}</p>
-  <a class="main-404__button" href="{{ routes.root_url }}">{{ 'header.home' | t }}</a>
+  <p class="main-404__lead">{{ 'page_404.text' | t }}</p>
+
+  <form class="main-404__search" action="{{ routes.search_url }}" method="get" role="search">
+    <label for="Page404Search">{{ 'page_404.search_label' | t }}</label>
+    <div>
+      <input id="Page404Search" type="search" name="q" placeholder="{{ 'page_404.search_placeholder' | t | escape }}" autocomplete="off">
+      <button type="submit">{{ 'page_404.search_button' | t }}</button>
+    </div>
+  </form>
+
+  <nav class="main-404__paths" aria-label="{{ 'page_404.text' | t | escape }}">
+    <a class="main-404__path main-404__path--primary" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}#LeafAdvisor">
+      <strong>{{ 'page_404.planner' | t }}</strong>
+      <span aria-hidden="true">→</span>
+    </a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/substratwelt-pflanzsubstrate-mischungen-zusatze">{{ 'page_404.substrate' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/zimmerpflanzen-1">{{ 'page_404.plants' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}collections/interieur-solutions">{{ 'page_404.interieur' | t }}</a>
+    <a class="main-404__path" href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}blogs/leafers-nice2know-blog">{{ 'page_404.knowledge' | t }}</a>
+  </nav>
 </section>
 
 {% stylesheet %}
-  .main-404 { min-height: 65vh; display: grid; place-content: center; justify-items: center; text-align: center; }
-  .main-404 > p:first-child { margin: 0; font-size: 1rem; font-weight: 850; letter-spacing: .2em; }
-  .main-404 h1 { margin: .5rem 0; font-size: clamp(3rem, 9vw, 7rem); line-height: .95; letter-spacing: -.07em; }
-  .main-404__button { border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 1.4rem; background: var(--accent); color: #fff; font-weight: 700; text-decoration: none; }
+  .main-404 { min-height: 65vh; display: grid; align-content: center; justify-items: start; gap: .9rem; padding-block: clamp(3rem, 10vw, 7rem); }
+  .main-404__code { margin: 0; color: var(--accent); font-size: .78rem; font-weight: 850; letter-spacing: .2em; }
+  .main-404 h1 { max-width: 18ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; }
+  .main-404__lead { max-width: 62ch; margin: 0; color: var(--muted); line-height: 1.65; }
+  .main-404__search { width: min(100%, 680px); margin-top: 1rem; }
+  .main-404__search label { display: block; margin-bottom: .45rem; font-size: .76rem; font-weight: 800; }
+  .main-404__search > div { display: grid; grid-template-columns: minmax(0,1fr) auto; }
+  .main-404__search input { min-width: 0; min-height: 48px; padding: .7rem .85rem; border: 1px solid var(--border); border-right: 0; border-radius: 0; background: var(--background); color: var(--text); font: inherit; }
+  .main-404__search button { min-height: 48px; padding-inline: 1rem; border: 1px solid var(--accent); border-radius: 0; background: var(--accent); color: #fff; font-weight: 780; }
+  .main-404__paths { width: min(100%, 900px); display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .55rem; margin-top: 1rem; }
+  .main-404__path { min-height: 52px; display: flex; align-items: center; justify-content: space-between; gap: .75rem; padding: .7rem .8rem; border: 1px solid var(--border); background: var(--background); color: var(--text); font-size: .8rem; font-weight: 760; text-decoration: none; }
+  .main-404__path:hover, .main-404__path:focus-visible { border-color: var(--accent); color: var(--accent); }
+  .main-404__path--primary { grid-column: 1 / -1; border-color: var(--accent); background: color-mix(in srgb, var(--accent), transparent 94%); }
+  @media (max-width: 620px) { .main-404__paths { grid-template-columns: 1fr; } .main-404__path--primary { grid-column: auto; } }
 {% endstylesheet %}
 
 {% schema %}

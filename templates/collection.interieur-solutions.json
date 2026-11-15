@@ -12,7 +12,8 @@
     "main": {
       "type": "main-collection",
       "settings": {
-        "show_type_filters": true
+        "show_type_filters": true,
+        "brand_logo": "shopify://shop_images/leaferservice-brand-logo.png"
       }
     },
     "interieur_guide": {
@@ -64,7 +65,8 @@
         "sizes",
         "range"
       ],
-      "settings": {}
+      "settings": {},
+      "disabled": true
     },
     "breadcrumbs": {
       "type": "leaf-breadcrumbs",
@@ -73,13 +75,41 @@
     "leaf_guide": {
       "type": "leaf-collection-guide",
       "settings": {}
+    },
+    "living_edit": {
+      "type": "leaf-living-edit",
+      "settings": {
+        "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
+        "lighting": "pflanzenbeleuchtung",
+        "planters": "pflanzgefasse",
+        "substrates": "pflanzsubstrate-mischungen",
+        "help_link": "shopify://pages/individuelles-substrat"
+      }
+    },
+    "b2b": {
+      "type": "leaf-b2b-prefooter",
+      "settings": {
+        "image": "shopify://shop_images/vibia_straight_round.i2.jpg",
+        "b2b_link": "/pages/kooperationen-pflanzenprojekte",
+        "shipping_link": "/pages/versandrichtlinie"
+      }
+    },
+    "resources": {
+      "type": "leaf-world-resources",
+      "settings": {
+        "topic": "interieur",
+        "article": "leafers-nice2know-blog/interieur-solution-pflanzenraum"
+      }
     }
   },
   "order": [
     "breadcrumbs",
-    "main",
     "interieur_guide",
-    "trust",
-    "leaf_guide"
+    "resources",
+    "living_edit",
+    "main",
+    "leaf_guide",
+    "b2b",
+    "trust"
   ]
 }

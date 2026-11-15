@@ -8,8 +8,14 @@
     <div class="starter-showcase__cards">
       {% for block in section.blocks %}
         {% assign card_key = 'starter.' | append: block.settings.type %}
+        {% liquid
+          assign image_alt = block.settings.title
+          if image_alt == blank
+            assign image_alt = card_key | t
+          endif
+        %}
         <a href="{{ block.settings.link | default: routes.collections_url }}" class="starter-showcase__card" {{ block.shopify_attributes }}>
-          {% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 760 | image_tag: widths: '320, 520, 760', loading: 'lazy', alt: block.settings.title | default: card_key | t }}{% else %}<span class="starter-showcase__fallback"></span>{% endif %}
+          {% if block.settings.image != blank %}{{ block.settings.image | image_url: width: 760 | image_tag: widths: '320, 520, 760', loading: 'lazy', alt: image_alt }}{% else %}<span class="starter-showcase__fallback"></span>{% endif %}
           <span class="starter-showcase__shade"></span>
           <strong>{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ card_key | t }}{% endif %}</strong>
         </a>
@@ -22,7 +28,7 @@
   .starter-showcase { padding-bottom: clamp(3rem, 6vw, 5rem); }
   .starter-showcase__inner { padding: 1.2rem; border-radius: var(--radius); display: grid; grid-template-columns: minmax(260px, .85fr) 2fr; gap: 1.2rem; background: var(--surface); }
   .starter-showcase__intro { padding: clamp(1rem, 3vw, 2.4rem); align-self: center; }
-  .starter-showcase__intro h2 { margin: 0 0 .7rem; font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.08; }
+  .starter-showcase__intro h2 { margin: 0 0 .7rem; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; }
   .starter-showcase__intro p { color: var(--muted); }
   .starter-showcase__text > *:first-child { margin-top: 0; }
   .starter-showcase__text > *:last-child { margin-bottom: 0; }

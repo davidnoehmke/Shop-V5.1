@@ -1,0 +1,44 @@
+{% comment %}
+  Two purchase-ready products from a Shopify collection.
+  Only products with a real image, a positive listed price and availability qualify.
+  The containing section owns the styles; never publish placeholders.
+  Usage: {% render 'leaf-home-product-pairs', collection: selected_collection %}
+{% endcomment %}
+{% if collection != blank %}
+  {% assign pick_one = blank %}
+  {% assign pick_two = blank %}
+  {% for candidate in collection.products limit: 24 %}
+    {% if candidate.available and candidate.featured_image != blank and candidate.price_min > 0 %}
+      {% if pick_one == blank %}
+        {% assign pick_one = candidate %}
+      {% elsif pick_two == blank %}
+        {% assign pick_two = candidate %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+  {% if pick_one != blank %}
+    <div class="home-journey__picks" aria-label="{% if request.locale.iso_code == 'en' %}Products from this collection{% else %}Produkte dieser Kollektion{% endif %}">
+      {% for slot in (1..2) %}
+        {% assign pick = pick_one %}
+        {% if slot == 2 %}
+          {% assign pick = pick_two %}
+        {% endif %}
+        {% if pick != blank %}
+          <a class="home-journey__pick" href="{{ pick.url }}">
+            <span class="home-journey__pick-media">
+              {% assign alt_text = pick.featured_image.alt | default: pick.title %}
+              {{ pick.featured_image | image_url: width: 540 | image_tag: loading: 'lazy', widths: '180, 270, 360, 540', sizes: '(min-width: 1180px) 20vw, 38vw', alt: alt_text }}
+            </span>
+            <span class="home-journey__pick-copy">
+              <strong class="home-journey__pick-name">{{ pick.title | escape }}</strong>
+              <span class="home-journey__pick-price">
+                {% if pick.price_varies %}{% if request.locale.iso_code == 'en' %}From{% else %}Ab{% endif %} {% endif %}{{ pick.price_min | money }}
+              </span>
+              <span class="home-journey__pick-action">{% if request.locale.iso_code == 'en' %}View product{% else %}Produkt ansehen{% endif %} <span aria-hidden="true">→</span></span>
+            </span>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endif %}

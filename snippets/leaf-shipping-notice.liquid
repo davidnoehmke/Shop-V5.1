@@ -1,0 +1,30 @@
+{% doc %}
+Renders processing and transit information with product-specific exceptions.
+@param {product} [product] - Product whose shipping information is displayed.
+@param {boolean} [cart_mode] - Show a cart summary without a blanket processing promise.
+{% enddoc %}
+{% liquid
+  assign description_text = product.description | downcase
+  assign special_order = product.metafields.custom.is_special_order.value | default: false
+  if description_text contains 'bestellartikel' or description_text contains 'project/order' or description_text contains 'special-order item'
+    assign special_order = true
+  endif
+%}
+<div class="leaf-shipping-notice">
+  {% if cart_mode %}
+    <p><strong>{{ 'shipping_notice.cart_title' | t }}</strong></p>
+    <p>{{ 'shipping_notice.cart_detail' | t }}</p>
+  {% elsif product.metafields.custom.delivery_note.value != blank %}
+    <p>{{ product.metafields.custom.delivery_note.value | escape }}</p>
+  {% elsif special_order %}
+    <p><strong>{{ 'shipping_notice.special_title' | t }}</strong></p>
+    <p>{{ 'shipping_notice.special_detail' | t }}</p>
+  {% elsif product.metafields.custom.delivery_time.value != blank %}
+    <p>{{ product.metafields.custom.delivery_time.value | escape }}</p>
+  {% else %}
+    <p><strong>{{ 'shipping_notice.title' | t }}</strong></p>
+    <p>{{ 'shipping_notice.detail' | t }}</p>
+  {% endif %}
+  <p><a href="{% render 'leaf-localized-url', url: '/pages/versandrichtlinie' %}">{{ 'shipping_notice.link' | t }}</a></p>
+</div>
+

@@ -1,0 +1,30 @@
+name: Compact Mobile Typography
+
+on:
+  pull_request:
+    paths:
+      - "assets/leaf-compact-content.css"
+      - "layout/theme.liquid"
+      - "tests/compact-mobile-theme.test.mjs"
+      - ".github/workflows/compact-mobile-typography.yml"
+  push:
+    branches:
+      - "feat/compact-mobile-content-20261011"
+    paths:
+      - "assets/leaf-compact-content.css"
+      - "layout/theme.liquid"
+      - "tests/compact-mobile-theme.test.mjs"
+      - ".github/workflows/compact-mobile-typography.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compact-mobile-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out theme source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Validate typographic rules and preservation of mobile content
+        run: node --test tests/compact-mobile-theme.test.mjs

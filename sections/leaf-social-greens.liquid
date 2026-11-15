@@ -1,0 +1,272 @@
+{% liquid
+  assign contact_href = section.settings.contact_url
+  if contact_href == blank
+    assign contact_href = '/pages/contact'
+  endif
+
+  assign secondary_href = section.settings.secondary_url
+  if secondary_href == blank
+    assign secondary_href = '/pages/pflanzenwelt'
+  endif
+%}
+
+<section class="social-greens" aria-labelledby="SocialGreensTitle-{{ section.id }}">
+  <div class="page-width social-greens__hero">
+    <div class="social-greens__hero-copy">
+      <p class="social-greens__eyebrow">{{ 'social_greens.eyebrow' | t }}</p>
+      <h1 id="SocialGreensTitle-{{ section.id }}">{{ 'social_greens.title' | t }}</h1>
+      <p class="social-greens__intro">{{ 'social_greens.intro' | t }}</p>
+      <div class="social-greens__actions">
+        <a class="button" href="{{ contact_href }}">{{ 'social_greens.cta_primary' | t }}</a>
+        <a class="social-greens__text-link" href="{{ secondary_href }}">
+          {{ 'social_greens.cta_secondary' | t }}
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11M11 6l4 4-4 4"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="social-greens__principles" aria-label="{{ 'social_greens.principles_label' | t }}">
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'layers' %}</span>
+        <div>
+          <strong>{{ 'social_greens.ek_value' | t }}</strong>
+          <span>{{ 'social_greens.ek_label' | t }}</span>
+        </div>
+      </article>
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'support' %}</span>
+        <div>
+          <strong>{{ 'social_greens.work_value' | t }}</strong>
+          <span>{{ 'social_greens.work_label' | t }}</span>
+        </div>
+      </article>
+      <article class="social-greens__principle">
+        <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'sprout' %}</span>
+        <div>
+          <strong>{{ 'social_greens.margin_value' | t }}</strong>
+          <span>{{ 'social_greens.margin_label' | t }}</span>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <div class="page-width social-greens__body">
+    <section class="social-greens__audience" aria-labelledby="SocialGreensAudience-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{{ 'social_greens.audience_eyebrow' | t }}</p>
+        <h2 id="SocialGreensAudience-{{ section.id }}">{{ 'social_greens.audience_heading' | t }}</h2>
+        <p>{{ 'social_greens.audience_intro' | t }}</p>
+      </div>
+      <div class="social-greens__chips">
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'sprout' %}{{ 'social_greens.audience_kitas' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'care' %}{{ 'social_greens.audience_care' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'support' %}{{ 'social_greens.audience_inclusion' | t }}</span>
+        <span>{% render 'leaf-knowledge-icon', icon_key: 'room' %}{{ 'social_greens.audience_community' | t }}</span>
+      </div>
+    </section>
+
+    <section class="social-greens__process" aria-labelledby="SocialGreensProcess-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{{ 'social_greens.process_eyebrow' | t }}</p>
+        <h2 id="SocialGreensProcess-{{ section.id }}">{{ 'social_greens.process_heading' | t }}</h2>
+      </div>
+      <ol class="social-greens__steps">
+        <li>
+          <span class="social-greens__step-number">01</span>
+          <div><h3>{{ 'social_greens.step_1_title' | t }}</h3><p>{{ 'social_greens.step_1_text' | t }}</p></div>
+        </li>
+        <li>
+          <span class="social-greens__step-number">02</span>
+          <div><h3>{{ 'social_greens.step_2_title' | t }}</h3><p>{{ 'social_greens.step_2_text' | t }}</p></div>
+        </li>
+        <li>
+          <span class="social-greens__step-number">03</span>
+          <div><h3>{{ 'social_greens.step_3_title' | t }}</h3><p>{{ 'social_greens.step_3_text' | t }}</p></div>
+        </li>
+      </ol>
+    </section>
+
+
+    <section class="social-greens__enterprise" id="social-greens-projects" aria-labelledby="SGProjects-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{% if request.locale.iso_code == 'en' %}Project explorer{% else %}Projektkompass{% endif %}</p>
+        <h2 id="SGProjects-{{ section.id }}">{% if request.locale.iso_code == 'en' %}A greener space starts with a plan.{% else %}Ein grüner Ort beginnt mit einem Plan.{% endif %}</h2>
+        <p>{% if request.locale.iso_code == 'en' %}Explore potential formats for social organisations. Examples are concepts, not confirmed projects or partnerships.{% else %}Entdecke mögliche Formate für soziale Einrichtungen. Die Beispiele sind Konzepte, keine bestätigten Projekte oder Partnerschaften.{% endif %}</p>
+      </div>
+      <div class="social-greens__filters" role="group" aria-label="{% if request.locale.iso_code == 'en' %}Project categories{% else %}Projektkategorien{% endif %}">
+        <button type="button" data-sg-filter="all" aria-pressed="true">{% if request.locale.iso_code == 'en' %}All{% else %}Alle{% endif %}</button>
+        <button type="button" data-sg-filter="education" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Education{% else %}Bildung{% endif %}</button>
+        <button type="button" data-sg-filter="care" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Care{% else %}Pflege{% endif %}</button>
+        <button type="button" data-sg-filter="community" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Community{% else %}Gemeinschaft{% endif %}</button>
+      </div>
+      <div class="social-greens__projects">
+        {% for block in section.blocks %}
+          {% if block.type == 'project' %}
+            {% liquid
+              assign project_heading = block.settings.title_de
+              assign project_copy = block.settings.text_de
+              if request.locale.iso_code == 'en'
+                assign project_heading = block.settings.title_en | default: project_heading
+                assign project_copy = block.settings.text_en | default: project_copy
+              endif
+            %}
+            <article class="social-greens__project" data-sg-category="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                <figure class="social-greens__project-visual">
+                  {{ block.settings.image | image_url: width: 900 | image_tag: widths: '320, 520, 720, 900', sizes: '(max-width: 700px) 92vw, 30vw', loading: 'lazy', alt: project_heading }}
+                  {% if block.settings.is_illustration %}
+                    <figcaption class="social-greens__image-disclaimer">{% if request.locale.iso_code == 'en' %}AI-generated illustrative image – not a photo of a real project{% else %}KI-generiertes Symbolbild – kein reales Projektfoto{% endif %}</figcaption>
+                  {% endif %}
+                </figure>
+              {% endif %}
+              <div class="social-greens__project-copy">
+                <span>{% if request.locale.iso_code == 'en' %}Concept idea{% else %}Konzeptidee{% endif %}</span>
+                <h3>{{ project_heading | escape }}</h3>
+                <p>{{ project_copy | escape }}</p>
+                <a href="{% render 'leaf-localized-url', url: contact_href %}">{% if request.locale.iso_code == 'en' %}Ask about this idea{% else %}Idee anfragen{% endif %} →</a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p data-sg-empty hidden>{% if request.locale.iso_code == 'en' %}No concepts in this category yet.{% else %}Noch keine Konzepte in dieser Kategorie hinterlegt.{% endif %}</p>
+    </section>
+
+    <section class="social-greens__impact" aria-labelledby="SGImpact-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{% if request.locale.iso_code == 'en' %}Project responsibility{% else %}Projektverantwortung{% endif %}</p>
+        <h2 id="SGImpact-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Transparent from first idea to handover.{% else %}Transparent von der Idee bis zur Übergabe.{% endif %}</h2>
+      </div>
+      <div class="social-greens__impact-grid">
+        <article><strong>01</strong><h3>{% if request.locale.iso_code == 'en' %}Site check{% else %}Standortanalyse{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}Light, access, safety and maintenance responsibilities are assessed.{% else %}Licht, Zugänglichkeit, Sicherheit und Pflegeverantwortung prüfen.{% endif %}</p></article>
+        <article><strong>02</strong><h3>{% if request.locale.iso_code == 'en' %}Budget clarity{% else %}Budgetklarheit{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}Materials and external costs are listed before approval.{% else %}Materialien und Fremdkosten vor der Freigabe auflisten.{% endif %}</p></article>
+        <article><strong>03</strong><h3>{% if request.locale.iso_code == 'en' %}Care plan{% else %}Pflegeplan{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}A clear handover makes long-term care easier.{% else %}Eine verständliche Übergabe erleichtert die langfristige Pflege.{% endif %}</p></article>
+      </div>
+    </section>
+
+    <aside class="social-greens__cost-note">
+      <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'leaf' %}</span>
+      <div>
+        <h2>{{ 'social_greens.cost_heading' | t }}</h2>
+        <p>{{ 'social_greens.cost_text' | t }}</p>
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% stylesheet %}
+  .social-greens { --sg-line: color-mix(in srgb, var(--border), transparent 8%); padding-bottom: clamp(4rem, 9vw, 8rem); }
+  .social-greens__hero { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr); gap: clamp(2.5rem, 7vw, 7rem); align-items: end; padding-block: clamp(4rem, 9vw, 8rem) clamp(3rem, 7vw, 6rem); }
+  .social-greens__hero-copy { max-width: 760px; }
+  .social-greens__eyebrow { margin: 0 0 .85rem; color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
+  .social-greens h1 { max-width: 28ch; margin: 0; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; text-wrap: balance; }
+  .social-greens__intro { max-width: 62ch; margin: 1.5rem 0 0; color: var(--muted); font-size: clamp(1.05rem, 1.6vw, 1.25rem); line-height: 1.65; }
+  .social-greens__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem; margin-top: 2rem; }
+  .social-greens__text-link { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; color: var(--text); font-weight: 720; text-decoration: none; }
+  .social-greens__text-link:hover { color: var(--accent); }
+  .social-greens__text-link svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__principles { border-top: 1px solid var(--sg-line); }
+  .social-greens__principle { display: grid; grid-template-columns: 38px 1fr; gap: .85rem; align-items: center; padding: 1.1rem 0; border-bottom: 1px solid var(--sg-line); }
+  .social-greens__principle strong, .social-greens__principle span { display: block; }
+  .social-greens__principle strong { font-family: var(--heading-font); font-size: clamp(1.25rem, 2vw, 1.65rem); letter-spacing: -.025em; }
+  .social-greens__principle div > span { margin-top: .15rem; color: var(--muted); font-size: .9rem; }
+  .social-greens__icon { width: 34px; height: 34px; display: grid; place-items: center; color: var(--accent); }
+  .social-greens__icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__body { display: grid; gap: clamp(4rem, 9vw, 8rem); }
+  .social-greens__audience, .social-greens__process { display: grid; grid-template-columns: minmax(240px, .7fr) minmax(0, 1.3fr); gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .social-greens__section-heading h2, .social-greens__cost-note h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); line-height: 1.2; letter-spacing: -.025em; }
+  .social-greens__section-heading > p:last-child { max-width: 54ch; margin: 1rem 0 0; color: var(--muted); line-height: 1.65; }
+
+  .social-greens__chips { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--sg-line); }
+  .social-greens__chips > span { min-height: 76px; display: flex; align-items: center; gap: .75rem; padding: 1rem 0; border-bottom: 1px solid var(--sg-line); font-weight: 700; }
+  .social-greens__chips > span:nth-child(odd) { padding-right: 1.25rem; }
+  .social-greens__chips > span:nth-child(even) { padding-left: 1.25rem; border-left: 1px solid var(--sg-line); }
+  .social-greens__chips svg { width: 22px; height: 22px; flex: 0 0 auto; fill: none; stroke: var(--accent); stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+
+  .social-greens__steps { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--sg-line); }
+  .social-greens__steps li { display: grid; grid-template-columns: 62px 1fr; gap: 1rem; padding: 1.5rem 0; border-bottom: 1px solid var(--sg-line); }
+  .social-greens__step-number { color: var(--accent); font: 800 .75rem/1 ui-sans-serif, system-ui, sans-serif; letter-spacing: .08em; }
+  .social-greens__steps h3 { margin: -.2rem 0 .4rem; font-size: clamp(1.1rem, 2.2vw, 1.35rem); letter-spacing: -.025em; }
+  .social-greens__steps p { max-width: 62ch; margin: 0; color: var(--muted); line-height: 1.65; }
+
+  .social-greens__cost-note { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 1rem; max-width: 920px; padding-top: 1.6rem; border-top: 1px solid var(--sg-line); }
+  .social-greens__cost-note h2 { font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
+  .social-greens__cost-note p { max-width: 70ch; margin: .8rem 0 0; color: var(--muted); line-height: 1.65; }
+
+  .social-greens__enterprise,.social-greens__impact{display:grid;gap:1.4rem;scroll-margin-top:100px}
+  .social-greens__filters{display:flex;flex-wrap:wrap;gap:.6rem}
+  .social-greens__filters button{min-height:44px;padding:.7rem 1rem;border:1px solid var(--sg-line);border-radius:999px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+  .social-greens__filters button[aria-pressed="true"]{background:var(--accent);color:#fff}
+  .social-greens__filters button:focus-visible,.social-greens__project a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .social-greens__projects,.social-greens__impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+  .social-greens__project{min-width:0;border:1px solid var(--sg-line);background:var(--surface)}
+  .social-greens__project[hidden]{display:none}
+  .social-greens__project-visual{margin:0}
+  .social-greens__project-visual img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+  .social-greens__image-disclaimer{padding:.65rem .9rem;background:color-mix(in srgb,var(--accent),transparent 94%);font-size:.75rem;line-height:1.45;color:var(--text);border-bottom:1px solid var(--sg-line)}
+  .social-greens__project-copy{padding:1.25rem}
+  .social-greens__project-copy>span{color:var(--muted);font-size:.75rem;text-transform:uppercase}
+  .social-greens__project h3{margin:.5rem 0;font-size:1.25rem}
+  .social-greens__project p,.social-greens__impact p{color:var(--muted);line-height:1.65}
+  .social-greens__project a{display:inline-flex;align-items:center;min-height:44px;font-weight:700;color:var(--accent)}
+  .social-greens__impact article{padding:1.3rem;border-top:2px solid var(--accent);background:color-mix(in srgb,var(--accent),transparent 95%)}
+  .social-greens__impact strong{font-size:.8rem;color:var(--accent)}
+  .social-greens__impact h3{margin:.75rem 0}
+  @media(max-width:760px){.social-greens__projects,.social-greens__impact-grid{grid-template-columns:1fr}.social-greens__filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width: 900px) {
+    .social-greens__hero, .social-greens__audience, .social-greens__process { grid-template-columns: 1fr; }
+    .social-greens__hero { align-items: start; }
+    .social-greens__principles { max-width: 620px; }
+  }
+  @media (max-width: 560px) {
+    .social-greens__hero { padding-top: 3rem; }
+    .social-greens h1 { font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
+    .social-greens__chips { grid-template-columns: 1fr; }
+    .social-greens__chips > span:nth-child(odd), .social-greens__chips > span:nth-child(even) { padding-inline: 0; border-left: 0; }
+    .social-greens__steps li { grid-template-columns: 46px 1fr; }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+(() => {
+  const init = scope => scope.querySelectorAll('.social-greens__enterprise').forEach(section => {
+    if (section.dataset.initialized) return;
+    section.dataset.initialized = 'true';
+    const buttons = [...section.querySelectorAll('[data-sg-filter]')];
+    const cards = [...section.querySelectorAll('[data-sg-category]')];
+    const empty = section.querySelector('[data-sg-empty]');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.sgFilter;
+      buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      let shown = 0;
+      cards.forEach(card => { card.hidden = filter !== 'all' && card.dataset.sgCategory !== filter; if (!card.hidden) shown++; });
+      if (empty) empty.hidden = shown !== 0;
+    }));
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init(document), {once:true});
+  else init(document);
+  document.addEventListener('shopify:section:load', e => init(e.target));
+})();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Social Greens",
+  "settings": [
+    { "type": "url", "id": "contact_url", "label": "Projektanfrage-Link" },
+    { "type": "url", "id": "secondary_url", "label": "Sekundärer Link" }
+  ],
+  "blocks": [{"type":"project","name":"Projektidee","limit":9,"settings":[
+    {"type":"select","id":"category","label":"Zielgruppe","default":"community","options":[{"value":"education","label":"Bildung"},{"value":"care","label":"Pflege"},{"value":"community","label":"Gemeinschaft"}]},
+    {"type":"image_picker","id":"image","label":"Optionales Bild"},
+    {"type":"checkbox","id":"is_illustration","label":"Bild als KI-Symbolbild kennzeichnen","default":true},
+    {"type":"text","id":"title_de","label":"Titel DE"},
+    {"type":"text","id":"title_en","label":"Titel EN"},
+    {"type":"textarea","id":"text_de","label":"Beschreibung DE"},
+    {"type":"textarea","id":"text_en","label":"Beschreibung EN"}
+  ]}],
+  "presets": [{ "name": "Social Greens" }]
+}
+{% endschema %}

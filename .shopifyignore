@@ -6,3 +6,6 @@ automation/
 .gitignore
 .theme-check.yml
 .shopifyignore
+
+# Headless sources and build dependencies are not theme assets.
+headless/

@@ -130,3 +130,16 @@ Internal strategy is not part of that public payload. Keep these outside storefr
 - unpublished candidate evaluation.
 
 Visible customer copy is necessarily public. The protected boundary is the internal derivation and strategy, not the final content users and search engines must receive.
+
+
+## Unified guidance contract
+
+Customer guidance uses one shared LEAF advisor shell instead of a separate configurator identity for every collection.
+
+- Collection pages provide context to the same advisor.
+- Product pages link back into that shared advisor.
+- Specialist tools such as substrate sliders, lighting planning or room builders remain advanced modes, not separate primary navigation systems.
+- Mobile guidance presents one decision at a time, keeps touch targets large and persists non-personal selections locally so a customer can continue later.
+- Matching runs locally in the browser against the public product projection; ordinary input changes never require a server roundtrip.
+- Supplier names, prices, procurement notes and commercial approval data are not customer-guidance inputs unless they are explicitly public product facts.
+- Public supplier technical facts must be stored structurally in Supabase, projected to Shopify metafields and rendered dynamically. Do not hard-code supplier-specific product claims into theme templates.

@@ -1,0 +1,40 @@
+name: VENSO collection landing quality
+
+on:
+  pull_request:
+    paths:
+      - 'sections/venso-brand-landing.liquid'
+      - 'templates/collection.venso.json'
+      - 'automation/codex/venso-collection.test.cjs'
+      - '.github/workflows/venso-collection-quality.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'sections/venso-brand-landing.liquid'
+      - 'templates/collection.venso.json'
+      - 'automation/codex/venso-collection.test.cjs'
+      - '.github/workflows/venso-collection-quality.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: VENSO Liquid, template and locale check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+      - name: Check Shopify Liquid theme
+        run: |
+          gem install theme-check
+          theme-check . --fail-level error
+      - name: Check VENSO collection invariants
+        run: |
+          jq -e '.sections.venso.type == "venso-brand-landing"' templates/collection.venso.json
+          node --test automation/codex/venso-collection.test.cjs

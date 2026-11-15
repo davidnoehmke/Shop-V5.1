@@ -1,0 +1,86 @@
+{% if collection.handle == 'pflanzsubstrate-mischungen' %}
+{% paginate collection.products by 24 %}
+<section class="mix-showcase page-width" aria-labelledby="MixHeading-{{ section.id }}">
+  <header class="mix-showcase__intro">
+    <p class="mix-showcase__eyebrow">{{ 'mix_highlights.eyebrow' | t }}</p>
+    <h1 id="MixHeading-{{ section.id }}">{{ 'mix_highlights.heading' | t }}</h1>
+    <p>{{ 'mix_highlights.intro' | t }}</p>
+  </header>
+  <nav class="mix-showcase__jump" aria-label="{{ 'mix_highlights.jump' | t | escape }}">
+    {% for product in collection.products %}
+      <a href="#Mix-{{ section.id }}-{{ product.id }}">{{ product.title | escape }}</a>
+    {% endfor %}
+  </nav>
+  <div class="mix-showcase__products" id="CollectionProducts-{{ section.id }}">
+    {% for product in collection.products %}
+      {% render 'substrate-mix-highlight', product: product, section_id: section.id, index: forloop.index %}
+    {% endfor %}
+  </div>
+  {% if paginate.pages > 1 %}<nav aria-label="{{ 'general.pagination' | t | escape }}">{{ paginate | default_pagination }}</nav>{% endif %}
+  {% assign configurator = all_products['leafer-substrat-konfigurator'] %}
+  {% assign components = collections['substrate-verbesserer'] %}
+  {% if configurator != blank or components != blank %}
+    <aside class="mix-showcase__custom" aria-labelledby="MixCustomHeading-{{ section.id }}">
+      <div>
+        <h2 id="MixCustomHeading-{{ section.id }}">{{ 'mix_highlights.configure_heading' | t }}</h2>
+        <p>{{ 'mix_highlights.configure_text' | t }}</p>
+      </div>
+      <div class="mix-showcase__custom-actions">
+        {% if configurator != blank %}<a class="button" href="{{ configurator.url }}">{{ 'mix_highlights.configure_cta' | t }}</a>{% endif %}
+        {% if components != blank %}<a class="mix-showcase__text-link" href="{{ components.url }}">{{ 'mix_highlights.components_cta' | t }} <span aria-hidden="true">→</span></a>{% endif %}
+      </div>
+    </aside>
+  {% endif %}
+  {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
+</section>
+{% endpaginate %}
+{% endif %}
+
+{% stylesheet %}
+.mix-showcase{padding-block:clamp(1.5rem,4vw,4rem) clamp(3rem,6vw,6rem)}
+.mix-showcase__intro{max-width:780px;margin-bottom:1.5rem}
+.mix-showcase__eyebrow,.mix-highlight__eyebrow{display:flex;justify-content:space-between;gap:1rem;color:var(--accent);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.mix-showcase h1{font-size:clamp(1.8rem,3.8vw,3.5rem);letter-spacing:-.04em;line-height:1.08;margin:.75rem 0 1rem;max-width:24ch}
+.mix-showcase__intro>p:last-child,.mix-showcase__custom p{color:var(--muted);line-height:1.65;font-size:.95rem}
+.mix-showcase__jump{display:flex;gap:.6rem;overflow-x:auto;padding:.5rem 0 1.5rem;margin-bottom:1rem;scrollbar-width:thin}
+.mix-showcase__jump a{flex:0 0 auto;max-width:32ch;padding:.75rem 1rem;border-bottom:2px solid var(--accent);background:var(--surface);color:var(--text);text-decoration:none;font-size:.78rem;line-height:1.4}
+.mix-highlight{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(1.5rem,4vw,4rem);align-items:start;padding-block:clamp(2rem,5vw,4rem);border-top:1px solid var(--border);scroll-margin-top:6rem}
+.mix-highlight__media{display:block;aspect-ratio:1;overflow:hidden;background:var(--surface)}
+.mix-highlight__media img{display:block;width:100%;height:100%;object-fit:contain;padding:clamp(.75rem,2vw,1.5rem);transition:transform .45s ease}
+.mix-highlight__body{min-width:0}
+.mix-highlight h2{font-size:clamp(1.4rem,2.6vw,2.4rem);line-height:1.15;letter-spacing:-.03em;margin:.8rem 0 1rem}
+.mix-highlight h2 a{color:inherit;text-decoration:none}
+.mix-highlight__intro{font-size:.95rem;line-height:1.65;color:var(--muted)}
+.mix-highlight__suitable{font-size:.85rem;line-height:1.6;margin-block:1rem}
+.mix-highlight__suitable strong{display:block;font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem}
+.mix-highlight__price{font-weight:750;font-size:1.5rem;margin:1rem 0 .4rem;letter-spacing:-.03em}
+.mix-highlight__tax{font-size:.72rem;line-height:1.5;color:var(--muted);margin:0 0 1.2rem}
+.mix-highlight__tax a{color:inherit;text-underline-offset:.2em}
+.mix-highlight__form{display:grid;gap:.65rem;margin:1rem 0}
+.mix-highlight__form label{font-size:.8rem;font-weight:650}
+.mix-highlight__form select{min-width:0;width:100%;min-height:48px;padding:.8rem;background:var(--background);border:1px solid var(--border);color:var(--text);font:inherit;font-size:.85rem;border-radius:0}
+.mix-highlight__form .button{width:100%;min-height:48px;justify-content:center;text-align:center}
+.mix-highlight__error{color:var(--text);font-size:.85rem}
+.mix-highlight__details{border-top:1px solid var(--border)}
+.mix-highlight__details summary{display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none;cursor:pointer;padding:1rem 0;font-size:.85rem;font-weight:650}
+.mix-highlight__details summary::-webkit-details-marker{display:none}
+.mix-highlight__details summary::after{content:'+';font-size:1.15rem}
+.mix-highlight__details[open] summary::after{content:'−'}
+.mix-highlight__details-body{padding-bottom:1rem;color:var(--muted);font-size:.85rem;line-height:1.65;overflow-wrap:anywhere}
+.mix-highlight__details-body h1,.mix-highlight__details-body h2,.mix-highlight__details-body h3{font-size:1rem;line-height:1.4;letter-spacing:normal}
+.mix-highlight__details-body ul{padding-left:1.2rem}
+.mix-highlight__details-body img{max-width:100%;height:auto}
+.mix-highlight__details-body table{display:block;max-width:100%;overflow-x:auto}
+.mix-showcase__text-link{display:inline-block;color:var(--accent);text-underline-offset:.2em;font-size:.85rem;font-weight:650;margin-block:.7rem}
+.mix-showcase__custom{display:flex;justify-content:space-between;align-items:center;gap:2rem;padding:clamp(1.25rem,3vw,3rem);margin:2rem 0;background:var(--surface)}
+.mix-showcase__custom h2{font-size:clamp(1.2rem,2vw,1.7rem);margin:0}
+.mix-showcase__custom-actions{display:flex;flex-direction:column;align-items:flex-start;gap:.5rem;flex-shrink:0}
+.mix-showcase :focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+@media(min-width:901px){.mix-highlight:nth-child(even) .mix-highlight__media{order:2}.mix-highlight:nth-child(even) .mix-highlight__body{order:1}}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){.mix-highlight__media:hover img{transform:scale(1.045)}}
+@media(max-width:900px){.mix-highlight{grid-template-columns:minmax(0,1fr)}.mix-highlight__media{aspect-ratio:4/3}.mix-showcase__custom{flex-direction:column;align-items:stretch}.mix-showcase__custom-actions{align-items:stretch}.mix-showcase h1{font-size:clamp(1.65rem,6vw,2.2rem)}.mix-highlight h2{font-size:1.4rem}}
+{% endstylesheet %}
+
+{% schema %}
+{"name":"Substrat-Highlights","settings":[],"presets":[{"name":"Substrat-Highlights"}]}
+{% endschema %}

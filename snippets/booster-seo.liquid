@@ -240,7 +240,7 @@ Title and Description
 {%- endcomment -%}
 {%- if ba_secondary_market -%}
   {%- comment -%} Secondary market: serve the native translated title untouched, unless the theme already emits its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_title -%}<title>{{ page_title | escape_once }}</title>{%- endunless -%}
+  {%- unless leaf_emits_native_title -%}<title>{{ page_title | escape_once }}</title>{%- endunless -%}
 {%- elsif booster_title != blank -%}
   {%- assign booster_title = booster_title | replace: "[title]", booster_item.title -%}
   {%- if baType == 'product' -%}
@@ -257,16 +257,14 @@ Title and Description
   <title>{{ booster_title | escape_once }}</title>
 {%- else -%}
   {%- comment -%} No Booster-managed title (meta off): emit the default page_title only when the theme is not already outputting its own, else we duplicate it. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_title -%}
+  {%- unless leaf_emits_native_title -%}
   <title>{{ page_title -}}
   {%- if current_tags -%} –
   {%- assign meta_tags = current_tags | join: ', ' -%}
-  {%- assign translated_tags = 'general.meta.tags' | t: tags: meta_tags -%}
-  {%- if translated_tags contains 'translation missing' -%} {{ meta_tags}}{%- else -%} {{ translated_tags }}{%- endif -%}
+  {{ 'general.meta.tags' | t: tags: meta_tags }}
   {%- endif -%}
   {%- if current_page != 1 -%} –
-  {%- assign translated_page = 'general.meta.page' | t: page: current_page -%}
-  {%- if translated_page contains 'translation missing' or translated_page contains 'I18n Error' -%} {{ current_page }}{%- else -%} {{ translated_page }}{%- endif -%}
+  {{ 'general.meta.page' | t: page: current_page }}
   {%- endif -%}
   </title>
   {%- endunless -%}
@@ -290,7 +288,7 @@ Title and Description
 {%- endcomment -%}
 {%- if ba_secondary_market -%}
   {%- comment -%} Secondary market: serve the native translated description untouched, unless the theme already emits its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_desc -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
+  {%- unless leaf_emits_native_description -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
 {%- elsif booster_desc != blank -%}
   {%- assign formatted_price = product.variants[0].price | money -%}
   {%- assign booster_desc = booster_desc | replace: "[description]", booster_item.description -%}
@@ -306,7 +304,7 @@ Title and Description
   <meta name="description" content="{{ booster_desc | strip | strip_newlines | escape_once }}" />
 {%- else -%}
   {%- comment -%} No Booster-managed description (meta off): emit the default only when the theme is not already outputting its own. {%- endcomment -%}
-  {%- unless booster_config.theme_has_native_desc -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
+  {%- unless leaf_emits_native_description -%}<meta name="description" content="{{ page_description | strip | strip_newlines | escape_once }}" />{%- endunless -%}
 {%- endif -%}
 {%- comment -%}booster:desc:end{%- endcomment -%}
 
@@ -332,9 +330,6 @@ Organization and Website Schema Markup
     {%- unless logo_url == blank -%}
       "image": "{{ logo_url | remove: "\" }}",
       "logo": "{{ logo_url | remove: "\" }}",
-    {%- else -%}
-      "image": "https:{{ 'logo.png' | asset_url }}",
-      "logo": "https:{{ 'logo.png' | asset_url }}",
     {%- endunless -%}
     "sameAs": ["{{ booster_config.same_as | join: '", "'}}"],
     "telephone": "{{ shop.phone }}",
@@ -864,7 +859,9 @@ Collection (CollectionPage + ItemList) and Breadcrumb Schema Markup
     "name": {{ article.title | json }},
     "publisher": {
       "@type": "Organization",
-      "logo": {"@type": "ImageObject","url": "https:{{ 'logo.png' | asset_url }}"},
+      {%- unless logo_url == blank -%}
+        "logo": {"@type": "ImageObject","url": {{ logo_url | json }}},
+      {%- endunless -%}
       "name": {{ shop.name | json }}
     },
     "headline": {{ article.title | json }},
@@ -952,3 +949,4 @@ all other Booster schema.
   {%- endif -%}
 {%- endif -%}
 <!-- end of Booster Apps SEO -->
+

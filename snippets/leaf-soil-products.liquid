@@ -1,0 +1,23 @@
+{% doc %}
+  Compact product guidance for the soil globe, using projected product content.
+{% enddoc %}
+<leaf-soil-products>
+  <template>
+    <details class="soil-products">
+      <summary data-soil-label="heading">{{ 'soil_globe_products.heading' | t }}</summary>
+      <p class="soil-products__note" data-soil-label="note">{{ 'soil_globe_products.note' | t }}</p>
+      {% assign soil_handles = 'leaferpinienrinde-premium-pinienrinde,leaferlavatm-premium-lavagranulat,seramis-spezial-substrat-fur-orchideen' | split: ',' %}
+      {% for soil_handle in soil_handles %}
+        {% assign soil_product = all_products[soil_handle] %}
+        {% if soil_product != blank %}
+          <article class="soil-products__item" data-soil-product="{{ forloop.index0 }}">
+            <h3>{{ soil_product.title | escape }}</h3>
+            <p>{{ soil_product.metafields.leafer.intro.value | default: soil_product.description | strip_html | escape }}</p>
+            <a href="{{ soil_product.url }}"><span data-soil-label="link">{{ 'soil_globe_products.link' | t }}</span><span aria-hidden="true"> ↗</span></a>
+          </article>
+        {% endif %}
+      {% endfor %}
+    </details>
+  </template>
+</leaf-soil-products>
+<script src="{{ 'leaf-soil-products.js' | asset_url }}" defer="defer"></script>

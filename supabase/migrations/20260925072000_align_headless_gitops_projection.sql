@@ -3,8 +3,8 @@
 
 update public.commerce_ssot_policy
 set
-  projection_systems = '["github","shopify"]'::jsonb,
-  conflict_policy = 'github_pr_ci_merge_required_for_storefront_structure; freeze_except_verified_bug_or_search_analytics_evidence_with_explicit_owner_approval',
+  projection_systems = '["shopify","custom_storefront"]'::jsonb,
+  conflict_policy = 'github_code_wins; supabase_supplies_content_and_presentation_contract; shopify_is_current_deployment_target; no_unreviewed_theme_editor_drift',
   updated_at = now()
 where entity_type = 'storefront_structure';
 
