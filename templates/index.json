@@ -312,9 +312,67 @@
         "heading": "Pflanzenpflege beginnt im Wurzelraum.",
         "text": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>"
       }
+    },
+    "leaf_conversion": {
+      "type": "leaf-conversion-home",
+      "blocks": {
+        "cat_lighting": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzenbeleuchtung"
+          }
+        },
+        "cat_substrates": {
+          "type": "category",
+          "settings": {
+            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze"
+          }
+        },
+        "cat_planters": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzgefasse"
+          }
+        },
+        "cat_seed": {
+          "type": "category",
+          "settings": {
+            "collection": "anzucht-aussaat"
+          }
+        },
+        "prod_venso": {
+          "type": "product",
+          "settings": {
+            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
+          }
+        },
+        "prod_alocasia": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-alocasia-mix"
+          }
+        },
+        "prod_elho": {
+          "type": "product",
+          "settings": {
+            "product": "elho-b-for-soft-round"
+          }
+        }
+      },
+      "block_order": [
+        "cat_lighting",
+        "cat_substrates",
+        "cat_planters",
+        "cat_seed",
+        "prod_venso",
+        "prod_alocasia",
+        "prod_elho"
+      ],
+      "settings": {}
     }
   },
   "order": [
+    "leaf_conversion",
     "leaf_worlds",
     "visual_shop",
     "trust",
