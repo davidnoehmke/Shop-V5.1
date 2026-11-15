@@ -68,3 +68,24 @@ html.leaf-motion-ready .template-index [data-leaf-reveal].is-visible { opacity: 
 @media (prefers-reduced-motion: reduce) {
   html.leaf-motion-ready .template-index [data-leaf-reveal] { opacity: 1; transform: none; transition: none; }
 }
+
+/* Accessible interactions and responsive polish: scoped to homepage. */
+.template-index .featured__header > a:focus-visible,
+.template-index .hero__buttons .button:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .template-index .hero__buttons { flex-wrap: wrap; }
+  .template-index .hero__buttons .button {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .template-index .featured__header > a,
+  .template-index .trust-bar__item,
+  .template-index .faq details { transition: none; }
+}
