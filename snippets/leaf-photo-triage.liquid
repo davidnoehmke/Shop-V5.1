@@ -1,0 +1,73 @@
+{% comment %}
+  LEAFerservice plant photo triage — privacy-first UI scaffold.
+  This component does NOT upload images or claim an AI diagnosis.
+  An authenticated, consent-gated analysis endpoint must be implemented before enabling remote analysis.
+{% endcomment %}
+<section class="leaf-photo-triage" aria-labelledby="leaf-photo-title">
+  <h2 id="leaf-photo-title">Pflanzenfoto prüfen</h2>
+  <p>Ein Foto kann sichtbare Symptome zeigen, aber Lichtmangel, Staunässe und Nährstoffprobleme nicht sicher unterscheiden. Wähle ein Symptom und beantworte die Rückfragen.</p>
+  <label for="leaf-photo-file">Optional: Pflanzenfoto auswählen (bleibt auf deinem Gerät)</label>
+  <input id="leaf-photo-file" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="leaf-photo-privacy">
+  <p id="leaf-photo-privacy">Keine Übertragung oder Speicherung. Eine automatische KI-Bildanalyse ist noch nicht aktiviert.</p>
+  <img class="leaf-photo-triage__preview" alt="Vorschau des ausgewählten Pflanzenfotos" hidden>
+  <label for="leaf-photo-symptom">Was beobachtest du?</label>
+  <select id="leaf-photo-symptom">
+    <option value="">Bitte auswählen</option>
+    <option value="yellow">Gelbe Blätter</option>
+    <option value="brown">Braune Blattspitzen</option>
+    <option value="droop">Hängende Blätter</option>
+  </select>
+  <label for="leaf-photo-soil">Wie fühlt sich die Erde an?</label>
+  <select id="leaf-photo-soil">
+    <option value="unknown">Weiß ich nicht</option>
+    <option value="wet">Länger feucht</option>
+    <option value="dry">Sehr trocken</option>
+    <option value="normal">Leicht feucht</option>
+  </select>
+  <p class="leaf-photo-triage__result" role="status" aria-live="polite">Wähle ein Symptom für erste Hinweise.</p>
+</section>
+<style>
+  .leaf-photo-triage{max-width:800px;margin:2rem auto;padding:clamp(1rem,3vw,2rem);border:1px solid #cbd9ce;border-radius:18px;background:#f7f8f3;color:#24352b}
+  .leaf-photo-triage label{display:block;font-weight:600;margin:1rem 0 .4rem}
+  .leaf-photo-triage select,.leaf-photo-triage input{max-width:100%;width:100%;padding:.75rem;border:1px solid #819888;border-radius:8px;background:white;color:#24352b}
+  .leaf-photo-triage__preview{max-width:100%;max-height:320px;object-fit:contain;margin-top:1rem;border-radius:8px}
+  .leaf-photo-triage__result{margin-top:1.25rem;padding:1rem;border-left:3px solid #718c78;background:white}
+</style>
+<script>
+(() => {
+  const root = document.querySelector('.leaf-photo-triage');
+  if (!root || root.dataset.ready) return;
+  root.dataset.ready = 'true';
+  const file = root.querySelector('#leaf-photo-file');
+  const preview = root.querySelector('.leaf-photo-triage__preview');
+  const symptom = root.querySelector('#leaf-photo-symptom');
+  const soil = root.querySelector('#leaf-photo-soil');
+  const result = root.querySelector('.leaf-photo-triage__result');
+  let objectUrl;
+  file.addEventListener('change', () => {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    preview.hidden = true;
+    const selected = file.files && file.files[0];
+    if (!selected) return;
+    if (!['image/jpeg','image/png','image/webp'].includes(selected.type) || selected.size > 8 * 1024 * 1024) {
+      file.value = '';
+      result.textContent = 'Bitte JPG, PNG oder WebP bis maximal 8 MB auswählen.';
+      return;
+    }
+    objectUrl = URL.createObjectURL(selected);
+    preview.src = objectUrl;
+    preview.hidden = false;
+  });
+  const update = () => {
+    const s = symptom.value, w = soil.value;
+    if (!s) { result.textContent = 'Wähle ein Symptom für erste Hinweise.'; return; }
+    if (w === 'wet') result.textContent = 'Prüfe Staunässe, Topfabzug und Wurzeln. Gieße nicht nach festem Kalender. Ein Foto allein kann die Ursache nicht bestätigen.';
+    else if (w === 'dry') result.textContent = 'Prüfe die Feuchtigkeit im Wurzelballen und gieße bedarfsgerecht. Kontrolliere auch Licht und Standort.';
+    else if (s === 'brown') result.textContent = 'Braune Spitzen können mehrere Ursachen haben, etwa trockene Luft, Gießstress oder Salzbelastung. Prüfe Standort und Pflegeverlauf.';
+    else if (s === 'yellow') result.textContent = 'Gelbe Blätter können durch Lichtmangel, Gießfehler oder natürliche Blattalterung entstehen. Prüfe Erde, Standort und betroffene Blätter.';
+    else result.textContent = 'Hängende Blätter können bei zu trockenen und zu nassen Wurzeln auftreten. Prüfe zuerst die Feuchtigkeit im Wurzelbereich.';
+  };
+  symptom.addEventListener('change', update);
+  soil.addEventListener('change', update);
+})();
+</script>
