@@ -56,9 +56,6 @@
     <p class="main-article__eyebrow">{{ article_eyebrow }}</p>
     <h1>{{ article.title | escape }}</h1>
     <div class="main-article__meta">
-      <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
-        {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
-      </time>
       {% if article.author != blank %}<span>{{ article.author | escape }}</span>{% endif %}
       {% if article.tags.size > 0 %}
         <span>{% for tag in article.tags %}{% unless forloop.first %} · {% endunless %}{% render 'leaf-localized-label', text: tag %}{% endfor %}</span>
