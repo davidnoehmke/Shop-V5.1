@@ -112,7 +112,12 @@
             %}
             <article class="social-greens__project" data-sg-category="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
               {% if block.settings.image != blank %}
-                {{ block.settings.image | image_url: width: 900 | image_tag: widths: '320, 520, 720, 900', sizes: '(max-width: 700px) 92vw, 30vw', loading: 'lazy', alt: project_heading }}
+                <figure class="social-greens__project-visual">
+                  {{ block.settings.image | image_url: width: 900 | image_tag: widths: '320, 520, 720, 900', sizes: '(max-width: 700px) 92vw, 30vw', loading: 'lazy', alt: project_heading }}
+                  {% if block.settings.is_illustration %}
+                    <figcaption class="social-greens__image-disclaimer">{% if request.locale.iso_code == 'en' %}AI-generated illustrative image – not a photo of a real project{% else %}KI-generiertes Symbolbild – kein reales Projektfoto{% endif %}</figcaption>
+                  {% endif %}
+                </figure>
               {% endif %}
               <div class="social-greens__project-copy">
                 <span>{% if request.locale.iso_code == 'en' %}Concept idea{% else %}Konzeptidee{% endif %}</span>
@@ -198,7 +203,9 @@
   .social-greens__projects,.social-greens__impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
   .social-greens__project{min-width:0;border:1px solid var(--sg-line);background:var(--surface)}
   .social-greens__project[hidden]{display:none}
-  .social-greens__project>img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+  .social-greens__project-visual{margin:0}
+  .social-greens__project-visual img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+  .social-greens__image-disclaimer{padding:.65rem .9rem;background:color-mix(in srgb,var(--accent),transparent 94%);font-size:.75rem;line-height:1.45;color:var(--text);border-bottom:1px solid var(--sg-line)}
   .social-greens__project-copy{padding:1.25rem}
   .social-greens__project-copy>span{color:var(--muted);font-size:.75rem;text-transform:uppercase}
   .social-greens__project h3{margin:.5rem 0;font-size:1.25rem}
@@ -254,6 +261,7 @@
   "blocks": [{"type":"project","name":"Projektidee","limit":9,"settings":[
     {"type":"select","id":"category","label":"Zielgruppe","default":"community","options":[{"value":"education","label":"Bildung"},{"value":"care","label":"Pflege"},{"value":"community","label":"Gemeinschaft"}]},
     {"type":"image_picker","id":"image","label":"Optionales Bild"},
+    {"type":"checkbox","id":"is_illustration","label":"Bild als KI-Symbolbild kennzeichnen","default":true},
     {"type":"text","id":"title_de","label":"Titel DE"},
     {"type":"text","id":"title_en","label":"Titel EN"},
     {"type":"textarea","id":"text_de","label":"Beschreibung DE"},
