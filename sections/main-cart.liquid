@@ -20,6 +20,7 @@
               <h2><a href="{{ item.url }}">{{ item.product.title | escape }}</a></h2>
               {% unless item.product.has_only_default_variant %}<p class="main-cart__variant">{{ item.variant.title | escape }}</p>{% endunless %}
 
+              {% render 'leaf-shipping-notice', product: item.product %}
               {% assign property_count = item.properties | size %}
               {% if property_count > 0 %}
                 <dl class="main-cart__properties">
@@ -59,9 +60,12 @@
         <aside class="main-cart__summary" aria-label="{{ 'cart.subtotal' | t }}">
           <p class="main-cart__summary-kicker">{% if request.locale.iso_code == 'de' %}Bestellübersicht{% else %}Order summary{% endif %}</p>
           <p class="main-cart__subtotal"><span>{{ 'cart.subtotal' | t }}</span><strong>{{ cart.total_price | money }}</strong></p>
+          {% render 'leaf-shipping-notice', cart_mode: true %}
+          <p class="main-cart__cost-note">{{ 'home_purchase.costs' | t }} {% if shop.shipping_policy != blank %}<a href="{% render 'leaf-localized-url', url: shop.shipping_policy.url %}">{{ 'home_purchase.shipping' | t }}</a>{% endif %}</p>
           <div class="main-cart__summary-actions">
-            <button class="button button--secondary" type="submit" name="update">{{ 'cart.update' | t }}</button>
             <button class="main-cart__checkout" type="submit" name="checkout">{{ 'cart.checkout' | t }} <span aria-hidden="true">→</span></button>
+            <button class="button button--secondary" type="submit" name="update">{{ 'cart.update' | t }}</button>
+            <a class="main-cart__continue" href="{% render 'leaf-localized-url', url: routes.all_products_collection_url %}">{{ 'general.continue_shopping' | t }}</a>
           </div>
           <div class="main-cart__assurances">
             <span>{% if request.locale.iso_code == 'de' %}Sichere Zahlung{% else %}Secure payment{% endif %}</span>
@@ -100,6 +104,8 @@
   .main-cart__summary-kicker { margin: 0 0 1.4rem; color: var(--accent); font-size: .7rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
   .main-cart__subtotal { display: flex; justify-content: space-between; gap: 1rem; margin: 0; padding-bottom: 1.25rem; border-bottom: 1px solid var(--border); font-size: 1.15rem; }
   .main-cart__subtotal strong { font-size: 1.45rem; }
+  .main-cart__cost-note{font-size:.82rem;color:var(--muted);line-height:1.5}
+  .main-cart__summary-actions .main-cart__continue{background:transparent;color:var(--text);border-color:var(--border);font-size:.85rem}
   .main-cart__summary-actions { display: grid; gap: .55rem; margin-top: 1.25rem; }
   .main-cart__summary-actions button { width: 100%; min-height: 50px; border-radius: 0; }
   .main-cart__checkout { display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--accent); background: var(--accent); color: #fff; padding-inline: 1rem; font-weight: 800; cursor: pointer; }

@@ -1652,5 +1652,12 @@
     "community_copy": "Discover plant projects and shared green spaces.",
     "tools": "Tools for your project",
     "tools_copy": "Plan substrates, lighting and your room with the LEAF tools."
+  },
+  "home_purchase": {
+    "variant": "Size / option",
+    "shipping": "Shipping & delivery information",
+    "returns": "Returns & cancellation",
+    "help": "Personal advice",
+    "costs": "Shipping costs are calculated at checkout."
   }
 }
