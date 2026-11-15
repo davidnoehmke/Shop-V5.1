@@ -1,0 +1,112 @@
+{% liquid
+  assign is_en = false
+  if request.locale.iso_code contains 'en'
+    assign is_en = true
+  endif
+%}
+<section class="leaf-conversion" id="LeafConversion-{{ section.id }}" aria-labelledby="LeafConversionTitle-{{ section.id }}">
+  <div class="page-width leaf-conversion__inner">
+    <div class="leaf-conversion__hero">
+      <p class="leaf-conversion__eyebrow">{% if is_en %}LEAFerservice · Plant care essentials{% else %}LEAFerservice · Pflanzenbedarf{% endif %}</p>
+      <h1 id="LeafConversionTitle-{{ section.id }}">{% if is_en %}Grow lights, potting substrates and planters for indoor plants{% else %}Pflanzenbeleuchtung, Substrate und Pflanzgefäße für Zimmerpflanzen{% endif %}</h1>
+      <p>{% if is_en %}Find suitable plant lighting, potting mixes and planters. Compare real products and explore care guides before you decide.{% else %}Finde passende LED-Pflanzenlampen, Pflanzsubstrate und Pflanzgefäße. Vergleiche konkrete Produkte und informiere dich vor dem Kauf.{% endif %}</p>
+      <div class="leaf-conversion__actions">
+        <a class="leaf-conversion__button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if is_en %}Explore grow lights{% else %}Pflanzenlampen entdecken{% endif %}</a>
+        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}Explore substrates{% else %}Substrate entdecken{% endif %}</a>
+      </div>
+    </div>
+    <div class="leaf-conversion__section">
+      <h2>{% if is_en %}Shop by plant care need{% else %}Was brauchst du für deine Pflanzen?{% endif %}</h2>
+      <div class="leaf-conversion__categories">
+        {% for block in section.blocks %}
+          {% if block.type == 'category' %}
+            {% assign category = block.settings.collection %}
+            {% if category != blank %}
+              <a class="leaf-conversion__category" href="{% render 'leaf-localized-url', url: category.url %}" {{ block.shopify_attributes }}>
+                {% if category.image != blank %}
+                  {{ category.image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '240, 360, 520', sizes: '(max-width: 640px) 50vw, 25vw', alt: category.title }}
+                {% elsif category.products.first.featured_image != blank %}
+                  {{ category.products.first.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '240, 360, 520', sizes: '(max-width: 640px) 50vw, 25vw', alt: category.title }}
+                {% endif %}
+                <span class="leaf-conversion__category-title">{{ category.title | escape }}</span>
+                <span class="leaf-conversion__category-desc">{{ category.description | strip_html | truncatewords: 16 | escape }}</span>
+                <span class="leaf-conversion__arrow" aria-hidden="true">→</span>
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="leaf-conversion__section">
+      <div class="leaf-conversion__section-head">
+        <h2>{% if is_en %}Selected products{% else %}Ausgewählte Produkte{% endif %}</h2>
+        <a href="{% render 'leaf-localized-url', url: routes.all_products_collection_url %}">{% if is_en %}All products{% else %}Alle Produkte{% endif %} →</a>
+      </div>
+      <div class="leaf-conversion__products">
+        {% for block in section.blocks %}
+          {% if block.type == 'product' %}
+            {% assign product = block.settings.product %}
+            {% if product != blank %}
+              <article class="leaf-conversion__product" {{ block.shopify_attributes }}>
+                <a href="{% render 'leaf-localized-url', url: product.url %}">
+                  {% if product.featured_image != blank %}
+                    {{ product.featured_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '240, 400, 640', sizes: '(max-width: 640px) 50vw, 25vw', alt: product.title }}
+                  {% endif %}
+                  <h3>{{ product.title | escape }}</h3>
+                </a>
+                <div class="leaf-conversion__product-bottom">
+                  <span class="leaf-conversion__price">{{ product.price | money }}</span>
+                  <a href="{% render 'leaf-localized-url', url: product.url %}">{% if is_en %}View product{% else %}Produkt ansehen{% endif %} →</a>
+                </div>
+              </article>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  .leaf-conversion{padding:clamp(2rem,5vw,4.5rem) 0;background:var(--color-background, #faf9f5);color:var(--color-foreground,#24352b)}
+  .leaf-conversion__inner{display:grid;gap:clamp(2rem,5vw,3.5rem)}
+  .leaf-conversion__hero{max-width:850px}
+  .leaf-conversion__eyebrow{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
+  .leaf-conversion h1{font-size:clamp(1.9rem,4vw,3.3rem);line-height:1.12;letter-spacing:-.035em;margin:.55rem 0 1rem}
+  .leaf-conversion h2{font-size:clamp(1.3rem,2vw,1.8rem);margin:0 0 1rem}
+  .leaf-conversion p{line-height:1.65}
+  .leaf-conversion__actions,.leaf-conversion__section-head{display:flex;align-items:center;flex-wrap:wrap;gap:1rem}
+  .leaf-conversion__actions{margin-top:1.4rem}
+  .leaf-conversion__button{background:#294a37;color:#fff!important;padding:.85rem 1.2rem;text-decoration:none;border-radius:.3rem}
+  .leaf-conversion__textlink{color:inherit;text-underline-offset:4px}
+  .leaf-conversion__section-head{justify-content:space-between}
+  .leaf-conversion__categories,.leaf-conversion__products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+  .leaf-conversion__category,.leaf-conversion__product{min-width:0;background:#fff;border:1px solid #e3e5dc;border-radius:.45rem;overflow:hidden;color:inherit;text-decoration:none}
+  .leaf-conversion__category{display:flex;flex-direction:column;padding-bottom:1rem}
+  .leaf-conversion__category img,.leaf-conversion__product img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f1f1eb}
+  .leaf-conversion__category-title{font-weight:700;font-size:1.05rem;padding:.85rem .9rem .3rem}
+  .leaf-conversion__category-desc{font-size:.85rem;opacity:.75;padding:0 .9rem;line-height:1.45}
+  .leaf-conversion__arrow{padding:0 .9rem;margin-top:auto}
+  .leaf-conversion__product{display:flex;flex-direction:column}
+  .leaf-conversion__product>a{color:inherit;text-decoration:none}
+  .leaf-conversion__product h3{font-size:1rem;line-height:1.35;margin:0;padding:.8rem .9rem}
+  .leaf-conversion__product-bottom{display:flex;flex-direction:column;gap:.4rem;margin-top:auto;padding:0 .9rem 1rem}
+  .leaf-conversion__price{font-weight:700}
+  .leaf-conversion__product-bottom a{color:inherit;font-size:.85rem;text-underline-offset:3px}
+  .leaf-conversion :is(a,button):focus-visible{outline:3px solid #496dff;outline-offset:3px}
+  @media(max-width:800px){.leaf-conversion__categories,.leaf-conversion__products{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:420px){.leaf-conversion__categories,.leaf-conversion__products{gap:.65rem}.leaf-conversion__category-title,.leaf-conversion__product h3{font-size:.9rem}}
+</style>
+{% schema %}
+{
+  "name": "LEAF · Kaufstartseite",
+  "tag": "section",
+  "enabled_on": {"templates": ["index"]},
+  "max_blocks": 12,
+  "settings": [],
+  "blocks": [
+    {"type": "category", "name": "Produktkategorie", "settings": [{"type": "collection", "id": "collection", "label": "Kollektion"}]},
+    {"type": "product", "name": "Highlight-Produkt", "settings": [{"type": "product", "id": "product", "label": "Produkt"}]}
+  ],
+  "presets": [{"name": "LEAF · Kaufstartseite"}]
+}
+{% endschema %}
