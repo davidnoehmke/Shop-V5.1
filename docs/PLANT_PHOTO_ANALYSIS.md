@@ -58,6 +58,17 @@ The Hydrogen app needs server runtime `SUPABASE_URL` and
 shows both configured for Preview and Production; value validity and deployment
 read-back remain separate checks. Do not expose a service/secret key.
 
+## Activation blocker verified on 2026-11-16
+
+The existing assistant returned HTTP 200 with `mode: approved_context` and
+`capabilities.image_analysis: false` on a minimal text probe. The existing
+server-secret lookup also reported no configured OpenAI key (boolean-only check;
+no secret value was retrieved). This establishes that the shared model credential
+is currently unavailable. Add a valid `OPENAI_API_KEY` in this project's Edge
+Function secrets before claiming real analysis works. The new endpoint returns
+503 when that credential is absent; it never substitutes a text-only result.
+A ChatGPT subscription does not itself provide this API credential.
+
 ## Evidence and release checks
 
 Verified locally: 57 Node tests pass, TypeScript check, targeted ESLint (no errors),
