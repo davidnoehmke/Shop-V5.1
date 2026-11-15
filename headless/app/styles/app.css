@@ -1821,3 +1821,29 @@ img,
     grid-template-columns: 1fr;
   }
 }
+
+
+/* Romberg propagation world */
+.romberg-brand {padding-block: 2rem 5rem;}
+.romberg-brand nav {font-size: .9rem; margin-bottom: 2rem;}
+.romberg-hero {display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,5rem);align-items:center;background:#f2efe5;padding:clamp(1.5rem,4vw,4rem);border-radius:12px;}
+.romberg-hero h1 {font-size:clamp(2.2rem,5vw,4.5rem);line-height:1.08;margin:1rem 0 1.5rem;color:#253b31;}
+.romberg-hero img {width:100%;max-height:500px;object-fit:contain;border-radius:8px;background:#fff;}
+.romberg-cta {display:inline-block;background:#253b31;color:#fff;padding:1rem 1.4rem;margin-top:1.5rem;border-radius:4px;}
+.romberg-path {margin-top:clamp(3rem,7vw,6rem);}
+.romberg-steps {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-top:1.5rem;}
+.romberg-steps article {border-top:1px solid var(--leafer-line);padding-top:1rem;}
+.romberg-steps b {display:inline-block;margin-bottom:.8rem;color:#6b786f;font-size:.85rem;}
+.romberg-steps h3 {margin:.2rem 0 .7rem;font-size:1.15rem;}
+.romberg-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1.25rem;margin-top:2rem;}
+.romberg-card {padding:1.1rem;border:1px solid #e2e5dd;border-radius:8px;background:#fff;}
+.romberg-card img {width:100%;aspect-ratio:1;object-fit:contain;}
+.romberg-card h3 {font-size:1.1rem;line-height:1.35;margin:.8rem 0 .55rem;}
+.romberg-price {margin-block:1rem;font-weight:700;}
+.romberg-product-link {display:inline-block;padding-block:.7rem;text-decoration:underline;}
+.romberg-preview-note {max-width:760px;padding:1rem 1.1rem;background:#fff7d9;border:1px solid #ead991;border-radius:8px;}
+.romberg-draft-badge {display:inline-block;font-size:.8rem;font-weight:700;background:#eef0ec;color:#435349;padding:.4rem .55rem;border-radius:999px;}
+.romberg-advice {max-width:760px;margin-top:clamp(3rem,7vw,6rem);border-top:1px solid var(--leafer-line);padding-top:2rem;}
+.romberg-brand :focus-visible {outline:3px solid #477b43;outline-offset:4px;}
+@media(max-width:980px){.romberg-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.romberg-steps{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:620px){.romberg-hero,.romberg-grid,.romberg-steps{grid-template-columns:1fr;}.romberg-hero img{max-height:320px;}}

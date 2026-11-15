@@ -21,6 +21,11 @@ function findings(path, status, finalUrl, html, expectedThemeId = null) {
   if (path.startsWith('/en/') && !final.startsWith('/en/') && final !== '/en') issues.push('English link lost locale');
   const visible = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '');
   if (/Liquid (?:error|syntax error)|Translation missing:/i.test(visible)) issues.push('Rendering error');
+  if (expectedThemeId) {
+    let theme;
+    try { theme = JSON.parse(html.match(/Shopify\.theme\s*=\s*(\{[^;]*\});/)?.[1] || '{}'); } catch { theme = {}; }
+    if (String(theme.id) !== String(expectedThemeId)) issues.push('Expected preview theme was not rendered');
+  }
   return issues;
 }
 function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve => setTimeout(resolve, ms)), interval = 1000} = {}) {
@@ -62,14 +67,6 @@ function createRequester({fetchImpl = fetch, pause = ms => new Promise(resolve =
   throw error;
   };
 }
-const get = createRequester();
-  if (expectedThemeId) {
-    let theme;
-    try { theme = JSON.parse(html.match(/Shopify\.theme\s*=\s*(\{[^;]*\});/)?.[1] || '{}'); } catch { theme = {}; }
-    if (String(theme.id) !== String(expectedThemeId)) issues.push('Expected preview theme was not rendered');
-  }
-  return issues;
-}
 const get = createStorefrontRequester();
 async function main() {
   const preview = process.env.GITHUB_EVENT_PATH ? previewReference(JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))) : null;
@@ -101,8 +98,7 @@ async function main() {
     if (!complete) break;
   }
   const failures = results.filter(r => r.issues.length).map(r => ({...r,sources:[...(sources.get(r.path)||[])].slice(0,8)}));
-  const report = {checked:results.length,complete:!results.some(r=>r.status===0||r.status===429||r.status>=500),failures,results};
-  const report = {mode: preview ? 'preview' : 'production', preview, complete, checked:results.length,failures,results};
+  const report = {mode: preview ? 'preview' : 'production', preview, complete: complete && !results.some(r => r.status === 0 || r.status === 429 || r.status >= 500), checked:results.length, failures, results};
   fs.writeFileSync(process.env.LINK_REPORT || '/tmp/leaf-live-links.json',JSON.stringify(report,null,2));
   console.log(JSON.stringify({complete,checked:results.length,failures},null,2));
   if (!complete || failures.length) process.exitCode = 1;
