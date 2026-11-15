@@ -79,6 +79,13 @@
         throw new Error(result.description || result.message || form.dataset.cartErrorMessage);
       }
 
+      document.dispatchEvent(new CustomEvent('leaf:cart-add-success', {
+        detail: {
+          productId: result.product_id,
+          variantId: result.variant_id || result.id,
+          quantity: result.quantity
+        }
+      }));
       window.location.assign(new URL(`${root}cart`, window.location.origin));
     } catch (error) {
       const fallbackMessage = form.dataset.cartErrorMessage || 'This product could not be added to the cart.';

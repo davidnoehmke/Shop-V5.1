@@ -66,7 +66,11 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
   const activeSections = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_worlds']);
+  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_led_finder', 'leaf_worlds']);
+  assert.equal(index.sections.leaf_led_finder.type, 'leaf-led-home-finder');
+  const ledFinder = fs.readFileSync('sections/leaf-led-home-finder.liquid', 'utf8');
+  assert.match(ledFinder, /led_product\.available/);
+  assert.match(ledFinder, /led_product\.price \| money/);
   const commerce = index.sections.leaf_conversion;
   assert.equal(commerce.type, 'leaf-conversion-home');
   assert.deepEqual(commerce.block_order.slice(0, 4), ['cat_lighting', 'cat_substrates', 'cat_planters', 'cat_seed']);
