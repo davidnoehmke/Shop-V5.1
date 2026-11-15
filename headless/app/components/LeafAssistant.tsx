@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
 import type {CSSProperties, FormEvent, PointerEvent as ReactPointerEvent} from 'react';
-import {useLocation, useNavigate} from 'react-router';
+import {Link, useLocation, useNavigate} from 'react-router';
 import {ASSISTANT_COPY, type AssistantStatus} from '~/lib/assistant-copy';
 import {localizedPath} from '~/lib/locale-path';
 
@@ -450,6 +450,7 @@ export function LeafAssistant() {
             </div>
           </form>
           <p className="leaf-assistant__status" role="status">{statusText}</p>
+          <p className="leaf-assistant__privacy"><Link to={`/portal/photo-analysis${locale === "en" ? "?lang=en" : ""}`}>{locale === "en" ? "Plant photo analysis · sign-in required" : "Pflanzen-Fotoanalyse · mit Anmeldung"}</Link></p>
           <p className="leaf-assistant__privacy">{text.privacy}</p>
         </section>
       )}

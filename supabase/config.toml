@@ -9,3 +9,7 @@ verify_jwt = false
 
 [functions.leaf-control-api]
 verify_jwt = false
+
+# Verified with auth.getUser inside the handler (supports asymmetric signing keys).
+[functions.plant-photo-analysis]
+verify_jwt = false
