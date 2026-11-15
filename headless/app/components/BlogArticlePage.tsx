@@ -1,10 +1,14 @@
 import {Link} from 'react-router';
+import {InteriorInfo} from '~/components/InteriorInfo';
 import {BlogCommerceSection} from '~/components/BlogCommerceSection';
 import type {ArticleCommerceProduct} from '~/components/BlogCommerceSection';
 import {blogIndexPath, blogPath} from '~/lib/blog-routing';
 import type {BlogLocale} from '~/lib/blog-routing';
 
 type PublishedArticle = {
+  handle?: string;
+  headings?: Array<{id:string;label:string;level:2|3}>;
+  readingMinutes?: number;
   title: string;
   publishedAt: string;
   contentHtml: string;
@@ -29,10 +33,11 @@ export function BlogArticlePage({
     year: 'numeric', month: 'long', day: 'numeric',
   }).format(new Date(article.publishedAt));
   const isEnglish = locale === 'en';
+  const interiorInfo = blogHandle === 'leafers-nice2know-blog' && article.handle === 'interieur-solution-pflanzenraum';
 
   return (
     <article className="leaf-blog-post page-shell">
-      <nav className="leaf-blog-post__breadcrumbs" aria-label={isEnglish ? 'Breadcrumb' : 'Brotkrumennavigation'}>
+      <nav className="leaf-blog-post__breadcrumbs" aria-label={isEnglish ? 'Breadcrumb' : 'Brotkrümelnavigation'}>
         <Link to={isEnglish ? '/en' : '/'}>{isEnglish ? 'Home' : 'Start'}</Link>
         <span aria-hidden="true">/</span>
         <Link to={blogIndexPath(locale)}>{isEnglish ? 'Guides' : 'Ratgeber'}</Link>
@@ -52,10 +57,11 @@ export function BlogArticlePage({
         <p className="leaf-blog-post__byline">
           <time dateTime={article.publishedAt}>{date}</time>
           {article.author?.name ? <span> · {article.author.name}</span> : null}
+          {article.readingMinutes ? <span> · {article.readingMinutes} {isEnglish ? 'min read' : 'Min. Lesezeit'}</span> : null}
         </p>
       </header>
 
-      {article.image?.url ? (
+      {interiorInfo ? <InteriorInfo locale={locale} /> : article.image?.url ? (
         <figure className="leaf-blog-post__hero">
           <img
             src={article.image.url}
@@ -65,6 +71,15 @@ export function BlogArticlePage({
             decoding="async"
           />
         </figure>
+      ) : null}
+
+      {article.headings && article.headings.length > 2 ? (
+        <details className="leaf-blog-post__contents">
+          <summary>{isEnglish ? 'In this guide' : 'In diesem Ratgeber'}</summary>
+          <nav aria-label={isEnglish ? 'Article contents' : 'Inhaltsverzeichnis'}>
+            <ol>{article.headings.map(heading=><li key={heading.id} className={heading.level===3?'is-subheading':undefined}><a href={`#${heading.id}`}>{heading.label}</a></li>)}</ol>
+          </nav>
+        </details>
       ) : null}
 
       <div className="leaf-blog-post__body rich-text" dangerouslySetInnerHTML={{__html: article.contentHtml}} />

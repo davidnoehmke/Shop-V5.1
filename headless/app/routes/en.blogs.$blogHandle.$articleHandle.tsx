@@ -1,3 +1,4 @@
+import {prepareBlogContent} from '~/lib/blog-content.server';
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/en.blogs.$blogHandle.$articleHandle';
 import {BlogArticlePage} from '~/components/BlogArticlePage';
@@ -30,7 +31,8 @@ export async function loader({context, params}: Route.LoaderArgs) {
   const products = handles ? await context.storefront.query(BLOG_COMMERCE_QUERY, {
     variables: {one: handles[0], two: handles[1], three: handles[2]},
   }).then(({one, two, three}) => [one ?? null, two ?? null, three ?? null]).catch(() => []) : [];
-  return {article, blogHandle, englishIsFallback, products};
+  const presentation = prepareBlogContent(article.contentHtml);
+  return {article: {...article, contentHtml: presentation.html, headings: presentation.headings, readingMinutes: presentation.readingMinutes}, blogHandle, englishIsFallback, products};
 }
 
 export default function EnglishArticle() {
