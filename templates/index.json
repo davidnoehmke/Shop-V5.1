@@ -9,6 +9,95 @@
  */
 {
   "sections": {
+    "leaf_conversion": {
+      "type": "leaf-conversion-home",
+      "blocks": {
+        "cat_lighting": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzenbeleuchtung",
+            "title_de": "Pflanzenlicht",
+            "title_en": "Grow lights",
+            "intro_de": "Pflanzenlampen und Leuchten vergleichen.",
+            "intro_en": "Compare grow lights and plant lamps."
+          }
+        },
+        "cat_substrates": {
+          "type": "category",
+          "settings": {
+            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "title_de": "Substrate",
+            "title_en": "Substrates",
+            "intro_de": "Fertige Mischungen und einzelne Bestandteile.",
+            "intro_en": "Ready-made mixes and individual components."
+          }
+        },
+        "cat_planters": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzgefasse",
+            "title_de": "Pflanzgefäße",
+            "title_en": "Planters",
+            "intro_de": "Töpfe und Pflanzgefäße für deinen Standort.",
+            "intro_en": "Choose pots and planters for your space."
+          }
+        },
+        "cat_seed": {
+          "type": "category",
+          "disabled": true,
+          "settings": {
+            "collection": "anzucht-aussaat",
+            "title_de": "Anzucht",
+            "title_en": "Propagation",
+            "intro_de": "Zubehör für Aussaat und Stecklinge.",
+            "intro_en": "Equipment for seeds and cuttings."
+          }
+        },
+        "prod_venso": {
+          "type": "product",
+          "settings": {
+            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
+          }
+        },
+        "prod_alocasia": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-alocasia-mix"
+          }
+        },
+        "prod_elho": {
+          "type": "product",
+          "settings": {
+            "product": "elho-b-for-soft-round"
+          }
+        }
+      },
+      "block_order": [
+        "cat_lighting",
+        "cat_substrates",
+        "cat_planters",
+        "cat_seed",
+        "prod_venso",
+        "prod_alocasia",
+        "prod_elho"
+      ],
+      "settings": {
+        "eyebrow_de": "LEAFerservice · Pflanzenbedarf",
+        "eyebrow_en": "LEAFerservice · Plant care essentials",
+        "heading_de": "Alles für deine Pflanze – als System gedacht",
+        "heading_en": "Grow lights, potting substrates and planters for indoor plants",
+        "intro_de": "Entdecke Pflanzenlicht, fertige Substratmischungen und einzelne Bestandteile sowie passende Pflanzgefäße. Starte direkt in der Produktwelt, die du gerade brauchst.",
+        "intro_en": "Find suitable plant lighting, potting mixes and planters. Compare real products and explore care guides before you decide.",
+        "primary_cta_de": "Produktwelten entdecken",
+        "primary_cta_en": "Explore grow lights",
+        "secondary_cta_de": "Substrate und Mischungen entdecken",
+        "secondary_cta_en": "Explore substrates",
+        "categories_title_de": "Was brauchst du für deine Pflanzen?",
+        "categories_title_en": "Shop by plant care need",
+        "products_title_de": "Ausgewählte Produkte",
+        "products_title_en": "Selected products"
+      }
+    },
     "leaf_worlds": {
       "type": "leaf-botanical-room",
       "blocks": {
@@ -193,7 +282,7 @@
           "type": "pillar",
           "settings": {
             "heading": "Verstehen und selbst entscheiden",
-            "text": "Ratgeber, Rezepturen und Konfigurator geben dir die Grundlage für eine eigene, sichere Entscheidung.",
+            "text": "Ratgeber und Konfigurator helfen dir, Informationen zu sammeln und passende Möglichkeiten zu vergleichen.",
             "link_label": "Ratgeber lesen",
             "link": "/blogs/leafers-nice2know-blog"
           }
@@ -207,83 +296,10 @@
       "disabled": true,
       "name": "LEAF Positionierung",
       "settings": {
-        "eyebrow": "Mehr als ein Pflanzenshop",
-        "heading": "Pflanzenpflege beginnt im Wurzelraum.",
-        "text": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>"
+        "eyebrow": "Alles für deine Pflanze, als System gedacht",
+        "heading": "Pflanzenpflege im Zusammenhang verstehen",
+        "text": "<p>Substrat, Gefäß, Licht und Wissen gehören zusammen. Entdecke passende Produktwelten und informiere dich, wie die Bereiche zusammenspielen.</p>"
       }
-    },
-    "leaf_conversion": {
-      "type": "leaf-conversion-home",
-      "blocks": {
-        "cat_lighting": {
-          "type": "category",
-          "settings": {
-            "collection": "pflanzenbeleuchtung",
-            "title_de": "Pflanzenlicht",
-            "title_en": "Grow lights",
-            "intro_de": "Pflanzenlampen und Leuchten vergleichen.",
-            "intro_en": "Compare grow lights and plant lamps."
-          }
-        },
-        "cat_substrates": {
-          "type": "category",
-          "settings": {
-            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "title_de": "Substrate",
-            "title_en": "Substrates",
-            "intro_de": "Fertige Mischungen und einzelne Bestandteile.",
-            "intro_en": "Ready-made mixes and individual components."
-          }
-        },
-        "cat_planters": {
-          "type": "category",
-          "settings": {
-            "collection": "pflanzgefasse",
-            "title_de": "Pflanzgefäße",
-            "title_en": "Planters",
-            "intro_de": "Töpfe und Pflanzgefäße für deinen Standort.",
-            "intro_en": "Choose pots and planters for your space."
-          }
-        },
-        "cat_seed": {
-          "type": "category",
-          "settings": {
-            "collection": "anzucht-aussaat",
-            "title_de": "Anzucht",
-            "title_en": "Propagation",
-            "intro_de": "Zubehör für Aussaat und Stecklinge.",
-            "intro_en": "Equipment for seeds and cuttings."
-          }
-        },
-        "prod_venso": {
-          "type": "product",
-          "settings": {
-            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
-          }
-        },
-        "prod_alocasia": {
-          "type": "product",
-          "settings": {
-            "product": "leafer-alocasia-mix"
-          }
-        },
-        "prod_elho": {
-          "type": "product",
-          "settings": {
-            "product": "elho-b-for-soft-round"
-          }
-        }
-      },
-      "block_order": [
-        "cat_lighting",
-        "cat_substrates",
-        "cat_planters",
-        "cat_seed",
-        "prod_venso",
-        "prod_alocasia",
-        "prod_elho"
-      ],
-      "settings": {}
     }
   },
   "order": [
