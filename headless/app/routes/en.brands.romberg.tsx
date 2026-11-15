@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'Explore Romberg propagation solutions at LEAFerservice: BoQube propagators, coco coir plugs and heat mats for indoor seed starting.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 const PREVIEW_PRODUCTS = [

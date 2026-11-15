@@ -109,6 +109,7 @@ export function HeaderMenu({
             item.url,
             primaryDomainUrl,
             publicStoreDomain,
+            locale,
           );
           const children = item.items || [];
 
@@ -140,6 +141,7 @@ export function HeaderMenu({
                       child.url,
                       primaryDomainUrl,
                       publicStoreDomain,
+                      locale,
                     );
 
                     return (
@@ -169,13 +171,21 @@ function resolveMenuUrl(
   itemUrl: string,
   primaryDomainUrl: string,
   publicStoreDomain: string,
+  locale: StorefrontLocale,
 ) {
   const isInternal =
     itemUrl.includes('myshopify.com') ||
     itemUrl.includes(publicStoreDomain) ||
     itemUrl.includes(primaryDomainUrl);
 
-  return isInternal ? new URL(itemUrl).pathname : itemUrl;
+  if (!isInternal) return itemUrl;
+  const path = new URL(itemUrl).pathname;
+  if (locale !== 'en' || path === '/en' || path.startsWith('/en/')) return path;
+  if (path.startsWith('/marken/')) return path.replace('/marken/', '/en/brands/');
+  if (/^\/(collections|products|blogs|pages|policies|search|cart)(\/|$)/.test(path)) {
+    return `/en${path}`;
+  }
+  return path;
 }
 
 function HeaderCtas({
@@ -210,11 +220,18 @@ function HeaderCtas({
         </Suspense>
       </NavLink>
       <NavLink
-        to={isEnglish ? '/en/brands/venso' : '/marken/venso'}
+        to={isEnglish ? '/en' : '/'}
         prefetch="intent"
         className="header-cta-link"
       >
-        Venso
+        {isEnglish ? 'Campus' : 'Campus'}
+      </NavLink>
+      <NavLink
+        to={isEnglish ? '/en#leaf-worlds' : '/#leaf-worlds'}
+        prefetch="intent"
+        className="header-cta-link"
+      >
+        {isEnglish ? 'Worlds' : 'Welten'}
       </NavLink>
       <SearchToggle locale={locale} />
       <CartToggle cart={cart} locale={locale} />
@@ -275,7 +292,7 @@ function CartBadge({
   return (
     <a
       className="header-cart-link"
-      href="/cart"
+      href={isEnglish ? '/en/cart' : '/cart'}
       onClick={(event) => {
         event.preventDefault();
         open('cart');

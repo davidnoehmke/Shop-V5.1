@@ -1,4 +1,4 @@
-import {useLoaderData, Link} from 'react-router';
+import {useLoaderData, Link, useLocation} from 'react-router';
 import type {Route} from './+types/policies._index';
 import type {PoliciesQuery, PolicyItemFragment} from 'storefrontapi.generated';
 
@@ -23,14 +23,19 @@ export async function loader({context}: Route.LoaderArgs) {
 
 export default function Policies() {
   const {policies} = useLoaderData<typeof loader>();
+  const location = useLocation();
+  const isEnglish = location.pathname === '/en' || location.pathname.startsWith('/en/');
 
   return (
-    <div className="policies">
-      <h1>Policies</h1>
-      <div>
+    <div className="page-shell content-page policies">
+      <header className="content-page__hero">
+        <p className="page-eyebrow">{isEnglish ? 'Legal' : 'Rechtliches'}</p>
+        <h1>{isEnglish ? 'Legal information' : 'Rechtliche Informationen'}</h1>
+      </header>
+      <div className="policy-grid">
         {policies.map((policy) => (
           <fieldset key={policy.id}>
-            <Link to={`/policies/${policy.handle}`}>{policy.title}</Link>
+            <Link to={`${isEnglish ? '/en' : ''}/policies/${policy.handle}`}>{policy.title}</Link>
           </fieldset>
         ))}
       </div>

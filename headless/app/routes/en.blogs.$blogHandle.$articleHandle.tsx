@@ -2,12 +2,14 @@ import {useLoaderData} from 'react-router';
 import type {Route} from './+types/en.blogs.$blogHandle.$articleHandle';
 import {Image} from '@shopify/hydrogen';
 
-export const meta: Route.MetaFunction = ({data}) => [
+export const meta: Route.MetaFunction = ({data, params}) => [
   {title: `${data?.article.seo?.title || data?.article.title || 'Guide'} | LEAFerservice`},
   ...(data?.article.seo?.description
     ? [{name: 'description', content: data.article.seo.description.slice(0, 155)}]
     : []),
-  {name: 'robots', content: 'noindex,nofollow'},
+  ...(data?.article.handle
+    ? [{rel: 'canonical', href: `/en/blogs/${params.blogHandle || 'ratgeber'}/${data.article.handle}`}]
+    : []),
 ];
 
 export async function loader({context, params}: Route.LoaderArgs) {

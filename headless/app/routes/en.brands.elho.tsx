@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'Explore elho planters and watering solutions at LEAFerservice, compare sizes and find a setup that fits your houseplants.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export async function loader({context}: Route.LoaderArgs) {

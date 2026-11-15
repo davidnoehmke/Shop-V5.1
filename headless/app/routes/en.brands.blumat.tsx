@@ -9,7 +9,6 @@ export const meta: Route.MetaFunction = () => [
     content:
       'Explore Blumat Classic, Easy, Tropf-Blumat, Digital and system accessories for plant watering at LEAFerservice.',
   },
-  {name: 'robots', content: 'noindex,nofollow'},
 ];
 
 export async function loader({context}: Route.LoaderArgs) {
