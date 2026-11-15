@@ -66,7 +66,8 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
   const activeSections = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_worlds']);
+  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_led_finder', 'leaf_worlds']);
+  assert.equal(index.sections.leaf_led_finder.type, 'leaf-led-home-finder');
   const commerce = index.sections.leaf_conversion;
   assert.equal(commerce.type, 'leaf-conversion-home');
   assert.deepEqual(commerce.block_order.slice(0, 4), ['cat_lighting', 'cat_substrates', 'cat_planters', 'cat_seed']);
@@ -357,5 +358,22 @@ test('empty custom-mix slots render safely before and after selecting components
     instance.updateCustomSegmentVisuals();
     assert.match(instance.customSegments[0].textContent, /25%/);
     assert.equal(instance.customSegments[1].textContent, '');
+  }
+});
+
+test('Social Greens enterprise templates expose bilingual editable concepts and clear idea status', () => {
+  const section = fs.readFileSync('sections/leaf-social-greens.liquid', 'utf8');
+  const template = JSON.parse(fs.readFileSync('templates/page.social-greens.json', 'utf8'));
+  assert.match(section, /data-sg-filter/);
+  assert.match(section, /data-sg-category/);
+  assert.match(section, /Projektidee|Konzeptidee/);
+  assert.match(section, /request.locale.iso_code == 'en'/);
+  assert.equal(template.sections.main.type, 'leaf-social-greens');
+  assert.equal(template.sections.main.block_order.length, 3);
+  for (const id of template.sections.main.block_order) {
+    const block = template.sections.main.blocks[id];
+    assert.equal(block.type, 'project');
+    assert.ok(block.settings.title_de && block.settings.title_en);
+    assert.ok(block.settings.text_de && block.settings.text_en);
   }
 });
