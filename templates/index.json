@@ -98,6 +98,7 @@
         "products_title_en": "Selected products"
       }
     },
+    "leaf_led_finder": { "type": "leaf-led-home-finder", "settings": {} },
     "leaf_worlds": {
       "type": "leaf-botanical-room",
       "blocks": {
@@ -304,6 +305,7 @@
   },
   "order": [
     "leaf_conversion",
+    "leaf_led_finder",
     "leaf_worlds",
     "leaf_soil_globe",
     "trust",
@@ -311,3 +313,4 @@
     "home_positioning_HgRGfq"
   ]
 }
+

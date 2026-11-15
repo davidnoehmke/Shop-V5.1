@@ -5,7 +5,7 @@
     <p>{{ 'cart.empty' | t }}</p>
     <a class="main-cart__continue" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a>
   {% else %}
-    {% form 'cart', cart %}
+    {% form 'cart', cart, id: 'LeafCartMainForm' %}
       <div class="main-cart__layout">
         <div class="main-cart__items">
         {% for item in cart.items %}
@@ -75,6 +75,10 @@
         </aside>
       </div>
     {% endform %}
+    <div class="main-cart__mobile-checkout" aria-label="{% if request.locale.iso_code == 'de' %}Zur Kasse{% else %}Checkout{% endif %}">
+      <div class="main-cart__mobile-total"><span>{{ 'cart.subtotal' | t }}</span><strong>{{ cart.total_price | money }}</strong></div>
+      <button form="LeafCartMainForm" type="submit" name="checkout" data-leaf-mobile-checkout>{{ 'cart.checkout' | t }} <span aria-hidden="true">→</span></button>
+    </div>
   {% endif %}
 </section>
 
@@ -112,6 +116,15 @@
   .main-cart__assurances { display: grid; gap: .55rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .72rem; }
   .main-cart__assurances span::before { content: '✓'; margin-right: .4rem; color: var(--accent); font-weight: 900; }
   @media (max-width: 900px) { .main-cart__layout { grid-template-columns: 1fr; gap: 2rem; } .main-cart__summary { position: static; } }
+  .main-cart__mobile-checkout { display:none; }
+  @media (max-width: 620px) {
+    .main-cart:has(.main-cart__mobile-checkout) { padding-bottom: calc(8rem + env(safe-area-inset-bottom)); }
+    .main-cart__mobile-checkout { position:fixed; z-index:45; inset:auto 0 0; display:flex; align-items:center; gap:.8rem; padding:.7rem max(1rem,env(safe-area-inset-right)) calc(.7rem + env(safe-area-inset-bottom)) max(1rem,env(safe-area-inset-left)); background:var(--surface,#fff); border-top:1px solid var(--border,#ddd); box-shadow:0 -8px 30px rgba(0,0,0,.08); }
+    .main-cart__mobile-total { display:flex; flex-direction:column; gap:.1rem; font-size:.75rem; min-width:0; }
+    .main-cart__mobile-total strong { font-size:1rem; white-space:nowrap; }
+    .main-cart__mobile-checkout button { display:flex; align-items:center; justify-content:space-between; gap:1rem; flex:1; min-height:48px; padding:.7rem 1rem; border:1px solid var(--accent,#264734); background:var(--accent,#264734); color:#fff; font:inherit; font-weight:750; cursor:pointer; }
+    .main-cart__mobile-checkout button:focus-visible { outline:3px solid currentColor; outline-offset:3px; }
+  }
   @media (max-width: 620px) {
     .main-cart { padding-top:1.25rem; padding-bottom:calc(2rem + env(safe-area-inset-bottom)); }
     .main-cart > h1 { margin-bottom:1.5rem; font-size: clamp(1.8rem, 3.2vw, 2.75rem); }
@@ -131,3 +144,4 @@
 {% schema %}
 { "name": "t:sections.main_cart.name", "settings": [] }
 {% endschema %}
+

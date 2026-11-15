@@ -50,7 +50,6 @@
         %}
         <div class="main-product__image">
           {{ image | image_url: width: 1600 | image_tag: widths: '420, 640, 840, 1100, 1400, 1600', sizes: '(min-width: 1100px) 31vw, (min-width: 800px) 45vw, 78vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
-          {{ image | image_url: width: 1200 | image_tag: widths: '320, 480, 640, 800, 1000, 1200', sizes: '(min-width: 1280px) 430px, (min-width: 801px) 45vw, 74vw', loading: image_loading, fetchpriority: image_priority, alt: image_alt }}
         </div>
       {% endfor %}
   </div>
@@ -129,6 +128,7 @@
       <button type="submit" name="add" data-product-submit{% unless selected_variant.available %} disabled{% endunless %}>
         {% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}
       </button>
+      <div class="main-product__shipping-details">{% render 'leaf-shipping-notice', product: product %}</div>
       <p class="main-product__purchase-note">{{ purchase_note }}</p>
     {% endform %}
 
@@ -299,3 +299,4 @@
   ]
 }
 {% endschema %}
+

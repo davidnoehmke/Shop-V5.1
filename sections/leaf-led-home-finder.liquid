@@ -54,6 +54,30 @@
       {% endif %}
     </a>
   </div>
+  {% if led_collection != blank and led_collection.products_count > 0 %}
+    <div class="leaf-led-home__shop" aria-labelledby="LeafLedShopHeading-{{ section.id }}">
+      <div class="leaf-led-home__shop-head">
+        <h3 id="LeafLedShopHeading-{{ section.id }}">{% if request.locale.iso_code == 'de' %}Pflanzenlampen direkt entdecken{% else %}Explore grow lights to buy{% endif %}</h3>
+        <a href="{% render 'leaf-localized-url', url: led_base %}">{% if request.locale.iso_code == 'de' %}Alle Pflanzenlampen{% else %}All grow lights{% endif %} →</a>
+      </div>
+      <div class="leaf-led-home__products">
+        {% assign displayed_led_products = 0 %}
+        {% for led_product in led_collection.products %}
+          {% if led_product.available and displayed_led_products < 3 %}
+            {% assign displayed_led_products = displayed_led_products | plus: 1 %}
+            <a class="leaf-led-home__product" href="{% render 'leaf-localized-url', url: led_product.url %}">
+              {% if led_product.featured_image != blank %}
+                {{ led_product.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '240, 360, 520', sizes: '(max-width: 749px) 45vw, 24vw', alt: led_product.title }}
+              {% endif %}
+              <span>{{ led_product.title | escape }}</span>
+              <strong>{% if led_product.price_varies %}{% if request.locale.iso_code == 'de' %}Ab {% else %}From {% endif %}{% endif %}{{ led_product.price | money }}</strong>
+              <span class="leaf-led-home__product-action">{% if request.locale.iso_code == 'de' %}Produkt ansehen{% else %}View product{% endif %} →</span>
+            </a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
   <details class="leaf-led-home__info">
     <summary>{% render 'leaf-knowledge-icon', icon_key: 'light' %} {{ 'led_home.info_title' | t }}</summary>
     <p>{{ 'led_home.info_text' | t }}</p>
@@ -71,6 +95,17 @@
 .leaf-led-home__choices button:focus-visible,.leaf-led-home__info summary:focus-visible{outline:3px solid currentColor;outline-offset:3px}
 .leaf-led-home__answer{padding:clamp(1.1rem,3vw,2rem);background:rgba(100,125,100,.09);border-radius:1rem;max-width:850px}
 .leaf-led-home__answer p{max-width:680px}
+.leaf-led-home__shop{margin-top:clamp(1.5rem,3vw,2.5rem)}
+.leaf-led-home__shop-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.leaf-led-home__shop-head h3{margin:.4rem 0}
+.leaf-led-home__products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:1rem}
+.leaf-led-home__product{display:grid;align-content:start;gap:.35rem;min-width:0;padding:.85rem;color:inherit;text-decoration:none;border:1px solid rgba(36,77,57,.2);border-radius:.5rem}
+.leaf-led-home__product img{aspect-ratio:1.2;object-fit:contain;width:100%;height:auto}
+.leaf-led-home__product>span{line-height:1.35}
+.leaf-led-home__product strong{font-size:1rem}
+.leaf-led-home__product-action{font-weight:650;text-decoration:underline;text-underline-offset:3px}
+.leaf-led-home__product:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:749px){.leaf-led-home__products{grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}.leaf-led-home__product{padding:.65rem}}
 .leaf-led-home__info{margin-top:1.2rem;max-width:850px}
 .leaf-led-home__info summary{cursor:pointer;font-weight:600;display:flex;align-items:center;gap:.5rem;min-height:44px}
 .leaf-led-home__info p{line-height:1.6}
@@ -107,3 +142,4 @@
 {% schema %}
 {"name":"LEAF LED Start-Berater","settings":[],"presets":[{"name":"LEAF LED Start-Berater"}]}
 {% endschema %}
+

@@ -203,6 +203,9 @@
           <button class="ls-product__cta" type="submit" name="add" data-add-to-cart{% unless current_variant.available %} disabled{% endunless %}><span data-add-label>{% if current_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.availability.unavailable_short' | t }}{% endif %}</span></button>
         </div>
         <p class="ls-product__availability" data-availability aria-live="polite">{% if current_variant.available %}{{ 'product.availability.available' | t }}{% else %}{{ 'product.availability.unavailable' | t }}{% endif %}</p>
+        <div class="ls-product__delivery-details">
+          {% render 'leaf-shipping-notice', product: product %}
+        </div>
         <div class="ls-product__buy-trust" aria-label="{{ 'product.trust.label' | t }}">
           <span>{{ 'product.trust.shipping' | t }}</span>
           <span>{{ 'product.trust.payment' | t }}</span>
