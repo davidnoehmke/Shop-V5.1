@@ -1,0 +1,46 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "main": {
+      "type": "leaferservice-product",
+      "settings": {
+        "show_vendor": true
+      }
+    },
+    "facts": {
+      "type": "leaf-product-facts",
+      "settings": {}
+    },
+    "product_tabs": {
+      "type": "leaf-product-tabs",
+      "settings": {}
+    },
+    "seo_details": {
+      "type": "product-seo-details",
+      "settings": {
+        "show_embedded_description": false,
+        "show_embedded_faq": false
+      }
+    },
+    "cross_sell": {
+      "type": "product-cross-sell",
+      "settings": {}
+    },
+    "recipe": {
+      "type": "product-recipe",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "main",
+    "facts",
+    "product_tabs",
+    "recipe",
+    "seo_details",
+    "cross_sell"
+  ]
+}
