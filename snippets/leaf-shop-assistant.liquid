@@ -63,7 +63,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   <div class="leaf-shop-assistant__quick-actions" aria-label="{{ 'shop_assistant.actions' | t | escape }}">
     <button type="button" data-assistant-action-chat>{{ 'shop_assistant.action_chat' | t }}</button>
     <button type="button" data-assistant-action-voice hidden>{{ 'shop_assistant.action_voice' | t }}</button>
-    <button type="button" data-assistant-action-photo>{{ 'shop_assistant.action_photo' | t }}</button>
+    <button type="button" data-assistant-action-photo hidden aria-hidden="true" tabindex="-1">{{ 'shop_assistant.action_photo' | t }}</button>
     <a href="{{ assistant_advisor_href }}">{{ 'shop_assistant.action_advisor' | t }}</a>
   </div>
 
@@ -104,7 +104,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
       <form class="leaf-shop-assistant__form" data-assistant-form>
         <label for="LeafShopAssistantInput">{{ 'shop_assistant.input_label' | t }}</label>
-        <div class="leaf-shop-assistant__photo-toolbar">
+        <div class="leaf-shop-assistant__photo-toolbar" hidden>
           <button type="button" class="leaf-shop-assistant__photo-button" data-assistant-photo>{{ 'shop_assistant.photo_choose' | t }}</button>
           <input type="file" accept="image/jpeg,image/png,image/webp" multiple hidden data-assistant-photo-input>
           <span data-assistant-photo-status aria-live="polite"></span>
@@ -206,7 +206,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     border-color: var(--accent);
     color: var(--accent);
   }
-  .leaf-shop-assistant__quick-actions [hidden] { display: none; }
+  .leaf-shop-assistant__quick-actions [hidden], .leaf-shop-assistant__photo-toolbar[hidden] { display: none!important; }
   .leaf-shop-assistant__voice-stop {
     position: fixed;
     z-index: 70;
@@ -648,9 +648,9 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.trigger?.addEventListener('click', () => this.open());
         this.chatAction?.addEventListener('click', () => this.open());
         this.voiceAction?.addEventListener('click', () => this.startVoiceConversation());
-        this.photoAction?.addEventListener('click', () => { this.open(false); this.photoInput?.click(); });
-        this.photoButton?.addEventListener('click', () => this.photoInput?.click());
-        this.photoInput?.addEventListener('change', (event) => this.selectPhotos(event));
+        // Photo input remains disabled until explicitly re-enabled by the owner.
+
+
         this.closeButton?.addEventListener('click', () => this.close());
         this.minimizeButton?.addEventListener('click', () => this.close());
         this.setupDrag();
@@ -753,8 +753,13 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
       positionDialog(left, top) {
         const rect = this.dialog.getBoundingClientRect();
-        const x = Math.max(8, Math.min(left, window.innerWidth - rect.width - 8));
-        const y = Math.max(8, Math.min(top, window.innerHeight - rect.height - 8));
+        const viewport = window.visualViewport;
+        const width = viewport?.width || window.innerWidth;
+        const height = viewport?.height || window.innerHeight;
+        const offsetX = viewport?.offsetLeft || 0;
+        const offsetY = viewport?.offsetTop || 0;
+        const x = Math.max(offsetX + 8, Math.min(left, offsetX + Math.max(8, width - rect.width - 8)));
+        const y = Math.max(offsetY + 8, Math.min(top, offsetY + Math.max(8, height - rect.height - 8)));
         this.dialog.style.setProperty('--assistant-left', x + 'px');
         this.dialog.style.setProperty('--assistant-top', y + 'px');
         this.dialog.classList.add('is-positioned');
