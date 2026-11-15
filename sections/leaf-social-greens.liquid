@@ -86,6 +86,59 @@
       </ol>
     </section>
 
+
+    <section class="social-greens__enterprise" id="social-greens-projects" aria-labelledby="SGProjects-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{% if request.locale.iso_code == 'en' %}Project explorer{% else %}Projektkompass{% endif %}</p>
+        <h2 id="SGProjects-{{ section.id }}">{% if request.locale.iso_code == 'en' %}A greener space starts with a plan.{% else %}Ein grüner Ort beginnt mit einem Plan.{% endif %}</h2>
+        <p>{% if request.locale.iso_code == 'en' %}Explore potential formats for social organisations. Examples are concepts, not confirmed projects or partnerships.{% else %}Entdecke mögliche Formate für soziale Einrichtungen. Die Beispiele sind Konzepte, keine bestätigten Projekte oder Partnerschaften.{% endif %}</p>
+      </div>
+      <div class="social-greens__filters" role="group" aria-label="{% if request.locale.iso_code == 'en' %}Project categories{% else %}Projektkategorien{% endif %}">
+        <button type="button" data-sg-filter="all" aria-pressed="true">{% if request.locale.iso_code == 'en' %}All{% else %}Alle{% endif %}</button>
+        <button type="button" data-sg-filter="education" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Education{% else %}Bildung{% endif %}</button>
+        <button type="button" data-sg-filter="care" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Care{% else %}Pflege{% endif %}</button>
+        <button type="button" data-sg-filter="community" aria-pressed="false">{% if request.locale.iso_code == 'en' %}Community{% else %}Gemeinschaft{% endif %}</button>
+      </div>
+      <div class="social-greens__projects">
+        {% for block in section.blocks %}
+          {% if block.type == 'project' %}
+            {% liquid
+              assign project_heading = block.settings.title_de
+              assign project_copy = block.settings.text_de
+              if request.locale.iso_code == 'en'
+                assign project_heading = block.settings.title_en | default: project_heading
+                assign project_copy = block.settings.text_en | default: project_copy
+              endif
+            %}
+            <article class="social-greens__project" data-sg-category="{{ block.settings.category | escape }}" {{ block.shopify_attributes }}>
+              {% if block.settings.image != blank %}
+                {{ block.settings.image | image_url: width: 900 | image_tag: widths: '320, 520, 720, 900', sizes: '(max-width: 700px) 92vw, 30vw', loading: 'lazy', alt: project_heading }}
+              {% endif %}
+              <div class="social-greens__project-copy">
+                <span>{% if request.locale.iso_code == 'en' %}Concept idea{% else %}Konzeptidee{% endif %}</span>
+                <h3>{{ project_heading | escape }}</h3>
+                <p>{{ project_copy | escape }}</p>
+                <a href="{% render 'leaf-localized-url', url: contact_href %}">{% if request.locale.iso_code == 'en' %}Ask about this idea{% else %}Idee anfragen{% endif %} →</a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p data-sg-empty hidden>{% if request.locale.iso_code == 'en' %}No concepts in this category yet.{% else %}Noch keine Konzepte in dieser Kategorie hinterlegt.{% endif %}</p>
+    </section>
+
+    <section class="social-greens__impact" aria-labelledby="SGImpact-{{ section.id }}">
+      <div class="social-greens__section-heading">
+        <p class="social-greens__eyebrow">{% if request.locale.iso_code == 'en' %}Project responsibility{% else %}Projektverantwortung{% endif %}</p>
+        <h2 id="SGImpact-{{ section.id }}">{% if request.locale.iso_code == 'en' %}Transparent from first idea to handover.{% else %}Transparent von der Idee bis zur Übergabe.{% endif %}</h2>
+      </div>
+      <div class="social-greens__impact-grid">
+        <article><strong>01</strong><h3>{% if request.locale.iso_code == 'en' %}Site check{% else %}Standortanalyse{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}Light, access, safety and maintenance responsibilities are assessed.{% else %}Licht, Zugänglichkeit, Sicherheit und Pflegeverantwortung prüfen.{% endif %}</p></article>
+        <article><strong>02</strong><h3>{% if request.locale.iso_code == 'en' %}Budget clarity{% else %}Budgetklarheit{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}Materials and external costs are listed before approval.{% else %}Materialien und Fremdkosten vor der Freigabe auflisten.{% endif %}</p></article>
+        <article><strong>03</strong><h3>{% if request.locale.iso_code == 'en' %}Care plan{% else %}Pflegeplan{% endif %}</h3><p>{% if request.locale.iso_code == 'en' %}A clear handover makes long-term care easier.{% else %}Eine verständliche Übergabe erleichtert die langfristige Pflege.{% endif %}</p></article>
+      </div>
+    </section>
+
     <aside class="social-greens__cost-note">
       <span class="social-greens__icon">{% render 'leaf-knowledge-icon', icon_key: 'leaf' %}</span>
       <div>
@@ -137,6 +190,24 @@
   .social-greens__cost-note h2 { font-size: clamp(1.35rem, 2.6vw, 1.9rem); }
   .social-greens__cost-note p { max-width: 70ch; margin: .8rem 0 0; color: var(--muted); line-height: 1.65; }
 
+  .social-greens__enterprise,.social-greens__impact{display:grid;gap:1.4rem;scroll-margin-top:100px}
+  .social-greens__filters{display:flex;flex-wrap:wrap;gap:.6rem}
+  .social-greens__filters button{min-height:44px;padding:.7rem 1rem;border:1px solid var(--sg-line);border-radius:999px;background:transparent;color:inherit;font:inherit;cursor:pointer}
+  .social-greens__filters button[aria-pressed="true"]{background:var(--accent);color:#fff}
+  .social-greens__filters button:focus-visible,.social-greens__project a:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+  .social-greens__projects,.social-greens__impact-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+  .social-greens__project{min-width:0;border:1px solid var(--sg-line);background:var(--surface)}
+  .social-greens__project[hidden]{display:none}
+  .social-greens__project>img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+  .social-greens__project-copy{padding:1.25rem}
+  .social-greens__project-copy>span{color:var(--muted);font-size:.75rem;text-transform:uppercase}
+  .social-greens__project h3{margin:.5rem 0;font-size:1.25rem}
+  .social-greens__project p,.social-greens__impact p{color:var(--muted);line-height:1.65}
+  .social-greens__project a{display:inline-flex;align-items:center;min-height:44px;font-weight:700;color:var(--accent)}
+  .social-greens__impact article{padding:1.3rem;border-top:2px solid var(--accent);background:color-mix(in srgb,var(--accent),transparent 95%)}
+  .social-greens__impact strong{font-size:.8rem;color:var(--accent)}
+  .social-greens__impact h3{margin:.75rem 0}
+  @media(max-width:760px){.social-greens__projects,.social-greens__impact-grid{grid-template-columns:1fr}.social-greens__filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media (max-width: 900px) {
     .social-greens__hero, .social-greens__audience, .social-greens__process { grid-template-columns: 1fr; }
     .social-greens__hero { align-items: start; }
@@ -151,6 +222,28 @@
   }
 {% endstylesheet %}
 
+{% javascript %}
+(() => {
+  const init = scope => scope.querySelectorAll('.social-greens__enterprise').forEach(section => {
+    if (section.dataset.initialized) return;
+    section.dataset.initialized = 'true';
+    const buttons = [...section.querySelectorAll('[data-sg-filter]')];
+    const cards = [...section.querySelectorAll('[data-sg-category]')];
+    const empty = section.querySelector('[data-sg-empty]');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.sgFilter;
+      buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      let shown = 0;
+      cards.forEach(card => { card.hidden = filter !== 'all' && card.dataset.sgCategory !== filter; if (!card.hidden) shown++; });
+      if (empty) empty.hidden = shown !== 0;
+    }));
+  });
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => init(document), {once:true});
+  else init(document);
+  document.addEventListener('shopify:section:load', e => init(e.target));
+})();
+{% endjavascript %}
+
 {% schema %}
 {
   "name": "Social Greens",
@@ -158,6 +251,14 @@
     { "type": "url", "id": "contact_url", "label": "Projektanfrage-Link" },
     { "type": "url", "id": "secondary_url", "label": "Sekundärer Link" }
   ],
+  "blocks": [{"type":"project","name":"Projektidee","limit":9,"settings":[
+    {"type":"select","id":"category","label":"Zielgruppe","default":"community","options":[{"value":"education","label":"Bildung"},{"value":"care","label":"Pflege"},{"value":"community","label":"Gemeinschaft"}]},
+    {"type":"image_picker","id":"image","label":"Optionales Bild"},
+    {"type":"text","id":"title_de","label":"Titel DE"},
+    {"type":"text","id":"title_en","label":"Titel EN"},
+    {"type":"textarea","id":"text_de","label":"Beschreibung DE"},
+    {"type":"textarea","id":"text_en","label":"Beschreibung EN"}
+  ]}],
   "presets": [{ "name": "Social Greens" }]
 }
 {% endschema %}
