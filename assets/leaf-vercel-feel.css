@@ -1,0 +1,150 @@
+/* LEAF Liquid motion polish: distilled from the existing Hydrogen/Vercel UI.
+   Deliberately CSS-only. The native details menu and existing section observers remain the source of truth.
+   Keep product identity/price, checkout, content and keyboard navigation unchanged. */
+:root {
+  --leaf-feel-ease: cubic-bezier(.22, 1, .36, 1);
+  --leaf-feel-shadow: 0 18px 42px rgba(28, 54, 37, .10);
+}
+
+/* The existing Liquid header already uses native, accessible <details>.
+   Give its open states the calmer, tactile feel of the Hydrogen drawer. */
+.site-header__mobile > summary {
+  border-radius: 12px;
+  transition: background-color .24s ease, color .24s ease, transform .32s var(--leaf-feel-ease);
+}
+.site-header__mobile[open] > summary {
+  background: color-mix(in srgb, var(--accent), transparent 91%);
+  color: var(--accent);
+}
+.site-header__mobile-disclosure > summary {
+  transition: color .2s ease, background-color .22s ease;
+}
+.site-header__mobile-disclosure[open] > summary {
+  color: var(--accent);
+}
+.site-header__mobile-disclosure > summary .site-header__chevron,
+.site-header__desktop-disclosure > summary .site-header__chevron {
+  transition: transform .34s var(--leaf-feel-ease);
+}
+.site-header__mobile-submenu a,
+.site-header .site-header__desktop-panel a {
+  transition: color .22s ease, background-color .22s ease, transform .28s var(--leaf-feel-ease);
+}
+.site-header__mobile-submenu a:is(:hover, :focus-visible),
+.site-header .site-header__desktop-panel a:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, var(--accent), transparent 94%);
+}
+@media (max-width: 1240px) {
+  .site-header__mobile[open] > .site-header__mobile-panel {
+    border-radius: 0 0 20px 20px !important;
+    animation: leaf-feel-menu-enter .36s var(--leaf-feel-ease) both;
+  }
+  .site-header__mobile-disclosure[open] > .site-header__mobile-submenu {
+    animation: leaf-feel-accordion-enter .32s var(--leaf-feel-ease) both;
+  }
+  .site-header__mobile-list {
+    max-width: 740px;
+    margin-inline: auto;
+  }
+  .site-header__mobile-list > li {
+    border-bottom-color: color-mix(in srgb, var(--text), transparent 89%);
+  }
+}
+@media (min-width: 1241px) {
+  .site-header__desktop-disclosure[open] > .site-header__desktop-panel {
+    animation: leaf-feel-menu-enter .3s var(--leaf-feel-ease) both;
+  }
+}
+@keyframes leaf-feel-menu-enter {
+  from { opacity: .75; transform: translate3d(0, -10px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes leaf-feel-accordion-enter {
+  from { opacity: .5; transform: translate3d(0, -7px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* Hydrogen scroll-reveal starts partially visible, avoiding blank sections.
+   Reuse the Liquid observer; do not add another observer or scroll handler. */
+#MainContent .leaf-enterprise-reveal {
+  opacity: .78;
+  transform: translate3d(0, 14px, 0);
+  transition: opacity .78s var(--leaf-feel-ease), transform .85s var(--leaf-feel-ease);
+}
+#MainContent .leaf-enterprise-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+#MainContent :is(section[id], article[id]) {
+  scroll-margin-top: clamp(86px, 11vh, 138px);
+}
+
+/* Less visual text overload: leave complete headlines, prices and SEO copy in the DOM.
+   Only secondary product-card summaries are visually shortened. */
+#MainContent :is(.home-journey__header, .home-guides__header, .home-shop__header, .main-collection__header) > p {
+  max-width: 60ch;
+  line-height: 1.52;
+}
+#MainContent .product-card__copy > p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  line-height: 1.45;
+}
+
+/* Restrained micro-interactions on devices that support genuine hover.
+   The later V7 stylesheet currently resets image scale(1), so this file is loaded after it. */
+#MainContent .product-card,
+#MainContent .home-journey__card {
+  transition: transform .38s var(--leaf-feel-ease), box-shadow .38s var(--leaf-feel-ease), border-color .22s ease;
+}
+#MainContent .product-card__media img {
+  transition: transform .6s var(--leaf-feel-ease);
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  #MainContent .product-card:is(:hover, :focus-within) {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: var(--leaf-feel-shadow);
+  }
+  #MainContent .product-card:is(:hover, :focus-within) .product-card__media img {
+    transform: translate3d(0, -1px, 0) scale(1.035);
+  }
+  #MainContent .home-journey__card:is(:hover, :focus-within) {
+    transform: translate3d(0, -3px, 0);
+    box-shadow: 0 15px 36px rgba(28, 54, 37, .08);
+  }
+}
+
+/* Vercel's slow hero-image float, scaled down to a single curated product per row.
+   Never animate an entire catalog, full-page background or checkout control. */
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  body.template-index #MainContent .home-shop__grid .product-card:nth-child(2):not(:hover):not(:focus-within) .product-card__media img {
+    animation: leaf-feel-product-float 8s ease-in-out infinite;
+  }
+}
+@keyframes leaf-feel-product-float {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(0, -4px, 0) scale(1.008); }
+}
+@media (max-width: 520px) {
+  .site-header__mobile > summary { border-radius: 10px; }
+  #MainContent .product-card__copy > p { -webkit-line-clamp: 2; line-clamp: 2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header__mobile[open] > .site-header__mobile-panel,
+  .site-header__mobile-disclosure[open] > .site-header__mobile-submenu,
+  .site-header__desktop-disclosure[open] > .site-header__desktop-panel {
+    animation: none !important;
+  }
+  #MainContent .leaf-enterprise-reveal,
+  #MainContent .product-card,
+  #MainContent .product-card__media img,
+  #MainContent .home-journey__card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none !important;
+  }
+}
