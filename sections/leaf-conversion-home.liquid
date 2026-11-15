@@ -7,16 +7,16 @@
 <section class="leaf-conversion" id="LeafConversion-{{ section.id }}" aria-labelledby="LeafConversionTitle-{{ section.id }}">
   <div class="page-width leaf-conversion__inner">
     <div class="leaf-conversion__hero">
-      <p class="leaf-conversion__eyebrow">{% if is_en %}LEAFerservice · Plant care essentials{% else %}LEAFerservice · Pflanzenbedarf{% endif %}</p>
-      <h1 id="LeafConversionTitle-{{ section.id }}">{% if is_en %}Grow lights, potting substrates and planters for indoor plants{% else %}Pflanzenbeleuchtung, Substrate und Pflanzgefäße für Zimmerpflanzen{% endif %}</h1>
-      <p>{% if is_en %}Find suitable plant lighting, potting mixes and planters. Compare real products and explore care guides before you decide.{% else %}Finde passende LED-Pflanzenlampen, Pflanzsubstrate und Pflanzgefäße. Vergleiche konkrete Produkte und informiere dich vor dem Kauf.{% endif %}</p>
+      <p class="leaf-conversion__eyebrow">{% if is_en %}{{ section.settings.eyebrow_en | escape }}{% else %}{{ section.settings.eyebrow_de | escape }}{% endif %}</p>
+      <h1 id="LeafConversionTitle-{{ section.id }}">{% if is_en %}{{ section.settings.heading_en | escape }}{% else %}{{ section.settings.heading_de | escape }}{% endif %}</h1>
+      <p>{% if is_en %}{{ section.settings.intro_en | escape }}{% else %}{{ section.settings.intro_de | escape }}{% endif %}</p>
       <div class="leaf-conversion__actions">
-        <a class="leaf-conversion__button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if is_en %}Explore grow lights{% else %}Pflanzenlampen entdecken{% endif %}</a>
-        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}Explore substrates{% else %}Substrate entdecken{% endif %}</a>
+        <a class="leaf-conversion__button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if is_en %}{{ section.settings.primary_cta_en | escape }}{% else %}{{ section.settings.primary_cta_de | escape }}{% endif %}</a>
+        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}{{ section.settings.secondary_cta_en | escape }}{% else %}{{ section.settings.secondary_cta_de | escape }}{% endif %}</a>
       </div>
     </div>
     <div class="leaf-conversion__section">
-      <h2>{% if is_en %}Shop by plant care need{% else %}Was brauchst du für deine Pflanzen?{% endif %}</h2>
+      <h2>{% if is_en %}{{ section.settings.categories_title_en | escape }}{% else %}{{ section.settings.categories_title_de | escape }}{% endif %}</h2>
       <div class="leaf-conversion__categories">
         {% for block in section.blocks %}
           {% if block.type == 'category' %}
@@ -39,7 +39,7 @@
     </div>
     <div class="leaf-conversion__section">
       <div class="leaf-conversion__section-head">
-        <h2>{% if is_en %}Selected products{% else %}Ausgewählte Produkte{% endif %}</h2>
+        <h2>{% if is_en %}{{ section.settings.products_title_en | escape }}{% else %}{{ section.settings.products_title_de | escape }}{% endif %}</h2>
         <a href="{% render 'leaf-localized-url', url: routes.all_products_collection_url %}">{% if is_en %}All products{% else %}Alle Produkte{% endif %} →</a>
       </div>
       <div class="leaf-conversion__products">
@@ -102,7 +102,92 @@
   "tag": "section",
   "enabled_on": {"templates": ["index"]},
   "max_blocks": 12,
-  "settings": [],
+  "settings": [
+    {
+        "type": "text",
+        "id": "eyebrow_de",
+        "label": "eyebrow de",
+        "default": "LEAFerservice · Pflanzenbedarf"
+    },
+    {
+        "type": "text",
+        "id": "eyebrow_en",
+        "label": "eyebrow en",
+        "default": "LEAFerservice · Plant care essentials"
+    },
+    {
+        "type": "text",
+        "id": "heading_de",
+        "label": "heading de",
+        "default": "Pflanzenbeleuchtung, Substrate und Pflanzgefäße für Zimmerpflanzen"
+    },
+    {
+        "type": "text",
+        "id": "heading_en",
+        "label": "heading en",
+        "default": "Grow lights, potting substrates and planters for indoor plants"
+    },
+    {
+        "type": "text",
+        "id": "intro_de",
+        "label": "intro de",
+        "default": "Finde passende LED-Pflanzenlampen, Pflanzsubstrate und Pflanzgefäße. Vergleiche konkrete Produkte und informiere dich vor dem Kauf."
+    },
+    {
+        "type": "text",
+        "id": "intro_en",
+        "label": "intro en",
+        "default": "Find suitable plant lighting, potting mixes and planters. Compare real products and explore care guides before you decide."
+    },
+    {
+        "type": "text",
+        "id": "primary_cta_de",
+        "label": "primary cta de",
+        "default": "Pflanzenlampen entdecken"
+    },
+    {
+        "type": "text",
+        "id": "primary_cta_en",
+        "label": "primary cta en",
+        "default": "Explore grow lights"
+    },
+    {
+        "type": "text",
+        "id": "secondary_cta_de",
+        "label": "secondary cta de",
+        "default": "Substrate entdecken"
+    },
+    {
+        "type": "text",
+        "id": "secondary_cta_en",
+        "label": "secondary cta en",
+        "default": "Explore substrates"
+    },
+    {
+        "type": "text",
+        "id": "categories_title_de",
+        "label": "categories title de",
+        "default": "Was brauchst du für deine Pflanzen?"
+    },
+    {
+        "type": "text",
+        "id": "categories_title_en",
+        "label": "categories title en",
+        "default": "Shop by plant care need"
+    },
+    {
+        "type": "text",
+        "id": "products_title_de",
+        "label": "products title de",
+        "default": "Ausgewählte Produkte"
+    },
+    {
+        "type": "text",
+        "id": "products_title_en",
+        "label": "products title en",
+        "default": "Selected products"
+    }
+],
   "blocks": [
     {"type": "category", "name": "Produktkategorie", "settings": [{"type": "collection", "id": "collection", "label": "Kollektion"}]},
     {"type": "product", "name": "Highlight-Produkt", "settings": [{"type": "product", "id": "product", "label": "Produkt"}]}
