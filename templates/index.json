@@ -195,6 +195,11 @@
         "knowledge_blog": "leafers-nice2know-blog"
       }
     },
+    "leaf_soil_globe": {
+      "type": "leaf-soil-globe",
+      "disabled": true,
+      "settings": {}
+    },
     "trust": {
       "type": "trust-bar",
       "blocks": {
@@ -237,11 +242,6 @@
         "sizes",
         "range"
       ],
-      "disabled": true,
-      "settings": {}
-    },
-    "leaf_soil_globe": {
-      "type": "leaf-soil-globe",
       "disabled": true,
       "settings": {}
     },
@@ -305,8 +305,8 @@
   "order": [
     "leaf_conversion",
     "leaf_worlds",
-    "trust",
     "leaf_soil_globe",
+    "trust",
     "home_guides",
     "home_positioning_HgRGfq"
   ]
