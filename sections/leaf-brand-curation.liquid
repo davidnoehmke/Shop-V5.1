@@ -1,0 +1,68 @@
+{% liquid
+  assign english = false
+  if request.locale.iso_code contains 'en'
+    assign english = true
+  endif
+  assign active_links = 0
+  for block in section.blocks
+    if block.settings.destination != blank
+      assign active_links = active_links | plus: 1
+    endif
+  endfor
+%}
+{% if active_links > 0 %}
+<section class="leaf-brands page-width" id="LeafBrands-{{ section.id }}" aria-labelledby="LeafBrandsTitle-{{ section.id }}">
+  <div class="leaf-brands__heading">
+    <h2 id="LeafBrandsTitle-{{ section.id }}">{% if english %}{{ section.settings.heading_en | escape }}{% else %}{{ section.settings.heading_de | escape }}{% endif %}</h2>
+    <p>{% if english %}{{ section.settings.intro_en | escape }}{% else %}{{ section.settings.intro_de | escape }}{% endif %}</p>
+  </div>
+  <nav class="leaf-brands__grid" aria-label="{% if english %}Selected brands{% else %}Ausgewählte Marken{% endif %}">
+    {% for block in section.blocks %}
+      {% if block.settings.destination != blank %}
+      <a class="leaf-brands__card" href="{% render 'leaf-localized-url', url: block.settings.destination %}" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 400 | image_tag: loading: 'lazy', widths: '160,240,400', sizes: '(max-width: 750px) 50vw, 220px', alt: block.settings.name }}
+        {% endif %}
+        <strong>{{ block.settings.name | escape }}</strong>
+        {% if block.settings.description != blank %}<span>{{ block.settings.description | escape }}</span>{% endif %}
+        <span aria-hidden="true">→</span>
+      </a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+</section>
+{% endif %}
+<style>
+.leaf-brands{margin-block:clamp(2rem,5vw,4rem);color:var(--text,#293d30)}
+.leaf-brands__heading{max-width:70ch;margin-bottom:1.2rem}
+.leaf-brands__heading h2{font-size:clamp(1.4rem,2.7vw,2rem);margin:0 0 .4rem}
+.leaf-brands__heading p{line-height:1.55}
+.leaf-brands__grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem}
+.leaf-brands__card{min-width:0;display:flex;flex-direction:column;gap:.55rem;border:1px solid #d8e0d5;padding:1rem;border-radius:.4rem;background:#fafbf8;text-decoration:none;color:inherit}
+.leaf-brands__card img{width:100%;height:95px;object-fit:contain}
+.leaf-brands__card strong{font-size:1rem}
+.leaf-brands__card span{font-size:.86rem;line-height:1.4}
+.leaf-brands__card span:last-child{font-size:1.2rem;margin-top:auto}
+.leaf-brands__card:focus-visible{outline:3px solid #476dff;outline-offset:3px}
+</style>
+{% schema %}
+{
+"name":"LEAF · Marken-Auswahl",
+"tag":"section",
+"enabled_on":{"templates":["collection"]},
+"max_blocks":8,
+"settings":[
+{"type":"text","id":"heading_de","label":"Titel DE","default":"Kuratierte Marken entdecken"},
+{"type":"text","id":"heading_en","label":"Title EN","default":"Explore selected brands"},
+{"type":"text","id":"intro_de","label":"Einleitung DE","default":"Hersteller und Produkte passend zum Einsatzgebiet auswählen."},
+{"type":"text","id":"intro_en","label":"Introduction EN","default":"Explore brands and products selected for your needs."}
+],
+"blocks":[{"type":"brand","name":"Marke","settings":[
+{"type":"text","id":"name","label":"Markenname"},
+{"type":"text","id":"description","label":"Kurzbeschreibung"},
+{"type":"image_picker","id":"image","label":"Markenbild"},
+{"type":"url","id":"destination","label":"Marken-Kollektion oder Ziel"}
+]}],
+"presets":[{"name":"LEAF · Marken-Auswahl"}]
+}
+{% endschema %}
