@@ -1652,5 +1652,12 @@
     "community_copy": "Pflanzenprojekte und gemeinsames Grün entdecken.",
     "tools": "Werkzeuge für dein Projekt",
     "tools_copy": "Substrat, Licht und Raum mit den vorhandenen LEAF Werkzeugen planen."
+  },
+  "home_purchase": {
+    "variant": "Größe / Ausführung",
+    "shipping": "Versand & Lieferinformationen",
+    "returns": "Rückgabe & Widerruf",
+    "help": "Persönliche Beratung",
+    "costs": "Versandkosten werden im Checkout berechnet."
   }
 }

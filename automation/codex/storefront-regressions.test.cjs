@@ -66,7 +66,16 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
   const activeSections = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(activeSections, ['leaf_worlds']);
+  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_worlds']);
+  const commerce = index.sections.leaf_conversion;
+  assert.equal(commerce.type, 'leaf-conversion-home');
+  assert.deepEqual(commerce.block_order.slice(0, 4), ['cat_lighting', 'cat_substrates', 'cat_planters', 'cat_seed']);
+  assert.deepEqual(commerce.block_order.slice(4), ['prod_venso', 'prod_alocasia', 'prod_elho']);
+  const commerceSection = fs.readFileSync('sections/leaf-conversion-home.liquid', 'utf8');
+  assert.match(commerceSection, /<h1 id="LeafConversionTitle-/);
+  assert.match(commerceSection, /product\.price \| money/);
+  assert.match(commerceSection, /section\.settings\.heading_de/);
+  assert.match(commerceSection, /pages\/pflanzenlicht-konfigurator/);
   const world = index.sections.leaf_worlds;
   assert.equal(world.type, 'leaf-botanical-room');
   assert.deepEqual(world.block_order, ['plants', 'lighting', 'planters', 'substrates', 'propagation', 'knowledge']);

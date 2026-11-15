@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "breadcrumbs": {
+      "type": "leaf-breadcrumbs",
+      "settings": {}
+    },
+    "brands": {
+      "type": "leaf-brand-curation",
+      "blocks": {},
+      "block_order": [],
+      "settings": {}
+    },
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_type_filters": true
+      }
+    },
+    "guide": {
+      "type": "leaf-collection-guide",
+      "settings": {}
+    },
+    "seo": {
+      "type": "collection-seo-copy",
+      "settings": {}
+    }
+  },
+  "order": [
+    "breadcrumbs",
+    "brands",
+    "main",
+    "guide",
+    "seo"
+  ]
+}

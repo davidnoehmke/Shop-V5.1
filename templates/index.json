@@ -106,96 +106,6 @@
         "knowledge_blog": "leafers-nice2know-blog"
       }
     },
-    "visual_shop": {
-      "type": "leaf-visual-shop",
-      "blocks": {
-        "light1": {
-          "type": "product",
-          "settings": {
-            "product": "sunlite-7w-led-pflanzenlampe-mit-teleskopstab",
-            "category": "lighting",
-            "use": "single"
-          }
-        },
-        "light2": {
-          "type": "product",
-          "settings": {
-            "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
-            "category": "lighting",
-            "use": "shelf"
-          }
-        },
-        "light3": {
-          "type": "product",
-          "settings": {
-            "product": "venso-sunlite-xl-25w-led-pflanzenlampe",
-            "category": "lighting",
-            "use": "room"
-          }
-        },
-        "pot1": {
-          "type": "product",
-          "settings": {
-            "product": "elho-b-for-soft-round",
-            "category": "planters",
-            "use": "planter"
-          }
-        },
-        "pot2": {
-          "type": "product",
-          "settings": {
-            "product": "elho-amiga-round",
-            "category": "planters",
-            "use": "planter"
-          }
-        },
-        "soil1": {
-          "type": "product",
-          "settings": {
-            "product": "leafer-alocasia-mix",
-            "category": "substrates",
-            "use": "aroid"
-          }
-        },
-        "soil2": {
-          "type": "product",
-          "settings": {
-            "product": "leafer-seed-cutting-mix",
-            "category": "substrates",
-            "use": "seed"
-          }
-        },
-        "set1": {
-          "type": "product",
-          "settings": {
-            "product": "aroid-umtopf-set",
-            "category": "sets",
-            "use": "repot"
-          }
-        },
-        "set2": {
-          "type": "product",
-          "settings": {
-            "product": "anzucht-starter-set",
-            "category": "sets",
-            "use": "seed"
-          }
-        }
-      },
-      "block_order": [
-        "light1",
-        "light2",
-        "light3",
-        "pot1",
-        "pot2",
-        "soil1",
-        "soil2",
-        "set1",
-        "set2"
-      ],
-      "disabled": true,
-      "settings": {}
-    },
     "trust": {
       "type": "trust-bar",
       "blocks": {
@@ -240,17 +150,6 @@
       ],
       "disabled": true,
       "settings": {}
-    },
-    "living_edit": {
-      "type": "leaf-living-edit",
-      "disabled": true,
-      "settings": {
-        "product": "neusius-aurora-76-cm-led-pflanzenleuchte-15w",
-        "lighting": "pflanzenbeleuchtung",
-        "planters": "pflanzgefasse",
-        "substrates": "pflanzsubstrate-mischungen",
-        "help_link": "shopify://pages/individuelles-substrat"
-      }
     },
     "leaf_soil_globe": {
       "type": "leaf-soil-globe",
@@ -312,13 +211,85 @@
         "heading": "Pflanzenpflege beginnt im Wurzelraum.",
         "text": "<p>LEAFerservice verbindet Substrat, Gefäß, Licht und Wissen zu Lösungen, die du verstehen und an deine Pflanze anpassen kannst.</p>"
       }
+    },
+    "leaf_conversion": {
+      "type": "leaf-conversion-home",
+      "blocks": {
+        "cat_lighting": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzenbeleuchtung",
+            "title_de": "Pflanzenlicht",
+            "title_en": "Grow lights",
+            "intro_de": "Pflanzenlampen und Leuchten vergleichen.",
+            "intro_en": "Compare grow lights and plant lamps."
+          }
+        },
+        "cat_substrates": {
+          "type": "category",
+          "settings": {
+            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "title_de": "Substrate",
+            "title_en": "Substrates",
+            "intro_de": "Fertige Mischungen und einzelne Bestandteile.",
+            "intro_en": "Ready-made mixes and individual components."
+          }
+        },
+        "cat_planters": {
+          "type": "category",
+          "settings": {
+            "collection": "pflanzgefasse",
+            "title_de": "Pflanzgefäße",
+            "title_en": "Planters",
+            "intro_de": "Töpfe und Pflanzgefäße für deinen Standort.",
+            "intro_en": "Choose pots and planters for your space."
+          }
+        },
+        "cat_seed": {
+          "type": "category",
+          "settings": {
+            "collection": "anzucht-aussaat",
+            "title_de": "Anzucht",
+            "title_en": "Propagation",
+            "intro_de": "Zubehör für Aussaat und Stecklinge.",
+            "intro_en": "Equipment for seeds and cuttings."
+          }
+        },
+        "prod_venso": {
+          "type": "product",
+          "settings": {
+            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
+          }
+        },
+        "prod_alocasia": {
+          "type": "product",
+          "settings": {
+            "product": "leafer-alocasia-mix"
+          }
+        },
+        "prod_elho": {
+          "type": "product",
+          "settings": {
+            "product": "elho-b-for-soft-round"
+          }
+        }
+      },
+      "block_order": [
+        "cat_lighting",
+        "cat_substrates",
+        "cat_planters",
+        "cat_seed",
+        "prod_venso",
+        "prod_alocasia",
+        "prod_elho"
+      ],
+      "settings": {}
     }
   },
   "order": [
+    "leaf_conversion",
     "leaf_worlds",
-    "visual_shop",
     "trust",
-    "living_edit",
     "leaf_soil_globe",
     "home_guides",
     "home_positioning_HgRGfq"

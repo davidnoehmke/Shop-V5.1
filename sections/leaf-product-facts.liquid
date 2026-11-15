@@ -1,0 +1,69 @@
+{% liquid
+  assign english = false
+  if request.locale.iso_code contains 'en'
+    assign english = true
+  endif
+  assign kind = 'general'
+  if product.metafields.lighting.rated_power_w != blank or product.metafields.lighting.ppf_umol_s != blank or product.type contains 'LED-Pflanzen'
+    assign kind = 'lighting'
+  elsif product.metafields.leafer.water_behavior != blank or product.metafields.leafer.mixing_ratio != blank or product.type contains 'Substrat'
+    assign kind = 'substrate'
+  endif
+%}
+{% if kind == 'lighting' or kind == 'substrate' %}
+<section class="leaf-facts page-width" id="LeafFacts-{{ section.id }}" aria-labelledby="LeafFactsTitle-{{ section.id }}">
+  <div class="leaf-facts__top">
+    <p class="leaf-facts__overline">{% if english %}Product facts{% else %}Produktdaten im Überblick{% endif %}</p>
+    <h2 id="LeafFactsTitle-{{ section.id }}">{% if kind == 'lighting' %}{% if english %}Plant light: technical specifications{% else %}Pflanzenlicht: technische Kennwerte{% endif %}{% else %}{% if english %}Substrate: composition and moisture behavior{% else %}Pflanzsubstrat: Bestandteile und Wasserführung{% endif %}{% endif %}</h2>
+    <p class="leaf-facts__intro">{% if kind == 'lighting' %}{% if english %}Compare power, spectrum and recommended positioning using the manufacturer's documented values.{% else %}Leistung, Lichtspektrum und geeignete Position anhand dokumentierter Herstellerangaben vergleichen.{% endif %}{% else %}{% if english %}Select the mix according to plant needs, root aeration and watering behavior.{% else %}Die Mischung passend zu Pflanzenart, Wurzelbelüftung und Gießverhalten auswählen.{% endif %}{% endif %}</p>
+  </div>
+  <dl class="leaf-facts__grid">
+    {% if kind == 'lighting' %}
+      {% assign names = 'rated_power_w,ppf_umol_s,ppfd_reference,beam_angle,cct_k,spectrum,recommended_distance,coverage_guidance,mounting,socket_connector,dimmable,ip_rating' | split: ',' %}
+      {% for key in names %}
+        {% assign field = product.metafields.lighting[key] %}
+        {% if field != blank and field.value != blank %}
+        <div class="leaf-facts__item">
+          <dt>{% case key %}{% when 'rated_power_w' %}{% if english %}Rated power{% else %}Nennleistung{% endif %}{% when 'ppf_umol_s' %}PPF{% when 'ppfd_reference' %}PPFD{% when 'beam_angle' %}{% if english %}Beam angle{% else %}Abstrahlwinkel{% endif %}{% when 'cct_k' %}{% if english %}Color temperature{% else %}Farbtemperatur{% endif %}{% when 'spectrum' %}{% if english %}Spectrum{% else %}Spektrum{% endif %}{% when 'recommended_distance' %}{% if english %}Recommended distance{% else %}Empfohlener Abstand{% endif %}{% when 'coverage_guidance' %}{% if english %}Coverage{% else %}Ausleuchtung{% endif %}{% when 'mounting' %}{% if english %}Mounting{% else %}Montage{% endif %}{% when 'socket_connector' %}{% if english %}Connector{% else %}Sockel / Anschluss{% endif %}{% when 'dimmable' %}{% if english %}Dimmable{% else %}Dimmbar{% endif %}{% when 'ip_rating' %}{% if english %}Protection rating{% else %}Schutzart{% endif %}{% endcase %}</dt>
+          <dd>{{ field | metafield_tag }}</dd>
+        </div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      {% assign names = 'suitable_for,ingredients,primary_function,water_behavior,mixing_ratio,use_as,care_tip' | split: ',' %}
+      {% for key in names %}
+        {% assign field = product.metafields.leafer[key] %}
+        {% if field != blank and field.value != blank %}
+        <div class="leaf-facts__item">
+          <dt>{% case key %}{% when 'suitable_for' %}{% if english %}Suitable for{% else %}Geeignet für{% endif %}{% when 'ingredients' %}{% if english %}Ingredients{% else %}Bestandteile{% endif %}{% when 'primary_function' %}{% if english %}Main function{% else %}Hauptfunktion{% endif %}{% when 'water_behavior' %}{% if english %}Water retention & drainage{% else %}Wasserführung und Drainage{% endif %}{% when 'mixing_ratio' %}{% if english %}Mixing ratio{% else %}Mischungsverhältnis{% endif %}{% when 'use_as' %}{% if english %}Use{% else %}Verwendung{% endif %}{% when 'care_tip' %}{% if english %}Care advice{% else %}Pflegetipp{% endif %}{% endcase %}</dt>
+          <dd>{{ field | metafield_tag }}</dd>
+        </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </dl>
+  {% if kind == 'lighting' %}
+    <a class="leaf-facts__link" href="{% render 'leaf-localized-url', url: '/pages/pflanzenlicht-konfigurator' %}">{% if english %}Find a suitable grow light{% else %}Passendes Pflanzenlicht finden{% endif %} →</a>
+  {% else %}
+    <a class="leaf-facts__link" href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">{% if english %}Configure your own substrate{% else %}Eigenes Substrat konfigurieren{% endif %} →</a>
+  {% endif %}
+</section>
+{% endif %}
+<style>
+.leaf-facts{margin-block:clamp(2rem,5vw,4rem);color:var(--text,#293d30)}
+.leaf-facts__top{max-width:810px;margin-bottom:1.5rem}
+.leaf-facts__overline{text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;opacity:.7}
+.leaf-facts h2{font-size:clamp(1.4rem,2.6vw,2.1rem);line-height:1.22;margin:.4rem 0}
+.leaf-facts__intro{line-height:1.6}
+.leaf-facts__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;margin:0;border:1px solid #d5dcd2;background:#d5dcd2}
+.leaf-facts__item{min-width:0;margin:0;padding:1.05rem;background:#fbfcf9}
+.leaf-facts dt{font-size:.78rem;opacity:.75;margin:0 0 .5rem}
+.leaf-facts dd{font-size:1rem;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.leaf-facts dd .metafield-rich_text_field p{margin:0}
+.leaf-facts__link{display:inline-block;margin-top:1.25rem;color:inherit;text-underline-offset:4px;font-weight:650}
+@media(max-width:760px){.leaf-facts__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.leaf-facts__grid{grid-template-columns:1fr}}
+</style>
+{% schema %}
+{"name":"LEAF · Fachwerte","tag":"section","enabled_on":{"templates":["product"]},"settings":[],"presets":[{"name":"LEAF · Fachwerte"}]}
+{% endschema %}
