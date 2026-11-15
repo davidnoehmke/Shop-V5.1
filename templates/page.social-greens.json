@@ -2,8 +2,47 @@
   "sections": {
     "main": {
       "type": "leaf-social-greens",
-      "settings": {}
+      "settings": {},
+      "blocks": {
+        "classroom": {
+          "type": "project",
+          "settings": {
+            "category": "education",
+            "title_de": "Grünes Lernzimmer",
+            "title_en": "Green learning room",
+            "text_de": "Robuste Pflanzen, sichere Stellplätze und ein einfacher Pflegeplan für Bildungseinrichtungen.",
+            "text_en": "Resilient plants, safe placement and a simple care plan for learning environments."
+          }
+        },
+        "care": {
+          "type": "project",
+          "settings": {
+            "category": "care",
+            "title_de": "Begrünter Gemeinschaftsbereich",
+            "title_en": "Greener shared care space",
+            "text_de": "Gut erreichbare Pflanzgefäße, verträgliche Standortwahl und klare Zuständigkeiten für die Pflege.",
+            "text_en": "Accessible planters, considered placement and clear care responsibilities."
+          }
+        },
+        "community": {
+          "type": "project",
+          "settings": {
+            "category": "community",
+            "title_de": "Nachbarschafts-Grünpunkt",
+            "title_en": "Neighbourhood green corner",
+            "text_de": "Ein gemeinschaftlich nutzbarer Pflanzenbereich mit nachvollziehbarem Materialbudget und Übergabeplan.",
+            "text_en": "A shared planted area with a transparent materials budget and handover plan."
+          }
+        }
+      },
+      "block_order": [
+        "classroom",
+        "care",
+        "community"
+      ]
     }
   },
-  "order": ["main"]
+  "order": [
+    "main"
+  ]
 }
