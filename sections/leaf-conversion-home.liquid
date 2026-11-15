@@ -87,7 +87,9 @@
                   {% assign card_function = product.metafields.leafer.primary_function.value %}
                   {% if card_function != blank %}<p class="leaf-conversion__product-fit">{{ card_function | strip_html | truncatewords: 14 | escape }}</p>{% endif %}
                   {% if simple_purchase %}
-                    {% form 'product', product, id: card_form_id, class: 'leaf-conversion__form' %}
+                    {% assign cart_error_message = 'product.editorial.cart_error' | t %}
+                    {% form 'product', product, id: card_form_id, class: 'leaf-conversion__form js-leafer-cart-form', data-cart-error-message: cart_error_message %}
+                      <p data-cart-error hidden role="alert"></p>
                       <strong class="leaf-conversion__price" data-home-price aria-live="polite">{{ selected_price }}</strong>
                       <span class="leaf-conversion__unit-price" data-home-unit-price>{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}</span>
                       {% if product.has_only_default_variant %}
