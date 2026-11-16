@@ -228,14 +228,14 @@
         "disabled": true,
         "settings": {}
       },
-      "5280235153711299465": {
-        "type": "shopify://apps/eu-adress-check-widerruf-pro/blocks/widerruf-button/019c7a79-f151-7cab-a5a7-b10009f81321",
-        "disabled": false,
-        "settings": {}
-      },
       "6603664506335945664": {
         "type": "shopify://apps/transtore-translate-language/blocks/switcher_embed_block/afeffe82-e563-4f78-90f4-f1e3d96286c3",
         "disabled": false,
+        "settings": {}
+      },
+      "5280235153711299465": {
+        "type": "shopify://apps/eu-adress-check-widerruf-pro/blocks/widerruf-button/019c7a79-f151-7cab-a5a7-b10009f81321",
+        "disabled": true,
         "settings": {}
       }
     }
