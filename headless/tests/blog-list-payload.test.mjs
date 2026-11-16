@@ -17,16 +17,16 @@ test('blog overview fetches card metadata, not complete article HTML', () => {
   for (const field of ['id', 'handle', 'title', 'excerpt', 'publishedAt', 'image', 'blog']) {
     assert.match(fragment, new RegExp('\\b' + field + '\\b'));
   }
-  assert.doesNotMatch(fragment, /\\bcontentHtml\\b/);
-  assert.doesNotMatch(fragment, /\\bauthorV2\\b/);
+  assert.doesNotMatch(fragment, /\bcontentHtml\b/);
+  assert.doesNotMatch(fragment, /\bauthorV2\b/);
 });
 
 test('blog article detail still fetches the complete article body', () => {
-  assert.match(article, /\\bcontentHtml\\b/);
+  assert.match(article, /\bcontentHtml\b/);
   assert.match(article, /<BlogArticlePage /);
 });
 
 test('English routes reuse lightweight list while retaining full detail page', () => {
-  assert.match(englishOverview, /export \\{loader, meta, default\\} from '\\.\\/blogs\\.\\$blogHandle\\._index'/);
-  assert.match(englishArticle, /\\bcontentHtml\\b/);
+  assert.match(englishOverview, /export \{loader, meta, default\} from '\.\/blogs\.\$blogHandle\._index'/);
+  assert.match(englishArticle, /\bcontentHtml\b/);
 });
