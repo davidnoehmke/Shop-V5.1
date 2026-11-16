@@ -103,3 +103,9 @@ verify the reviewed storefront version before calling the full feature live.
 References: [OpenAI vision](https://developers.openai.com/api/docs/guides/images-vision),
 [structured output](https://developers.openai.com/api/docs/guides/structured-outputs),
 [Supabase Auth headers](https://supabase.com/docs/guides/functions/auth-headers).
+
+## Shopify theme integration (opt-in)
+
+`snippets/leaf-shop-assistant.liquid` exposes a link to the authenticated Hydrogen photo-analysis portal through the Shopify theme settings in `config/settings_schema.json`. The link appears in the desktop assistant actions and in the assistant's suggestion row only when **LEAF Pflanzenfotoanalyse > Fotoanalyse im LEAF-Assistenten anzeigen** is enabled and an HTTPS portal URL is configured. It preserves the English locale with `lang=en`, opens in a separate tab, and does not transmit any image, token or Shopify customer data from Liquid. The existing inactive photo-upload controls in the Shopify chat remain disabled. The Shopify customer login does not authenticate the separate Supabase portal.
+
+**Do not enable the Shopify setting until** `OPENAI_API_KEY` is configured in the Supabase Edge Function, real authenticated photo analysis has passed, and the configured HTTPS portal URL and DE/EN mobile browser path have been verified. The default is off to prevent a misleading public photo-analysis offer. GitHub `main` contains the feature code but does not alone confirm that the live Shopify theme has received or enabled it.
