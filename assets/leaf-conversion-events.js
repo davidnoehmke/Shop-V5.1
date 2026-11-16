@@ -15,10 +15,8 @@
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({ event: name, ...data });
   };
-  const category = () => document.body?.dataset?.template || '';
-  const productForm = () => document.querySelector('form[action*="/cart/add"]');
   const init = () => {
-    if (document.querySelector('[data-variants]') || productForm()) {
+    if (document.body?.classList.contains('template-product')) {
       emit('leaf_product_view', { leaf_page: location.pathname });
     }
     if (document.querySelector('.main-cart')) {
@@ -30,6 +28,11 @@
   document.addEventListener('click', (event) => {
     const target = event.target;
     if (!(target instanceof Element)) return;
+    const homeLink = target.closest('.leaf-conversion a');
+    if (homeLink) emit('leaf_home_navigation', {
+      leaf_destination: homeLink.getAttribute('href') || '',
+      leaf_page: location.pathname
+    });
     const ledLink = target.closest('.leaf-led-home__product, [data-led-destination]');
     if (ledLink) emit('leaf_led_product_navigation', {
       leaf_destination: ledLink.getAttribute('href') || '',
@@ -40,6 +43,10 @@
       emit('leaf_checkout_intent', { leaf_page: location.pathname });
     }
   }, true);
+  document.addEventListener('change', (event) => {
+    if (!(event.target instanceof HTMLSelectElement) || !event.target.matches('[data-home-variant]')) return;
+    emit('leaf_home_variant_selection', { leaf_page: location.pathname, leaf_variant_id: event.target.value });
+  });
   document.addEventListener('leaf:cart-add-success', (event) => {
     emit('leaf_add_to_cart_confirmed', {
       leaf_page: location.pathname,
