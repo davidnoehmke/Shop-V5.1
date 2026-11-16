@@ -1,37 +1,32 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {estimateLightEnergy} from '../app/lib/light-energy.ts';
+const base = {wattsPerLight: 25, lightCount: 1, hoursPerDay: 12, days: 30, tariffPerKwh: 0.35};
 
-const base = {wattsPerLight: 25, lightCount: 1, hoursPerDay: 12, days: 30, priceEurPerKwh: 0.35};
-
-test('25 W for 12 hours over 30 days costs EUR 3.15 at 0.35 EUR/kWh', () => {
+test('25 W for 12 h over 30 days uses 9 kWh and costs 3.15 currency units', () => {
   const result = estimateLightEnergy(base);
   assert.ok(result);
   assert.ok(Math.abs(result.kwhPerDay - 0.3) < 1e-9);
   assert.ok(Math.abs(result.kwhInPeriod - 9) < 1e-9);
-  assert.ok(Math.abs(result.costEurInPeriod - 3.15) < 1e-9);
+  assert.ok(Math.abs(result.costInPeriod - 3.15) < 1e-9);
 });
 test('two lights scale consumption and cost linearly', () => {
   const single = estimateLightEnergy(base);
   const double = estimateLightEnergy({...base, lightCount: 2});
   assert.equal(double.kwhInPeriod, single.kwhInPeriod * 2);
-  assert.equal(double.costEurInPeriod, single.costEurInPeriod * 2);
+  assert.equal(double.costInPeriod, single.costInPeriod * 2);
 });
-test('zero-hours, zero-power and zero-tariff are valid', () => {
-  assert.equal(estimateLightEnergy({...base, hoursPerDay: 0}).costEurInPeriod, 0);
+test('zero hours, zero power and zero tariff are valid', () => {
+  assert.equal(estimateLightEnergy({...base, hoursPerDay: 0}).costInPeriod, 0);
   assert.equal(estimateLightEnergy({...base, wattsPerLight: 0}).kwhInPeriod, 0);
-  assert.equal(estimateLightEnergy({...base, priceEurPerKwh: 0}).costEurInPeriod, 0);
+  assert.equal(estimateLightEnergy({...base, tariffPerKwh: 0}).costInPeriod, 0);
 });
-test('rejects out-of-range, missing and non-finite values', () => {
+test('rejects invalid, fractional count and non-finite values', () => {
   for (const candidate of [
-    {...base, wattsPerLight: -1},
-    {...base, lightCount: 0},
-    {...base, lightCount: 1.5},
-    {...base, hoursPerDay: 24.01},
-    {...base, days: 0},
-    {...base, days: 367},
-    {...base, priceEurPerKwh: -0.01},
-    {...base, priceEurPerKwh: Number.NaN},
-    {...base, wattsPerLight: Infinity},
+    {...base, wattsPerLight: -1}, {...base, wattsPerLight: Infinity},
+    {...base, lightCount: 0}, {...base, lightCount: 1.5},
+    {...base, hoursPerDay: 24.01}, {...base, days: 0},
+    {...base, days: 367}, {...base, tariffPerKwh: -0.01},
+    {...base, tariffPerKwh: Number.NaN},
   ]) assert.equal(estimateLightEnergy(candidate), null);
 });
