@@ -13,18 +13,17 @@
   "sections": {
     "leaf_product_decision_dgnyTJ": {
       "type": "leaf-product-decision",
-      "disabled": true,
       "name": "Wissenscluster",
       "settings": {}
     },
     "b2b_eu": {
       "type": "leaf-b2b-prefooter",
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/vibia_straight_round.i2.jpg",
         "b2b_link": "/pages/kooperationen-pflanzenprojekte",
         "shipping_link": "/pages/versandrichtlinie"
-      },
-      "disabled": true
+      }
     },
     "newsletter": {
       "type": "newsletter-services",
