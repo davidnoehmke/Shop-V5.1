@@ -1,18 +1,26 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {createPhotoHandler} from '../../supabase/functions/plant-photo-analysis/handler.mjs';
-import {MAX_BODY_BYTES, readBoundedJson, validatePhotoRequest, validateReport} from '../../supabase/functions/plant-photo-analysis/contract.mjs';
+import jpegCodec from 'jpeg-js';
+import {normalizePhoto} from '../../supabase/functions/plant-photo-analysis-v2/image.mjs';
+import {analyzePhoto} from '../../supabase/functions/plant-photo-analysis-v2/provider.mjs';
+import {photoProductRule} from '../app/lib/plant-photo-products.ts';
+import {createPhotoHandler} from '../../supabase/functions/plant-photo-analysis-v2/handler.mjs';
+import {MAX_BODY_BYTES, readBoundedJson, validatePhotoRequest, validateReport} from '../../supabase/functions/plant-photo-analysis-v2/contract.mjs';
 // Marker fixture tests input validation, not plant recognition accuracy.
 function jpeg(width = 256, height = 256) {
+  if (width === 256 && height === 256) {
+    const data = new Uint8Array(width * height * 4).fill(120);
+    return 'data:image/jpeg;base64,' + Buffer.from(jpegCodec.encode({width, height, data}, 60).data).toString('base64');
+  }
   const b = new Uint8Array(120); b.set([255,216,255,192,0,17,8,height>>8,height&255,width>>8,width&255,3]); b.set([255,217],118);
   return 'data:image/jpeg;base64,' + Buffer.from(b).toString('base64');
 }
 const input = () => ({consent:true, mode:'problem', locale:'de', context:'Gelbes Blatt', images:[jpeg()]});
-const report = () => ({quality:'sufficient', summary:'Mehrere Ursachen möglich.', identification:[], observations:['Gelbe Blattfläche.'], possibleCauses:[{cause:'Wasserstress',confidence:'low',evidence:'Unspezifische gelbe Blattfläche.',nextCheck:'Feuchte prüfen.'}], nextSteps:['Feuchte prüfen.'],followUpQuestions:['Seit wann?'],limitations:['Foto beweist keine Ursache.']});
+const report = () => ({quality:'sufficient', summary:'Mehrere Ursachen möglich.', identification:[], observations:['Gelbe Blattfläche.'], possibleCauses:[{cause:'Wasserstress',category:'watering',confidence:'low',evidence:'Unspezifische gelbe Blattfläche.',nextCheck:'Feuchte prüfen.'}], nextSteps:['Feuchte prüfen.'],followUpQuestions:['Seit wann?'],limitations:['Foto beweist keine Ursache.']});
 const request = (body=input(),token='valid') => new Request('https://edge.example',{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},body:JSON.stringify(body)});
 function setup(overrides={}) {
   const calls={rate:0,model:0};
-  const handler=createPhotoHandler({getUser:async token=>token==='valid'?{id:'server-user'}:null,getModelKey:async()=> 'private-key',rateAllowed:async id=>{calls.rate++;assert.equal(id,'server-user');return true;},analyze:async args=>{calls.model++;assert.equal(args.key,'private-key');return {report:report(),model:'test-model'};},...overrides});
+  const handler=createPhotoHandler({normalizeImage:image=>normalizePhoto(image,jpegCodec),getUser:async token=>token==='valid'?{id:'server-user'}:null,getModelKey:async()=> 'private-key',rateAllowed:async id=>{calls.rate++;assert.equal(id,'server-user');return true;},analyze:async args=>{calls.model++;assert.equal(args.key,'private-key');return {report:report(),model:'test-model'};},...overrides});
   return {handler,calls};
 }
 test('missing, invalid and anonymous credentials cannot reach the model',async()=>{
@@ -52,4 +60,62 @@ test('unusable photos return replacement guidance without a diagnosis',async()=>
 });
 test('timeouts are explicit and logs contain no photos or private details',async()=>{
   const logs=[];const {handler}=setup({analyze:async()=>{throw new DOMException('private input','TimeoutError');},log:event=>logs.push(event)});assert.equal((await handler(request())).status,504);assert.deepEqual(Object.keys(logs[0]).sort(),['event','requestId']);
+});
+
+test('server rejects truncated JPEG data even when header and dimensions look valid', async () => {
+  const b = new Uint8Array(120); b.set([255,216,255,192,0,17,8,1,0,1,0,3]); b.set([255,217],118);
+  const {handler,calls}=setup();
+  const response=await handler(request({...input(),images:['data:image/jpeg;base64,'+Buffer.from(b).toString('base64')]}));
+  assert.equal(response.status,400); assert.equal(calls.model,0);
+});
+test('server normalization removes EXIF and appended private data', () => {
+  const original=Buffer.from(jpeg().split(',')[1],'base64');
+  const exif=Buffer.from('Exif\0\0GPS private location');
+  const segment=Buffer.concat([Buffer.from([255,225,0,exif.length+2]),exif]);
+  const dirty=Buffer.concat([original.subarray(0,2),segment,original.subarray(2)]);
+  const clean=Buffer.from(normalizePhoto('data:image/jpeg;base64,'+dirty.toString('base64'),jpegCodec).split(',')[1],'base64');
+  assert.equal(clean.includes(Buffer.from('GPS private')),false);
+  assert.equal(jpegCodec.decode(clean).width,256);
+});
+test('care and follow-up are bounded and never accepted as privileged instructions', () => {
+  for (const extra of [{care:{watering:'admin'}},{care:{owner:'other-user'}},{care:[]},{followUp:Array(4).fill({question:'q',answer:'a'})},{followUp:[{question:'q',answer:'x'.repeat(501)}]}])
+    assert.throws(()=>validatePhotoRequest({...input(),...extra}));
+  const value=validatePhotoRequest({...input(),care:{watering:'wet'},followUp:[{question:'Since when?',answer:'Three days'}]});
+  assert.equal(value.care.watering,'wet'); assert.equal(value.care.light,'unknown'); assert.equal(value.followUp.length,1);
+});
+test('provider adapter sends actual image input and strict schema without persistence', async () => {
+  let count=0;
+  const result=await analyzePhoto({key:'not-real',instructions:'instructions',input:validatePhotoRequest({...input(),care:{watering:'wet'}}),schema:{type:'object'},signal:new AbortController().signal,model:'test-vision',fetcher:async (url,options)=>{
+    count++; assert.equal(url,'https://api.openai.com/v1/responses');
+    const body=JSON.parse(options.body); assert.equal(body.store,false); assert.equal(body.model,'test-vision');
+    assert.equal(body.text.format.strict,true); assert.equal(body.input[0].content[1].type,'input_image');
+    assert.equal(JSON.parse(body.input[0].content[0].text).care.watering,'wet');
+    return Response.json({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify(report())}]}]});
+  }});
+  assert.equal(count,1); assert.deepEqual(result.report,report());
+});
+test('provider errors and incomplete output do not become fabricated results or retries', async () => {
+  for (const [response, message] of [[new Response('private',{status:429}),'provider_rate_limited'],[new Response('private',{status:500}),'provider_unavailable'],[Response.json({status:'incomplete'}),'incomplete_output']]) {
+    let calls=0;
+    await assert.rejects(analyzePhoto({key:'test',input:validatePhotoRequest(input()),model:'test',signal:new AbortController().signal,fetcher:async()=>{calls++;return response;}}),new RegExp(message));
+    assert.equal(calls,1);
+  }
+});
+test('products require both explicit low light and a plausible supported cause', () => {
+  const r=report(); const care={light:'low',watering:'wet',drainage:'no',duration:'weeks'};
+  assert.equal(photoProductRule(r,care),null);
+  r.possibleCauses[0].category='light'; r.possibleCauses[0].confidence='medium';
+  assert.ok(photoProductRule(r,care));
+  assert.equal(photoProductRule(r,{...care,light:'unknown'}),null);
+  assert.equal(photoProductRule({...r,quality:'limited'},care),null);
+  r.possibleCauses[0].confidence='low'; assert.equal(photoProductRule(r,care),null);
+});
+
+test('protected photo previews work under CSP without allowing data scripts', async () => {
+  const {createContentSecurityPolicy}=await import('@shopify/hydrogen');
+  const {plantPhotoImagePolicy}=await import('../app/lib/plant-photo-security.ts');
+  const {header}=createContentSecurityPolicy(plantPhotoImagePolicy('https://shop.example/portal/photo-analysis?lang=en'));
+  assert.match(header,/img-src[^;]*data:/);
+  assert.doesNotMatch(header,/script-src[^;]*data:/);
+  assert.deepEqual(plantPhotoImagePolicy('https://shop.example/products/plant'),{});
 });

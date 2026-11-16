@@ -13,3 +13,7 @@ verify_jwt = false
 # Verified with auth.getUser inside the handler (supports asymmetric signing keys).
 [functions.plant-photo-analysis]
 verify_jwt = false
+
+# Versioned rollout: v1 remains available for the current storefront.
+[functions.plant-photo-analysis-v2]
+verify_jwt = false

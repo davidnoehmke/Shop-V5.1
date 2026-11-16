@@ -1,9 +1,19 @@
 import {useEffect, useRef, useState} from 'react';
 import type {ChangeEvent, FormEvent} from 'react';
 import {Link, useSearchParams} from 'react-router';
-import {preparePlantPhoto, type PlantPhotoReport} from '~/lib/plant-photo';
+import {
+  preparePlantPhoto,
+  initialCare,
+  type PlantCare,
+  type PhotoProduct,
+  type PlantPhotoReport,
+} from '~/lib/plant-photo';
 
-type Result = {report: PlantPhotoReport; requestId: string};
+type Result = {
+  report: PlantPhotoReport;
+  requestId: string;
+  products?: PhotoProduct[];
+};
 export function PlantPhotoAnalysis() {
   const [params] = useSearchParams();
   const en = params.get('lang') === 'en';
@@ -11,6 +21,9 @@ export function PlantPhotoAnalysis() {
   const [images, setImages] = useState<string[]>([]);
   const [mode, setMode] = useState('identify');
   const [context, setContext] = useState('');
+  const [care, setCare] = useState<PlantCare>(initialCare);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const resultHeading = useRef<HTMLHeadingElement | null>(null);
   const [consent, setConsent] = useState(false);
   const [preparing, setPreparing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -18,6 +31,9 @@ export function PlantPhotoAnalysis() {
   const [result, setResult] = useState<Result | null>(null);
   const controller = useRef<AbortController | null>(null);
   useEffect(() => () => controller.current?.abort(), []);
+  useEffect(() => {
+    if (result) resultHeading.current?.focus();
+  }, [result]);
   const confidence = (value: string) =>
     ({
       low: t('unsicher', 'uncertain'),
@@ -25,6 +41,10 @@ export function PlantPhotoAnalysis() {
       high: t('deutliche Bildhinweise', 'strong visual evidence'),
     })[value];
   const errors: Record<string, string> = {
+    unsupported_heic: t(
+      'Dieses HEIC-/HEIF-Foto bitte zuerst als JPEG exportieren. Auf dem iPhone kann die Kamera auf „Maximale Kompatibilität“ gestellt werden.',
+      'Please export this HEIC/HEIF photo as JPEG first. On iPhone, the camera can use the Most Compatible setting.',
+    ),
     invalid_image: t(
       'Bitte ein lesbares JPEG-, PNG- oder WebP-Foto wählen.',
       'Choose a readable JPEG, PNG or WebP photo.',
@@ -34,16 +54,20 @@ export function PlantPhotoAnalysis() {
       'Maximum 8 MB per original photo. Choose a smaller image.',
     ),
     image_dimensions: t(
-      'Bitte ein Foto ab 128 × 128 Pixeln und unter 40 Megapixeln wählen.',
-      'Choose an image at least 128 × 128 pixels and below 40 megapixels.',
+      'Bitte ein Foto ab 128 × 128 Pixeln und unter 25 Megapixeln wählen.',
+      'Choose an image at least 128 × 128 pixels and below 25 megapixels.',
     ),
     authentication_required: t(
       'Deine Sitzung ist abgelaufen. Bitte erneut anmelden.',
       'Your session expired. Please sign in again.',
     ),
     rate_limited: t(
-      'Das Analyselimit ist erreicht. Bitte in zehn Minuten erneut versuchen.',
-      'The analysis limit was reached. Please try again in ten minutes.',
+      'Das Analyselimit ist erreicht (zwei Analysen in zehn Minuten; zehn insgesamt pro Stunde). Bitte später erneut versuchen.',
+      'The analysis limit was reached (two per ten minutes; ten overall per hour). Please try again later.',
+    ),
+    provider_busy: t(
+      'Der KI-Dienst ist ausgelastet. Bitte in einer Minute erneut versuchen.',
+      'The AI service is busy. Please try again in a minute.',
     ),
     analysis_timeout: t(
       'Die Analyse dauert zu lange. Bitte erneut versuchen.',
@@ -59,6 +83,7 @@ export function PlantPhotoAnalysis() {
     event.currentTarget.value = '';
     if (!files.length) return;
     setResult(null);
+    setAnswers({});
     setError('');
     if (files.length + images.length > 3) {
       setError(
@@ -83,7 +108,14 @@ export function PlantPhotoAnalysis() {
   }
   async function analyze(event: FormEvent) {
     event.preventDefault();
-    if (!images.length || !consent || busy || preparing) return;
+    if (!images.length || !consent || busy || preparing || controller.current)
+      return;
+    const followUp = (result?.report.followUpQuestions || []).flatMap(
+      (question, index) =>
+        answers[index]?.trim()
+          ? [{question, answer: answers[index].trim()}]
+          : [],
+    );
     const active = new AbortController();
     controller.current = active;
     const timer = setTimeout(() => active.abort('timeout'), 55_000);
@@ -98,6 +130,8 @@ export function PlantPhotoAnalysis() {
           images,
           mode,
           context,
+          care,
+          followUp,
           consent,
           locale: en ? 'en' : 'de',
         }),
@@ -106,6 +140,7 @@ export function PlantPhotoAnalysis() {
       const payload = (await response.json()) as Result & {error?: string};
       if (!response.ok) throw new Error(payload.error || 'unavailable');
       if (!payload.report) throw new Error('unavailable');
+      setAnswers({});
       setResult(payload);
     } catch (err) {
       if (active.signal.aborted) {
@@ -209,7 +244,7 @@ export function PlantPhotoAnalysis() {
             />
             <div className="plant-photo__previews">
               {images.map((image, index) => (
-                <figure key={image}>
+                <figure key={index}>
                   <img
                     src={image}
                     width={240}
@@ -233,10 +268,96 @@ export function PlantPhotoAnalysis() {
                 </figure>
               ))}
             </div>
+            <fieldset className="plant-photo__care">
+              <legend>
+                {t('3 · Standort und Pflege', '3 · Location and care')}
+              </legend>
+              {(
+                [
+                  [
+                    'light',
+                    t('Licht am Standort', 'Light at the location'),
+                    [
+                      ['unknown', t('Nicht sicher', 'Not sure')],
+                      ['low', t('Wenig Tageslicht', 'Little daylight')],
+                      [
+                        'indirect',
+                        t('Helles indirektes Licht', 'Bright indirect light'),
+                      ],
+                      ['direct', t('Direkte Sonne', 'Direct sun')],
+                      ['grow_light', t('Pflanzenlampe', 'Grow light')],
+                    ],
+                  ],
+                  [
+                    'watering',
+                    t('Substrat aktuell', 'Substrate now'),
+                    [
+                      ['unknown', t('Noch nicht geprüft', 'Not checked yet')],
+                      ['dry', t('Trocken', 'Dry')],
+                      ['moist', t('Leicht feucht', 'Slightly moist')],
+                      [
+                        'wet',
+                        t(
+                          'Nass oder Wasser im Übertopf',
+                          'Wet or standing water',
+                        ),
+                      ],
+                    ],
+                  ],
+                  [
+                    'drainage',
+                    t(
+                      'Hat der Pflanztopf Abzugslöcher?',
+                      'Does the pot have drainage holes?',
+                    ),
+                    [
+                      ['unknown', t('Nicht sicher', 'Not sure')],
+                      ['yes', t('Ja', 'Yes')],
+                      ['no', t('Nein', 'No')],
+                    ],
+                  ],
+                  [
+                    'duration',
+                    t(
+                      'Seit wann sind Veränderungen sichtbar?',
+                      'When did changes start?',
+                    ),
+                    [
+                      ['unknown', t('Nicht sicher', 'Not sure')],
+                      ['days', t('Seit Tagen', 'Days ago')],
+                      ['weeks', t('Seit Wochen', 'Weeks ago')],
+                      ['months', t('Seit Monaten', 'Months ago')],
+                    ],
+                  ],
+                ] as [keyof PlantCare, string, [string, string][]][]
+              ).map(([key, label, options]) => (
+                <label key={key} htmlFor={`plant-care-${key}`}>
+                  {label}
+                  <select
+                    id={`plant-care-${key}`}
+                    value={care[key]}
+                    onChange={(event) => {
+                      setCare((current) => ({
+                        ...current,
+                        [key]: event.target.value,
+                      }));
+                      setResult(null);
+                      setAnswers({});
+                    }}
+                  >
+                    {options.map(([value, text]) => (
+                      <option key={value} value={value}>
+                        {text}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
+            </fieldset>
             <label htmlFor="plant-context">
               {t(
-                '3 · Was ist dir aufgefallen? (optional)',
-                '3 · What have you noticed? (optional)',
+                '4 · Was ist dir aufgefallen? (optional)',
+                '4 · What have you noticed? (optional)',
               )}
             </label>
             <textarea
@@ -269,8 +390,8 @@ export function PlantPhotoAnalysis() {
             </label>
             <p className="plant-photo__privacy">
               {t(
-                'Die Fotos werden vor dem Versand verkleinert und neu kodiert; EXIF-/GPS-Metadaten werden dabei entfernt. Wir legen kein Fotoarchiv an. Verarbeitung und mögliche Sicherheitsaufbewahrung beim KI-Anbieter richten sich nach dessen Bedingungen.',
-                'Photos are resized and re-encoded before upload, removing EXIF/GPS metadata. We do not create a photo archive. Provider processing and possible safety retention follow the AI provider’s terms.',
+                'Wir verkleinern und kodieren Fotos im Browser und auf dem Server neu; EXIF-/GPS-Daten werden entfernt. Fotos und Ergebnisse bleiben nur für diese Sitzung im Browser. Wir legen kein Fotoarchiv an. Für die Verarbeitung und mögliche Sicherheitsaufbewahrung bei OpenAI gelten dessen Bedingungen.',
+                'Photos are resized and re-encoded in the browser and on the server to remove EXIF/GPS metadata. Photos and results remain in this browser session only. We do not create a photo archive. OpenAI processing and possible safety retention follow its terms.',
               )}
             </p>
             <button
@@ -296,14 +417,20 @@ export function PlantPhotoAnalysis() {
           {error ? (
             <p role="alert">
               {error}{' '}
-              <Link to="/auth/login">{t('Zur Anmeldung', 'Sign in')}</Link>
+              <Link
+                to={`/auth/login?returnTo=${encodeURIComponent(`/portal/photo-analysis${en ? '?lang=en' : ''}`)}`}
+              >
+                {t('Zur Anmeldung', 'Sign in')}
+              </Link>
             </p>
           ) : null}
         </form>
         <div className="plant-photo__card plant-photo__report" aria-busy={busy}>
           {result ? (
             <>
-              <h2>{t('Deine Einschätzung', 'Your assessment')}</h2>
+              <h2 ref={resultHeading} tabIndex={-1}>
+                {t('Deine Einschätzung', 'Your assessment')}
+              </h2>
               <p className="plant-photo__quality">
                 {t('Bildgrundlage', 'Image evidence')}:{' '}
                 {
@@ -389,11 +516,55 @@ export function PlantPhotoAnalysis() {
                       'What would improve the assessment',
                     )}
                   </h3>
-                  <ul>
-                    {result.report.followUpQuestions.map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                  </ul>
+                  <form
+                    onSubmit={(event) => {
+                      void analyze(event);
+                    }}
+                  >
+                    <fieldset disabled={busy}>
+                      <legend>
+                        {t(
+                          'Rückfragen beantworten',
+                          'Answer follow-up questions',
+                        )}
+                      </legend>
+                      {result.report.followUpQuestions.map((item, i) => (
+                        <label key={i} htmlFor={`plant-follow-up-${i}`}>
+                          {item}
+                          <input
+                            id={`plant-follow-up-${i}`}
+                            maxLength={500}
+                            value={answers[i] || ''}
+                            onChange={(event) =>
+                              setAnswers((current) => ({
+                                ...current,
+                                [i]: event.target.value,
+                              }))
+                            }
+                          />
+                        </label>
+                      ))}
+                      <button
+                        type="submit"
+                        disabled={
+                          !Object.values(answers).some((answer) =>
+                            answer.trim(),
+                          )
+                        }
+                      >
+                        {t(
+                          'Mit Antworten erneut einschätzen',
+                          'Reassess with answers',
+                        )}
+                      </button>
+                      <small>
+                        {t(
+                          'Dies zählt als weitere Analyse.',
+                          'This counts as another analysis.',
+                        )}
+                      </small>
+                    </fieldset>
+                  </form>
                 </>
               ) : null}
               {result.report.limitations.length ? (
@@ -414,6 +585,62 @@ export function PlantPhotoAnalysis() {
                   'AI assessment, not a confirmed diagnosis. Plausibility is not a measured accuracy probability.',
                 )}
               </p>
+              {result.products?.length ? (
+                <section
+                  aria-label={t('Passende Produkte', 'Related products')}
+                >
+                  <h3>
+                    {t(
+                      'Wenn zusätzliches Licht nötig ist',
+                      'If extra light is needed',
+                    )}
+                  </h3>
+                  <p>
+                    {t(
+                      'Prüfe zuerst den Standort. Ein Kauf ist für die Pflegeempfehlungen nicht erforderlich.',
+                      'Check the location first. You can follow the care advice without buying anything.',
+                    )}
+                  </p>
+                  <div className="plant-photo__products">
+                    {result.products.map((product) => (
+                      <article key={product.id}>
+                        {product.image ? (
+                          <img
+                            src={product.image.url}
+                            alt={product.image.altText || product.title}
+                            width={240}
+                            height={180}
+                            loading="lazy"
+                          />
+                        ) : null}
+                        <h4>
+                          <Link
+                            to={`${en ? '/en' : ''}/products/${encodeURIComponent(product.handle)}`}
+                          >
+                            {product.title}
+                          </Link>
+                        </h4>
+                        <p>
+                          {t('Ab', 'From')}{' '}
+                          {new Intl.NumberFormat(en ? 'en-DE' : 'de-DE', {
+                            style: 'currency',
+                            currency: product.price.currencyCode,
+                          }).format(Number(product.price.amount))}
+                        </p>
+                        <p>{product.reason}</p>
+                        <Link
+                          to={`${en ? '/en' : ''}/products/${encodeURIComponent(product.handle)}`}
+                        >
+                          {t(
+                            'Details und Varianten prüfen',
+                            'Check details and variants',
+                          )}
+                        </Link>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
               <p className="plant-photo__privacy">
                 {t('Vorgangsnummer', 'Reference')}: {result.requestId}
               </p>
@@ -422,6 +649,8 @@ export function PlantPhotoAnalysis() {
                 onClick={() => {
                   setImages([]);
                   setContext('');
+                  setCare(initialCare);
+                  setAnswers({});
                   setConsent(false);
                   setResult(null);
                 }}
