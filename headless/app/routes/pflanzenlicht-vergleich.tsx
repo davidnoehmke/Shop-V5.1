@@ -92,6 +92,7 @@ export default function LightComparison(){
         <div className="leaf-compare__fact"><span>Sockel / Anschluss</span><strong>{textField(left,'socket')}</strong><strong>{textField(right,'socket')}</strong></div>
         <div className="leaf-compare__fact"><span>Farbtemperatur</span><strong>{textField(left,'cct')}</strong><strong>{textField(right,'cct')}</strong></div>
         <p>Grafische Balken vergleichen ausschließlich die beiden hinterlegten Messwerte, keine Qualität oder Eignung. PPF ist nicht PPFD am Blatt: Abstand, Optik und Messbedingungen verändern die tatsächliche Beleuchtung. Fehlende Daten werden nicht geschätzt. Preis und Verfügbarkeit können sich bis zum Checkout ändern.</p>
+        <p><Link to="/pflanzenlampe-stromkosten-rechner">Stromverbrauch und Stromkosten deiner Pflanzenlampe berechnen →</Link></p>
       </section>
     </>:<div className="leaf-compare__empty"><h2>Momentan keine geeigneten Produkte gefunden.</h2><p>Bitte nutze die Produktsuche, bis der Katalog für den direkten Vergleich vollständig verfügbar ist.</p><Link to="/search?q=LED">Pflanzenlampen suchen →</Link></div>}
   </main>;

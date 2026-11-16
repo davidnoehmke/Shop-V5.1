@@ -16,6 +16,7 @@ export default function EnglishLightComparison() {
       <p className="page-eyebrow">Grow lights · Product comparison</p>
       <h1>Compare grow lights</h1>
       <p className="page-lead">Explore real products, prices and availability from our Shopify catalog. Technical specifications are only shown when verified.</p>
+      <p><Link to="/en/grow-light-electricity-cost-calculator">Calculate grow-light electricity costs →</Link></p>
     </header>
     {products.length ? <section className="leaf-compare__grid" aria-label="Available grow lights">
       {products.map((product) => <article className="leaf-compare__product" key={product.id}>
