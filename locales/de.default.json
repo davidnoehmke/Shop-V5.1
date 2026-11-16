@@ -1656,6 +1656,15 @@
     "tools_copy": "Substrat, Licht und Raum mit den vorhandenen LEAF Werkzeugen planen."
   },
   "home_purchase": {
+    "details": "Details",
+    "shipping_short": "zzgl. Versand",
+    "advisor": "Du brauchst Hilfe bei der Auswahl?",
+    "advisor_intro": "Unsere Planer helfen dir, wenn du noch unsicher bist.",
+    "substrate_planner": "Substrat planen",
+    "light_planner": "Pflanzenlicht planen",
+    "shipping_label": "Versand",
+    "returns_label": "Rückgabe",
+    "contact_label": "Kontakt",
     "variant": "Größe / Ausführung",
     "shipping": "Versand & Lieferinformationen",
     "returns": "Rückgabe & Widerruf",

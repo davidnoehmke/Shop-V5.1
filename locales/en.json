@@ -1656,6 +1656,15 @@
     "tools_copy": "Plan substrates, lighting and your room with the LEAF tools."
   },
   "home_purchase": {
+    "details": "Details",
+    "shipping_short": "Shipping extra",
+    "advisor": "Need help choosing?",
+    "advisor_intro": "Use our planners if you need help finding the right fit.",
+    "substrate_planner": "Plan substrate",
+    "light_planner": "Plan grow lights",
+    "shipping_label": "Shipping",
+    "returns_label": "Returns",
+    "contact_label": "Contact",
     "variant": "Size / option",
     "shipping": "Shipping & delivery information",
     "returns": "Returns & cancellation",

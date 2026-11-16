@@ -18,16 +18,18 @@
     </div>
     <div>
       <p class="leaf-room__intro">{{ 'botanical_room.intro' | t }}</p>
+      {% unless section.settings.compact_navigation %}
       <div class="leaf-room__actions">
         <a class="leaf-room__button" href="#{{ room_id }}-worlds">{{ 'botanical_room.primary_cta' | t }} <span aria-hidden="true">↓</span></a>
         <a class="leaf-room__shop-link" href="{% render 'leaf-localized-url', url: routes.all_products_collection_url %}">{{ 'botanical_room.shop_cta' | t }} <span aria-hidden="true">↗</span></a>
       </div>
+      {% endunless %}
     </div>
   </div>
 
   <div class="leaf-room__scene">
     {% if section.settings.scene_image != blank %}
-      {{ section.settings.scene_image | image_url: width: 2200 | image_tag: class: 'leaf-room__image', widths: '480, 750, 1100, 1500, 1800, 2200', sizes: '(min-width: 990px) 55vw, 100vw', loading: 'eager', fetchpriority: 'high', alt: scene_alt }}
+      {{ section.settings.scene_image | image_url: width: 2200 | image_tag: class: 'leaf-room__image', widths: '480, 750, 1100, 1500, 1800, 2200', sizes: '(min-width: 990px) 55vw, 100vw', loading: 'lazy', alt: scene_alt }}
     {% else %}
       <div class="leaf-room__image-empty">{{ 'botanical_room.image_missing' | t }}</div>
     {% endif %}
@@ -65,6 +67,7 @@
 
   <p class="leaf-room__image-note">{{ 'botanical_room.image_note' | t }}</p>
 
+  {% unless section.settings.compact_navigation %}
   <nav id="{{ room_id }}-worlds" class="leaf-room__nav" aria-label="{{ 'botanical_room.navigation' | t }}">
     {% for block in section.blocks %}
       {% liquid
@@ -89,6 +92,7 @@
       {% endif %}
     {% endfor %}
   </nav>
+  {% endunless %}
 </leaf-botanical-room>
 
 {% schema %}
@@ -98,6 +102,7 @@
   "enabled_on": { "templates": ["index"] },
   "max_blocks": 6,
   "settings": [
+    {"type":"checkbox","id":"compact_navigation","label":"Kompakte Navigation ohne doppelte Einstiege","default":false},
     { "type": "image_picker", "id": "scene_image", "label": "Raumbild" },
     { "type": "text", "id": "scene_alt", "label": "Bildbeschreibung", "default": "Pflanzenecke vor einem alten Bücherregal mit botanischen Werken – KI-generiertes Inspirationsbild." },
     { "type": "url", "id": "setup_url", "label": "Ziel für Pflanzenraum planen" },
