@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "leaf_photo_portal_enabled": true,
     "background_color": "#fbfaf6",
     "surface_color": "#f3f0e9",
     "text_color": "#171717",
