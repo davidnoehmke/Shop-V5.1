@@ -53,11 +53,6 @@
         "disabled": true,
         "settings": {}
       },
-      "2118589882331710876": {
-        "type": "shopify://apps/essential-trust-badges/blocks/app-embed/0ff65b25-07e1-408e-950f-f54dd3d1751b",
-        "disabled": false,
-        "settings": {}
-      },
       "13768625480086291342": {
         "type": "shopify://apps/forms/blocks/forms/8744a304-fcb1-4347-b211-bb6b4759a76a",
         "disabled": false,
@@ -235,6 +230,11 @@
       },
       "5280235153711299465": {
         "type": "shopify://apps/eu-adress-check-widerruf-pro/blocks/widerruf-button/019c7a79-f151-7cab-a5a7-b10009f81321",
+        "disabled": true,
+        "settings": {}
+      },
+      "2118589882331710876": {
+        "type": "shopify://apps/essential-trust-badges/blocks/app-embed/0ff65b25-07e1-408e-950f-f54dd3d1751b",
         "disabled": true,
         "settings": {}
       }
