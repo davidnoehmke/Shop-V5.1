@@ -95,10 +95,15 @@
         "categories_title_de": "Was brauchst du für deine Pflanzen?",
         "categories_title_en": "Shop by plant care need",
         "products_title_de": "Ausgewählte Produkte",
-        "products_title_en": "Selected products"
+        "products_title_en": "Selected products",
+        "show_hero_actions": false
       }
     },
-    "leaf_led_finder": { "type": "leaf-led-home-finder", "settings": {} },
+    "leaf_led_finder": {
+      "type": "leaf-led-home-finder",
+      "settings": {},
+      "disabled": true
+    },
     "leaf_worlds": {
       "type": "leaf-botanical-room",
       "blocks": {
@@ -193,7 +198,8 @@
         "scene_image": "shopify://shop_images/leaf-botanische-bibliothek-pflanzenraum-20261113.png",
         "scene_alt": "Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
         "setup_url": "/collections/interieur-solutions",
-        "knowledge_blog": "leafers-nice2know-blog"
+        "knowledge_blog": "leafers-nice2know-blog",
+        "compact_navigation": true
       }
     },
     "leaf_soil_globe": {
@@ -313,4 +319,3 @@
     "home_positioning_HgRGfq"
   ]
 }
-

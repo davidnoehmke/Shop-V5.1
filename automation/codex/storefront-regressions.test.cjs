@@ -66,7 +66,10 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
   const activeSections = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_led_finder', 'leaf_worlds']);
+  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_worlds']);
+  assert.equal(index.sections.leaf_led_finder.disabled, true);
+  assert.equal(index.sections.leaf_conversion.settings.show_hero_actions, false);
+  assert.equal(index.sections.leaf_worlds.settings.compact_navigation, true);
   assert.equal(index.sections.leaf_led_finder.type, 'leaf-led-home-finder');
   const commerce = index.sections.leaf_conversion;
   assert.equal(commerce.type, 'leaf-conversion-home');

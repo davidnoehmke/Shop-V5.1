@@ -10,10 +10,12 @@
       <p class="leaf-conversion__eyebrow">{% if is_en %}{{ section.settings.eyebrow_en | escape }}{% else %}{{ section.settings.eyebrow_de | escape }}{% endif %}</p>
       <h1 id="LeafConversionTitle-{{ section.id }}">{% if is_en %}{{ section.settings.heading_en | escape }}{% else %}{{ section.settings.heading_de | escape }}{% endif %}</h1>
       <p>{% if is_en %}{{ section.settings.intro_en | escape }}{% else %}{{ section.settings.intro_de | escape }}{% endif %}</p>
+      {% if section.settings.show_hero_actions %}
       <div class="leaf-conversion__actions">
         <a class="leaf-conversion__button" href="{% render 'leaf-localized-url', url: '/collections/pflanzenbeleuchtung' %}">{% if is_en %}{{ section.settings.primary_cta_en | escape }}{% else %}{{ section.settings.primary_cta_de | escape }}{% endif %}</a>
         <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/collections/substratwelt-pflanzsubstrate-mischungen-zusatze' %}">{% if is_en %}{{ section.settings.secondary_cta_en | escape }}{% else %}{{ section.settings.secondary_cta_de | escape }}{% endif %}</a>
       </div>
+      {% endif %}
     </div>
     <div class="leaf-conversion__section">
       <h2>{% if is_en %}{{ section.settings.categories_title_en | escape }}{% else %}{{ section.settings.categories_title_de | escape }}{% endif %}</h2>
@@ -80,15 +82,15 @@
                 endif
               %}
               <article class="leaf-conversion__product" data-home-product {{ block.shopify_attributes }}>
-                <a class="leaf-conversion__product-link" data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">
+                <a class="leaf-conversion__product-link" tabindex="-1" aria-hidden="true" data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">
                   <span class="leaf-conversion__product-media">
                     {% if card_image != blank %}
                       {{ card_image | image_url: width: 640 | image_tag: loading: 'lazy', widths: '240, 400, 640', sizes: '(max-width: 640px) 50vw, 33vw', alt: card_image_alt, class: 'leaf-conversion__variant-image' }}
                     {% endif %}
                   </span>
-                  <h3>{{ product.title | escape }}</h3>
                 </a>
                 <div class="leaf-conversion__product-bottom">
+                  <h3><a data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">{{ product.title | escape }}</a></h3>
                   {% assign card_function = product.metafields.leafer.primary_function.value %}
                   {% if card_function != blank %}<p class="leaf-conversion__product-fit">{{ card_function | strip_html | truncatewords: 14 | escape }}</p>{% endif %}
                   {% if simple_purchase %}
@@ -109,14 +111,17 @@
                         </select>
                       {% endif %}
                       <input type="hidden" name="quantity" value="1">
-                      <button type="submit" name="add" class="leaf-conversion__buy">{{ 'product.add_to_cart' | t }}</button>
+                      <div class="leaf-conversion__purchase-actions">
+                        <button type="submit" name="add" class="leaf-conversion__buy">{{ 'product.add_to_cart' | t }}</button>
+                        <a class="leaf-conversion__details" data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">{{ 'home_purchase.details' | t }}</a>
+                      </div>
                     {% endform %}
                   {% else %}
                     <strong class="leaf-conversion__price">{% if product.price_varies %}{{ 'product.from_price' | t: price: card_price }}{% else %}{{ card_price }}{% endif %}</strong>
                     {% unless product.available %}<span>{{ 'product.sold_out' | t }}</span>{% endunless %}
                   {% endif %}
-                  {% if shop.shipping_policy != blank %}<a class="leaf-conversion__costs" href="{% render 'leaf-localized-url', url: shop.shipping_policy.url %}">{{ 'home_purchase.costs' | t }}</a>{% endif %}
-                  <a class="leaf-conversion__details" data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">{{ 'product.card.view_details' | t }} <span aria-hidden="true">→</span></a>
+                  {% if shop.shipping_policy != blank %}<a class="leaf-conversion__costs" href="{% render 'leaf-localized-url', url: shop.shipping_policy.url %}">{{ 'home_purchase.shipping_short' | t }}</a>{% endif %}
+                  {% unless simple_purchase %}<a class="leaf-conversion__details" data-home-product-link href="{% render 'leaf-localized-url', url: card_url %}">{{ 'home_purchase.details' | t }}</a>{% endunless %}
                 </div>
               </article>
             {% endif %}
@@ -124,21 +129,18 @@
         {% endfor %}
       </div>
     </div>
-    <div class="leaf-conversion__section leaf-conversion__advisor" aria-labelledby="LeafConversionAdvisor-{{ section.id }}">
-      <div>
-        <p class="leaf-conversion__eyebrow">{% if is_en %}Find the right fit{% else %}Passend auswählen{% endif %}</p>
-        <h2 id="LeafConversionAdvisor-{{ section.id }}">{% if is_en %}Not sure what your plant needs?{% else %}Noch unsicher, was deine Pflanze braucht?{% endif %}</h2>
-        <p>{% if is_en %}Use our product configurators to choose a substrate mix or a suitable grow light. Your selection leads back to real products.{% else %}Nutze unsere Konfiguratoren für individuelle Substratmischungen und passende Pflanzenbeleuchtung. Deine Auswahl führt zu konkreten Produkten.{% endif %}</p>
-      </div>
+    <details class="leaf-conversion__advisor">
+      <summary>{{ 'home_purchase.advisor' | t }}</summary>
+      <p>{{ 'home_purchase.advisor_intro' | t }}</p>
       <div class="leaf-conversion__actions">
-        <a class="leaf-conversion__button" href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">{% if is_en %}Configure substrate{% else %}Substrat konfigurieren{% endif %}</a>
-        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/pages/pflanzenlicht-konfigurator' %}">{% if is_en %}Find grow lights{% else %}LED-Finder öffnen{% endif %}</a>
+        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/pages/individuelles-substrat' %}">{{ 'home_purchase.substrate_planner' | t }}</a>
+        <a class="leaf-conversion__textlink" href="{% render 'leaf-localized-url', url: '/pages/pflanzenlicht-konfigurator' %}">{{ 'home_purchase.light_planner' | t }}</a>
       </div>
-    </div>
+    </details>
     <nav class="leaf-conversion__service" aria-label="{{ 'home_purchase.help' | t }}">
-      {% if shop.shipping_policy != blank %}<a href="{% render 'leaf-localized-url', url: shop.shipping_policy.url %}">{{ 'home_purchase.shipping' | t }}</a>{% endif %}
-      {% if shop.refund_policy != blank %}<a href="{% render 'leaf-localized-url', url: shop.refund_policy.url %}">{{ 'home_purchase.returns' | t }}</a>{% endif %}
-      <a href="{% render 'leaf-localized-url', url: '/pages/contact' %}">{{ 'home_purchase.help' | t }}</a>
+      {% if shop.shipping_policy != blank %}<a href="{% render 'leaf-localized-url', url: shop.shipping_policy.url %}">{{ 'home_purchase.shipping_label' | t }}</a>{% endif %}
+      {% if shop.refund_policy != blank %}<a href="{% render 'leaf-localized-url', url: shop.refund_policy.url %}">{{ 'home_purchase.returns_label' | t }}</a>{% endif %}
+      <a href="{% render 'leaf-localized-url', url: '/pages/contact' %}">{{ 'home_purchase.contact_label' | t }}</a>
     </nav>
   </div>
 </section>
@@ -155,9 +157,11 @@
   .leaf-conversion__button{background:var(--accent,#294a37);color:#fff!important;padding:.85rem 1.2rem;text-decoration:none;border-radius:.3rem}
   .leaf-conversion__textlink{color:inherit;text-underline-offset:4px}
   .leaf-conversion__section-head{justify-content:space-between}
-  .leaf-conversion__advisor{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:center;gap:1.5rem;border-top:1px solid #d6dacf;padding-top:2rem}
+  .leaf-conversion__advisor{border-top:1px solid var(--border,#dce1d6);padding-top:.6rem}
   .leaf-conversion__advisor p{max-width:60ch}
-  @media(max-width:800px){.leaf-conversion__advisor{grid-template-columns:1fr}}
+  .leaf-conversion__advisor summary{min-height:44px;padding:.65rem 0;cursor:pointer;font-weight:650}
+  .leaf-conversion__advisor .leaf-conversion__actions{margin-top:.5rem;gap:.5rem 1.25rem}
+  .leaf-conversion__advisor .leaf-conversion__textlink{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem}
   .leaf-conversion__categories,.leaf-conversion__products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
   .leaf-conversion__category,.leaf-conversion__product{min-width:0;background:#fff;border:1px solid #e3e5dc;border-radius:.45rem;overflow:hidden;color:inherit;text-decoration:none}
   .leaf-conversion__category{display:flex;flex-direction:column;padding-bottom:1rem}
@@ -168,10 +172,12 @@
   .leaf-conversion__form{display:grid;gap:.5rem;margin:0}
   .leaf-conversion__form label{font-size:.8rem;font-weight:650}
   .leaf-conversion__form select{width:100%;min-width:0;min-height:48px;padding:.5rem;border:1px solid var(--border,#dce1d6);background:var(--background,#fbfaf6);color:inherit;font:inherit;font-size:.85rem}
-  .leaf-conversion__form button{width:100%;min-height:48px;white-space:normal;padding:.6rem .5rem;font-size:.85rem}
-  .leaf-conversion__unit-price{font-size:.75rem;min-height:1.1em;color:var(--muted,#6b6a63)}
+  .leaf-conversion__form button{width:100%;min-height:44px;white-space:normal;padding:.45rem .55rem;font-size:.82rem;line-height:1.25}
+  .leaf-conversion__unit-price:empty{display:none}
+  .leaf-conversion__unit-price{font-size:.75rem;color:var(--muted,#6b6a63)}
   .leaf-conversion__product-fit{margin:0 0 .5rem;font-size:.85rem;line-height:1.4}
-  .leaf-conversion__details{display:inline-flex;align-items:center;min-height:44px;gap:.3rem}
+  .leaf-conversion__purchase-actions{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:stretch;gap:.5rem}
+  .leaf-conversion__details{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.4rem .5rem;border:1px solid var(--border,#dce1d6);border-radius:.3rem;text-decoration:none;line-height:1.25}
   .leaf-conversion__service{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;border-top:1px solid var(--border,#dce1d6);padding-top:1rem}
   .leaf-conversion__service a{display:inline-flex;align-items:center;min-height:44px;color:inherit;font-size:.85rem}
   .leaf-conversion__category-title{font-weight:700;font-size:1.05rem;padding:.85rem .9rem .3rem}
@@ -179,13 +185,34 @@
   .leaf-conversion__arrow{padding:0 .9rem;margin-top:auto}
   .leaf-conversion__product{display:flex;flex-direction:column}
   .leaf-conversion__product>a{color:inherit;text-decoration:none}
-  .leaf-conversion__product h3{font-size:1rem;line-height:1.35;margin:0;padding:.8rem .9rem}
+  .leaf-conversion__product h3{font-size:1rem;line-height:1.35;margin:.8rem 0 .4rem;padding:0}
+  .leaf-conversion__product h3 a{font:inherit!important;text-decoration:none;color:inherit}
   .leaf-conversion__product-bottom{display:flex;flex-direction:column;gap:.4rem;margin-top:auto;padding:0 .9rem 1rem}
   .leaf-conversion__price{font-weight:700}
   .leaf-conversion__product-bottom a{color:inherit;font-size:.85rem;text-underline-offset:3px}
   .leaf-conversion :is(a,button):focus-visible{outline:3px solid #496dff;outline-offset:3px}
   @media(max-width:800px){.leaf-conversion__categories,.leaf-conversion__products{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:359px){.leaf-conversion__products{grid-template-columns:1fr}}
+  @media(max-width:600px){
+    .leaf-conversion__inner{gap:1.25rem}
+    .leaf-conversion__hero>p:last-of-type{font-size:.9rem;line-height:1.5;margin-bottom:0}
+    .leaf-conversion__categories{grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem}
+    .leaf-conversion__category{padding-bottom:.5rem}
+    .leaf-conversion__category-media{aspect-ratio:1}
+    .leaf-conversion__category-title{padding:.6rem .4rem 0;font-size:.8rem;line-height:1.3;text-align:center;overflow-wrap:anywhere}
+    .leaf-conversion__category-desc,.leaf-conversion__arrow{display:none}
+    .leaf-conversion__products{grid-template-columns:1fr;gap:.75rem}
+    .leaf-conversion__product{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:start;padding:.75rem;gap:.75rem}
+    .leaf-conversion__product-media{aspect-ratio:1;border-radius:.3rem}
+    .leaf-conversion__product-bottom{padding:0;margin:0;gap:.35rem}
+    #MainContent .leaf-conversion__product h3{font-size:.95rem!important;line-height:1.3!important;margin:0 0 .2rem}
+    .leaf-conversion__product-fit{font-size:.8rem;line-height:1.4}
+    .leaf-conversion__form{gap:.35rem}
+    #MainContent .leaf-conversion__form :is(select,button){min-height:44px;padding:.45rem .5rem;font-size:.8rem;line-height:1.25}
+    .leaf-conversion__product-bottom .leaf-conversion__costs{font-size:.75rem;min-height:28px;display:inline-flex;align-items:center}
+    .leaf-conversion__service{gap:.25rem 1.25rem;padding-top:.5rem}
+    .leaf-conversion__service a{font-size:.8rem}
+  }
+  @media(max-width:359px){.leaf-conversion__product{grid-template-columns:76px minmax(0,1fr);padding:.6rem;gap:.6rem}.leaf-conversion__purchase-actions{gap:.35rem}}
   @media(max-width:420px){.leaf-conversion__categories,.leaf-conversion__products{gap:.65rem}.leaf-conversion__category-title,.leaf-conversion__product h3{font-size:.9rem}}
 </style>
 {% javascript %}
@@ -224,6 +251,7 @@
   },
   "max_blocks": 12,
   "settings": [
+    {"type":"checkbox","id":"show_hero_actions","label":"Zusätzliche Buttons über Kategorien","default":false},
     {
       "type": "text",
       "id": "eyebrow_de",
