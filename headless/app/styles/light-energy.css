@@ -1,0 +1,22 @@
+/* Route-scoped calculator styles. Reuse the canonical LEAF palette; no extra UI library. */
+.leaf-energy-page { width: min(100%, 1080px); margin-inline: auto; padding: clamp(24px, 4vw, 64px); }
+.leaf-energy-page h1 { max-width: 24ch; font-size: clamp(2rem, 5vw, 3.7rem); line-height: 1.1; letter-spacing: -.04em; }
+.leaf-energy-page .page-lead { max-width: 65ch; }
+.leaf-energy-tool { margin-block: 32px; padding: clamp(20px, 3vw, 32px); border: 1px solid var(--leaf-line); border-radius: 20px; background: var(--leaf-surface-sand); }
+.leaf-energy-tool h2 { margin: 0 0 24px; }
+.leaf-energy-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.leaf-energy-fields label { display: grid; gap: 8px; min-width: 0; font-weight: 600; font-size: .93rem; }
+.leaf-energy-fields input { width: 100%; min-height: 46px; padding: 10px 12px; border: 1px solid var(--leaf-eucalyptus); border-radius: 8px; background: var(--leaf-cream); }
+.leaf-energy-results { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-top: 26px; }
+.leaf-energy-results > div { display: grid; align-content: space-between; gap: 10px; min-width: 0; padding: 18px; border-radius: 12px; background: var(--leaf-cream); }
+.leaf-energy-results span { font-size: .9rem; }
+.leaf-energy-results strong { font-size: clamp(1.2rem, 2.3vw, 1.85rem); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.leaf-energy-note { font-size: .85rem; line-height: 1.5; }
+.leaf-energy-explainer { max-width: 72ch; padding-block: 8px 38px; }
+.leaf-energy-explainer h2 { margin-block: 28px 12px; }
+.leaf-energy-explainer a { text-underline-offset: 4px; }
+@media (max-width: 680px) {
+  .leaf-energy-fields, .leaf-energy-results { grid-template-columns: minmax(0, 1fr); }
+  .leaf-energy-results { gap: 10px; }
+  .leaf-energy-results > div { padding: 14px 16px; }
+}
