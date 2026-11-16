@@ -96,7 +96,7 @@
           "type": "faq",
           "settings": {
             "question": "Sind die Mischverhältnisse frei veränderbar?",
-            "answer": "<p>Die Pflanzenprofile starten mit festen Grundrezepturen. Im Bereich „Individuell mischen“ stehen bis zu fünf auswählbare Komponenten und Regler zur Anpassung bereit. Prüfe vor dem Hinzufügen die angezeigte Rezeptur, Menge und den Preis. Für darüber hinausgehende Sonderwünsche nutze bitte das Kontaktformular.</p>"
+            "answer": "<p>Die Pflanzenprofile starten mit festen Grundrezepturen. Im Bereich „Individuell mischen“ stehen bis zu vier auswählbare Komponenten und Regler zur Anpassung bereit. Prüfe vor dem Hinzufügen die angezeigte Rezeptur, Menge und den Preis. Für darüber hinausgehende Sonderwünsche nutze bitte das Kontaktformular.</p>"
           }
         },
         "faq_beginner": {

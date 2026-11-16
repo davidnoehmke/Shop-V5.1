@@ -1,0 +1,16 @@
+{% doc %}
+Renders the native Shopify language form for the current resource.
+@param {string} selector_id - Unique selector instance ID
+{% enddoc %}
+      {% if localization.available_languages.size > 1 %}
+        {% assign language_form_id = 'HeaderLanguage-' | append: selector_id %}
+        {% form 'localization', id: language_form_id, class: 'site-header__language', return_to: request.path %}
+          <label class="visually-hidden" for="{{ language_form_id }}-select">{{ 'header.language' | t }}</label>
+          <select id="{{ language_form_id }}-select" name="language_code" aria-label="{{ 'header.language' | t | escape }}">
+            {% for language in localization.available_languages %}
+              <option value="{{ language.iso_code }}" lang="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.iso_code | upcase }}</option>
+            {% endfor %}
+          </select>
+          <button type="submit">{{ 'header.change_language' | t }}</button>
+        {% endform %}
+      {% endif %}

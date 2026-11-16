@@ -10,6 +10,7 @@ token.json
 # Local tooling output
 node_modules/
 .shopify/
+supabase/.temp/
 .vscode/
 coverage/
 dist/

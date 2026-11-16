@@ -24,8 +24,8 @@
           "type": "benefit",
           "settings": {
             "icon": "handmade",
-            "heading": "Nach Ziel statt nach Fachbegriff",
-            "text": "Starte mit deinem Problem oder Projekt – LEAF übersetzt es in passende Produkte und Wissen."
+            "heading": "Individuell statt von der Stange",
+            "text": "Eigene Rezeptur mit transparenten Anteilen und direkter Warenkorbposition."
           }
         },
         "function": {
@@ -48,8 +48,8 @@
           "type": "benefit",
           "settings": {
             "icon": "versatile",
-            "heading": "Profi-Modus nur bei Bedarf",
-            "text": "Spezialwerkzeuge bleiben verfügbar, ohne den einfachen Lösungsweg zu unterbrechen."
+            "heading": "Mischung live im Topf",
+            "text": "Slider verändern das Volumen sofort; Schichten lassen sich für die Übersicht per Drag & Drop sortieren."
           }
         }
       },
@@ -64,51 +64,35 @@
     "home_collection_journey": {
       "type": "home-collection-journey",
       "blocks": {
-        "substrate": {
+        "ready_mix": {
           "type": "collection",
           "settings": {
-            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
+            "collection": "pflanzsubstrate-mischungen",
             "category": "substrate",
             "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "fallback_title": "Substratwelt",
+            "eyebrow": "Fertige Rezepturen",
+            "badge": "6 Mischungen",
+            "title": "Fertige Substratmischungen",
+            "copy": "Fertige Rezepturen für verschiedene Pflanzenprofile – direkt vergleichbar und ohne Umweg kaufbar.",
+            "cta_label": "Mischungen entdecken",
+            "fallback_link": "shopify://collections/pflanzsubstrate-mischungen",
+            "fallback_title": "Fertige Substratmischungen",
             "fallback_copy": ""
           }
         },
-        "interieur": {
+        "components": {
           "type": "collection",
           "settings": {
-            "collection": "interieur-solutions",
-            "category": "interieur",
+            "collection": "substrate-verbesserer",
+            "category": "substrate",
             "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/interieur-solutions",
-            "fallback_title": "Interieur Solutions",
-            "fallback_copy": ""
-          }
-        },
-        "grow": {
-          "type": "collection",
-          "settings": {
-            "collection": "anzucht-aussaat",
-            "category": "grow",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/anzucht-aussaat",
-            "fallback_title": "Anzucht & Aussaat",
+            "eyebrow": "Selbst mischen",
+            "badge": "13 Produkte",
+            "title": "Substratbestandteile",
+            "copy": "Einzelne Materialien gezielt auswählen, verstehen und für eigene Mischungen kombinieren.",
+            "cta_label": "Bestandteile entdecken",
+            "fallback_link": "shopify://collections/substrate-verbesserer",
+            "fallback_title": "Substratbestandteile",
             "fallback_copy": ""
           }
         },
@@ -118,92 +102,161 @@
             "collection": "pflanzgefasse",
             "category": "equipment",
             "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
+            "eyebrow": "Gefäße",
+            "badge": "12 Produkte",
+            "title": "Pflanzgefäße & Pflanzsysteme",
+            "copy": "Gefäße nach Größe, Material und Pflanzsituation auswählen – vom Kulturtopf bis zum Designgefäß.",
+            "cta_label": "Gefäße entdecken",
             "fallback_link": "shopify://collections/pflanzgefasse",
-            "fallback_title": "Pflanzgefäße & Töpfe",
+            "fallback_title": "Pflanzgefäße & Pflanzsysteme",
             "fallback_copy": ""
           }
         },
-        "care": {
+        "lighting": {
           "type": "collection",
           "settings": {
-            "collection": "pflanzenpflege-werkzeuge",
-            "category": "equipment",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/pflanzenpflege-werkzeuge",
-            "fallback_title": "Pflanzenpflege & Zubehör",
-            "fallback_copy": ""
-          }
-        },
-        "sets": {
-          "type": "collection",
-          "settings": {
-            "collection": "starter-sets-mehrerer-arten",
-            "category": "bundle",
-            "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/starter-sets-mehrerer-arten",
-            "fallback_title": "Sets & Bundles",
-            "fallback_copy": ""
-          }
-        },
-        "plants": {
-          "type": "collection",
-          "settings": {
-            "collection": "zimmerpflanzen-1",
+            "collection": "pflanzenbeleuchtung",
             "category": "interieur",
             "image": "",
-            "eyebrow": "",
-            "badge": "",
-            "title": "",
-            "copy": "",
-            "cta_label": "",
-            "fallback_link": "shopify://collections/zimmerpflanzen-1",
-            "fallback_title": "Zimmerpflanzen",
+            "eyebrow": "Pflanzenlicht",
+            "badge": "LED",
+            "title": "LEDs & Pflanzenbeleuchtung",
+            "copy": "Leuchtmittel, Leuchten und Lichtlösungen für einzelne Pflanzen, Regale und komplette Setups.",
+            "cta_label": "Lichtlösungen entdecken",
+            "fallback_link": "shopify://collections/pflanzenbeleuchtung",
+            "fallback_title": "LEDs & Pflanzenbeleuchtung",
             "fallback_copy": ""
           }
         }
       },
       "block_order": [
-        "substrate",
-        "interieur",
-        "plants",
-        "sets",
-        "grow",
+        "ready_mix",
+        "components",
         "planters",
-        "care"
+        "lighting"
       ],
       "settings": {
-        "eyebrow": "Direkter Einstieg",
-        "heading": "Oder direkt in eine Produktwelt",
-        "intro": "<p>Der LEAF Planer ist der zentrale Weg. Wenn du dein Ziel bereits kennst, kannst du direkt in die passende Produktwelt wechseln.</p>",
+        "eyebrow": "Vier Produktwelten",
+        "heading": "Finde direkt den Bereich, den du brauchst",
+        "intro": "<p>Fertige Mischungen, einzelne Substratbestandteile, Pflanzgefäße und Pflanzenlicht sind die vier Kernbereiche von LEAFerservice. Jeder Einstieg führt direkt zu den passenden Produkten – ohne unnötige Zwischenebenen.</p>",
         "filter_label": "Sortiment filtern",
-        "filter_all": "Alles",
-        "filter_substrate": "Substrat & Wurzelraum",
-        "filter_interieur": "Interieur Solutions",
+        "filter_all": "Alle vier",
+        "filter_substrate": "Substrate",
+        "filter_interieur": "LEDs & Licht",
         "filter_grow": "Anzucht & Aussaat",
-        "filter_equipment": "Gefäße & Pflege",
+        "filter_equipment": "Pflanzgefäße",
         "result_prefix": "Sichtbar:",
         "result_suffix": "Bereiche",
         "product_label": "Produkte",
         "card_cta": "Entdecken",
         "empty_label": "Für diesen Filter sind aktuell keine Bereiche hinterlegt.",
-        "all_label": "Gesamtes Sortiment ansehen",
+        "all_label": "Alle Produkte ansehen",
         "all_link": "shopify://collections/all",
         "filter_bundle": "Sets & Bundles"
+      }
+    },
+    "substrate_configurator": {
+      "type": "leafer-substrate-selector",
+      "blocks": {
+        "profile_aroids": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Aroids / Tropical",
+            "badge": "Luftig & strukturstabil",
+            "title": "Aroids / Tropical",
+            "description": "Lockere Struktur für die Wurzeln von Monstera, Philodendron und Alocasia."
+          }
+        },
+        "profile_herbs": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Kräuter & Balkon",
+            "badge": "Ausgewogen & durchlässig",
+            "title": "Kräuter & Balkon",
+            "description": "Für Kräuter und Balkonpflanzen mit gleichmäßiger Feuchtigkeit und gutem Wasserabzug."
+          }
+        },
+        "profile_cactus": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Kakteen & Sukkulenten",
+            "badge": "Mineralisch & durchlässig",
+            "title": "Kakteen & Sukkulenten",
+            "description": "Für trockenheitsliebende Pflanzen, deren Wurzeln zwischen dem Gießen abtrocknen sollen."
+          }
+        },
+        "profile_orchid": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Orchideen",
+            "badge": "Porös & luftig",
+            "title": "Orchideen",
+            "description": "Offen und luftdurchlässig für feinwurzelnde Epiphyten."
+          }
+        },
+        "profile_palms": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Palmen & Grünpflanzen",
+            "badge": "Stabil & ausgewogen",
+            "title": "Palmen & Grünpflanzen",
+            "description": "Für kräftigen Wurzelhalt und eine ausgewogene Versorgung mit Wasser und Luft."
+          }
+        },
+        "profile_seedlings": {
+          "type": "profile",
+          "settings": {
+            "option_value": "Anzucht & Jungpflanzen",
+            "badge": "Fein & gleichmäßig",
+            "title": "Anzucht & Jungpflanzen",
+            "description": "Feine Struktur für die Aussaat und die Entwicklung junger Wurzeln."
+          }
+        }
+      },
+      "block_order": [
+        "profile_aroids",
+        "profile_herbs",
+        "profile_cactus",
+        "profile_orchid",
+        "profile_palms",
+        "profile_seedlings"
+      ],
+      "settings": {
+        "product": "leafer-substrat-konfigurator",
+        "image": "shopify://shop_images/Orchidee_Premium_Substrat.jpg",
+        "image_alt": "LEAFerservice Substrat-Konfigurator mit Bestandteilen für verschiedene Pflanzenprofile",
+        "eyebrow": "USP · individuell gemischt",
+        "heading": "Deine Pflanze. Deine Substratmischung.",
+        "intro": "<p>Wähle ein Pflanzenprofil oder baue deine eigene Rezeptur direkt im Topf. Jeder Slider verändert das sichtbare Volumen live; die übrigen Bestandteile gleichen sich automatisch auf 100 Prozent aus. Die Schichten kannst du per Drag & Drop nur für die Ansicht neu sortieren.</p>",
+        "selection_eyebrow": "Deine Mischung",
+        "selection_heading": "Grundrezeptur wählen oder direkt selbst mischen",
+        "selection_text": "<p>Für eine schnelle Lösung wählst du Pflanzenprofil und Menge. Im geöffneten Profi-Modus des Konfigurators kombinierst du bis zu vier Bestandteile selbst und siehst jede Änderung direkt im Topf.</p>",
+        "profile_option_name": "Pflanzentyp",
+        "volume_option_name": "Menge",
+        "profile_legend": "1. Pflanzentyp wählen",
+        "volume_legend": "2. Menge wählen",
+        "native_label": "Pflanzentyp und Menge",
+        "quantity_label": "Anzahl",
+        "add_label": "Diese Mischung in den Warenkorb",
+        "sold_out_label": "Ausgewählte Variante nicht verfügbar",
+        "available_label": "Verfügbar",
+        "unavailable_label": "Derzeit nicht verfügbar",
+        "recipe_eyebrow": "Zusammensetzung prüfen",
+        "recipe_heading": "Deine Rezeptur in Echtzeit",
+        "recipe_intro": "<p>Prozentwerte, Liter und sichtbares Volumen reagieren gemeinsam. Eine vollständige Mischung bleibt automatisch bei 100 Prozent.</p>",
+        "steps_eyebrow": "In drei Schritten",
+        "steps_heading": "So kommst du zur passenden Grundrezeptur",
+        "show_description": false,
+        "details_eyebrow": "Entscheidungshilfe",
+        "details_heading": "Was die Mischung leistet",
+        "faq_eyebrow": "Gut zu wissen",
+        "faq_heading": "Fragen vor der Auswahl",
+        "show_components": false,
+        "components_eyebrow": "Einzeln entdecken",
+        "components_heading": "Bestandteile der Rezepturen",
+        "components_text": "<p>Erfahre auf den Produktseiten mehr über Eigenschaften und Anwendung der einzelnen Substratbestandteile.</p>",
+        "padding_top": 24,
+        "padding_bottom": 24
       }
     },
     "home_guides": {
@@ -345,21 +398,6 @@
         "archive_link": ""
       }
     },
-    "phone_call": {
-      "type": "phone-call",
-      "settings": {
-        "eyebrow": "Persönliche Hilfe",
-        "heading": "Du möchtest lieber telefonieren?",
-        "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
-        "button_label": "Rückruf anfragen"
-      }
-    },
-    "brand_story": {
-      "type": "brand-story",
-      "settings": {
-        "link": ""
-      }
-    },
     "loox_reviews": {
       "type": "apps",
       "blocks": {
@@ -379,13 +417,42 @@
       "block_order": [
         "loox_reviews_home"
       ],
+      "settings": {},
+      "disabled": true
+    },
+    "brand_story": {
+      "type": "brand-story",
+      "settings": {
+        "link": ""
+      }
+    },
+    "phone_call": {
+      "type": "phone-call",
+      "settings": {
+        "eyebrow": "Persönliche Hilfe",
+        "heading": "Du möchtest lieber telefonieren?",
+        "text": "<p>Schreib uns kurz, wobei du Hilfe brauchst. Hinterlasse deine E-Mail-Adresse und einen Rückrufwunsch. Wir melden uns schnellstmöglich bei dir.</p>",
+        "button_label": "Rückruf anfragen"
+      }
+    },
+    "leaf_listening": {
+      "type": "leaf-listening",
+      "settings": {
+        "link": "/collections/substratwelt-pflanzsubstrate-mischungen-zusatze"
+      }
+    },
+    "led_home_finder": {
+      "type": "leaf-led-home-finder",
       "settings": {}
     }
   },
   "order": [
     "hero",
-    "trust",
+    "leaf_listening",
+    "substrate_configurator",
     "home_collection_journey",
+    "trust",
+    "led_home_finder",
     "home_guides",
     "faq",
     "community",

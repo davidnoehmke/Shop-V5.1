@@ -1,0 +1,17 @@
+node_modules
+/.DS_Store
+/.cache
+/build
+/dist
+/public/build
+/.mf
+.env
+.shopify
+.react-router
+
+
+*.tsbuildinfo
+/test-results/
+/playwright-report/
+h2_deploy_log.json
+preview.json

@@ -16,6 +16,7 @@
 
   <div class="community__grid">
     {% for block in section.blocks %}
+      {% if block.settings.image == blank %}{% continue %}{% endif %}
       {% liquid
         assign gallery_alt = block.settings.alt_text
         if gallery_alt == blank
@@ -26,11 +27,7 @@
         endif
       %}
       {% capture gallery_media %}
-        {% if block.settings.image != blank %}
-          {{ block.settings.image | image_url: width: 800 | image_tag: widths: '260, 420, 600, 800', sizes: '(min-width: 1100px) 16vw, (min-width: 560px) 33vw, 50vw', loading: 'lazy', alt: gallery_alt }}
-        {% else %}
-          <span class="community__fallback" aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
-        {% endif %}
+        {{ block.settings.image | image_url: width: 800 | image_tag: widths: '260, 420, 600, 800', sizes: '(min-width: 1100px) 16vw, (min-width: 560px) 33vw, 50vw', loading: 'lazy', alt: gallery_alt }}
       {% endcapture %}
 
       {% if block.settings.link != blank %}

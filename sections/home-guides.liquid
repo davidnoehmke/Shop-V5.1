@@ -35,14 +35,12 @@
             assign article_alt = article.image.alt | default: article.title
             assign article_excerpt = article.excerpt_or_content | strip_html | strip | truncate: 150
           %}
-          <article class="home-guides__card" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 90 }}ms">
-            <a class="home-guides__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
-              {% if article.image != blank %}
+          <article class="home-guides__card{% if article.image == blank %} home-guides__card--text-only{% endif %}" data-leaf-reveal style="--leaf-delay: {{ forloop.index0 | times: 90 }}ms">
+            {% if article.image != blank %}
+              <a class="home-guides__media" href="{{ article.url }}" aria-label="{{ article.title | escape }}">
                 {{ article.image | image_url: width: 1100 | image_tag: widths: '360, 540, 760, 1100', sizes: '(min-width: 900px) 33vw, 100vw', loading: 'lazy', alt: article_alt }}
-              {% else %}
-                <span aria-hidden="true">{{ 'lifestyle-1' | placeholder_svg_tag }}</span>
-              {% endif %}
-            </a>
+              </a>
+            {% endif %}
             <div class="home-guides__body">
               <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">{% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}</time>
               <h3><a href="{{ article.url }}">{{ article.title | escape }}</a></h3>
@@ -71,6 +69,7 @@
   .home-guides__media img, .home-guides__media span, .home-guides__media svg { width: 100%; height: 100%; object-fit: cover; }
   .home-guides__media img { transition: transform .65s var(--ease-out); }
   .home-guides__body { padding: 1.25rem; }
+  .home-guides__card--text-only .home-guides__body { min-height: 100%; }
   .home-guides time { color: var(--guide-card-meta); font-size: .72rem; font-weight: 650; letter-spacing: .08em; }
   .home-guides h3 { margin: .55rem 0 .7rem; font-size: clamp(1.1rem, 2.2vw, 1.35rem); line-height: 1.2; }
   .home-guides h3 a { color: var(--guide-card-title); text-decoration: none; }

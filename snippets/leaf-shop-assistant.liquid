@@ -3,7 +3,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 {% enddoc %}
 
 {% liquid
-  assign assistant_advisor_href = '/#LeafAdvisor'
+  assign assistant_advisor_href = routes.root_url | append: '#LeafAdvisor'
   if request.page_type == 'collection'
     assign assistant_advisor_href = '#LeafAdvisor'
   endif
@@ -23,6 +23,13 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   data-voice-stop-label="{{ 'shop_assistant.voice_stop' | t | escape }}"
   data-voice-listening-label="{{ 'shop_assistant.voice_listening' | t | escape }}"
   data-speak-label="{{ 'shop_assistant.speak' | t | escape }}"
+  data-voice-paused="{{ 'shop_assistant.voice_paused' | t | escape }}"
+  data-voice-connecting="{{ 'shop_assistant.voice_connecting' | t | escape }}"
+  data-voice-unavailable="{{ 'shop_assistant.voice_unavailable' | t | escape }}"
+  data-voice-fallback="{{ 'shop_assistant.voice_fallback' | t | escape }}"
+  data-voice-speaking-label="{{ 'shop_assistant.voice_speaking' | t | escape }}"
+  data-voice-greeting="{{ 'shop_assistant.voice_greeting' | t | escape }}"
+  data-welcome="{{ 'shop_assistant.welcome' | t | escape }}"
   data-storage-key="leafer-assistant-session-v1"
 >
   <button
@@ -44,16 +51,29 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     <span class="leaf-shop-assistant__label" aria-hidden="true">{{ 'shop_assistant.open' | t }}</span>
   </button>
 
+  <div class="leaf-shop-assistant__quick-actions" aria-label="{{ 'shop_assistant.actions' | t | escape }}">
+    <button type="button" data-assistant-action-chat>{{ 'shop_assistant.action_chat' | t }}</button>
+    <button type="button" data-assistant-action-voice hidden>{{ 'shop_assistant.action_voice' | t }}</button>
+    <a href="{{ assistant_advisor_href }}">{{ 'shop_assistant.action_advisor' | t }}</a>
+  </div>
+
+  <button class="leaf-shop-assistant__voice-stop" type="button" data-assistant-voice-stop hidden aria-label="{{ 'shop_assistant.voice_stop' | t | escape }}" title="{{ 'shop_assistant.voice_stop' | t | escape }}">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10"/></svg>
+  </button>
+
   <dialog class="leaf-shop-assistant__dialog" id="LeafShopAssistantPanel" aria-labelledby="LeafShopAssistantHeading" data-assistant-dialog>
     <div class="leaf-shop-assistant__panel">
-      <header class="leaf-shop-assistant__header">
+      <header class="leaf-shop-assistant__header" data-assistant-drag>
         <div>
           <p class="leaf-shop-assistant__eyebrow">{{ 'shop_assistant.eyebrow' | t }}</p>
           <h2 id="LeafShopAssistantHeading">{{ 'shop_assistant.heading' | t }}</h2>
         </div>
+        <div class="leaf-shop-assistant__window-actions">
+          <button class="leaf-shop-assistant__close" type="button" data-assistant-minimize aria-label="{{ 'shop_assistant.minimize' | t }}" title="{{ 'shop_assistant.minimize' | t }}"><span aria-hidden="true">−</span></button>
         <button class="leaf-shop-assistant__close" type="button" data-assistant-close aria-label="{{ 'shop_assistant.close' | t }}">
           <span aria-hidden="true">×</span>
         </button>
+        </div>
       </header>
 
       <p class="leaf-shop-assistant__intro">{{ 'shop_assistant.intro' | t }}</p>
@@ -62,6 +82,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_substrate_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_substrate' | t }}</button>
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_light_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_light' | t }}</button>
         <button type="button" data-assistant-suggestion="{{ 'shop_assistant.suggestion_care_prompt' | t | escape }}">{{ 'shop_assistant.suggestion_care' | t }}</button>
+        <a class="leaf-shop-assistant__suggestion-link" href="/blogs/leafers-nice2know-blog/shoplandkarte-navigation-barrierefreiheit-vorlesen">{{ 'shop_assistant.suggestion_map' | t }}</a>
       </div>
 
       <div class="leaf-shop-assistant__log" data-assistant-log aria-live="polite" aria-relevant="additions">
@@ -74,7 +95,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
       <form class="leaf-shop-assistant__form" data-assistant-form>
         <label for="LeafShopAssistantInput">{{ 'shop_assistant.input_label' | t }}</label>
         <div class="leaf-shop-assistant__composer">
-          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1200" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
+          <textarea id="LeafShopAssistantInput" rows="2" maxlength="1600" placeholder="{{ 'shop_assistant.placeholder' | t | escape }}" data-assistant-input></textarea>
           <button class="leaf-shop-assistant__voice" type="button" data-assistant-voice hidden aria-label="{{ 'shop_assistant.voice' | t | escape }}" title="{{ 'shop_assistant.voice' | t | escape }}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg>
           </button>
@@ -95,8 +116,10 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   .leaf-shop-assistant__trigger {
     position: fixed;
     z-index: 70;
+    right: max(1.5rem, env(safe-area-inset-right));
+    top: auto;
     right: max(1rem, env(safe-area-inset-right));
-    top: 50%;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,20 +132,111 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     background: transparent;
     color: var(--text);
     box-shadow: none;
-    transform: translateY(-50%);
+    transform: none;
     transition: transform .2s ease;
     -webkit-tap-highlight-color: transparent;
   }
   .leaf-shop-assistant__trigger:hover {
     background: transparent;
     color: var(--text);
-    transform: translateY(calc(-50% - 2px));
+    transform: translateY(-2px);
   }
   .leaf-shop-assistant__trigger:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 4px;
   }
   .leaf-shop-assistant__trigger[aria-expanded="true"] { visibility: hidden; pointer-events: none; }
+  .leaf-shop-assistant__quick-actions {
+    position: fixed;
+    z-index: 70;
+    right: calc(max(1.5rem, env(safe-area-inset-right)) + 72px);
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .4rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--background);
+    box-shadow: 0 8px 28px rgb(18 46 28 / .14);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(10px) scale(.98);
+    transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  }
+  .leaf-shop-assistant__quick-actions button,
+  .leaf-shop-assistant__quick-actions a {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: .55rem .72rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: .72rem;
+    font-weight: 780;
+    line-height: 1.15;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .leaf-shop-assistant__quick-actions button:hover,
+  .leaf-shop-assistant__quick-actions a:hover,
+  .leaf-shop-assistant__quick-actions button:focus-visible,
+  .leaf-shop-assistant__quick-actions a:focus-visible {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .leaf-shop-assistant__quick-actions [hidden] { display: none; }
+  .leaf-shop-assistant__voice-stop {
+    position: fixed;
+    z-index: 70;
+    right: calc(max(1.5rem, env(safe-area-inset-right)) + 72px);
+    top: auto;
+    right: calc(max(1rem, env(safe-area-inset-right)) + 64px);
+    bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 11px);
+    transform: none;
+    width: 42px;
+    min-height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    background: var(--background);
+    color: var(--accent);
+    box-shadow: 0 4px 14px rgb(18 46 28 / .15);
+  }
+  .leaf-shop-assistant__voice-stop[hidden] { display: none; }
+  .leaf-shop-assistant__quick-actions { display: none; }
+  @media (min-width: 701px) and (hover: hover) {
+    .leaf-shop-assistant__quick-actions {
+      position: fixed;
+      z-index: 71;
+      right: max(1rem, env(safe-area-inset-right));
+      bottom: calc(max(1.5rem, env(safe-area-inset-bottom)) + 64px);
+      padding: .75rem;
+      min-width: 210px;
+      gap: .45rem;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--background);
+      box-shadow: 0 5px 18px rgb(18 46 28 / .12);
+    }
+    .leaf-shop-assistant:hover .leaf-shop-assistant__quick-actions,
+    .leaf-shop-assistant:focus-within .leaf-shop-assistant__quick-actions { display: grid; }
+    .leaf-shop-assistant.is-open .leaf-shop-assistant__quick-actions { display: none; }
+    .leaf-shop-assistant__quick-actions button { min-height: 42px; padding: .5rem .75rem; text-align: left; }
+    .leaf-shop-assistant__quick-actions button[hidden] { display: none; }
+  }
+  .leaf-shop-assistant__voice-stop svg { width: 20px; height: 20px; fill: currentColor; }
+  .leaf-shop-assistant.is-voice-mode .leaf-shop-assistant__leaf {
+    border-radius: 50%;
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
   .leaf-shop-assistant__leaf {
     width: 48px;
     height: 54px;
@@ -172,7 +286,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   .leaf-shop-assistant__dialog {
     position: fixed;
     z-index: 69;
-    inset: 50% max(1rem, env(safe-area-inset-right)) auto auto;
+    inset: auto max(1.5rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) auto;
+    inset: auto max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) auto;
     width: min(410px, calc(100vw - 2rem));
     max-height: min(720px, calc(100dvh - 2rem));
     margin: 0;
@@ -185,7 +300,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     background: var(--background);
     color: var(--text);
     box-shadow: 0 4px 14px rgb(18 46 28 / .10), 0 20px 60px rgb(18 46 28 / .20);
-    transform: translateY(-50%);
+    transform: none;
   }
   .leaf-shop-assistant__dialog::backdrop { background: transparent; }
   .leaf-shop-assistant__panel {
@@ -200,6 +315,27 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     gap: 1rem;
     padding: 1.1rem 1.1rem .8rem;
     border-bottom: 1px solid var(--border);
+  }
+  .leaf-shop-assistant__window-actions { display: flex; gap: .25rem; flex: 0 0 auto; }
+  @media (min-width: 701px) {
+    .leaf-shop-assistant:hover .leaf-shop-assistant__quick-actions,
+    .leaf-shop-assistant:focus-within .leaf-shop-assistant__quick-actions {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: none;
+    }
+    .leaf-shop-assistant.is-open .leaf-shop-assistant__quick-actions {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .leaf-shop-assistant__header { cursor: grab; touch-action: none; user-select: none; }
+    .leaf-shop-assistant__header.is-dragging { cursor: grabbing; }
+    .leaf-shop-assistant__dialog.is-positioned {
+      inset: var(--assistant-top) auto auto var(--assistant-left);
+      transform: none;
+    }
   }
   .leaf-shop-assistant__eyebrow {
     margin: 0 0 .25rem;
@@ -238,15 +374,19 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     scrollbar-width: none;
   }
   .leaf-shop-assistant__suggestions::-webkit-scrollbar { display: none; }
-  .leaf-shop-assistant__suggestions button {
+  .leaf-shop-assistant__suggestions button,
+  .leaf-shop-assistant__suggestion-link {
     flex: 0 0 auto;
     min-height: 36px;
     padding: 0 .7rem;
-    border-color: var(--border);
+    border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text);
     font-size: .72rem;
     font-weight: 750;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
   }
   .leaf-shop-assistant__log {
     display: flex;
@@ -314,7 +454,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   }
   .leaf-shop-assistant__voice {
     position: absolute;
-    right: .45rem;
     bottom: .45rem;
     width: 42px;
     min-height: 42px;
@@ -325,9 +464,20 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     background: var(--background);
     color: var(--text);
   }
+  .leaf-shop-assistant__voice {
+    right: .45rem;
+  }
   .leaf-shop-assistant__voice[hidden] { display: none; }
+  .leaf-shop-assistant__voice svg {
+    width: 19px;
+    height: 19px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
   .leaf-shop-assistant__voice.is-listening { border-color: var(--accent); color: var(--accent); }
-  .leaf-shop-assistant__voice svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
   .leaf-shop-assistant__voice-status { min-height: 1em; margin: -.15rem 0 0; color: var(--muted); font-size: .68rem; }
   .leaf-shop-assistant__speak { margin-top: .5rem; padding: .25rem .45rem; border: 1px solid var(--border); background: transparent; color: var(--accent); font-size: .68rem; font-weight: 760; }
   .leaf-shop-assistant__form-actions {
@@ -354,10 +504,17 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   }
 
   @media (max-width: 700px) {
+    .leaf-shop-assistant__quick-actions { display: none; }
     .leaf-shop-assistant__trigger {
       right: max(.75rem, env(safe-area-inset-right));
       top: auto;
       bottom: max(.75rem, env(safe-area-inset-bottom));
+      transform: none;
+    }
+    .leaf-shop-assistant__voice-stop {
+      right: calc(max(.75rem, env(safe-area-inset-right)) + 64px);
+      top: auto;
+      bottom: calc(max(.75rem, env(safe-area-inset-bottom)) + 11px);
       transform: none;
     }
     .leaf-shop-assistant__trigger:hover { transform: translateY(-2px); }
@@ -371,7 +528,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   }
   @media (prefers-reduced-motion: reduce) {
     .leaf-shop-assistant__trigger, .leaf-shop-assistant__label { transition: none; }
-    .leaf-shop-assistant__trigger:hover { transform: translateY(-50%); }
+    .leaf-shop-assistant__trigger:hover { transform: none; }
   }
   @media (max-width: 700px) and (prefers-reduced-motion: reduce) {
     .leaf-shop-assistant__trigger:hover { transform: none; }
@@ -385,11 +542,17 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.trigger = this.querySelector('[data-assistant-open]');
         this.dialog = this.querySelector('[data-assistant-dialog]');
         this.closeButton = this.querySelector('[data-assistant-close]');
+        this.minimizeButton = this.querySelector('[data-assistant-minimize]');
+        this.dragHandle = this.querySelector('[data-assistant-drag]');
         this.form = this.querySelector('[data-assistant-form]');
         this.input = this.querySelector('[data-assistant-input]');
         this.submit = this.querySelector('[data-assistant-submit]');
         this.log = this.querySelector('[data-assistant-log]');
         this.voiceButton = this.querySelector('[data-assistant-voice]');
+        this.chatAction = this.querySelector('[data-assistant-action-chat]');
+        this.voiceAction = this.querySelector('[data-assistant-action-voice]');
+        this.voiceStopButton = this.querySelector('[data-assistant-voice-stop]');
+        this.voiceStopButton?.addEventListener('click', () => this.stopVoice());
         this.voiceStatus = this.querySelector('[data-assistant-voice-status]');
         this.endpoint = this.dataset.endpoint || '';
         this.storageKey = this.dataset.storageKey || 'leafer-assistant-session-v1';
@@ -397,9 +560,20 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.introduce();
 
         this.trigger?.addEventListener('click', () => this.open());
+        this.chatAction?.addEventListener('click', () => this.open());
+        this.voiceAction?.addEventListener('click', () => this.startVoiceConversation());
         this.closeButton?.addEventListener('click', () => this.close());
-        this.form?.addEventListener('submit', (event) => this.send(event));
+        this.minimizeButton?.addEventListener('click', () => this.close());
+        this.setupDrag();
+        this.form?.addEventListener('submit', (event) => this.send(event, false));
         this.setupVoice();
+        this.querySelectorAll('[data-assistant-quick]').forEach((button) => {
+          if (button.dataset.assistantQuick === 'voice' && !this.recognition && !this.realtimeSupported) button.hidden = true;
+          button.addEventListener('click', () => {
+            this.open();
+            if (button.dataset.assistantQuick === 'voice' && !this.voiceMode) this.startVoice();
+          });
+        });
         this.restoreVisibleHistory();
         this.querySelectorAll('[data-assistant-suggestion]').forEach((button) => {
           button.addEventListener('click', () => {
@@ -415,7 +589,11 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
       disconnectedCallback() {
         window.clearTimeout(this.introTimer);
-        this.recognition?.abort();
+        window.clearTimeout(this.voiceStatusTimer);
+        window.clearTimeout(this.voiceRestartTimer);
+        this.stopVoice();
+        this.dragEvents?.abort();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
 
       introduce() {
@@ -450,59 +628,425 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.history.slice(-4).forEach((item) => this.appendMessage(item.role, item.content, [], false));
       }
 
+      setupDrag() {
+        if (!this.dragHandle || !this.dialog) return;
+        this.dragEvents = new AbortController();
+        const options = { signal: this.dragEvents.signal };
+        const finish = () => {
+          this.drag = null;
+          this.dragHandle.classList.remove('is-dragging');
+        };
+        this.dragHandle.addEventListener('pointerdown', (event) => {
+          if (!window.matchMedia('(min-width: 701px)').matches || event.button !== 0 || event.target.closest('button, a')) return;
+          const rect = this.dialog.getBoundingClientRect();
+          this.drag = { id: event.pointerId, x: event.clientX - rect.left, y: event.clientY - rect.top };
+          this.dragHandle.setPointerCapture(event.pointerId);
+          this.dragHandle.classList.add('is-dragging');
+          event.preventDefault();
+        }, options);
+        this.dragHandle.addEventListener('pointermove', (event) => {
+          if (!this.drag || this.drag.id !== event.pointerId) return;
+          this.positionDialog(event.clientX - this.drag.x, event.clientY - this.drag.y);
+        }, options);
+        this.dragHandle.addEventListener('pointerup', finish, options);
+        this.dragHandle.addEventListener('pointercancel', finish, options);
+        this.dragHandle.addEventListener('lostpointercapture', finish, options);
+        window.addEventListener('resize', () => {
+          finish();
+          if (!window.matchMedia('(min-width: 701px)').matches) {
+            this.dialog.classList.remove('is-positioned');
+          } else if (this.dialog.open && this.dialog.classList.contains('is-positioned')) {
+            const rect = this.dialog.getBoundingClientRect();
+            this.positionDialog(rect.left, rect.top);
+          }
+        }, options);
+      }
+
+      positionDialog(left, top) {
+        const rect = this.dialog.getBoundingClientRect();
+        const x = Math.max(8, Math.min(left, window.innerWidth - rect.width - 8));
+        const y = Math.max(8, Math.min(top, window.innerHeight - rect.height - 8));
+        this.dialog.style.setProperty('--assistant-left', x + 'px');
+        this.dialog.style.setProperty('--assistant-top', y + 'px');
+        this.dialog.classList.add('is-positioned');
+      }
+
       setupVoice() {
         const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (!Recognition || !this.voiceButton) return;
-        this.voiceButton.hidden = false;
-        this.recognition = new Recognition();
-        this.recognition.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
-        this.recognition.interimResults = false;
-        this.recognition.continuous = false;
+        this.realtimeSupported = Boolean(window.RTCPeerConnection && navigator.mediaDevices?.getUserMedia);
+        if (this.realtimeSupported) {
+          if (this.voiceButton) this.voiceButton.hidden = false;
+          if (this.voiceAction) this.voiceAction.hidden = false;
+        }
+        if (!this.voiceButton) return;
         this.voiceButton.addEventListener('click', () => {
-          if (this.voiceButton.classList.contains('is-listening')) {
-            this.recognition.stop();
+          if (this.voiceMode) this.stopVoice();
+          else if (this.dialog?.open) this.startVoice();
+        });
+        if (!Recognition) return;
+        try { this.recognition = new Recognition(); } catch { return; }
+        this.voiceButton.hidden = false;
+        if (this.voiceAction) this.voiceAction.hidden = false;
+        this.recognition.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        this.recognition.interimResults = true;
+        this.recognition.continuous = false;
+        this.recognition.maxAlternatives = 1;
+        this.updateVoiceButton();
+        this.recognition.addEventListener('start', () => {
+          if (!this.voiceMode || !this.voiceActive) {
+            this.recognition.abort();
             return;
           }
-          try { this.recognition.start(); } catch {}
-        });
-        this.recognition.addEventListener('start', () => {
-          this.voiceButton.classList.add('is-listening');
-          this.voiceButton.setAttribute('aria-label', this.dataset.voiceStopLabel || '');
-          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
+          this.updateVoiceButton();
+          if (this.voiceStatus) this.voiceStatus.textContent = (this.dataset.voiceListeningLabel || '') + (this.voiceFallback ? ' ' + (this.dataset.voiceFallback || '') : '');
         });
         this.recognition.addEventListener('end', () => {
-          this.voiceButton.classList.remove('is-listening');
-          this.voiceButton.setAttribute('aria-label', this.dataset.voiceLabel || '');
-          if (this.voiceStatus) this.voiceStatus.textContent = '';
+          this.voiceActive = false;
+          this.updateVoiceButton();
+          if (!this.voiceMode && !this.voiceStatusTimer && this.voiceStatus) this.voiceStatus.textContent = '';
+          if (this.voiceMode && !this.voiceSubmitted && !this.voiceSending && !this.voiceSpeaking) {
+            window.clearTimeout(this.voiceRestartTimer);
+            this.voiceRestartTimer = window.setTimeout(() => this.resumeVoice(), 650);
+          }
+        });
+        this.recognition.addEventListener('error', (event) => {
+          if (event.error === 'no-speech') return;
+          this.voiceError();
         });
         this.recognition.addEventListener('result', (event) => {
-          const transcript = event.results?.[0]?.[0]?.transcript?.trim();
-          if (transcript && this.input) {
-            this.input.value = transcript;
-            this.input.focus();
+          if (!this.voiceMode || !this.voiceActive || this.voiceSubmitted || this.submit?.disabled) return;
+          let finalTranscript = '';
+          let interimTranscript = '';
+          for (let index = event.resultIndex || 0; index < event.results.length; index += 1) {
+            const result = event.results[index];
+            const transcript = result?.[0]?.transcript?.trim();
+            if (!transcript) continue;
+            if (result.isFinal) finalTranscript += (finalTranscript ? ' ' : '') + transcript;
+            else interimTranscript += (interimTranscript ? ' ' : '') + transcript;
+          }
+          const transcript = (finalTranscript || interimTranscript).trim();
+          if (transcript && this.input) this.input.value = transcript.slice(0, 1200);
+          if (finalTranscript && !this.voiceSending) {
+            this.voiceSubmitted = true;
+            this.voiceSending = true;
+            if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.thinking || '';
+            this.recognition.stop();
+            this.send(null, true).finally(() => {
+              this.voiceSending = false;
+              this.resumeVoice();
+            });
           }
         });
       }
 
-      speak(text) {
-        if (!('speechSynthesis' in window) || !text) return;
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
-        window.speechSynthesis.speak(utterance);
+      updateVoiceButton() {
+        this.classList.toggle('is-voice-mode', Boolean(this.voiceMode));
+        if (this.voiceStopButton) this.voiceStopButton.hidden = !this.voiceMode || Boolean(this.dialog?.open);
+        this.voiceButton?.classList.toggle('is-listening', Boolean(this.voiceActive));
+        this.voiceButton?.setAttribute('aria-pressed', String(Boolean(this.voiceMode)));
+        const label = this.voiceMode ? this.dataset.voiceStopLabel : this.dataset.voiceLabel;
+        this.voiceButton?.setAttribute('aria-label', label || '');
+        this.voiceButton?.setAttribute('title', label || '');
       }
 
-      open() {
+      startVoiceConversation() {
+        if (!this.dialog?.open) this.open(false);
+        return this.startVoice();
+      }
+
+      async startVoice() {
+        if (this.submit?.disabled || this.voiceMode) return;
+        if (this.realtimeSupported) {
+          const attemptEpoch = (this.voiceEpoch || 0) + 1;
+          try { await this.startRealtimeVoice(); return; } catch (error) {
+            if (this.voiceEpoch !== attemptEpoch) return;
+            this.stopVoice();
+            if (!this.recognition) {
+              if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceUnavailable || this.dataset.error || '';
+              return;
+            }
+            this.voiceFallback = true;
+          }
+        }
+        if (!this.recognition) return;
+        this.voiceFallback = true;
+        this.voiceMode = true;
+        this.updateVoiceButton();
+        const greeting = this.dataset.voiceGreeting || this.dataset.welcome;
+        if ('speechSynthesis' in window && greeting && !this.history.length) this.speak(greeting, true);
+        else this.resumeVoice();
+      }
+
+      async startRealtimeVoice() {
+        this.voiceMode = true;
+        this.voiceStarting = true;
+        const epoch = this.voiceEpoch = (this.voiceEpoch || 0) + 1;
+        this.updateVoiceButton();
+        if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceConnecting || '';
+        const active = () => this.voiceMode && epoch === this.voiceEpoch && this.isConnected;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+        if (!active()) { stream.getTracks().forEach((track) => track.stop()); throw new DOMException('Stopped', 'AbortError'); }
+        this.realtimeStream = stream;
+        const peer = this.realtimePeer = new window.RTCPeerConnection();
+        const audio = this.realtimeAudio = document.createElement('audio');
+        audio.autoplay = true;
+        audio.hidden = true;
+        audio.setAttribute('playsinline', '');
+        this.append(audio);
+        peer.ontrack = (event) => {
+          if (!active()) return;
+          audio.srcObject = event.streams[0];
+          audio.play().catch(() => { if (active()) this.voiceError(); });
+        };
+        stream.getAudioTracks().forEach((track) => peer.addTrack(track, stream));
+        const channel = this.realtimeChannel = peer.createDataChannel('oai-events');
+        this.realtimeTurn = 0;
+        this.realtimeCancelled = new Set();
+        this.realtimeCalls = new Set();
+        this.realtimePending = null;
+        channel.addEventListener('message', (event) => {
+          if (!active()) return;
+          try { this.handleRealtimeEvent(JSON.parse(event.data), epoch); } catch {}
+        });
+        channel.addEventListener('open', () => {
+          if (!active()) return;
+          this.voiceStarting = false;
+          window.clearTimeout(this.realtimeConnectTimer);
+          this.voiceActive = true;
+          this.updateVoiceButton();
+          this.realtimeListening();
+          if (!this.history.length) this.sendRealtime({ type: 'response.create', response: { instructions: 'Briefly say this greeting naturally, then wait for the user: ' + this.dataset.welcome } });
+        });
+        peer.onconnectionstatechange = () => {
+          if (active() && ['failed', 'closed'].includes(peer.connectionState)) this.voiceError();
+        };
+        const offer = await peer.createOffer();
+        if (!active()) throw new DOMException('Stopped', 'AbortError');
+        await peer.setLocalDescription(offer);
+        this.realtimeRequest = new AbortController();
+        this.realtimeConnectTimer = window.setTimeout(() => this.realtimeRequest?.abort(), 20000);
+        const response = await fetch(this.endpoint, {
+          method: 'POST', signal: this.realtimeRequest.signal,
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'voice_connect', sdp: offer.sdp, history: this.history.slice(-6), locale: this.dataset.locale || 'de', path: this.dataset.path || location.pathname })
+        });
+        const payload = await response.json();
+        if (!active()) throw new DOMException('Stopped', 'AbortError');
+        if (!response.ok || typeof payload.sdp !== 'string') throw new Error('voice_unavailable');
+        await peer.setRemoteDescription({ type: 'answer', sdp: payload.sdp });
+        // Keep the connection deadline until the data channel opens.
+        window.clearTimeout(this.realtimeConnectTimer);
+        this.realtimeConnectTimer = window.setTimeout(() => { if (active() && this.voiceStarting) this.voiceError(); }, 15000);
+      }
+
+      sendRealtime(event) {
+        if (this.voiceMode && this.realtimeChannel?.readyState === 'open') this.realtimeChannel.send(JSON.stringify(event));
+      }
+
+      realtimeListening() {
+        if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
+        window.clearTimeout(this.realtimeIdleTimer);
+        const epoch = this.voiceEpoch;
+        this.realtimeIdleTimer = window.setTimeout(() => {
+          if (!this.voiceMode || this.voiceEpoch !== epoch) return;
+          this.stopVoice();
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voicePaused || '';
+        }, 180000);
+      }
+
+      handleRealtimeEvent(event, epoch) {
+        if (!this.voiceMode || epoch !== this.voiceEpoch) return;
+        if (event.type === 'input_audio_buffer.speech_started') {
+          window.clearTimeout(this.realtimeIdleTimer);
+          this.realtimeTurn++;
+          if (this.realtimeResponse) this.realtimeCancelled.add(this.realtimeResponse);
+          this.realtimePending = null;
+          this.realtimeResponse = null;
+          this.voiceSpeaking = false;
+          this.voiceActive = true;
+          if (this.voiceStatus) this.voiceStatus.textContent = this.dataset.voiceListeningLabel || '';
+        } else if (event.type === 'output_audio_buffer.started') {
+          if (this.realtimeCancelled.has(event.response_id)) return;
+          this.realtimeResponse = event.response_id;
+          this.voiceSpeaking = true;
+          this.voiceActive = false;
+          window.clearTimeout(this.realtimeIdleTimer);
+          if (this.voiceStatus) this.voiceStatus.textContent = (this.voiceFallback ? this.dataset.voiceFallback : this.dataset.voiceSpeakingLabel) || '';
+        } else if (event.type === 'output_audio_buffer.cleared') {
+          if (this.realtimeResponse && this.realtimeResponse !== event.response_id) return;
+          if (event.response_id) this.realtimeCancelled.add(event.response_id);
+          this.realtimePending = null;
+          this.voiceSpeaking = false;
+          this.voiceActive = true;
+        } else if (event.type === 'conversation.item.input_audio_transcription.completed') {
+          this.recordRealtimeMessage('user', event.transcript);
+        } else if (event.type === 'response.output_audio_transcript.done' && !this.realtimeCancelled.has(event.response_id)) {
+          this.realtimePending = { id: event.response_id, text: event.transcript };
+        } else if (event.type === 'output_audio_buffer.stopped') {
+          if (this.realtimeResponse && this.realtimeResponse !== event.response_id) return;
+          if (this.realtimePending?.id === event.response_id && !this.realtimeCancelled.has(event.response_id)) this.recordRealtimeMessage('assistant', this.realtimePending.text);
+          this.realtimePending = null;
+          this.realtimeResponse = null;
+          this.voiceSpeaking = false;
+          this.voiceActive = true;
+          this.realtimeListening();
+        } else if (event.type === 'response.done' && event.response?.status === 'completed') {
+          const calls = (event.response.output || []).filter((item) => item.type === 'function_call' && item.status === 'completed' && item.name === 'lookup_leaf_knowledge');
+          if (calls.length) this.realtimeLookup(calls, epoch);
+        } else if (event.type === 'error') {
+          this.voiceError();
+        }
+        this.updateVoiceButton();
+      }
+
+      recordRealtimeMessage(role, text) {
+        if (typeof text !== 'string' || !text.trim()) return;
+        const content = text.trim().slice(0, 1600);
+        this.appendMessage(role, content, [], false);
+        this.history.push({ role, content });
+        this.saveHistory();
+      }
+
+      async realtimeLookup(calls, epoch) {
+        const turn = this.realtimeTurn;
+        for (const call of calls) {
+          if (this.realtimeCalls.has(call.call_id)) continue;
+          this.realtimeCalls.add(call.call_id);
+          let output = { error: 'knowledge_unavailable' };
+          try {
+            const args = JSON.parse(call.arguments);
+            const response = await fetch(this.endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(15000), body: JSON.stringify({ action: 'knowledge_lookup', message: String(args.query || '').slice(0, 1600) }) });
+            if (response.ok) output = await response.json();
+          } catch {}
+          if (!this.voiceMode || epoch !== this.voiceEpoch) return;
+          this.sendRealtime({ type: 'conversation.item.create', item: { type: 'function_call_output', call_id: call.call_id, output: JSON.stringify(output) } });
+        }
+        // A new utterance owns the next response; a late lookup must not speak over it.
+        if (this.voiceMode && epoch === this.voiceEpoch && turn === this.realtimeTurn) this.sendRealtime({ type: 'response.create' });
+      }
+
+      cleanupRealtime() {
+        window.clearTimeout(this.realtimeConnectTimer);
+        window.clearTimeout(this.realtimeIdleTimer);
+        this.realtimeRequest?.abort();
+        if (this.realtimePeer) this.realtimePeer.onconnectionstatechange = null;
+        this.realtimeChannel?.close();
+        this.realtimePeer?.close();
+        this.realtimeStream?.getTracks().forEach((track) => track.stop());
+        if (this.realtimeAudio) { this.realtimeAudio.pause(); this.realtimeAudio.srcObject = null; this.realtimeAudio.remove(); }
+        this.realtimePeer = null;
+        this.realtimeChannel = null;
+        this.realtimeStream = null;
+        this.realtimeAudio = null;
+        this.voiceStarting = false;
+      }
+
+      resumeVoice() {
+        if (this.realtimePeer || this.voiceStarting) return;
+        if (!this.voiceMode || !this.isConnected || this.voiceActive || this.voiceSpeaking || this.voiceSending || this.submit?.disabled) return;
+        window.clearTimeout(this.voiceRestartTimer);
+        window.clearTimeout(this.voiceStatusTimer);
+        this.voiceStatusTimer = null;
+        this.voiceActive = true;
+        this.voiceSubmitted = false;
+        this.updateVoiceButton();
+        if (this.voiceStatus) this.voiceStatus.textContent = (this.dataset.voiceListeningLabel || '') + (this.voiceFallback ? ' ' + (this.dataset.voiceFallback || '') : '');
+        try { this.recognition.start(); } catch { this.voiceError(); }
+      }
+
+      voiceError() {
+        if (!this.voiceMode) return;
+        this.stopVoice();
+        if (this.voiceStatus) {
+          this.voiceStatus.textContent = this.dataset.error || '';
+          this.voiceStatusTimer = window.setTimeout(() => {
+            this.voiceStatusTimer = null;
+            if (this.voiceStatus) this.voiceStatus.textContent = '';
+          }, 3500);
+        }
+      }
+
+      stopVoice() {
+        this.cleanupRealtime();
+        this.voiceFallback = false;
+        this.voiceMode = false;
+        this.voiceActive = false;
+        this.voiceSpeaking = false;
+        this.voiceSubmitted = true;
+        this.voiceEpoch = (this.voiceEpoch || 0) + 1;
+        window.clearTimeout(this.voiceRestartTimer);
+        window.clearTimeout(this.voiceStatusTimer);
+        this.voiceStatusTimer = null;
+        if (this.voiceStatus) this.voiceStatus.textContent = '';
+        this.updateVoiceButton();
+        this.recognition?.abort();
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      }
+
+      preferredVoice(lang) {
+        if (!('speechSynthesis' in window)) return null;
+        const prefix = String(lang || '').toLowerCase().split('-')[0];
+        const voices = window.speechSynthesis.getVoices().filter((voice) => String(voice.lang || '').toLowerCase().startsWith(prefix));
+        if (!voices.length) return null;
+        const score = (voice) => {
+          const name = String(voice.name || '').toLowerCase();
+          return (/(natural|premium|enhanced|google|microsoft)/.test(name) ? 4 : 0)
+            + (voice.localService ? 2 : 0)
+            + (String(voice.lang || '').toLowerCase() === String(lang || '').toLowerCase() ? 1 : 0);
+        };
+        return voices.sort((a, b) => score(b) - score(a))[0] || null;
+      }
+
+      speak(text, continueVoice = false) {
+        if (!continueVoice && this.voiceMode) this.stopVoice();
+        if (!('speechSynthesis' in window) || !text) return;
+        window.speechSynthesis.cancel();
+        const epoch = this.voiceEpoch || 0;
+        const spokenText = String(text)
+          .replace(/https?:\/\/\S+/gi, '')
+          .replace(/[*#_`]+/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+        if (!spokenText) return;
+        const utterance = new SpeechSynthesisUtterance(spokenText);
+        utterance.lang = (this.dataset.locale || 'de').startsWith('de') ? 'de-DE' : 'en-US';
+        utterance.rate = .78;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        const voice = this.preferredVoice(utterance.lang);
+        if (voice) utterance.voice = voice;
+        if (continueVoice) {
+          this.voiceSpeaking = true;
+          if (this.voiceStatus) this.voiceStatus.textContent = (this.voiceFallback ? this.dataset.voiceFallback : this.dataset.voiceSpeakingLabel) || '';
+          utterance.onend = () => {
+            if (epoch !== (this.voiceEpoch || 0)) return;
+            this.voiceSpeaking = false;
+            this.voiceRestartTimer = window.setTimeout(() => this.resumeVoice(), 400);
+          };
+          utterance.onerror = () => {
+            if (epoch === (this.voiceEpoch || 0)) this.voiceError();
+          };
+        }
+        try { window.speechSynthesis.speak(utterance); } catch { this.voiceError(); }
+      }
+
+      open(focusInput = true) {
         window.clearTimeout(this.introTimer);
         this.classList.remove('is-introducing');
         if (!this.dialog?.open) this.dialog?.show();
+        this.classList.add('is-open');
         this.trigger?.setAttribute('aria-expanded', 'true');
-        window.setTimeout(() => this.input?.focus(), 20);
+        this.updateVoiceButton();
+        if (focusInput && !this.voiceMode) {
+          window.setTimeout(() => { if (this.dialog?.open) this.input?.focus(); }, 20);
+        }
       }
 
       close() {
         if (this.dialog?.open) this.dialog.close();
+        this.classList.remove('is-open');
         this.trigger?.setAttribute('aria-expanded', 'false');
+        this.updateVoiceButton();
         this.trigger?.focus();
       }
 
@@ -520,10 +1064,18 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
           const list = document.createElement('div');
           list.className = 'leaf-shop-assistant__links';
           links.slice(0, 3).forEach((link) => {
-            if (!link || typeof link.href !== 'string' || !/^\/products\/[a-z0-9-]+$/i.test(link.href)) return;
+            if (!link || typeof link.href !== 'string') return;
+            let target;
+            try { target = new URL(link.href, location.origin); } catch { return; }
+            if (
+              target.origin !== location.origin
+              || target.search
+              || target.hash
+              || !/^\/(?:en\/)?products\/[^/?#]+$/i.test(target.pathname)
+            ) return;
             const anchor = document.createElement('a');
-            anchor.href = link.href;
-            anchor.textContent = String(link.label || link.href);
+            anchor.href = target.pathname;
+            anchor.textContent = String(link.label || target.pathname);
             list.append(anchor);
           });
           if (list.childElementCount) wrapper.append(list);
@@ -542,18 +1094,24 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         this.log.scrollTop = this.log.scrollHeight;
       }
 
-      async send(event) {
-        event.preventDefault();
+      async send(event, speakResponse = false) {
+        event?.preventDefault();
         const message = this.input?.value.trim() || '';
         if (!message || !this.endpoint || this.submit?.disabled) return;
 
+        if (!speakResponse) this.stopVoice();
+        const voiceEpoch = this.voiceEpoch || 0;
         const priorHistory = this.history.slice(-6);
-        this.appendMessage('user', message);
-        this.history.push({ role: 'user', content: message });
-        this.saveHistory();
+        const visibleMessage = message;
+        this.appendMessage('user', visibleMessage);
+        if (message) {
+          this.history.push({ role: 'user', content: message });
+          this.saveHistory();
+        }
         this.input.value = '';
         this.submit.disabled = true;
         this.input.disabled = true;
+        if (this.voiceButton) this.voiceButton.disabled = !this.voiceMode;
 
         const thinking = document.createElement('div');
         thinking.className = 'leaf-shop-assistant__message';
@@ -571,22 +1129,28 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
               message,
               history: priorHistory,
               locale: this.dataset.locale || 'de',
-              path: this.dataset.path || location.pathname
+              path: this.dataset.path || location.pathname,
+              voice: Boolean(speakResponse)
             })
           });
           const payload = await response.json().catch(() => ({}));
           thinking.remove();
           if (!response.ok || typeof payload.answer !== 'string') throw new Error('assistant_unavailable');
+
           this.appendMessage('assistant', payload.answer, payload.links);
+          const spoken = typeof payload.speech === 'string' && payload.speech ? payload.speech : payload.answer;
+          if (speakResponse && this.voiceMode && this.isConnected && voiceEpoch === (this.voiceEpoch || 0)) this.speak(spoken, this.voiceMode);
           this.history.push({ role: 'assistant', content: payload.answer });
           this.saveHistory();
         } catch {
           thinking.remove();
+          this.stopVoice();
           this.appendMessage('assistant', this.dataset.error || '');
         } finally {
           this.submit.disabled = false;
           this.input.disabled = false;
-          this.input.focus();
+          if (this.voiceButton) this.voiceButton.disabled = false;
+          if (this.dialog?.open && this.isConnected && !this.voiceMode) this.input.focus();
         }
       }
     });

@@ -5,44 +5,44 @@
 <section id="{{ section_id }}" class="leaf-lighting page-width" data-lighting-configurator>
   <header class="leaf-lighting__hero">
     <div>
-      <p class="leaf-lighting__eyebrow">Pflanzenlicht als System</p>
-      <h1>{{ section.settings.heading | default: 'Finde das Licht, das zu Pflanze und Raum passt.' }}</h1>
-      <div class="leaf-lighting__lead rte">{{ section.settings.intro }}</div>
+      <p class="leaf-lighting__eyebrow">{{ 'lighting_configurator.eyebrow' | t }}</p>
+      <h1>{% if localization.language.iso_code == 'en' %}{{ 'lighting_configurator.heading' | t }}{% else %}{{ section.settings.heading | default: 'Finde das Licht, das zu Pflanze und Raum passt.' }}{% endif %}</h1>
+      <div class="leaf-lighting__lead rte">{% if localization.language.iso_code == 'en' %}<p>{{ 'lighting_configurator.intro' | t }}</p>{% else %}{{ section.settings.intro }}{% endif %}</div>
     </div>
     <div class="leaf-lighting__meter" aria-hidden="true">
-      <span>Standort</span><span>Pflanze</span><span>Fläche</span><span>Licht</span>
+      <span>{{ 'lighting_configurator.location' | t }}</span><span>{{ 'lighting_configurator.plant' | t }}</span><span>{{ 'lighting_configurator.area' | t }}</span><span>{{ 'lighting_configurator.light' | t }}</span>
     </div>
   </header>
 
-  <div class="leaf-lighting__controls" aria-label="Pflanzenlicht filtern">
+  <div class="leaf-lighting__controls" aria-label="{{ 'lighting_configurator.filter_aria' | t }}">
     <label>
-      <span>Einsatz</span>
+      <span>{{ 'lighting_configurator.use' | t }}</span>
       <select data-filter="role">
-        <option value="all">Alle Systeme</option>
-        <option value="plant-light">Zimmerpflanzen</option>
-        <option value="aquascape">Aquascape / Wabi-Kusa</option>
-        <option value="station">Pflanzenstation</option>
+        <option value="all">{{ 'lighting_configurator.all_systems' | t }}</option>
+        <option value="plant-light">{{ 'lighting_configurator.houseplants' | t }}</option>
+        <option value="aquascape">{{ 'lighting_configurator.aquascape' | t }}</option>
+        <option value="station">{{ 'lighting_configurator.station' | t }}</option>
       </select>
     </label>
     <label>
-      <span>Max. Preis</span>
+      <span>{{ 'lighting_configurator.max_price' | t }}</span>
       <input type="range" min="20" max="400" step="10" value="400" data-filter="price">
       <strong><span data-price-output>400</span> €</strong>
     </label>
     <label>
-      <span>Leistung</span>
+      <span>{{ 'lighting_configurator.power' | t }}</span>
       <select data-filter="power">
-        <option value="all">Alle Leistungen</option>
-        <option value="compact">bis 20 W</option>
-        <option value="medium">21–50 W</option>
-        <option value="high">ab 51 W</option>
+        <option value="all">{{ 'lighting_configurator.all_power' | t }}</option>
+        <option value="compact">{{ 'lighting_configurator.compact' | t }}</option>
+        <option value="medium">{{ 'lighting_configurator.medium' | t }}</option>
+        <option value="high">{{ 'lighting_configurator.high' | t }}</option>
       </select>
     </label>
   </div>
 
   <div class="leaf-lighting__resultbar">
-    <strong data-result-count>0 passende Produkte</strong>
-    <button type="button" class="leaf-lighting__reset" data-reset>Filter zurücksetzen</button>
+    <strong data-result-count>0 {{ 'lighting_configurator.result_other' | t }}</strong>
+    <button type="button" class="leaf-lighting__reset" data-reset>{{ 'lighting_configurator.reset' | t }}</button>
   </div>
 
   <div class="leaf-lighting__grid" data-results>
@@ -60,7 +60,7 @@
         {% assign mounting = card_product.metafields.lighting.mounting.value %}
         {% assign price_value = card_product.price | divided_by: 100.0 %}
         <article class="leaf-lighting__card" data-card data-role="{{ role | escape }}" data-price="{{ price_value }}" data-watts="{{ watts }}" {{ block.shopify_attributes }}>
-          <a href="{{ card_product.url }}" class="leaf-lighting__media" aria-label="{{ card_product.title | escape }} ansehen">
+          <a href="{{ card_product.url }}" class="leaf-lighting__media" aria-label="{{ card_product.title | escape }} {{ 'lighting_configurator.view' | t }}">
             {% if card_product.featured_image %}
               {{ card_product.featured_image | image_url: width: 900, height: 900, crop: 'center' | image_tag: loading: 'lazy', widths: '360,540,720,900', sizes: '(max-width: 749px) 88vw, 32vw', alt: card_product.featured_image.alt | default: card_product.title }}
             {% else %}
@@ -72,12 +72,13 @@
             <h2><a href="{{ card_product.url }}">{{ card_product.title }}</a></h2>
             {% if primary_function != blank %}<p class="leaf-lighting__function">{{ primary_function | escape }}</p>{% elsif card_product.metafields.leafer.subtitle.value != blank %}<p class="leaf-lighting__function">{{ card_product.metafields.leafer.subtitle.value | escape }}</p>{% endif %}
             <dl>
-              {% if watts > 0 %}<div><dt>Leistung</dt><dd>{{ watts }} W</dd></div>{% endif %}
-              {% if card_product.metafields.lighting.cct_k.value != blank %}<div><dt>Farbtemperatur</dt><dd>{{ card_product.metafields.lighting.cct_k.value | escape }} K</dd></div>{% endif %}
-              {% if use_cases != blank %}<div><dt>Einsatz</dt><dd>{% render 'leaf-metafield-value', field: card_product.metafields.lighting.use_cases %}</dd></div>{% endif %}
-              {% if mounting != blank %}<div><dt>Montage</dt><dd>{{ mounting | escape }}</dd></div>{% endif %}
+              {% if watts > 0 %}<div><dt>{{ 'lighting_configurator.power' | t }}</dt><dd>{{ watts }} W</dd></div>{% endif %}
+              {% assign colour_temperature = card_product.metafields.lighting.cct_k.value | append: '' | strip %}
+              {% if colour_temperature != blank %}<div><dt>{{ 'lighting_configurator.cct' | t }}</dt><dd>{{ colour_temperature | escape }}{% unless colour_temperature contains 'K' or colour_temperature contains 'k' %} K{% endunless %}</dd></div>{% endif %}
+              {% if use_cases != blank %}<div><dt>{{ 'lighting_configurator.use' | t }}</dt><dd>{% render 'leaf-metafield-value', field: card_product.metafields.lighting.use_cases %}</dd></div>{% endif %}
+              {% if mounting != blank %}<div><dt>{{ 'lighting_configurator.mounting' | t }}</dt><dd>{{ mounting | escape }}</dd></div>{% endif %}
             </dl>
-            <a class="button button--secondary" href="{{ card_product.url }}">Details &amp; Kaufoptionen</a>
+            <a class="button button--secondary" href="{{ card_product.url }}">{{ 'lighting_configurator.details' | t }}</a>
           </div>
         </article>
       {% endif %}
@@ -85,8 +86,8 @@
   </div>
 
   <div class="leaf-lighting__empty" data-empty hidden>
-    <strong>Für diese Auswahl ist aktuell kein Produkt hinterlegt.</strong>
-    <span>Ändere einen Filter oder setze die Auswahl zurück.</span>
+    <strong>{{ 'lighting_configurator.empty' | t }}</strong>
+    <span>{{ 'lighting_configurator.empty_help' | t }}</span>
   </div>
 </section>
 
@@ -123,7 +124,8 @@
       card.hidden = !show;
       if (show) visible++;
     });
-    count.textContent = `${visible} passende${visible === 1 ? 's Produkt' : ' Produkte'}`;
+    const label = visible === 1 ? {{ 'lighting_configurator.result_one' | t | json }} : {{ 'lighting_configurator.result_other' | t | json }};
+    count.textContent = `${visible} ${label}`;
     empty.hidden = visible !== 0;
   }
 

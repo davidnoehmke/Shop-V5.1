@@ -1,0 +1,45 @@
+{% doc %}
+Classifies verified catalog formats without inferring a complete kit from an E27 socket.
+@param {product} product - Product to classify
+@param {string} [output] - 'note' for localized delivery guidance; otherwise format key
+{% enddoc %}
+{%- liquid
+  assign format = 'other'
+  assign note = 'scope_other'
+  assign declared_format = product.metafields.lighting.product_format.value
+  case product.handle
+    when 'venso-grow-light-winter-e27-pflanzenlampe-7w-15w', 'venso-e27-pflanzenlampe-indoor-plants-7w-15w', 'venso-grow-light-cultura-e27-pflanzenlampe-7w-15w', 'goleaf-par38-e27-vollspektrum-pflanzenlampe-10w', 'soltech-vita-grow-light-par30', 'sansi-a19-10w-led-pflanzenlampe-vollspektrum', 'sansi-br30-24w-led-pflanzenlampe-e27-vollspektrum', 'sansi-br30-36w-led-pflanzenlampe-e27-vollspektrum', 'sansi-60w-led-pflanzenlampe-faltbare-flugel-e27'
+      assign format = 'bulb'
+      assign note = 'scope_bulb'
+    when 'neusius-60cm-led-pflanzenlicht-rohre-8w-t8-vollspektrum', 'neusius-120cm-led-pflanzenlicht-rohre-16w-t8-vollspektrum'
+      assign format = 'bulb'
+      assign note = 'scope_tube'
+    when 'neusius-60cm-led-pflanzenlampe-8w-t8-mit-fassung', 'neusius-120cm-led-pflanzenlampe-16w-t8-mit-fassung', 'neusius-120cm-led-pflanzenleuchte-2-flammig-2-16w-t8'
+      assign format = 'set'
+      assign note = 'scope_tube_set'
+    when 'soltech-vita™-pendant-kit-pendelset-mit-grow-light'
+      assign format = 'set'
+      assign note = 'scope_pendant_set'
+    when 'soltech-aspect™-grow-light-mit-stello™-pendant-stand-set', 'soltech-rise-shine-bundle-led-pflanzenbeleuchtung'
+      assign format = 'set'
+      assign note = 'scope_set'
+    when 'venso-grow-light-flexia-12w-pflanzenlampe-mit-klemme', 'venso-plant-sun-7w-led-pflanzenlampe', 'venso-plant-sun-xl-20w-led-pflanzenlampe', 'sunlite-7w-led-pflanzenlampe-mit-teleskopstab', 'venso-sunlite-xl-25w-led-pflanzenlampe', 'venso-led-wall-spot-pflanzenleuchte-60-150-cm', 'neusius-led-bloom-20w-3500k-pflanzenleuchte', 'neusius-aurora-76-cm-led-pflanzenleuchte-15w', 'neusius-floris-grow-150w-vollspektrum-pflanzenlampe', 'mother-plantspectrum-16-32-pflanzenleuchte', 'soltech-grove™-led-grow-light'
+      assign format = 'fixture'
+      assign note = 'scope_fixture'
+    when 'venso-sun-mode-pro-led-65-cm', 'venso-sun-mode-pro-led-85-cm'
+      assign format = 'fixture'
+      assign note = 'scope_bar'
+  endcase
+  if declared_format == 'bulb' or declared_format == 'fixture' or declared_format == 'set' or declared_format == 'other'
+    if declared_format != format
+      assign note = 'scope_other'
+    endif
+    assign format = declared_format
+  endif
+  if output == 'note'
+    assign note_key = 'led_highlights.' | append: note
+    echo note_key | t
+  else
+    echo format
+  endif
+-%}
