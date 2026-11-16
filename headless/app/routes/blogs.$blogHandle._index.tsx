@@ -93,10 +93,6 @@ const BLOGS_QUERY = `#graphql
     blog(handle: $blogHandle) {
       title
       handle
-      seo {
-        title
-        description
-      }
       articles(
         first: $first,
         last: $last,
@@ -118,10 +114,6 @@ const BLOGS_QUERY = `#graphql
     }
   }
   fragment ArticleItem on Article {
-    author: authorV2 {
-      name
-    }
-    contentHtml
     excerpt
     handle
     id
