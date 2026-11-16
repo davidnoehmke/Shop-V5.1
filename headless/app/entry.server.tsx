@@ -6,6 +6,7 @@ import {
   type HydrogenRouterContextProvider,
 } from '@shopify/hydrogen';
 import type {EntryContext} from 'react-router';
+import {plantPhotoImagePolicy} from './lib/plant-photo-security';
 
 export default async function handleRequest(
   request: Request,
@@ -15,6 +16,7 @@ export default async function handleRequest(
   context: HydrogenRouterContextProvider,
 ) {
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
+    ...plantPhotoImagePolicy(request.url),
     shop: {
       checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN,
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
@@ -51,4 +53,3 @@ export default async function handleRequest(
     status: responseStatusCode,
   });
 }
-

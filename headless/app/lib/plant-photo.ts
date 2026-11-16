@@ -1,3 +1,23 @@
+export type PlantCare = {
+  light: 'unknown' | 'low' | 'indirect' | 'direct' | 'grow_light';
+  watering: 'unknown' | 'dry' | 'moist' | 'wet';
+  drainage: 'unknown' | 'yes' | 'no';
+  duration: 'unknown' | 'days' | 'weeks' | 'months';
+};
+export const initialCare: PlantCare = {
+  light: 'unknown',
+  watering: 'unknown',
+  drainage: 'unknown',
+  duration: 'unknown',
+};
+export type PhotoProduct = {
+  id: string;
+  title: string;
+  handle: string;
+  reason: string;
+  image: {url: string; altText: string | null} | null;
+  price: {amount: string; currencyCode: string};
+};
 export type PlantPhotoReport = {
   quality: 'sufficient' | 'limited' | 'unusable' | 'not_plant';
   summary: string;
@@ -10,6 +30,7 @@ export type PlantPhotoReport = {
   observations: string[];
   possibleCauses: {
     cause: string;
+    category: 'light' | 'watering' | 'substrate' | 'pest' | 'disease' | 'other';
     confidence: 'low' | 'medium' | 'high';
     evidence: string;
     nextCheck: string;
@@ -21,6 +42,11 @@ export type PlantPhotoReport = {
 
 // Decode, orient, resize and re-encode: originals and their EXIF/GPS are not uploaded.
 export async function preparePlantPhoto(file: File) {
+  if (
+    /image\/(?:heic|heif)/i.test(file.type) ||
+    /\.(?:heic|heif)$/i.test(file.name)
+  )
+    throw new Error('unsupported_heic');
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type))
     throw new Error('invalid_image');
   if (!file.size || file.size > 8 * 1024 * 1024)
@@ -35,7 +61,7 @@ export async function preparePlantPhoto(file: File) {
     if (
       bitmap.width < 128 ||
       bitmap.height < 128 ||
-      bitmap.width * bitmap.height > 40_000_000
+      bitmap.width * bitmap.height > 25_000_000
     )
       throw new Error('image_dimensions');
     const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));

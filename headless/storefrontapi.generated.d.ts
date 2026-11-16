@@ -65,6 +65,68 @@ export type BlogCommerceProductFragment = Pick<
   };
 };
 
+export type LeafHomepageQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type LeafHomepageQuery = {
+  collection?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Collection, 'id' | 'title' | 'description'> & {
+      image?: StorefrontAPI.Maybe<
+        Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
+      >;
+      products: {
+        nodes: Array<
+          Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'vendor'> & {
+            featuredImage?: StorefrontAPI.Maybe<
+              Pick<
+                StorefrontAPI.Image,
+                'id' | 'url' | 'altText' | 'width' | 'height'
+              >
+            >;
+            priceRange: {
+              minVariantPrice: Pick<
+                StorefrontAPI.MoneyV2,
+                'amount' | 'currencyCode'
+              >;
+            };
+          }
+        >;
+      };
+    }
+  >;
+};
+
+export type EntryJournalQueryVariables = StorefrontAPI.Exact<{
+  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
+  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+}>;
+
+export type EntryJournalQuery = {
+  blogs: {
+    nodes: Array<
+      Pick<StorefrontAPI.Blog, 'handle'> & {
+        articles: {
+          nodes: Array<
+            Pick<
+              StorefrontAPI.Article,
+              'id' | 'title' | 'handle' | 'excerpt'
+            > & {
+              image?: StorefrontAPI.Maybe<
+                Pick<
+                  StorefrontAPI.Image,
+                  'id' | 'url' | 'altText' | 'width' | 'height'
+                >
+              >;
+            }
+          >;
+        };
+      }
+    >;
+  };
+};
+
 export type MoneyFragment = Pick<
   StorefrontAPI.MoneyV2,
   'currencyCode' | 'amount'
@@ -439,37 +501,30 @@ export type FooterQuery = {
   >;
 };
 
-export type LeafHomepageQueryVariables = StorefrontAPI.Exact<{
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
+export type PlantPhotoProductsQueryVariables = StorefrontAPI.Exact<{
+  query: StorefrontAPI.Scalars['String']['input'];
+  language: StorefrontAPI.LanguageCode;
 }>;
 
-export type LeafHomepageQuery = {
-  collection?: StorefrontAPI.Maybe<
-    Pick<StorefrontAPI.Collection, 'id' | 'title' | 'description'> & {
-      image?: StorefrontAPI.Maybe<
-        Pick<StorefrontAPI.Image, 'id' | 'url' | 'altText' | 'width' | 'height'>
-      >;
-      products: {
-        nodes: Array<
-          Pick<StorefrontAPI.Product, 'id' | 'title' | 'handle' | 'vendor'> & {
-            featuredImage?: StorefrontAPI.Maybe<
-              Pick<
-                StorefrontAPI.Image,
-                'id' | 'url' | 'altText' | 'width' | 'height'
-              >
-            >;
-            priceRange: {
-              minVariantPrice: Pick<
-                StorefrontAPI.MoneyV2,
-                'amount' | 'currencyCode'
-              >;
-            };
-          }
+export type PlantPhotoProductsQuery = {
+  products: {
+    nodes: Array<
+      Pick<
+        StorefrontAPI.Product,
+        'id' | 'handle' | 'title' | 'availableForSale'
+      > & {
+        featuredImage?: StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Image, 'url' | 'altText'>
         >;
-      };
-    }
-  >;
+        priceRange: {
+          minVariantPrice: Pick<
+            StorefrontAPI.MoneyV2,
+            'amount' | 'currencyCode'
+          >;
+        };
+      }
+    >;
+  };
 };
 
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
@@ -2151,6 +2206,14 @@ interface GeneratedQueryTypes {
     return: BlogCommerceQuery;
     variables: BlogCommerceQueryVariables;
   };
+  '#graphql\n  query LeafHomepage($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collection(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze") {\n      id title description\n      image { id url altText width height }\n      products(first: 6) {\n        nodes {\n          id title handle vendor\n          featuredImage { id url altText width height }\n          priceRange { minVariantPrice { amount currencyCode } }\n        }\n      }\n    }\n  }\n': {
+    return: LeafHomepageQuery;
+    variables: LeafHomepageQueryVariables;
+  };
+  '#graphql\n  query EntryJournal($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    blogs(first: 6) {\n      nodes {\n        handle\n        articles(first: 3, sortKey: PUBLISHED_AT, reverse: true) {\n          nodes {\n            id title handle excerpt(truncateAt: 180)\n            image { id url altText width height }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: EntryJournalQuery;
+    variables: EntryJournalQueryVariables;
+  };
   '#graphql\n  fragment Shop on Shop {\n    id\n    name\n    description\n    primaryDomain {\n      url\n    }\n    brand {\n      logo {\n        image {\n          url\n        }\n      }\n    }\n  }\n  query Header(\n    $country: CountryCode\n    $headerMenuHandle: String!\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    shop {\n      ...Shop\n    }\n    menu(handle: $headerMenuHandle) {\n      ...Menu\n    }\n  }\n  #graphql\n  fragment MenuItem on MenuItem {\n    id\n    resourceId\n    tags\n    title\n    type\n    url\n  }\n  fragment ChildMenuItem on MenuItem {\n    ...MenuItem\n  }\n  fragment ParentMenuItem on MenuItem {\n    ...MenuItem\n    items {\n      ...ChildMenuItem\n    }\n  }\n  fragment Menu on Menu {\n    id\n    items {\n      ...ParentMenuItem\n    }\n  }\n\n': {
     return: HeaderQuery;
     variables: HeaderQueryVariables;
@@ -2159,9 +2222,9 @@ interface GeneratedQueryTypes {
     return: FooterQuery;
     variables: FooterQueryVariables;
   };
-  '#graphql\n  query LeafHomepage($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collection(handle: "substratwelt-pflanzsubstrate-mischungen-zusatze") {\n      id\n      title\n      description\n      image { id url altText width height }\n      products(first: 6) {\n        nodes {\n          id\n          title\n          handle\n          vendor\n          featuredImage { id url altText width height }\n          priceRange { minVariantPrice { amount currencyCode } }\n        }\n      }\n    }\n  }\n': {
-    return: LeafHomepageQuery;
-    variables: LeafHomepageQueryVariables;
+  '#graphql\n  query PlantPhotoProducts($query: String!, $language: LanguageCode!)\n  @inContext(country: DE, language: $language) {\n    products(first: 12, query: $query) {\n      nodes {\n        id handle title availableForSale\n        featuredImage { url altText }\n        priceRange { minVariantPrice { amount currencyCode } }\n      }\n    }\n  }\n': {
+    return: PlantPhotoProductsQuery;
+    variables: PlantPhotoProductsQueryVariables;
   };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        contentHtml\n        excerpt\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
