@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "name": "LEAF Pflanzenfotoanalyse",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "leaf_photo_portal_enabled",
+        "label": "Fotoanalyse im LEAF-Assistenten anzeigen",
+        "info": "Erst aktivieren, wenn Modellzugang, Login und echte Fotoanalyse getestet sind.",
+        "default": false
+      },
+      {
+        "type": "url",
+        "id": "leaf_photo_portal_url",
+        "label": "HTTPS-Link zum geschützten Analyseportal",
+        "info": "Zum Beispiel https://next.leaferservice.com/portal/photo-analysis. Ein gesonderter Portal-Login ist erforderlich."
+      }
+    ]
+  }
+]
