@@ -1087,6 +1087,8 @@
     "action_chat": "Chat öffnen",
     "action_voice": "Sprachgespräch",
     "action_photo": "Pflanzenfoto",
+    "photo_portal_link": "Pflanze per Foto analysieren",
+    "photo_portal_note": "Geschütztes Analyseportal mit eigener Anmeldung. Fotos werden dort erst nach deiner ausdrücklichen Zustimmung übertragen.",
     "action_advisor": "LEAF Planer",
     "voice_connecting": "Ich verbinde deinen Sprachdialog …",
     "voice_unavailable": "Der Echtzeit-Sprachdialog ist gerade nicht verfügbar. Du kannst deine Frage weiterhin schreiben.",

@@ -363,7 +363,7 @@ test('empty custom-mix slots render safely before and after selecting components
 
 test('Social Greens enterprise templates expose bilingual editable concepts and clear idea status', () => {
   const section = fs.readFileSync('sections/leaf-social-greens.liquid', 'utf8');
-  const template = JSON.parse(fs.readFileSync('templates/page.social-greens.json', 'utf8'));
+  const template = JSON.parse(fs.readFileSync('templates/page.social-greens.json', 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
   assert.match(section, /data-sg-filter/);
   assert.match(section, /data-sg-category/);
   assert.match(section, /Projektidee|Konzeptidee/);
@@ -376,4 +376,28 @@ test('Social Greens enterprise templates expose bilingual editable concepts and 
     assert.ok(block.settings.title_de && block.settings.title_en);
     assert.ok(block.settings.text_de && block.settings.text_en);
   }
+});
+
+
+test('Shopify plant-photo portal remains opt-in, secure and translated', () => {
+  const schema = JSON.parse(fs.readFileSync('config/settings_schema.json', 'utf8'));
+  const group = schema.find(item => item.name === 'LEAF Pflanzenfotoanalyse');
+  assert.ok(group, 'Shopify theme must expose portal settings');
+  const enable = group.settings.find(item => item.id === 'leaf_photo_portal_enabled');
+  assert.equal(enable.type, 'checkbox');
+  assert.equal(enable.default, false);
+  assert.equal(group.settings.find(item => item.id === 'leaf_photo_portal_url').type, 'url');
+  const snippet = fs.readFileSync('snippets/leaf-shop-assistant.liquid', 'utf8');
+  assert.match(snippet, /if settings\.leaf_photo_portal_enabled and photo_portal_url != blank/);
+  assert.match(snippet, /photo_portal_scheme == 'https:\/\/'/);
+  assert.match(snippet, /photo_portal_href \| append: '\?lang=en'/);
+  assert.match(snippet, /photo_portal_href \| append: '&lang=en'/);
+  assert.match(snippet, /\{% if photo_portal_enabled %\}[\s\S]*?target="_blank" rel="noopener noreferrer"/);
+  assert.match(snippet, /shop_assistant\.photo_portal_note/);
+  for (const locale of ['locales/de.default.json', 'locales/en.json']) {
+    const data = JSON.parse(fs.readFileSync(locale, 'utf8').replace(/^\/\*[\s\S]*?\*\/\s*/, ''));
+    assert.ok(data.shop_assistant.photo_portal_link);
+    assert.ok(data.shop_assistant.photo_portal_note);
+  }
+  assert.match(snippet, /data-assistant-action-photo hidden aria-hidden="true" tabindex="-1"/);
 });

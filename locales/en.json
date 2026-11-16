@@ -1095,6 +1095,8 @@
     "action_chat": "Open chat",
     "action_voice": "Voice conversation",
     "action_photo": "Plant photo",
+    "photo_portal_link": "Analyze a plant photo",
+    "photo_portal_note": "Secure analysis portal with separate sign-in. Photos are uploaded only after you explicitly consent.",
     "action_advisor": "LEAF Planner",
     "voice_connecting": "Connecting your voice conversation…",
     "voice_unavailable": "The live voice conversation is currently unavailable. You can still write your question.",
