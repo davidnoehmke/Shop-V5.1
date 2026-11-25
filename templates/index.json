@@ -309,14 +309,13 @@
       }
     },
     "leaf_christmas_2026": {
-      "type": "featured-collection",
+      "type": "leaf-christmas",
       "settings": {
-        "heading": "Verschenke Wachstum – Christmas Specials",
-        "link_label": "Alle Geschenksets entdecken",
         "collection": "christmas-specials-weihnachtsgeschenke-fur-pflanzenliebhaber",
-        "products_to_show": 6,
-        "columns": 4,
-        "compact": true
+        "heading_de": "Verschenke Wachstum – Christmas Specials",
+        "heading_en": "Give the gift of growth – Christmas specials",
+        "link_label_de": "Alle Geschenksets entdecken",
+        "link_label_en": "Explore all gift sets"
       }
     }
   },
