@@ -38,7 +38,7 @@
                 </dl>
               {% endif %}
 
-              <p class="main-cart__line-price">{{ item.final_line_price | money }}</p>
+              <p class="main-cart__line-price">{{ item.final_line_price | money }}{% if item.unit_price_measurement %} <small>{{ item.unit_price | unit_price_with_measurement: item.unit_price_measurement }}</small>{% endif %}</p>
 
               <div class="main-cart__controls">
                 <label for="Quantity-{{ item.key | escape }}">{{ 'cart.quantity' | t }}</label>

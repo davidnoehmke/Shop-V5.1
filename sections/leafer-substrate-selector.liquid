@@ -379,11 +379,12 @@
                   <option
                     value="{{ variant.id }}"
                     data-price="{{ variant.price }}"
+                    data-unit-price="{% if variant.unit_price_measurement %}{{ variant.unit_price | unit_price_with_measurement: variant.unit_price_measurement | escape }}{% endif %}"
                     data-available="{{ variant.available }}"
                     {% if variant.id == selected_variant.id %}selected{% endif %}
                     {% unless variant.available %}disabled{% endunless %}
                   >
-                    {{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ section.settings.sold_out_label | escape }}{% endunless %}
+                    {{ variant.title | escape }} · {{ variant.price | money }}{% if variant.unit_price_measurement %} · {{ variant.unit_price | unit_price_with_measurement: variant.unit_price_measurement }}{% endif %}{% unless variant.available %} · {{ section.settings.sold_out_label | escape }}{% endunless %}
                   </option>
                 {% endfor %}
               </select>
@@ -399,7 +400,10 @@
                 <span>{{ 'substrate_selector.selection' | t }}</span>
                 <strong data-selection-summary>{{ selected_profile | escape }} · {{ selected_volume | escape }}</strong>
               </div>
-              <strong class="leafer-substrate__selected-price" data-selected-price aria-live="polite">{{ selected_variant.price | money }}</strong>
+              <div aria-live="polite">
+                <strong class="leafer-substrate__selected-price" data-selected-price>{{ selected_variant.price | money }}</strong>
+                <small data-selected-unit-price{% unless selected_variant.unit_price_measurement %} hidden{% endunless %}>{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}</small>
+              </div>
             </div>
 
             <p class="leafer-substrate__availability" data-availability data-state="{% if selected_variant.available %}available{% else %}unavailable{% endif %}" aria-live="polite">
@@ -1059,6 +1063,12 @@
 
       const price = this.formatMoney(variant.price);
       this.querySelectorAll('[data-selected-price]').forEach((node) => { node.textContent = price; });
+      const unitPrice = this.nativeSelect.selectedOptions[0]?.dataset.unitPrice || '';
+      const unitPriceLabel = this.querySelector('[data-selected-unit-price]');
+      if (unitPriceLabel) {
+        unitPriceLabel.textContent = unitPrice;
+        unitPriceLabel.hidden = !unitPrice;
+      }
 
       const summary = this.querySelector('[data-selection-summary]');
       if (summary) summary.textContent = [profile, volume].filter(Boolean).join(' · ');
