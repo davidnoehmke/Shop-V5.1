@@ -3,6 +3,7 @@ Renders the shared LEAF advisor. Supabase supplies all options, selection valida
 @param {collection} [collection] - Current collection in collection mode.
 @param {string} section_id - Parent section id for anchor targets.
 @param [world_blocks] - Homepage collection blocks used as product worlds.
+@param {string} [products_anchor] - Prefix for the homepage product grid anchor.
 @param {boolean} [home_mode] - Enables product-world selection across the supplied blocks.
 {% enddoc %}
 
@@ -17,8 +18,10 @@ Renders the shared LEAF advisor. Supabase supplies all options, selection valida
 
   if advisor_home_mode
     assign advisor_collection_handle = ''
-    assign advisor_skip_href = '#HomeJourneyGrid-' | append: section_id
-    assign advisor_all_href = routes.collections_url | append: '/all'
+    assign advisor_skip_href = products_anchor | default: 'HomeJourneyGrid-' | prepend: '#' | append: section_id
+    capture advisor_all_href
+      render 'leaf-localized-url', url: routes.all_products_collection_url
+    endcapture
   else
     assign advisor_skip_href = '#CollectionProducts-' | append: section_id
     assign advisor_all_href = advisor_skip_href

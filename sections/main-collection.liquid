@@ -92,43 +92,13 @@
         </div>
       {% endif %}
       <div class="main-collection__media-note">
-        <span>{{ collection.products_count }} {{ 'collection.products_count' | t: count: collection.products_count | remove: collection.products_count }}</span>
+        <span>{{ 'collection.products_count' | t: count: collection.products_count }}</span>
         <strong>{{ collection.title | escape }}</strong>
       </div>
     </div>
   </header>
   {% endunless %}
 
-  <div class="main-collection__tools" id="CollectionFilters-{{ section.id }}">
-    {% if section.settings.show_type_filters and product_types.size > 1 %}
-      <div class="main-collection__filter-landscape">
-        <p class="main-collection__landscape-label">{{ landscape_label }}</p>
-        <div class="main-collection__filters" role="group" aria-label="{{ 'collection.filter' | t }}">
-        <button type="button" class="main-collection__filter" data-product-filter="all" aria-pressed="true">
-          <span class="main-collection__filter-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
-          </span>
-          <span>{{ 'collection.all' | t }}</span>
-        </button>
-        {% for product_type in product_types %}
-          {% assign product_type_downcase = product_type | downcase %}
-          <button type="button" class="main-collection__filter" data-product-filter="{{ product_type | handleize }}" aria-pressed="false">
-            <span class="main-collection__filter-icon" aria-hidden="true">
-              {% if product_type_downcase contains 'licht' or product_type_downcase contains 'led' or product_type_downcase contains 'lamp' %}
-                <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M8 14c-1.4-1.1-2-2.8-2-4.6A6 6 0 0 1 18 9.4c0 1.8-.7 3.5-2 4.6-.8.7-1.2 1.4-1.3 2H9.3c-.1-.6-.5-1.3-1.3-2Z"/></svg>
-              {% elsif product_type_downcase contains 'substrat' or product_type_downcase contains 'mix' %}
-                <svg viewBox="0 0 24 24"><path d="m4 8 8-4 8 4-8 4-8-4Zm0 4 8 4 8-4M4 16l8 4 8-4"/></svg>
-              {% elsif product_type_downcase contains 'topf' or product_type_downcase contains 'gefäß' or product_type_downcase contains 'gefass' %}
-                <svg viewBox="0 0 24 24"><path d="M7 8h10l-1 12H8L7 8ZM5 5h14v3H5z"/></svg>
-              {% elsif product_type_downcase contains 'pflanz' %}
-                <svg viewBox="0 0 24 24"><path d="M12 21V10M12 15c-4 0-7-3-7-7 4 0 7 3 7 7ZM12 12c4 0 7-3 7-7-4 0-7 3-7 7Z"/></svg>
-              {% else %}
-                <svg viewBox="0 0 24 24"><path d="M4 6h16v12H4zM8 10h8M8 14h5"/></svg>
-              {% endif %}
-            </span>
-            <span>{{ product_type | escape }}</span>
-          </button>
-        {% endfor %}
   {% render 'leaf-solution-gateway', collection: collection, section_id: section.id %}
 
   {% render 'leaf-shared-advisor', section_id: section.id, collection: collection, home_mode: false %}
@@ -396,7 +366,7 @@
 <script src="{{ 'leaf-editorial-products.js' | asset_url }}" defer="defer"></script>
 
 {% stylesheet %}
-.main-collection .main-collection__grid{display:flex;flex-direction:column;gap:clamp(2rem,5vw,5rem)}.leaf-editorial-item{width:100%;min-width:0}.leaf-editorial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(1rem,4vw,4rem);border-bottom:1px solid var(--border);padding-block:2rem}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:2}.leaf-editorial__media{aspect-ratio:1/1;overflow:hidden;background:var(--surface)}.leaf-editorial__media img{width:100%;height:100%;object-fit:contain;border-radius:0;display:block}.leaf-editorial__facts{margin:0;display:grid;gap:.5rem}.leaf-editorial__facts:empty{display:none}.leaf-editorial__facts div{display:grid;grid-template-columns:minmax(7rem,.6fr) minmax(0,1fr);gap:.75rem}.leaf-editorial__facts dt{font-weight:600}.leaf-editorial__facts dd{margin:0}.leaf-editorial__media a{display:block;width:100%;height:100%}.leaf-editorial__content{min-width:0;display:grid;gap:.8rem}.leaf-editorial__content h2{margin:0;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.2}.leaf-editorial__content p{line-height:1.65;max-width:65ch}.leaf-editorial__form{display:grid;gap:.7rem}.leaf-editorial__form select{min-height:48px;padding:.5rem;width:100%;background:var(--background);color:var(--text)}.leaf-editorial__purchase{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}.leaf-editorial__purchase button{min-height:48px;padding:.75rem 1.25rem;background:var(--text);color:var(--background);border:0}.leaf-editorial__purchase button:disabled{opacity:.55}@media(max-width:760px){.leaf-editorial{grid-template-columns:1fr}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:0}}
+.leaf-editorial-item{width:100%;min-width:0}.leaf-editorial{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(1rem,4vw,4rem);border-bottom:1px solid var(--border);padding-block:2rem}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:2}.leaf-editorial__media{aspect-ratio:1/1;overflow:hidden;background:var(--surface)}.leaf-editorial__media img{width:100%;height:100%;object-fit:contain;border-radius:0;display:block}.leaf-editorial__facts{margin:0;display:grid;gap:.5rem}.leaf-editorial__facts:empty{display:none}.leaf-editorial__facts div{display:grid;grid-template-columns:minmax(7rem,.6fr) minmax(0,1fr);gap:.75rem}.leaf-editorial__facts dt{font-weight:600}.leaf-editorial__facts dd{margin:0}.leaf-editorial__media a{display:block;width:100%;height:100%}.leaf-editorial__content{min-width:0;display:grid;gap:.8rem}.leaf-editorial__content h2{margin:0;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.2}.leaf-editorial__content p{line-height:1.65;max-width:65ch}.leaf-editorial__form{display:grid;gap:.7rem}.leaf-editorial__form select{min-height:48px;padding:.5rem;width:100%;background:var(--background);color:var(--text)}.leaf-editorial__purchase{display:flex;flex-wrap:wrap;gap:1rem;align-items:center}.leaf-editorial__purchase button{min-height:48px;padding:.75rem 1.25rem;background:var(--text);color:var(--background);border:0}.leaf-editorial__purchase button:disabled{opacity:.55}@media(max-width:760px){.leaf-editorial{grid-template-columns:1fr}.leaf-editorial-item:nth-child(even) .leaf-editorial__media{order:0}}
 
   .main-collection { padding-block: clamp(1.5rem, 4vw, 4rem) clamp(3rem, 6vw, 6rem); }
   .main-collection__hero { display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(420px, .98fr); gap: clamp(2rem, 5vw, 5.5rem); align-items: center; margin-bottom: clamp(2rem, 4vw, 3.6rem); }
@@ -409,7 +379,7 @@
   .main-collection__knowledge { max-width: 760px; margin-top: 1.25rem; }
   .main-collection__knowledge .leaf-atoms { margin: 0; }
   .main-collection__actions { display: flex; flex-wrap: wrap; gap: .65rem; margin-top: 1.7rem; }
-  .main-collection__primary-action, .main-collection__secondary-action { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .7rem; padding: .7rem 1rem; border: 1px solid var(--text); text-decoration: none; font-size: .82rem; font-weight: 850; transition: transform .2s ease, background .2s ease, color .2s ease; }
+  .main-collection__primary-action, .main-collection__secondary-action { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: .7rem; padding: .7rem 1rem; border: 1px solid var(--text); border-radius: var(--radius); text-decoration: none; font-size: .82rem; font-weight: 850; transition: transform .2s ease, background .2s ease, color .2s ease; }
   .main-collection__primary-action { background: var(--text); color: var(--background); }
   .main-collection__secondary-action { color: var(--text); }
   .main-collection__primary-action:hover, .main-collection__secondary-action:hover { transform: translateY(-2px); }
@@ -426,21 +396,16 @@
   .main-collection__media-note { position: absolute; left: 1rem; right: 1rem; bottom: 1rem; display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: .75rem .9rem; border: 1px solid color-mix(in srgb, white, transparent 45%); background: color-mix(in srgb, var(--background), transparent 10%); backdrop-filter: blur(12px); }
   .main-collection__media-note span { color: var(--muted); font-size: .72rem; }
   .main-collection__media-note strong { font-size: .78rem; text-align: right; }
-  .main-collection__tools { scroll-margin-top: 110px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem; align-items: end; margin-bottom: 1.5rem; padding-block: 1rem; border-block: 1px solid var(--border); }
-  .main-collection__filter-landscape { min-width: 0; }
-  .main-collection__landscape-label { margin: 0 0 .55rem; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
-  .main-collection__filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: .5rem; }
-  .main-collection__filter { min-height: 58px; display: inline-flex; align-items: center; justify-content: flex-start; gap: .65rem; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .65rem .8rem; font-size: .75rem; text-align: left; }
   .main-collection__catalog { min-width: 0; }
   .main-collection__catalog--filtered { display: grid; grid-template-columns: minmax(210px, 240px) minmax(0, 1fr); gap: clamp(1.5rem, 3vw, 2.75rem); align-items: start; }
-  .main-collection__sidebar { scroll-margin-top: 110px; position: sticky; top: 96px; min-width: 0; padding-right: 1.2rem; border-right: 1px solid var(--border); }
+  .main-collection__sidebar { scroll-margin-top: 110px; position: sticky; top: 96px; min-width: 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-large); background: var(--surface); }
   .main-collection__sidebar-brand { width: min(100%, 160px); display: inline-flex; margin: 0 0 1.2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
   .main-collection__sidebar-brand img { display: block; width: 100%; height: auto; }
   .main-collection__filter-landscape { min-width: 0; }
   .main-collection__landscape-label { margin: 0 0 .65rem; color: var(--accent); font-size: .68rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
   .main-collection__filters { display: grid; grid-template-columns: 1fr; gap: .45rem; }
-  .main-collection__filter { min-height: 54px; display: inline-flex; align-items: center; justify-content: flex-start; gap: .65rem; border: 1px solid var(--border); border-radius: 0; background: transparent; color: var(--text); padding: .6rem .72rem; font-size: .75rem; text-align: left; }
-  .main-collection__filter-icon { width: 25px; height: 25px; display: grid; place-items: center; border-right: 1px solid var(--border); padding-right: .45rem; }
+  .main-collection__filter { min-height: 48px; display: flex; align-items: center; justify-content: flex-start; gap: .65rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); color: var(--text); padding: .65rem .75rem; font-size: .875rem; line-height: 1.35; text-align: left; overflow-wrap: anywhere; }
+  .main-collection__filter-icon { flex: none; width: 25px; height: 25px; display: grid; place-items: center; border-right: 1px solid var(--border); padding-right: .45rem; }
   .main-collection__filter-icon svg { width: 17px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__filters button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
   .main-collection__filters button[aria-pressed="true"] .main-collection__filter-icon { border-color: color-mix(in srgb, white, transparent 55%); }
@@ -467,14 +432,13 @@
   .main-collection__tools { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1.2rem; padding-block: .8rem; border-block: 1px solid var(--border); }
   .main-collection__sort { display: flex; align-items: center; gap: .7rem; margin-left: auto; }
   .main-collection__sort label { font-size: .75rem; font-weight: 800; }
-  .main-collection__sort select { min-height: 44px; min-width: 220px; border: 1px solid var(--border); border-radius: 0; background: var(--background); padding: .6rem 2.2rem .6rem .8rem; }
+  .main-collection__sort select { min-height: 44px; min-width: 0; max-width: 100%; border: 1px solid var(--border); border-radius: var(--radius); background: var(--background); padding: .6rem 2.2rem .6rem .8rem; }
   .main-collection__active-context { min-height: 44px; display: grid; grid-template-columns: 30px minmax(0,1fr) auto; gap: .6rem; align-items: center; min-width: min(100%, 320px); padding: .45rem .6rem; border: 1px solid var(--border); background: var(--surface); }
   .main-collection__context-icon { width: 28px; height: 28px; display: grid; place-items: center; color: var(--accent); }
   .main-collection__context-icon svg { width: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
   .main-collection__active-context strong { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; }
   .main-collection__context-count { min-width: 30px; height: 28px; display: grid; place-items: center; border: 1px solid var(--border); color: var(--accent); font-size: .7rem; font-weight: 850; }
-  .main-collection__grid { scroll-margin-top: 110px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.2rem; }
-  .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .main-collection .main-collection__grid { scroll-margin-top: 110px; display: flex; flex-direction: column; gap: clamp(1.25rem, 3.5vw, 3.5rem); }
   .main-collection__grid > div[hidden] { display: none; }
   .main-collection__pagination { display: flex; justify-content: center; padding-top: 3rem; }
   .main-collection__pagination .page, .main-collection__pagination .next, .main-collection__pagination .prev { padding: .5rem; }
@@ -482,13 +446,12 @@
     .main-collection__hero { grid-template-columns: 1fr 1fr; gap: 2rem; }
     .main-collection__signals { grid-template-columns: 1fr; }
     .main-collection__catalog--filtered { grid-template-columns: 1fr; gap: 1rem; }
-    .main-collection__sidebar { position: static; top: auto; padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--border); }
+    .main-collection__sidebar { position: static; top: auto; padding: .8rem; }
     .main-collection__sidebar-brand { display: none; }
-    .main-collection__filters { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(150px, 30vw); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding-bottom: .25rem; }
+    .main-collection__filters { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(150px, 30vw); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding: .3rem .3rem .6rem; scroll-padding-inline: .3rem; }
     .main-collection__filter { scroll-snap-align: start; }
     .main-collection__tools { flex-wrap: wrap; }
     .main-collection__sort { justify-content: flex-end; }
-    .main-collection__catalog--filtered .main-collection__grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   }
   @media (max-width: 900px) {
     .main-collection__advanced > summary { grid-template-columns: 1fr auto; gap: .2rem .7rem; }
@@ -501,13 +464,10 @@
     .main-collection__hero-copy { padding-bottom: 0; }
     .main-collection__hero-media { aspect-ratio: 16 / 9; max-height: 280px; }
     .main-collection__hero-media, .main-collection__hero-media > img, .main-collection__hero-placeholder { min-height: 0; }
-    .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap:.7rem; }
   }
   @media (max-width: 620px) {
     .main-collection { padding-top: .6rem; }
     .main-collection__sidebar { position: sticky; z-index: 12; top: 64px; margin-inline: -.55rem; padding: .55rem .55rem .65rem; border-bottom: 1px solid var(--border); background: color-mix(in srgb, var(--background), transparent 2%); backdrop-filter: blur(12px); }
-    .main-collection__filters { scrollbar-width:none; }
-    .main-collection__filters::-webkit-scrollbar { display:none; }
     .main-collection h1 { max-width: 28ch; font-size: clamp(1.8rem, 3.2vw, 2.75rem); line-height: 1.2; letter-spacing: -.025em; overflow-wrap: normal; word-break: normal; hyphens: auto; }
     .main-collection__intro { font-size: .95rem; }
     .main-collection__signals { display: none; }
@@ -517,13 +477,12 @@
     .main-collection__tools { align-items: stretch; }
     .main-collection__active-context { width: 100%; min-width: 0; }
     .main-collection__sort { width: 100%; justify-content: stretch; margin-left: 0; }
+    .main-collection__sort select { width: 100%; }
     .main-collection__sort label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-    .main-collection__filters { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: minmax(150px, 64vw); overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding-bottom: .25rem; }
     .main-collection__filter { min-height: 54px; scroll-snap-align: start; }
     .main-collection__filters { grid-auto-columns: minmax(148px, 58vw); scroll-padding-inline:.2rem; }
     .main-collection__filter { min-height: 50px; padding-inline:.8rem; }
     .main-collection__sort select { width: 100%; min-width: 0; }
-    .main-collection__catalog--filtered .main-collection__grid, .main-collection__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; }
   }
 
   .interieur-room-builder { display: none; }
@@ -579,7 +538,9 @@
 
   document.querySelectorAll('.main-collection').forEach((collectionSection) => {
     const filters = collectionSection.querySelector('.main-collection__filters');
-    if (!filters) return;
+    const grid = collectionSection.querySelector('.main-collection__grid');
+    if (!filters || !grid) return;
+    const cards = Array.from(grid.children);
     const context = collectionSection.querySelector('[data-filter-context]');
     const contextIcon = context?.querySelector('[data-filter-context-icon]');
     const contextLabel = context?.querySelector('[data-filter-context-label]');
@@ -587,7 +548,6 @@
 
     const syncFilter = (button) => {
       const selected = button.dataset.productFilter;
-      const cards = [...collectionSection.querySelectorAll('[data-product-type]')];
       cards.forEach((card) => {
         card.hidden = selected !== 'all' && card.dataset.productType !== selected;
       });
