@@ -4,9 +4,6 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
 {% liquid
   assign assistant_advisor_href = routes.root_url | append: '#LeafAdvisor'
-  if request.page_type == 'collection'
-    assign assistant_advisor_href = '#LeafAdvisor'
-  endif
   assign photo_portal_url = settings.leaf_photo_portal_url
   assign photo_portal_enabled = false
   if settings.leaf_photo_portal_enabled and photo_portal_url != blank
@@ -83,7 +80,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     {% if photo_portal_enabled %}
       <a href="{{ photo_portal_href | escape }}" target="_blank" rel="noopener noreferrer">{{ 'shop_assistant.photo_portal_link' | t }}</a>
     {% endif %}
-    <a href="{{ assistant_advisor_href }}">{{ 'shop_assistant.action_advisor' | t }}</a>
+    <a href="{{ assistant_advisor_href }}" data-assistant-advisor>{{ 'shop_assistant.action_advisor' | t }}</a>
   </div>
 
   <button class="leaf-shop-assistant__voice-stop" type="button" data-assistant-voice-stop hidden aria-label="{{ 'shop_assistant.voice_stop' | t | escape }}" title="{{ 'shop_assistant.voice_stop' | t | escape }}">
@@ -141,7 +138,7 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
         </div>
         <p class="leaf-shop-assistant__voice-status" data-assistant-voice-status aria-live="polite"></p>
         <div class="leaf-shop-assistant__form-actions">
-          <a href="{{ assistant_advisor_href }}" class="leaf-shop-assistant__advisor">{{ 'shop_assistant.advisor' | t }}</a>
+          <a href="{{ assistant_advisor_href }}" class="leaf-shop-assistant__advisor" data-assistant-advisor>{{ 'shop_assistant.advisor' | t }}</a>
           <button type="submit" data-assistant-submit>{{ 'shop_assistant.send' | t }}</button>
         </div>
       </form>
@@ -691,6 +688,15 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
 
         this.closeButton?.addEventListener('click', () => this.close());
         this.minimizeButton?.addEventListener('click', () => this.close());
+        const advisor = document.getElementById('LeafAdvisor');
+        if (advisor) {
+          this.querySelectorAll('[data-assistant-advisor]').forEach((link) => {
+            link.setAttribute('href', '#LeafAdvisor');
+            link.addEventListener('click', () => {
+              if (this.dialog?.open) this.close();
+            });
+          });
+        }
         this.setupDrag();
         this.form?.addEventListener('submit', (event) => this.send(event, false));
         this.setupVoice();
