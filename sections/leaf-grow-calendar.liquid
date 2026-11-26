@@ -1,4 +1,4 @@
-{% assign de = request.locale.iso_code == 'de' %}
+{% assign de = false %}{% if request.locale.iso_code == 'de' %}{% assign de = true %}{% endif %}
 {% assign months_de = 'Jan,Feb,Mär,Apr,Mai,Jun,Jul,Aug,Sep,Okt,Nov,Dez' | split: ',' %}{% assign months_en = 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec' | split: ',' %}{% if de %}{% assign month_labels = months_de %}{% else %}{% assign month_labels = months_en %}{% endif %}
 <section class="leaf-grow" data-grow-calendar aria-labelledby="leaf-grow-heading">
   <div class="leaf-grow__shell">
