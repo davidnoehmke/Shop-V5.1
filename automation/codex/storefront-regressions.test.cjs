@@ -77,7 +77,7 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.ok(giftSection.includes("render 'product-card'"));
   assert.ok(giftSection.includes("render 'leaf-localized-url'"));
   assert.equal(index.sections.leaf_led_finder.disabled, true);
-  assert.equal(index.sections.leaf_conversion.settings.show_hero_actions, false);
+  assert.equal(index.sections.leaf_conversion.settings.show_hero_actions, true);
   assert.equal(index.sections.leaf_worlds.settings.compact_navigation, true);
   assert.equal(index.sections.leaf_led_finder.type, 'leaf-led-home-finder');
   const commerce = index.sections.leaf_conversion;

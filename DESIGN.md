@@ -23,6 +23,7 @@ A quiet botanical room is the map: every object opens a clear next step.
 ## Spacing and composition
 - Main page rail: maximum 1320px with 20px minimum mobile gutters.
 - Room homepage: image and statement share a two-column desktop composition and collapse to statement first on mobile.
+- Homepage welcome: the merchant's people-and-plants image leads the entry, beside a short personal statement on desktop and above it on mobile. Keep faces and hands visible, with all copy outside the image. Use the established Helvetica stack and the editorial Georgia accent for the second heading line. The main action opens the assortment; the quiet secondary link opens the growing calendar. Image, alt text, captions, copy and links remain merchant-editable in the existing homepage section.
 - Use 18–24px radii on large interactive surfaces and 100px radii only for primary pills.
 - Product or topic groups live on their own landingpage, never as a second competing home-page route.
 
