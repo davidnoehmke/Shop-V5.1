@@ -4,15 +4,18 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const vm = require('node:vm');
 const source = fs.readFileSync('assets/leaf-editorial-products.js', 'utf8');
-const makeSelect = (initial) => {
+const makeSelect = (initial, initialUnitPrice) => {
   const price = { textContent: '' };
+  const unitPrice = { textContent: '', hidden: true };
   const handlers = {};
   const select = {
-    dataset: {}, selectedOptions: [{ dataset: { price: initial } }],
-    closest: () => ({ querySelector: () => price }),
+    dataset: {}, selectedOptions: [{ dataset: { price: initial, unitPrice: initialUnitPrice } }],
+    closest: () => ({
+      querySelector: (selector) => ({ '[data-editorial-price]': price, '[data-editorial-unit-price]': unitPrice })[selector] ?? null
+    }),
     addEventListener: (name, handler) => { (handlers[name] ||= []).push(handler); }
   };
-  return { select, price, handlers };
+  return { select, price, unitPrice, handlers };
 };
 const setup = (selects, forms = []) => {
   const events = {};
@@ -24,13 +27,21 @@ const setup = (selects, forms = []) => {
   return events;
 };
 test('variant price changes update only their owning product and preserve formatted currency', () => {
-  const a = makeSelect('€8,79'), b = makeSelect('€24,95');
+  const a = makeSelect('€8,79', '€4,40/l'), b = makeSelect('€24,95', '€49,90/kg');
   setup([a.select, b.select]);
   assert.equal(a.price.textContent, '€8,79');
-  a.select.selectedOptions = [{ dataset: { price: '€26,39' } }];
+  assert.equal(a.unitPrice.textContent, '€4,40/l');
+  assert.equal(a.unitPrice.hidden, false);
+  a.select.selectedOptions = [{ dataset: { price: '€26,39', unitPrice: '€2,64/l' } }];
   a.handlers.change[0]();
   assert.equal(a.price.textContent, '€26,39');
+  assert.equal(a.unitPrice.textContent, '€2,64/l');
   assert.equal(b.price.textContent, '€24,95');
+  assert.equal(b.unitPrice.textContent, '€49,90/kg');
+  a.select.selectedOptions = [{ dataset: { price: '€4,99' } }];
+  a.handlers.change[0]();
+  assert.equal(a.unitPrice.textContent, '');
+  assert.equal(a.unitPrice.hidden, true);
 });
 test('theme editor section reload initializes new selectors without duplicate handlers', () => {
   const a = makeSelect('£5.00');
