@@ -1,0 +1,88 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "header": {
+    "language": "语言",
+    "change_language": "更改语言",
+    "home": "首页",
+    "search": "搜索",
+    "account": "客户账户",
+    "cart": "购物车（{{ count }}）",
+    "solutions_label": "种植方案",
+    "solutions_intro": "从植物的实际需求出发，找到合适的养护用品。",
+    "solution_wurzelraum_title": "根系环境",
+    "solution_wurzelraum_text": "按植物需求选择基质、配方和组分。",
+    "solution_light_title": "植物补光",
+    "solution_light_text": "根据空间、安装方式和植物需求选择灯具。",
+    "solution_vessels_title": "花盆与养护",
+    "solution_vessels_text": "搭配花盆、浇灌设备与日常养护用品。",
+    "solution_setup_title": "完整种植方案",
+    "solution_setup_text": "一起规划空间、补光、花盆和根系环境。",
+    "shop_label": "商店",
+    "shop_substrates": "基质与添加剂",
+    "shop_lighting": "植物补光灯",
+    "shop_vessels": "花盆与种植容器",
+    "shop_care": "养护与配件",
+    "shop_grow": "育苗与播种",
+    "shop_plants": "室内植物",
+    "planners_label": "规划工具",
+    "planner_substrate": "搭配栽培基质",
+    "planner_light": "规划植物补光",
+    "planner_room": "三维空间规划",
+    "knowledge_label": "种植指南",
+    "flow_shop": "商店",
+    "flow_substrates": "栽培基质",
+    "flow_lighting": "植物补光灯",
+    "flow_room": "三维空间规划",
+    "flow_knowledge": "植物养护知识"
+  },
+  "accessibility": {
+    "skip_to_content": "跳转到主要内容",
+    "menu": "打开菜单",
+    "close": "关闭",
+    "footer_menu": "页脚菜单"
+  },
+  "home_purchase": {
+    "details": "详情",
+    "shipping_short": "运费另计",
+    "advisor": "需要选购帮助？",
+    "advisor_intro": "您可以使用规划工具，为植物找到合适的用品。",
+    "substrate_planner": "规划栽培基质",
+    "light_planner": "规划植物补光",
+    "shipping_label": "配送",
+    "returns_label": "退货",
+    "contact_label": "联系我们",
+    "variant": "尺寸或款式",
+    "shipping": "发货与配送信息",
+    "returns": "退货与撤销",
+    "help": "个性化建议",
+    "costs": "运费将在结账时计算。"
+  },
+  "cart": {
+    "title": "购物车",
+    "empty": "您的购物车为空。",
+    "quantity": "数量",
+    "remove": "移除",
+    "subtotal": "小计",
+    "update": "更新购物车",
+    "checkout": "去结账"
+  },
+  "general": {
+    "continue_shopping": "继续购物"
+  },
+  "product": {
+    "add_to_cart": "加入购物车",
+    "sold_out": "已售罄",
+    "from_price": "{{ price }} 起",
+    "editorial": {
+      "cart_error": "无法将商品加入购物车，请重试。"
+    }
+  }
+}
