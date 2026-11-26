@@ -19,7 +19,8 @@ release history; Shopify is the storefront projection and commerce adapter.
 
 Every page already contains useful headings, plant data, sources and real links
 before JavaScript runs. Search, category, activity and month filtering run
-locally after one read of the public Supabase dataset. Input changes cause no
+locally using the reviewed data embedded in Shopify HTML, with one high-priority
+background read of the public Supabase dataset. Input changes cause no
 network request. Query parameters, history and old `#maerz` links are supported.
 Month pages retain their own month-specific heading, content and canonical.
 
@@ -27,7 +28,9 @@ The section injects the public API URL, **publishable** key and asset URLs.
 The key is intentionally public; SELECT-only grants and published/verified RLS
 enforce the data boundary. Only explicit public columns pass `safeCrop()`.
 No admin credentials, private fields, TypeScript sources or source maps reach
-Shopify theme assets. The isolated CSS affects only `leaf-grow-calendar`.
+Shopify theme assets. The isolated CSS uses the private `leaf-gc-` namespace and a component ID.
+Responsive font priorities override the host’s global compact-heading rules only
+inside the calendar; unrelated hero, button and theme styles remain untouched.
 
 ## Build and verify
 
@@ -42,10 +45,12 @@ npx playwright install chromium
 npm run test:shopify
 ```
 
-The build creates four optimized files in the theme's `assets/` directory and
+The build creates four optimized files in the theme's `assets/` directory, a safe JSON bootstrap
+snippet in `snippets/`, and
 43 DE/EN page payloads in ignored `.native-build/pages.json`. The check command
 rebuilds and compares every committed asset, preventing source/artifact drift.
-Browser checks run an isolated read-only fixture, require no production key,
+Browser checks run an isolated read-only fixture with the actual host heading
+rules and observed hero/button overrides, require no production key,
 and exercise real PDF downloads, local filtering, history, keyboard focus,
 mobile layout, no-JavaScript HTML and error/retry paths. A local browser may be
 selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
@@ -68,7 +73,9 @@ flowering rather than seed maturity.
 
 `deployment/reviewed-crops.json` is the reviewed release export, including actual
 database timestamps, not a second editorial source. The native build creates
-an allowlisted public JSON snapshot and page HTML from it. If the live read
+an allowlisted public JSON snapshot, a safe JSON-in-HTML bootstrap and page HTML
+from it. Controls are immediately usable from that reviewed data while the live
+request revalidates in the background (20-second transport limit). If the live read
 fails, the page visibly identifies the last reviewed snapshot; if both reads
 fail, already published HTML stays readable. Successful live reads, including
 an empty publication list, take precedence over snapshots. A withdrawn detail
