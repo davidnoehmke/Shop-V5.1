@@ -207,7 +207,8 @@
         "scene_image": "shopify://shop_images/leaf-botanische-bibliothek-pflanzenraum-20261113.png",
         "scene_alt": "Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
         "setup_url": "/collections/interieur-solutions",
-        "knowledge_blog": "leafers-nice2know-blog"
+        "knowledge_blog": "leafers-nice2know-blog",
+        "compact_navigation": true
       }
     },
     "leaf_soil_globe": {

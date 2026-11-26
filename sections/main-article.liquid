@@ -108,7 +108,7 @@
   {% endif %}
 
   <div class="main-article__layout page-width">
-    {% assign article_body = article.content %}
+    {% assign article_body = article.content | replace: '<h1>', '<h2>' | replace: '<h1 ', '<h2 ' | replace: '</h1>', '</h2>' %}
     <div class="main-article__body rte" data-article-body>{{ article_body }}</div>
 
     <aside class="main-article__rail">
