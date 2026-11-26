@@ -66,7 +66,16 @@ test('dedicated mixer supports bounded auto-balance and visual drag ordering', (
   assert.match(liquid, /touch-action: none/);
   assert.match(liquid, /data-order=/);
   const activeSections = index.order.filter(id => !index.sections[id].disabled);
-  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_worlds']);
+  assert.deepEqual(activeSections, ['leaf_conversion', 'leaf_christmas_2026', 'leaf_worlds']);
+  const gifts = index.sections.leaf_christmas_2026;
+  assert.equal(gifts.type, 'leaf-christmas');
+  assert.equal(gifts.settings.collection, 'christmas-specials-weihnachtsgeschenke-fur-pflanzenliebhaber');
+  assert.notEqual(gifts.settings.heading_de, gifts.settings.heading_en);
+  assert.notEqual(gifts.settings.link_label_de, gifts.settings.link_label_en);
+  const giftSection = fs.readFileSync('sections/leaf-christmas.liquid', 'utf8');
+  assert.ok(giftSection.includes('gift_collection.products limit: 6'));
+  assert.ok(giftSection.includes("render 'product-card'"));
+  assert.ok(giftSection.includes("render 'leaf-localized-url'"));
   assert.equal(index.sections.leaf_led_finder.disabled, true);
   assert.equal(index.sections.leaf_conversion.settings.show_hero_actions, false);
   assert.equal(index.sections.leaf_worlds.settings.compact_navigation, true);

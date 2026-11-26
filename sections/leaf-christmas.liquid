@@ -1,0 +1,51 @@
+{% liquid
+  assign gift_collection = section.settings.collection
+  assign heading = section.settings.heading_de
+  assign link_label = section.settings.link_label_de
+  if request.locale.iso_code contains 'en'
+    assign heading = section.settings.heading_en
+    assign link_label = section.settings.link_label_en
+  endif
+%}
+{% if gift_collection != blank and gift_collection.products_count > 0 %}
+  <section class="leaf-christmas page-width" aria-labelledby="LeafChristmas-{{ section.id }}">
+    <div class="leaf-christmas__header">
+      <h2 id="LeafChristmas-{{ section.id }}">{{ heading | escape }}</h2>
+      <a href="{% render 'leaf-localized-url', url: gift_collection.url %}">{{ link_label | escape }} <span aria-hidden="true">→</span></a>
+    </div>
+    <div class="leaf-christmas__grid">
+      {% for product in gift_collection.products limit: 6 %}
+        {% render 'product-card', product: product, compact: true %}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}
+
+{% stylesheet %}
+  .leaf-christmas { padding-block: clamp(1.5rem, 4vw, 3rem); }
+  .leaf-christmas__header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .leaf-christmas__header h2 { margin: 0; font-size: clamp(1.35rem, 2.6vw, 1.9rem); text-wrap: balance; }
+  .leaf-christmas__header a { display: inline-flex; align-items: center; gap: .4rem; min-height: 44px; color: var(--accent); text-underline-offset: 4px; }
+  .leaf-christmas__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+  .leaf-christmas .product-card { min-width: 0; }
+  .leaf-christmas .product-card__copy h3 { overflow-wrap: anywhere; }
+  .leaf-christmas a:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  @media (max-width: 760px) {
+    .leaf-christmas__header { display: block; }
+    .leaf-christmas__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "LEAF Christmas Specials",
+  "settings": [
+    {"type":"collection","id":"collection","label":"Kollektion"},
+    {"type":"text","id":"heading_de","label":"Titel DE","default":"Verschenke Wachstum – Christmas Specials"},
+    {"type":"text","id":"heading_en","label":"Title EN","default":"Give the gift of growth – Christmas specials"},
+    {"type":"text","id":"link_label_de","label":"Link DE","default":"Alle Geschenksets entdecken"},
+    {"type":"text","id":"link_label_en","label":"Link EN","default":"Explore all gift sets"}
+  ],
+  "presets": [{"name":"LEAF Christmas Specials"}]
+}
+{% endschema %}

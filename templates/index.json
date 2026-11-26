@@ -307,10 +307,21 @@
         "heading": "Pflanzenpflege im Zusammenhang verstehen",
         "text": "<p>Substrat, Gefäß, Licht und Wissen gehören zusammen. Entdecke passende Produktwelten und informiere dich, wie die Bereiche zusammenspielen.</p>"
       }
+    },
+    "leaf_christmas_2026": {
+      "type": "leaf-christmas",
+      "settings": {
+        "collection": "christmas-specials-weihnachtsgeschenke-fur-pflanzenliebhaber",
+        "heading_de": "Verschenke Wachstum – Christmas Specials",
+        "heading_en": "Give the gift of growth – Christmas specials",
+        "link_label_de": "Alle Geschenksets entdecken",
+        "link_label_en": "Explore all gift sets"
+      }
     }
   },
   "order": [
     "leaf_conversion",
+    "leaf_christmas_2026",
     "leaf_led_finder",
     "leaf_worlds",
     "leaf_soil_globe",
