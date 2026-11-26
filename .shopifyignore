@@ -9,3 +9,6 @@ automation/
 
 # Headless sources and build dependencies are not theme assets.
 headless/
+
+# Standalone Nuxt applications are not Shopify theme assets.
+apps/
