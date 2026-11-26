@@ -81,7 +81,7 @@
           %}
           <a class="main-blog__topic{% if current_tags contains topic_tag %} main-blog__topic--active{% endif %}" href="{{ topic_url }}"{% if current_tags contains topic_tag %} aria-current="page"{% endif %} {{ block.shopify_attributes }}>
             <span class="main-blog__topic-icon">{% render 'leaf-knowledge-icon', icon_key: topic_icon %}</span>
-            <span class="main-blog__topic-copy"><strong>{{ topic_title | escape }}</strong><span>{{ topic_description | escape }}</span></span>
+            <span class="main-blog__topic-copy"><strong>{{ topic_title | escape_once }}</strong><span>{{ topic_description | escape_once }}</span></span>
             <span class="main-blog__topic-arrow" aria-hidden="true">→</span>
           </a>
         {% endfor %}
@@ -91,7 +91,7 @@
 
   {% paginate blog.articles by section.settings.articles_per_page %}
     <div class="main-blog__results" id="BlogArticles-{{ section.id }}">
-      <h2>{% if selected_topic_title != blank %}{{ selected_topic_title | escape }}{% elsif current_tags != blank %}{% render 'leaf-localized-label', text: current_tags.first %}{% else %}{{ 'blog_topics.all' | t }}{% endif %}</h2>
+      <h2>{% if selected_topic_title != blank %}{{ selected_topic_title | escape_once }}{% elsif current_tags != blank %}{% render 'leaf-localized-label', text: current_tags.first %}{% else %}{{ 'blog_topics.all' | t }}{% endif %}</h2>
       <p class="main-blog__count">{{ 'blog_topics.count' | t: count: paginate.items }}</p>
       {% if current_tags != blank %}<a class="main-blog__link" href="{{ blog.url }}">{{ 'blog_topics.reset' | t }}</a>{% endif %}
     </div>
@@ -161,7 +161,7 @@
               </a>
               <div class="main-blog__card-body">
                 <div class="main-blog__meta">
-                  {% if article_topic_tag != blank %}<a class="main-blog__topic-badge" href="{{ blog.url }}/tagged/{{ article_topic_slug }}">{{ article_topic_title | escape }}</a>{% elsif article.tags.first != blank %}<span>{% render 'leaf-localized-label', text: article.tags.first %}</span>{% endif %}
+                  {% if article_topic_tag != blank %}<a class="main-blog__topic-badge" href="{{ blog.url }}/tagged/{{ article_topic_slug }}">{{ article_topic_title | escape_once }}</a>{% elsif article.tags.first != blank %}<span>{% render 'leaf-localized-label', text: article.tags.first %}</span>{% endif %}
                   {% if section.settings.show_date %}
                     <time datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
                       {% if request.locale.iso_code == 'de' %}{{ article.published_at | date: '%d.%m.%Y' }}{% else %}{{ article.published_at | date: '%B %d, %Y' }}{% endif %}
