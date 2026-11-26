@@ -1,0 +1,88 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "header": {
+    "language": "Langue",
+    "change_language": "Changer de langue",
+    "home": "Accueil",
+    "search": "Rechercher",
+    "account": "Compte client",
+    "cart": "Panier ({{ count }})",
+    "solutions_label": "Solutions",
+    "solutions_intro": "Partez du besoin de votre plante pour trouver le matériel adapté.",
+    "solution_wurzelraum_title": "Zone racinaire",
+    "solution_wurzelraum_text": "Substrats, mélanges et composants adaptés à votre plante.",
+    "solution_light_title": "Éclairage horticole",
+    "solution_light_text": "Choisissez un éclairage adapté à la pièce, à la fixation et aux besoins de la plante.",
+    "solution_vessels_title": "Pots et entretien",
+    "solution_vessels_text": "Associez pot, arrosage et entretien en fonction de votre plante.",
+    "solution_setup_title": "Installation complète",
+    "solution_setup_text": "Planifiez ensemble la pièce, l’éclairage, le pot et le substrat.",
+    "shop_label": "Boutique",
+    "shop_substrates": "Substrats et additifs",
+    "shop_lighting": "Éclairage horticole",
+    "shop_vessels": "Pots et cache-pots",
+    "shop_care": "Entretien et accessoires",
+    "shop_grow": "Semis et multiplication",
+    "shop_plants": "Plantes d’intérieur",
+    "planners_label": "Outils de planification",
+    "planner_substrate": "Configurer un substrat",
+    "planner_light": "Planifier l’éclairage",
+    "planner_room": "Planifier une pièce en 3D",
+    "knowledge_label": "Guides",
+    "flow_shop": "Boutique",
+    "flow_substrates": "Substrats",
+    "flow_lighting": "Éclairage",
+    "flow_room": "Planificateur 3D",
+    "flow_knowledge": "Guides sur les plantes"
+  },
+  "accessibility": {
+    "skip_to_content": "Aller au contenu",
+    "menu": "Ouvrir le menu",
+    "close": "Fermer",
+    "footer_menu": "Menu de pied de page"
+  },
+  "home_purchase": {
+    "details": "Détails",
+    "shipping_short": "Hors frais de port",
+    "advisor": "Besoin d’aide pour choisir ?",
+    "advisor_intro": "Nos outils vous aident à trouver ce qui convient à vos plantes.",
+    "substrate_planner": "Préparer un substrat",
+    "light_planner": "Planifier l’éclairage",
+    "shipping_label": "Livraison",
+    "returns_label": "Retours",
+    "contact_label": "Contact",
+    "variant": "Taille ou version",
+    "shipping": "Expédition et livraison",
+    "returns": "Retours et rétractation",
+    "help": "Conseils personnalisés",
+    "costs": "Les frais de livraison sont calculés lors du paiement."
+  },
+  "cart": {
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "quantity": "Quantité",
+    "remove": "Supprimer",
+    "subtotal": "Sous-total",
+    "update": "Mettre à jour le panier",
+    "checkout": "Passer à la caisse"
+  },
+  "general": {
+    "continue_shopping": "Continuer vos achats"
+  },
+  "product": {
+    "add_to_cart": "Ajouter au panier",
+    "sold_out": "Épuisé",
+    "from_price": "À partir de {{ price }}",
+    "editorial": {
+      "cart_error": "Impossible d’ajouter ce produit au panier. Réessayez."
+    }
+  }
+}

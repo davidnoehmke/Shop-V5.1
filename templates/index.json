@@ -82,6 +82,16 @@
         "prod_elho"
       ],
       "settings": {
+        "show_hero_actions": true,
+        "hero_image": "shopify://shop_images/leaferservice-gemeinsam-pflanzen-hero-20261126.jpg",
+        "hero_image_alt_de": "Eine erwachsene Person und Kinder betrachten gemeinsam eine Pflanze an einem Holztisch in einem hellen, pflanzenreichen Raum.",
+        "hero_image_alt_en": "An adult and children explore a potted plant together at a wooden table in a bright room filled with plants.",
+        "hero_caption_de": "Pflanzen entdecken. Wissen teilen. Freude am Wachsen.",
+        "hero_caption_en": "Discover plants. Share knowledge. Enjoy watching them grow.",
+        "heading_emphasis_de": "grüner.",
+        "heading_emphasis_en": "greener.",
+        "primary_link": "/collections/all",
+        "secondary_link": "/pages/aussaatkalender",
         "eyebrow_de": "Für dein Leben mit Pflanzen",
         "eyebrow_en": "For your life with plants",
         "heading_de": "Mach es dir",
@@ -95,23 +105,13 @@
         "categories_title_de": "Was brauchst du für deine Pflanzen?",
         "categories_title_en": "Shop by plant care need",
         "products_title_de": "Ausgewählte Produkte",
-        "products_title_en": "Selected products",
-        "show_hero_actions": true,
-        "hero_image": "shopify://shop_images/leaferservice-gemeinsam-pflanzen-hero-20261126.jpg",
-        "hero_image_alt_de": "Eine erwachsene Person und Kinder betrachten gemeinsam eine Pflanze an einem Holztisch in einem hellen, pflanzenreichen Raum.",
-        "hero_image_alt_en": "An adult and children explore a potted plant together at a wooden table in a bright room filled with plants.",
-        "hero_caption_de": "Pflanzen entdecken. Wissen teilen. Freude am Wachsen.",
-        "hero_caption_en": "Discover plants. Share knowledge. Enjoy watching them grow.",
-        "heading_emphasis_de": "grüner.",
-        "heading_emphasis_en": "greener.",
-        "primary_link": "/collections/all",
-        "secondary_link": "/pages/aussaatkalender"
+        "products_title_en": "Selected products"
       }
     },
     "leaf_led_finder": {
       "type": "leaf-led-home-finder",
-      "settings": {},
-      "disabled": true
+      "disabled": true,
+      "settings": {}
     },
     "leaf_worlds": {
       "type": "leaf-botanical-room",
@@ -207,8 +207,7 @@
         "scene_image": "shopify://shop_images/leaf-botanische-bibliothek-pflanzenraum-20261113.png",
         "scene_alt": "Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
         "setup_url": "/collections/interieur-solutions",
-        "knowledge_blog": "leafers-nice2know-blog",
-        "compact_navigation": true
+        "knowledge_blog": "leafers-nice2know-blog"
       }
     },
     "leaf_soil_globe": {

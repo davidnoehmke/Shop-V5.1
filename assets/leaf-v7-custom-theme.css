@@ -3,15 +3,7 @@
   --leaf-v7-studio-bg: #fff;
   --leaf-v7-studio-line: color-mix(in srgb, var(--text), transparent 91%);
   --leaf-v7-studio-shadow: 0 20px 48px rgba(24, 37, 30, .08);
-  --leaf-v7-studio-shadow-soft: 0 12px 30px rgba(24, 37, 30, .06);
   --leaf-v7-studio-pad: 0px;
-  --leaf-v7-glow: rgba(24, 37, 30, .04);
-}
-
-body {
-  background-image:
-    radial-gradient(circle at top, var(--leaf-v7-glow), transparent 30%),
-    linear-gradient(180deg, color-mix(in srgb, var(--background), #ffffff 8%) 0%, var(--background) 14%, var(--background) 100%);
 }
 
 /* Consistent product-photo canvas: square, white, straight edges, calm optical sizing. */
@@ -83,23 +75,13 @@ body {
 
 /* V7: cleaner editorial product layout, less generic card styling. */
 .product-card {
-  background: color-mix(in srgb, var(--background), #f8f6f1 62%) !important;
+  background: var(--background) !important;
   border-color: var(--leaf-v7-studio-line) !important;
-  box-shadow: var(--leaf-v7-studio-shadow-soft);
+  box-shadow: none;
 }
 
 .product-card__copy {
   padding-top: .85rem;
-}
-
-.home-guides__card,
-.home-collection-journey__card,
-.community-gallery__item,
-.collection-product-card,
-.featured__product {
-  background: color-mix(in srgb, var(--background), #f8f6f1 52%) !important;
-  border-color: var(--leaf-v7-studio-line) !important;
-  box-shadow: var(--leaf-v7-studio-shadow-soft);
 }
 
 .main-product__details {
@@ -107,12 +89,7 @@ body {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .product-card:hover,
-  .featured__product:hover,
-  .collection-product-card:hover,
-  .home-guides__card:hover,
-  .home-collection-journey__card:hover,
-  .community-gallery__item:hover {
+  .product-card:hover {
     transform: translateY(-3px);
     box-shadow: var(--leaf-v7-studio-shadow);
   }
