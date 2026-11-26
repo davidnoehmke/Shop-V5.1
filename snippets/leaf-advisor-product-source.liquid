@@ -94,6 +94,7 @@ Renders one public product row for the shared LEAF advisor.
   data-title="{{ card_product.title | escape }}"
   data-url="{{ card_product.url }}"
   data-price="{{ card_price | escape }}"
+  data-unit-price="{% capture unit_price %}{% render 'leaf-advertised-unit-price', product: card_product %}{% endcapture %}{{ unit_price | escape }}"
   data-price-sort="{{ card_price_sort }}"
   data-world="{{ world_handle | escape }}"
   data-world-label="{{ world_title | escape }}"

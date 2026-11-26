@@ -254,6 +254,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         title: node.dataset.title || '',
         url: node.dataset.url || '',
         price: node.dataset.price || '',
+        unitPrice: node.dataset.unitPrice || '',
         priceSort: Number(node.dataset.priceSort || 0),
         image: node.dataset.image || '',
         imageAlt: node.dataset.imageAlt || node.dataset.title || '',
@@ -626,7 +627,7 @@ if (!customElements.get('leaf-guided-advisor')) {
         title.textContent = item.row.title;
         const meta = document.createElement('span');
         const match = selectionCount ? String(item.matched) + '/' + String(selectionCount) + ' ' + (this.dataset.matchLabel || '') : '';
-        meta.textContent = [match, item.row.price].filter(Boolean).join(' · ');
+        meta.textContent = [match, item.row.price, item.row.unitPrice].filter(Boolean).join(' · ');
         copyNode.append(title, meta);
 
         const link = document.createElement('a');

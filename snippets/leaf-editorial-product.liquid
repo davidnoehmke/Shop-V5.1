@@ -34,10 +34,13 @@
         {{ form.errors | default_errors }}
         {% if product.variants.size > 1 %}
           <label for="Variant-{{ form_id }}">{{ 'product.choose_options' | t }}</label>
-          <select id="Variant-{{ form_id }}" name="id" data-editorial-variant>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}"{% if variant.id == selected_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.unavailable' | t }}{% endunless %}</option>{% endfor %}</select>
+          <select id="Variant-{{ form_id }}" name="id" data-editorial-variant>{% for variant in product.variants %}<option value="{{ variant.id }}" data-price="{{ variant.price | money | escape }}" data-unit-price="{% if variant.unit_price_measurement %}{{ variant.unit_price | unit_price_with_measurement: variant.unit_price_measurement | escape }}{% endif %}"{% if variant.id == selected_variant.id %} selected{% endif %}{% unless variant.available %} disabled{% endunless %}>{{ variant.title | escape }} · {{ variant.price | money }}{% unless variant.available %} · {{ 'product.unavailable' | t }}{% endunless %}</option>{% endfor %}</select>
         {% else %}<input type="hidden" name="id" value="{{ selected_variant.id }}">{% endif %}
         <div class="leaf-editorial__purchase">
-          <strong data-editorial-price aria-live="polite">{{ selected_variant.price | money }}</strong>
+          <div aria-live="polite">
+            <strong data-editorial-price>{{ selected_variant.price | money }}</strong>
+            <small data-editorial-unit-price{% unless selected_variant.unit_price_measurement %} hidden{% endunless %}>{% if selected_variant.unit_price_measurement %}{{ selected_variant.unit_price | unit_price_with_measurement: selected_variant.unit_price_measurement }}{% endif %}</small>
+          </div>
           <button type="submit" name="add"{% unless selected_variant.available %} disabled{% endunless %}>{% if selected_variant.available %}{{ 'product.add_to_cart' | t }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
         </div>
         <p data-cart-error role="alert" hidden>{{ 'product.editorial.cart_error' | t }}</p>

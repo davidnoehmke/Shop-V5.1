@@ -1,0 +1,10 @@
+{% doc %}
+  Displays the unit price tied to the product's advertised minimum price.
+  @param {product} product - Product whose price_min is displayed
+{% enddoc %}
+{%- for variant in product.variants -%}
+  {%- if variant.price == product.price_min and variant.unit_price_measurement -%}
+    {{- variant.unit_price | unit_price_with_measurement: variant.unit_price_measurement -}}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
