@@ -3,7 +3,12 @@
   <head>
 {% assign leaf_emits_native_title = false %}
 {% assign leaf_emits_native_description = false %}
-{% include 'booster-seo' %}
+{% if request.page_type == 'page' and template.suffix == 'grow-calendar' %}
+  {% assign leaf_emits_native_title = true %}
+  {% assign leaf_emits_native_description = true %}
+{% else %}
+  {% include 'booster-seo' %}
+{% endif %}
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-color" content="{{ settings.accent_color }}">
@@ -59,6 +64,10 @@
 
     {% comment %}<title>{{ seo_page_title }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name }}{% endunless %}</title>{% endcomment %}
     {% if seo_page_description != blank %}{% comment %}<meta name="description" content="{{ seo_page_description | escape }}">{% endcomment %}{% endif %}
+    {% if request.page_type == 'page' and template.suffix == 'grow-calendar' %}
+      <title>{{ seo_page_title | escape }}{% unless seo_page_title_downcase contains 'leaferservice' %} · {{ shop.name | escape }}{% endunless %}</title>
+      {% if seo_page_description != blank %}<meta name="description" content="{{ seo_page_description | escape }}">{% endif %}
+    {% endif %}
     {% render 'seo-meta', seo_title: seo_page_title, seo_description: seo_page_description %}
     {% render 'structured-content-seo', seo_title: seo_page_title, seo_description: seo_page_description %}
 
