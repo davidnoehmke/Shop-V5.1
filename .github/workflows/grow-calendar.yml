@@ -1,0 +1,34 @@
+name: Grow Calendar
+on:
+  pull_request:
+    paths: ['apps/grow-calendar/**', '.github/workflows/grow-calendar.yml']
+  push:
+    branches: [main]
+    paths: ['apps/grow-calendar/**', '.github/workflows/grow-calendar.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: grow-calendar-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  validate:
+    name: Nuxt build and browser checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/grow-calendar
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: apps/grow-calendar/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck && npm test && npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
