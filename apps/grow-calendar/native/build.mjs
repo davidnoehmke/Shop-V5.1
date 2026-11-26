@@ -42,17 +42,29 @@ leaf-grow-calendar [data-pdf-message]:empty{display:none}
 leaf-grow-calendar .filter-row [data-filter]{min-height:44px}
 @media(max-width:480px){leaf-grow-calendar .rail{padding-inline:20px}}
 `
-const transformed = await build({ stdin: { contents: nativeCss, loader: 'css' }, minify: true, write: false })
+const isolated = postcss.parse(nativeCss)
+isolated.walkRules(rule => {
+  rule.selectors = rule.selectors.map(selector => selector
+    .replace(/\.([A-Za-z_][A-Za-z0-9_-]*)/g, '.leaf-gc-$1')
+    .replace(/^leaf-grow-calendar\b/, 'leaf-grow-calendar#leaf-grow-calendar'))
+})
+// The host has ID-scoped !important heading rules. Match their priority only
+// inside this component, preserving the calendar's own responsive type scale.
+isolated.walkDecls(declaration => {
+  if (['font-size', 'line-height'].includes(declaration.prop)) declaration.important = true
+})
+const transformed = await build({ stdin: { contents: isolated.toString(), loader: 'css' }, minify: true, write: false })
 artifacts.set('leaf-grow-calendar.css', transformed.outputFiles[0].text)
 
 await mkdir(resolve(app, '.native-build'), { recursive: true })
 await build({ entryPoints: ['native/render.ts', 'shared/calendar.ts'], outdir: '.native-build', absWorkingDir: app, bundle: true, platform: 'node', format: 'esm', target: 'node24', outExtension: { '.js': '.mjs' } })
 const { safeCrop } = await import(resolve(app, '.native-build/shared/calendar.mjs'))
-const { renderPage, pageHandle, pageMetadata } = await import(resolve(app, '.native-build/native/render.mjs'))
+const { renderPage, pageHandle, pageMetadata, serializeSnapshot } = await import(resolve(app, '.native-build/native/render.mjs'))
 const reviewed = JSON.parse(await readFile(resolve(app, 'deployment/reviewed-crops.json'), 'utf8'))
 const crops = reviewed.map(safeCrop)
 if (crops.length !== 30 || crops.some(crop => !crop)) throw new Error('Expected 30 reviewed public crop records')
 artifacts.set('leaf-grow-calendar-data.json', JSON.stringify(crops) + '\n')
+artifacts.set('../snippets/leaf-grow-calendar-snapshot.liquid', `<script type="application/json" data-grow-calendar-snapshot>${serializeSnapshot(crops)}</script>\n`)
 const views = [{ kind: 'calendar' }, ...crops.map(crop => ({ kind: 'plant', slug: crop.slug })), ...Array.from({ length: 12 }, (_, index) => ({ kind: 'month', month: index + 1 }))]
 const pages = views.map(view => ({ handle: pageHandle(view), view, de: { ...pageMetadata(crops, 'de', view), body: renderPage(crops, 'de', view) }, en: { ...pageMetadata(crops, 'en', view), body: renderPage(crops, 'en', view) } }))
 await writeFile(resolve(app, '.native-build/pages.json'), JSON.stringify(pages))

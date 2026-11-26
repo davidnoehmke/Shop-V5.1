@@ -11,6 +11,7 @@
   data-pdf-url="{{ 'leaf-grow-calendar-pdf.js' | asset_url }}"
   data-shop-url="{{ shop.secure_url }}"
 >
+  {% render 'leaf-grow-calendar-snapshot' %}
   {% if page.content contains '<leaf-grow-calendar' %}
     {{ page.content }}
   {% elsif page.metafields.custom.grow_calendar_preview.value != blank %}

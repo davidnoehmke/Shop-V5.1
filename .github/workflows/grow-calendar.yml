@@ -1,10 +1,10 @@
 name: Grow Calendar
 on:
   pull_request:
-    paths: ['apps/grow-calendar/**', 'assets/leaf-grow-calendar*', 'sections/leaf-grow-calendar.liquid', 'templates/page.grow-calendar.json', 'layout/theme.liquid', '.github/workflows/grow-calendar.yml']
+    paths: ['apps/grow-calendar/**', 'assets/leaf-grow-calendar*', 'snippets/leaf-grow-calendar-snapshot.liquid', 'sections/leaf-grow-calendar.liquid', 'templates/page.grow-calendar.json', 'layout/theme.liquid', '.github/workflows/grow-calendar.yml']
   push:
     branches: [main]
-    paths: ['apps/grow-calendar/**', 'assets/leaf-grow-calendar*', 'sections/leaf-grow-calendar.liquid', 'templates/page.grow-calendar.json', 'layout/theme.liquid', '.github/workflows/grow-calendar.yml']
+    paths: ['apps/grow-calendar/**', 'assets/leaf-grow-calendar*', 'snippets/leaf-grow-calendar-snapshot.liquid', 'sections/leaf-grow-calendar.liquid', 'templates/page.grow-calendar.json', 'layout/theme.liquid', '.github/workflows/grow-calendar.yml']
   workflow_dispatch:
 permissions:
   contents: read

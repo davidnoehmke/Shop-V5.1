@@ -7,6 +7,12 @@ export const emptyFilters: Filters = { month: 0, category: '', search: '', phase
 export function escapeHtml(value: unknown): string {
   return String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!)
 }
+export function scopeClasses(markup: string): string {
+  return markup.replace(/\bclass="([^"]*)"/g, (_, value: string) => `class="${value.split(/\s+/).filter(Boolean).map(name => name.startsWith('leaf-gc-') ? name : `leaf-gc-${name}`).join(' ')}"`)
+}
+export function serializeSnapshot(crops: Crop[]): string {
+  return JSON.stringify(crops).replaceAll('<', '\\u003c').replaceAll('{{', '\\u007b\\u007b').replaceAll('{%', '\\u007b%')
+}
 export function pageHandle(view: View): string {
   return view.kind === 'plant' ? `aussaatkalender-${view.slug}` : view.kind === 'month' ? `aussaatkalender-${monthSlugs[view.month - 1]}` : 'aussaatkalender'
 }
@@ -24,12 +30,12 @@ const symbols = {
 }
 
 export function renderCard(crop: Crop, locale: Locale, month = 0): string {
-  return `<article class="crop-card" data-crop="${crop.slug}">
+  return scopeClasses(`<article class="crop-card" data-crop="${crop.slug}">
     <div class="crop-heading"><div><p class="crop-category">${categoryLabels[locale][crop.category]}</p><h3>${escapeHtml(crop.names[locale])}</h3></div>
     <svg class="crop-symbol ${crop.category}" viewBox="0 0 48 48" aria-hidden="true">${symbols[crop.category]}</svg></div>
     <dl class="crop-periods">${phases.map(phase => `<div${month && crop.timing[phase].includes(month) ? ' class="current-phase"' : ''}><dt><span class="phase-dot ${phase}"></span>${phaseLabel(phase, locale, crop.timing.harvest_kind === 'flowering')}</dt><dd>${monthRange(crop.timing[phase], locale)}${month && crop.timing[phase].includes(month) ? `<span class="sr-only">${t(locale, ', im ausgewählten Monat', ', in selected month')}</span>` : ''}</dd></div>`).join('')}</dl>
     <a class="card-link" href="${pagePath({ kind: 'plant', slug: crop.slug }, locale)}">${t(locale, 'Dein Pflanzplan', 'Your growing plan')}<span class="sr-only">: ${escapeHtml(crop.names[locale])}</span><span aria-hidden="true">→</span></a>
-  </article>`
+  </article>`)
 }
 export function selectedCrops(crops: Crop[], locale: Locale, filters: Filters): Crop[] {
   return filterCrops(crops, filters).sort((a, b) => a.names[locale].localeCompare(b.names[locale], locale))
@@ -39,12 +45,12 @@ export function resultCount(count: number, locale: Locale): string {
 }
 export function renderResults(crops: Crop[], locale: Locale, filters: Filters): string {
   const selected = selectedCrops(crops, locale, filters)
-  return selected.length ? `<div class="crop-grid">${selected.map(crop => renderCard(crop, locale, filters.month)).join('')}</div>` : `<div class="empty-state"><h3>${t(locale, 'Ein guter Moment zum Neuplanen.', 'A good moment for a new plan.')}</h3><p>${t(locale, 'Für diese Kombination gibt es keinen Eintrag. Wähle einen anderen Monat oder zeige alle Pflanzen.', 'No plants match these filters. Choose another month or explore all plants.')}</p><button type="button" class="button" data-reset>${t(locale, 'Alle Pflanzen entdecken', 'Explore all plants')}</button></div>`
+  return scopeClasses(selected.length ? `<div class="crop-grid">${selected.map(crop => renderCard(crop, locale, filters.month)).join('')}</div>` : `<div class="empty-state"><h3>${t(locale, 'Ein guter Moment zum Neuplanen.', 'A good moment for a new plan.')}</h3><p>${t(locale, 'Für diese Kombination gibt es keinen Eintrag. Wähle einen anderen Monat oder zeige alle Pflanzen.', 'No plants match these filters. Choose another month or explore all plants.')}</p><button type="button" class="button" data-reset>${t(locale, 'Alle Pflanzen entdecken', 'Explore all plants')}</button></div>`)
 }
 export function renderCalendar(crops: Crop[], locale: Locale, month = 0): string {
   const filters = { ...emptyFilters, month }
   const root = pagePath({ kind: 'calendar' }, locale)
-  return `<div class="calendar-page rail">
+  return scopeClasses(`<div class="calendar-page rail">
     <section class="hero" aria-labelledby="calendar-heading"><div class="hero-copy">
       <p class="eyebrow">${t(locale, 'Dein Jahr im Grünen', 'Your year in green')}</p>
       <h1 id="calendar-heading">${month ? `${t(locale, 'Dein Garten im', 'Your garden in')}<br><em>${months[locale][month - 1]}.</em>` : t(locale, 'Kleine Samen.<br><em>Große Vorfreude.</em>', 'Little seeds.<br><em>So much to grow.</em>')}</h1>
@@ -72,7 +78,7 @@ export function renderCalendar(crops: Crop[], locale: Locale, month = 0): string
       [t(locale, 'Mit einem Plan starten', 'Keep your plan close'), t(locale, 'Speichere dein kostenloses Pflanzen-PDF für die nächste Aussaat.', 'Download your free plant PDF for the next sowing session.')],
     ].map(([heading, text], index) => `<div><span>0${index + 1}</span><h3>${heading}</h3><p>${text}</p></div>`).join('')}</div></section>
     <section class="month-links" aria-labelledby="month-links-heading"><h2 id="month-links-heading">${t(locale, 'Monat für Monat ins Grüne.', 'A growing year, month by month.')}</h2><nav aria-label="${t(locale, 'Monatsübersichten', 'Monthly growing guides')}">${months[locale].map((name, index) => `<a id="${monthSlugs[index]}" href="${pagePath({ kind: 'month', month: index + 1 }, locale)}">${name} <span aria-hidden="true">→</span></a>`).join('')}</nav></section>
-  </div>`
+  </div>`)
 }
 
 export function renderPlant(crop: Crop, crops: Crop[], locale: Locale): string {
@@ -82,7 +88,7 @@ export function renderPlant(crop: Crop, crops: Crop[], locale: Locale): string {
   const directOnly = !crop.timing.start_indoor.length && crop.timing.sow_outdoors.length > 0
   const pdfButton = (label: string, extra = '') => `<button type="button" class="button ${extra}" data-pdf hidden>${label} <span aria-hidden="true">↓</span></button>`
   const related = crops.filter(item => item.category === crop.category && item.slug !== crop.slug).slice(0, 3)
-  return `<article class="plant-page rail">
+  return scopeClasses(`<article class="plant-page rail">
     <a class="back-link" href="${pagePath({ kind: 'calendar' }, locale)}#pflanzen">← ${t(locale, 'Alle Pflanzen', 'All plants')}</a>
     <header class="plant-intro"><div><p class="eyebrow">${categoryLabels[locale][crop.category]} · ${t(locale, 'Dein Pflanzplan', 'Your growing plan')}</p><h1${crop.names[locale].length > 12 ? ' class="long-title"' : ''}>${name}</h1>${crop.timing.botanical_name ? `<p class="botanical-name">${escapeHtml(crop.timing.botanical_name)}</p>` : ''}</div>${pdfButton(t(locale, 'Pflanzplan als PDF', 'Download plant PDF'), 'secondary')}</header>
     <div class="plant-layout"><div>
@@ -97,17 +103,17 @@ export function renderPlant(crop: Crop, crops: Crop[], locale: Locale): string {
     </aside></div>
     ${related.length ? `<section class="related-plants"><h2>${t(locale, 'Noch mehr Ideen fürs Grüne.', 'More ideas for your growing space.')}</h2><div class="crop-grid">${related.map(item => renderCard(item, locale)).join('')}</div></section>` : ''}
     <a class="back-link" href="${pagePath({ kind: 'calendar' }, locale)}#pflanzen">← ${t(locale, 'Zurück zum Aussaatkalender', 'Back to the sowing calendar')}</a>
-  </article>`
+  </article>`)
 }
 
 export function renderPage(crops: Crop[], locale: Locale, view: View): string {
   const crop = view.kind === 'plant' ? crops.find(item => item.slug === view.slug) : undefined
   if (view.kind === 'plant' && !crop) throw new Error(`Unknown crop: ${view.slug}`)
-  return `<leaf-grow-calendar data-locale="${locale}" data-view="${view.kind}" data-month="${view.kind === 'month' ? view.month : 0}" data-slug="${crop?.slug || ''}" data-revision="${escapeHtml(crop?.updated_at || crops.map(item => item.updated_at).sort().at(-1) || '')}">
+  return scopeClasses(`<leaf-grow-calendar id="leaf-grow-calendar" data-locale="${locale}" data-view="${view.kind}" data-month="${view.kind === 'month' ? view.month : 0}" data-slug="${crop?.slug || ''}" data-revision="${escapeHtml(crop?.updated_at || crops.map(item => item.updated_at).sort().at(-1) || '')}">
     <div class="native-data-status rail" data-data-status hidden><p data-data-message></p><button type="button" class="text-button" data-retry>${t(locale, 'Aktualisierung erneut versuchen', 'Try updating again')}</button></div>
     <div class="sr-only" data-announcer role="status" aria-live="polite" aria-atomic="true"></div>
     <div data-view-content>${crop ? renderPlant(crop, crops, locale) : renderCalendar(crops, locale, view.kind === 'month' ? view.month : 0)}</div>
-  </leaf-grow-calendar>`
+  </leaf-grow-calendar>`)
 }
 export function pageMetadata(crops: Crop[], locale: Locale, view: View): { title: string; description: string } {
   if (view.kind === 'plant') {

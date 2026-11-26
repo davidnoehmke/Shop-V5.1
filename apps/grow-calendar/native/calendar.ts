@@ -1,5 +1,5 @@
 import { categories, monthSlugs, months, parseMonth, phases, safeCrop, type Crop, type Locale } from '../shared/calendar'
-import { emptyFilters, pagePath, renderPlant, renderResults, resultCount, selectedCrops, type Filters, type View } from './render'
+import { emptyFilters, pagePath, renderPlant, renderResults, resultCount, scopeClasses, selectedCrops, type Filters, type View } from './render'
 import type { PreparedPdfDownload } from './pdf'
 
 const PUBLIC_FIELDS = 'slug,names,category,timing,cultivation_note_de,cultivation_note_en,source_refs,updated_at'
@@ -22,6 +22,11 @@ class LeafGrowCalendar extends HTMLElement {
 
   connectedCallback() {
     if (this.controller) return
+    this.id = 'leaf-grow-calendar'
+    // Upgrade the one transitional page without exposing generic theme classes.
+    this.querySelectorAll<HTMLElement>('[class]').forEach(element => {
+      element.setAttribute('class', [...element.classList].map(name => name.startsWith('leaf-gc-') ? name : `leaf-gc-${name}`).join(' '))
+    })
     this.locale = this.dataset.locale === 'en' ? 'en' : 'de'
     this.config = this.closest<HTMLElement>('[data-grow-calendar-config]') || undefined
     this.controller = new AbortController()
@@ -32,8 +37,16 @@ class LeafGrowCalendar extends HTMLElement {
     window.addEventListener('popstate', this.onNavigation, options)
     window.addEventListener('hashchange', this.onNavigation, options)
     // Old #maerz links must select the planner, not scroll to the footer index.
-    this.querySelectorAll('.month-links a[id]').forEach(link => link.removeAttribute('id'))
+    this.querySelectorAll('.leaf-gc-month-links a[id]').forEach(link => link.removeAttribute('id'))
     this.readFilters()
+    try {
+      const raw: unknown = JSON.parse(this.config?.querySelector('[data-grow-calendar-snapshot]')?.textContent || 'null')
+      if (!Array.isArray(raw)) throw new Error('Missing reviewed snapshot')
+      const crops = raw.map(safeCrop)
+      if (!crops.length || crops.some(crop => !crop)) throw new Error('Invalid reviewed snapshot')
+      this.crops = crops as Crop[]
+      this.applyData(true, true)
+    } catch { /* Existing Shopify HTML remains useful if bootstrap data is unavailable. */ }
     void this.loadData()
   }
   disconnectedCallback() {
@@ -97,7 +110,7 @@ class LeafGrowCalendar extends HTMLElement {
     if (target.closest('[data-retry]')) { void this.loadData(); return }
     if (target.closest('[data-pdf]')) { void this.downloadPdf(); return }
     if (!this.ready || this.view().kind === 'plant') return
-    const monthLink = target.closest<HTMLAnchorElement>('.month-picker a[data-month]')
+    const monthLink = target.closest<HTMLAnchorElement>('.leaf-gc-month-picker a[data-month]')
     const reset = target.closest('[data-reset]')
     const current = target.closest('[data-current-month]')
     if (!monthLink && !reset && !current) return
@@ -151,17 +164,49 @@ class LeafGrowCalendar extends HTMLElement {
       const value = this.filters[input.dataset.filter as 'search' | 'category' | 'phase']
       if (input.value !== value) input.value = value
     })
-    const reset = this.querySelector<HTMLButtonElement>('.results-heading [data-reset]')
+    const reset = this.querySelector<HTMLButtonElement>('.leaf-gc-results-heading [data-reset]')
     if (reset) reset.hidden = !Object.values(this.filters).some(Boolean)
     if (announce) this.announce(count)
+  }
+  private applyData(fallback: boolean, pending = false) {
+    this.ready = true
+    this.dataset.ready = 'true'
+    this.dataset.source = fallback ? 'snapshot' : 'supabase'
+    this.dataset.refreshing = String(pending)
+    const status = this.querySelector<HTMLElement>('[data-data-status]')
+    if (status) status.hidden = !fallback || pending
+    const message = this.querySelector('[data-data-message]')
+    if (message && fallback) message.textContent = this.text('Die Live-Aktualisierung ist gerade nicht erreichbar. Du siehst den zuletzt geprüften Datenstand.', 'Live updates are currently unavailable. You are viewing the last reviewed data.')
+    if (this.view().kind === 'plant') {
+      const crop = this.crops.find(item => item.slug === this.dataset.slug)
+      const content = this.querySelector<HTMLElement>('[data-view-content]')
+      if (content) {
+        if (!crop) content.innerHTML = scopeClasses(`<div class="rail error-page"><h1>${this.text('Dieser Pflanzplan ist zurzeit nicht verfügbar.', 'This growing plan is currently unavailable.')}</h1><a class="button" href="${pagePath({ kind: 'calendar' }, this.locale)}">${this.text('Zum Kalender', 'Back to the calendar')}</a></div>`)
+        else if (crop.updated_at !== this.dataset.revision) {
+          // Preserve deliberate focus if a background refresh updates content.
+          const focused = this.contains(document.activeElement) ? document.activeElement as HTMLElement : null
+          const focusedHref = focused?.getAttribute('href')
+          content.innerHTML = renderPlant(crop, this.crops, this.locale)
+          if (focusedHref) [...content.querySelectorAll<HTMLAnchorElement>('a')].find(link => link.getAttribute('href') === focusedHref)?.focus({ preventScroll: true })
+          this.dataset.revision = crop.updated_at
+        }
+      }
+      this.querySelectorAll<HTMLElement>('[data-pdf]').forEach(button => { button.hidden = false })
+    } else {
+      this.querySelectorAll<HTMLElement>('[data-enhance]').forEach(element => { element.hidden = false })
+      const current = this.querySelector<HTMLElement>('[data-current-month]')
+      if (current) { current.hidden = false; current.textContent = `${this.text('Jetzt im', 'This')} ${months[this.locale][this.currentMonth() - 1]} →` }
+      this.updateResults()
+      if (monthSlugs.includes(location.hash.slice(1))) this.revealPlanner()
+    }
   }
   private async fetchCrops(url: URL, headers: HeadersInit = {}): Promise<Crop[]> {
     this.request?.abort()
     const controller = new AbortController()
     this.request = controller
-    const timer = setTimeout(() => controller.abort(), 8000)
+    const timer = setTimeout(() => controller.abort(), 20000)
     try {
-      const response = await fetch(url, { headers, signal: controller.signal, credentials: 'omit', referrerPolicy: 'strict-origin-when-cross-origin' })
+      const response = await fetch(url, { headers, signal: controller.signal, priority: 'high', credentials: 'omit', referrerPolicy: 'strict-origin-when-cross-origin' })
       if (!response.ok) throw new Error('Calendar data unavailable')
       const raw: unknown = await response.json()
       if (!Array.isArray(raw)) throw new Error('Invalid calendar response')
@@ -173,7 +218,7 @@ class LeafGrowCalendar extends HTMLElement {
   private async loadData() {
     if (this.loading || !this.config) return
     this.loading = true
-    this.setAttribute('aria-busy', 'true')
+    if (!this.ready) this.setAttribute('aria-busy', 'true')
     const retry = this.querySelector<HTMLButtonElement>('[data-retry]')
     if (retry) retry.disabled = true
     let fallback = false
@@ -191,35 +236,7 @@ class LeafGrowCalendar extends HTMLElement {
         if (!this.ready) this.crops = await this.fetchCrops(new URL(this.config.dataset.snapshotUrl || '', location.href))
       }
       if (!this.isConnected) return
-      this.ready = true
-      this.dataset.ready = 'true'
-      this.dataset.source = fallback ? 'snapshot' : 'supabase'
-      const status = this.querySelector<HTMLElement>('[data-data-status]')
-      if (status) status.hidden = !fallback
-      const message = this.querySelector('[data-data-message]')
-      if (message && fallback) message.textContent = this.text('Die Live-Aktualisierung ist gerade nicht erreichbar. Du siehst den zuletzt geprüften Datenstand.', 'Live updates are currently unavailable. You are viewing the last reviewed data.')
-      if (this.view().kind === 'plant') {
-        const crop = this.crops.find(item => item.slug === this.dataset.slug)
-        const content = this.querySelector<HTMLElement>('[data-view-content]')
-        if (content) {
-          if (!crop) content.innerHTML = `<div class="rail error-page"><h1>${this.text('Dieser Pflanzplan ist zurzeit nicht verfügbar.', 'This growing plan is currently unavailable.')}</h1><a class="button" href="${pagePath({ kind: 'calendar' }, this.locale)}">${this.text('Zum Kalender', 'Back to the calendar')}</a></div>`
-          else if (crop.updated_at !== this.dataset.revision) {
-            // Preserve deliberate focus if a background refresh updates content.
-            const focused = this.contains(document.activeElement) ? document.activeElement as HTMLElement : null
-            const focusedHref = focused?.getAttribute('href')
-            content.innerHTML = renderPlant(crop, this.crops, this.locale)
-            if (focusedHref) [...content.querySelectorAll<HTMLAnchorElement>('a')].find(link => link.getAttribute('href') === focusedHref)?.focus({ preventScroll: true })
-            this.dataset.revision = crop.updated_at
-          }
-        }
-        this.querySelectorAll<HTMLElement>('[data-pdf]').forEach(button => { button.hidden = false })
-      } else {
-        this.querySelectorAll<HTMLElement>('[data-enhance]').forEach(element => { element.hidden = false })
-        const current = this.querySelector<HTMLElement>('[data-current-month]')
-        if (current) { current.hidden = false; current.textContent = `${this.text('Jetzt im', 'This')} ${months[this.locale][this.currentMonth() - 1]} →` }
-        this.updateResults()
-        if (monthSlugs.includes(location.hash.slice(1))) this.revealPlanner()
-      }
+      this.applyData(fallback)
     } catch {
       if (!this.isConnected) return
       const status = this.querySelector<HTMLElement>('[data-data-status]')
@@ -234,11 +251,11 @@ class LeafGrowCalendar extends HTMLElement {
   }
   private async downloadPdf() {
     if (!this.ready || this.pdfLoading || !this.config) return
-    const crop = this.crops.find(item => item.slug === this.dataset.slug)
-    if (!crop) return
+    if (!this.crops.some(item => item.slug === this.dataset.slug)) return
     const message = this.querySelector<HTMLElement>('[data-pdf-message]')
     const buttons = [...this.querySelectorAll<HTMLButtonElement>('[data-pdf]')]
     this.pdfLoading = true
+    this.dataset.pdfState = 'preparing'
     buttons.forEach(button => { button.disabled = true; button.setAttribute('aria-busy', 'true') })
     if (message) message.textContent = this.text('Dein PDF wird vorbereitet …', 'Preparing your PDF …')
     try {
@@ -248,9 +265,20 @@ class LeafGrowCalendar extends HTMLElement {
       this.pdfAttempts++
       this.pdfModule ||= import(/* @vite-ignore */ asset.href).catch(error => { this.pdfModule = undefined; throw error })
       const module = await this.pdfModule
+      // Revalidation may replace or withdraw the initial snapshot while the
+      // module loads. Only use the record still displayed when rendering starts.
+      const crop = this.crops.find(item => item.slug === this.dataset.slug)
+      if (!crop || !this.isConnected) return
       const detailUrl = new URL(pagePath({ kind: 'plant', slug: crop.slug }, this.locale), this.config.dataset.shopUrl || 'https://leaferservice.com').href
       const prepared = await module.prepareCropPdfDownload(crop, this.locale, { detailUrl })
       if (!this.isConnected) { prepared.dispose(); return }
+      const current = this.crops.find(item => item.slug === crop.slug)
+      if (!current || JSON.stringify(current) !== JSON.stringify(crop)) {
+        prepared.dispose()
+        const currentMessage = this.querySelector<HTMLElement>('[data-pdf-message]')
+        if (currentMessage) currentMessage.textContent = this.text('Der Pflanzplan wurde gerade aktualisiert. Bitte starte den PDF-Download erneut.', 'This growing plan has just been updated. Please start the PDF download again.')
+        return
+      }
       this.preparedPdf?.dispose()
       this.preparedPdf = prepared
       const link = this.querySelector<HTMLAnchorElement>('[data-pdf-ready]')
@@ -261,6 +289,7 @@ class LeafGrowCalendar extends HTMLElement {
       if (message) message.textContent = this.text('Das PDF konnte gerade nicht erstellt werden. Bitte klicke erneut auf Herunterladen.', 'The PDF could not be created. Please try the download button again.')
     } finally {
       this.pdfLoading = false
+      this.dataset.pdfState = 'idle'
       buttons.forEach(button => { button.disabled = false; button.removeAttribute('aria-busy') })
     }
   }
