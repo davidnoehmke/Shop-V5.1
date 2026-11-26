@@ -13,12 +13,11 @@
 <dl><dt>{% if de %}Vorziehen{% else %}Start indoors{% endif %}</dt><dd>{{ p[4] | default: '–' | replace: ',', ', ' }}</dd><dt>{% if de %}Aussaat / Pflanzung{% else %}Sow / plant{% endif %}</dt><dd>{{ p[5] | default: '–' | replace: ',', ', ' }}</dd><dt>{% if de %}Ernte / Blüte{% else %}Harvest / flowering{% endif %}</dt><dd>{{ p[6] | default: '–' | replace: ',', ', ' }}</dd></dl>
 </article>{% endfor %}
 </div>
-<p><a href="{{ routes.root_url }}{% unless routes.root_url == '/' %}/{% endunless %}pages/individuelles-substrat">{% if de %}Passendes Substrat entdecken{% else %}Explore suitable substrates{% endif %}</a></p>
+<p><a href="{{ routes.root_url }}pages/individuelles-substrat">{% if de %}Passendes Substrat entdecken{% else %}Explore suitable substrates{% endif %}</a></p>
 </section>
 {% stylesheet %}
 .leaf-grow{padding-block:2rem}.leaf-grow [data-controls]:not([hidden]){display:flex;flex-wrap:wrap;gap:1rem;margin-block:1rem}.leaf-grow label{display:grid;gap:.4rem;flex:1 1 160px}.leaf-grow input,.leaf-grow select{font:inherit;padding:.7rem;min-height:44px;border:1px solid var(--border);border-radius:8px;background:var(--background);color:var(--text);width:100%}.leaf-grow-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:1rem}.leaf-grow article{border:1px solid var(--border);border-radius:var(--radius-large);padding:1rem;background:var(--surface)}.leaf-grow article[hidden]{display:none}.leaf-grow h3{margin:0}.leaf-grow dl{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.9rem}.leaf-grow dd{margin:0}.leaf-grow :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 {% endstylesheet %}
-{% javascript %}
-document.querySelectorAll('[data-grow-calendar]').forEach(root=>{const month=root.querySelector('[data-month]'),search=root.querySelector('[data-search]'),cat=root.querySelector('[data-category]'),cards=[...root.querySelectorAll('[data-plant]')];const locale=document.documentElement.lang||'de';for(const option of month.options){if(+option.value)option.textContent=new Intl.DateTimeFormat(locale,{month:'long'}).format(new Date(2024,+option.value-1,1));}month.value=String(new Date().getMonth()+1);function update(){let count=0;for(const card of cards){const match=(!+month.value||card.dataset.months.split(',').includes(month.value))&&(!cat.value||card.dataset.cat===cat.value)&&card.querySelector('h3').textContent.toLocaleLowerCase().includes(search.value.trim().toLocaleLowerCase());card.hidden=!match;if(match)count++;}root.querySelector('[data-count]').textContent=count+' / '+cards.length;}root.querySelector('[data-controls]').hidden=false;root.addEventListener('input',update);root.addEventListener('change',update);update();});
-{% endjavascript %}
+<script src="{{ 'leaf-grow-calendar.js' | asset_url }}" defer></script>
+
 {% schema %}{"name":"LEAF Grow Calendar","settings":[],"presets":[{"name":"LEAF Grow Calendar"}]}{% endschema %}
