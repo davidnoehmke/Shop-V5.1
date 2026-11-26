@@ -8,7 +8,6 @@ Renders a product card with an optional compact layout and variant-safe quick ad
 {% liquid
   assign card_variant = product.selected_or_first_available_variant
   assign formatted_price = product.price_min | money
-  assign advertised_variant = product.variants | where: "price", product.price_min | first
   assign card_image_alt = product.featured_image.alt | default: product.title
   assign card_descriptor = product.metafields.leafer.subtitle.value
   assign card_function = product.metafields.leafer.primary_function.value
@@ -106,8 +105,9 @@ Renders a product card with an optional compact layout and variant-safe quick ad
           {{ sold_out_text }}
         {% endif %}
       </strong>
-      {% if product.available and advertised_variant.unit_price_measurement %}
-        <span class="product-card__unit-price">{{ advertised_variant.unit_price | unit_price_with_measurement: advertised_variant.unit_price_measurement }}</span>
+      {% if product.available %}
+        {% capture advertised_unit_price %}{% render 'leaf-advertised-unit-price', product: product %}{% endcapture %}
+        {% if advertised_unit_price != blank %}<span class="product-card__unit-price">{{ advertised_unit_price }}</span>{% endif %}
       {% endif %}
 
       {% unless product.has_only_default_variant %}
