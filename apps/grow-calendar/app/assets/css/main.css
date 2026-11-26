@@ -8,4 +8,8 @@
 @media print{.site-header,.site-footer,.plant-sidebar,.related-plants,.back-link,.button,.month-picker,.filter-row,.growing-guide,.month-links{display:none!important}.rail{padding:0;max-width:none}.plant-layout{display:block}.plant-page{padding:0}.plant-intro{padding-bottom:20px}.timeline-panel{break-inside:avoid}.timeline-scroll{overflow:visible}.sources a{overflow-wrap:anywhere}body,:root{background:white}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
 
 .crop-heading>div{min-width:0}.crop-heading h3{overflow-wrap:anywhere}
+.plant-layout>div,.plant-sidebar{min-width:0}
 @media(max-width:600px){.crop-grid{grid-template-columns:1fr}}
+
+.plant-intro h1.long-title{font-size:clamp(2rem,4.5vw,3.5rem)}
+.timeline-scroll{position:relative}

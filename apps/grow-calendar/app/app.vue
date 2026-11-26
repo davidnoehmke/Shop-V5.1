@@ -15,7 +15,7 @@ useEmbedBridge()
       <nav :aria-label="de ? 'Hauptnavigation' : 'Main navigation'">
         <NuxtLink :to="homePath" class="nav-active">{{ de ? 'Aussaatkalender' : 'Sowing calendar' }}</NuxtLink>
         <a :href="shopLink('/blogs/leafers-nice2know-blog/anzucht-leicht-gemacht')">{{ de ? 'Anzuchtwissen' : 'Growing guide' }}</a>
-        <a :href="shopLink('/collections/anzucht-aussaat')" class="shop-nav">{{ de ? 'Zum Shop' : 'Shop' }} <span aria-hidden="true">↗</span></a>
+        <a :href="shopLink('/collections/anzucht-aussaat')" class="shop-nav">{{ de ? 'Zum Shop' : 'Shop' }} <span aria-hidden="true">→</span></a>
       </nav>
       <NuxtLink class="language" :to="alternatePath" :aria-label="de ? 'Switch to English' : 'Auf Deutsch wechseln'">{{ de ? 'EN' : 'DE' }}</NuxtLink>
     </header>

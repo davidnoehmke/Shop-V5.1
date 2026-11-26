@@ -15,8 +15,11 @@ const title = computed(() => props.fixedMonth ? `${de.value ? 'Aussaatkalender' 
 const description = computed(() => de.value ? 'Plane dein Gartenjahr mit 30 Pflanzen: Vorziehen, Direktsaat, Auspflanzen und Ernte. Mit Pflanzplänen und kostenlosen PDFs.' : 'Plan your growing year with 30 plants: sowing, planting and harvesting. Explore growing plans and free printable PDFs.')
 usePageSeo(title, description, !props.fixedMonth)
 const monthName = computed(() => selectedMonth.value ? months[locale.value][selectedMonth.value - 1] : (de.value ? 'Dein ganzes Gartenjahr' : 'Your whole growing year'))
-function setFilter(key: string, value: string) {
-  router.replace({ query: { ...route.query, [key]: value || undefined }, hash: route.hash })
+let pendingQuery: Record<string, any> | null = null
+async function setFilter(key: string, value: string) {
+  const query = { ...(pendingQuery || route.query), [key]: value || undefined }
+  pendingQuery = query
+  try { await router.replace({ query, hash: route.hash }) } finally { if (pendingQuery === query) pendingQuery = null }
 }
 function chooseMonth(month: number) {
   if (props.fixedMonth) return router.push(localPath(month ? monthPath(month, locale.value) : (de.value ? '/' : '/en')))
@@ -47,7 +50,7 @@ onMounted(() => { currentMonth.value = Number(new Intl.DateTimeFormat('en', { mo
     </section>
 
     <section id="pflanzen" class="planner" aria-labelledby="planner-heading">
-      <div class="section-heading"><div><p class="eyebrow">{{ de ? 'Der Aussaatkalender' : 'The sowing calendar' }}</p><h2 id="planner-heading">{{ de ? 'Dein Plan. Deine Saison.' : 'Your plan. Your season.' }}</h2></div><button v-if="currentMonth" class="text-button" @click="chooseMonth(currentMonth)">{{ de ? 'Jetzt im' : 'This' }} {{ months[locale][currentMonth - 1] }} <span aria-hidden="true">↗</span></button></div>
+      <div class="section-heading"><div><p class="eyebrow">{{ de ? 'Der Aussaatkalender' : 'The sowing calendar' }}</p><h2 id="planner-heading">{{ de ? 'Dein Plan. Deine Saison.' : 'Your plan. Your season.' }}</h2></div><button v-if="currentMonth" class="text-button" @click="chooseMonth(currentMonth)">{{ de ? 'Jetzt im' : 'This' }} {{ months[locale][currentMonth - 1] }} <span aria-hidden="true">→</span></button></div>
       <div class="month-picker" role="group" :aria-label="de ? 'Monat auswählen' : 'Choose a month'">
         <button :aria-pressed="selectedMonth === 0" @click="chooseMonth(0)"><span class="month-number">↻</span><span>{{ de ? 'Ganzjährig' : 'All year' }}</span></button>
         <button v-for="(month, i) in months[locale]" :key="i" :aria-label="month" :aria-pressed="selectedMonth === i + 1" @click="chooseMonth(i + 1)"><span class="month-number">{{ String(i + 1).padStart(2, '0') }}</span><span>{{ month.slice(0, 3) }}</span></button>
@@ -66,6 +69,6 @@ onMounted(() => { currentMonth.value = Number(new Intl.DateTimeFormat('en', { mo
 
     <section class="growing-guide" aria-labelledby="guide-heading"><div><p class="eyebrow">{{ de ? 'Vom Plan zur ersten Pflanze' : 'From planning to planting' }}</p><h2 id="guide-heading">{{ de ? 'Alles beginnt mit' : 'It all starts with' }}<br><em>{{ de ? 'guten Wurzeln.' : 'healthy roots.' }}</em></h2><p>{{ de ? 'Der Kalender zeigt dir, wann es losgeht. In unseren Anzuchttipps liest du, worauf es bei Licht, Feuchtigkeit und dem passenden Substrat ankommt.' : 'The calendar shows you when to begin. Our growing guide explains light, moisture and choosing a suitable growing medium.' }}</p><a class="button" :href="shopLink('/blogs/leafers-nice2know-blog/anzucht-leicht-gemacht')" :target="embedded ? '_top' : undefined">{{ de ? 'Anzucht verstehen' : 'Explore the growing guide' }} →</a></div><div class="guide-steps"><div><span>01</span><h3>{{ de ? 'Deine Pflanze wählen' : 'Choose your plant' }}</h3><p>{{ de ? 'Finde den passenden Pflanzplan und lies die Kulturhinweise.' : 'Find a growing plan and read the cultivation notes.' }}</p></div><div><span>02</span><h3>{{ de ? 'Den Standort mitdenken' : 'Know your growing space' }}</h3><p>{{ de ? 'Licht, Wärme und Platz sind genauso wichtig wie der Monat.' : 'Light, warmth and space matter as much as the month.' }}</p></div><div><span>03</span><h3>{{ de ? 'Mit einem Plan starten' : 'Keep your plan close' }}</h3><p>{{ de ? 'Speichere dein kostenloses Pflanzen-PDF für die nächste Aussaat.' : 'Download your free plant PDF for the next sowing session.' }}</p></div></div></section>
 
-    <section class="month-links" aria-labelledby="month-links-heading"><h2 id="month-links-heading">{{ de ? 'Monat für Monat ins Grüne.' : 'A growing year, month by month.' }}</h2><nav :aria-label="de ? 'Monatsübersichten' : 'Monthly growing guides'"><NuxtLink v-for="(month, i) in months[locale]" :key="i" :to="localPath(monthPath(i + 1, locale))">{{ month }} <span aria-hidden="true">↗</span></NuxtLink></nav></section>
+    <section class="month-links" aria-labelledby="month-links-heading"><h2 id="month-links-heading">{{ de ? 'Monat für Monat ins Grüne.' : 'A growing year, month by month.' }}</h2><nav :aria-label="de ? 'Monatsübersichten' : 'Monthly growing guides'"><NuxtLink v-for="(month, i) in months[locale]" :key="i" :to="localPath(monthPath(i + 1, locale))">{{ month }} <span aria-hidden="true">→</span></NuxtLink></nav></section>
   </div>
 </template>

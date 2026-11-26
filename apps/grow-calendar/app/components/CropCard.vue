@@ -20,6 +20,6 @@ const { locale, de, localPath } = useCalendar()
         <dd>{{ monthRange(crop.timing[phase], locale) }}<span v-if="month && crop.timing[phase].includes(month)" class="sr-only">{{ de ? ', im ausgewählten Monat' : ', in selected month' }}</span></dd>
       </div>
     </dl>
-    <NuxtLink class="card-link" :to="localPath(cropPath(crop.slug, locale))">{{ de ? 'Dein Pflanzplan' : 'Your growing plan' }}<span aria-hidden="true">↗</span></NuxtLink>
+    <NuxtLink class="card-link" :to="localPath(cropPath(crop.slug, locale))">{{ de ? 'Dein Pflanzplan' : 'Your growing plan' }}<span aria-hidden="true">→</span></NuxtLink>
   </article>
 </template>
