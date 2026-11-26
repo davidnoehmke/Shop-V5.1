@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "leaf-grow-calendar",
+      "settings": {
+        "supabase_url": "https://vbqimcwaxcydegqlkkgw.supabase.co",
+        "publishable_key": "sb_publishable_25iJ4M8n-lOcpAMwrcSADg_2sA96tCU"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

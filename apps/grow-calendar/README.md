@@ -1,83 +1,122 @@
 # LEAFerservice Grow Calendar
 
-Nuxt 4 / Vue 3 / strict TypeScript app. Supabase is the editable crop source;
-Shopify remains the commerce destination. This app does not handle customers,
-orders, checkout, stock or payments.
+The live calendar is a **native Shopify Online Store page**. Shopify serves its
+HTML, CSS and optimized TypeScript build. There is no iframe, Nuxt server, Vercel
+request or framework runtime in the native storefront path. Supabase remains
+the authoritative source of reviewed crop data. GitHub owns implementation and
+release history; Shopify is the storefront projection and commerce adapter.
 
-## Run and validate
+## Native storefront
 
-Use Node 24.15 or newer within the Node 24 release line. Copy `.env.example`
-to `.env` and supply the Supabase URL and **publishable** key.
+- Main page: `/pages/aussaatkalender` (existing page ID `701524902273`).
+- Thirty plant pages: `/pages/aussaatkalender-<crop-slug>`.
+- Twelve month pages: `/pages/aussaatkalender-<German-month-slug>`.
+- English uses `/en` before the same handles and native Shopify translations.
+- Template: `templates/page.grow-calendar.json`.
+- Section: `sections/leaf-grow-calendar.liquid`.
+- Browser implementation: `native/calendar.ts`; platform-neutral public HTML:
+  `native/render.ts`; shared crop/filter contract: `shared/calendar.ts`.
+
+Every page already contains useful headings, plant data, sources and real links
+before JavaScript runs. Search, category, activity and month filtering run
+locally after one read of the public Supabase dataset. Input changes cause no
+network request. Query parameters, history and old `#maerz` links are supported.
+Month pages retain their own month-specific heading, content and canonical.
+
+The section injects the public API URL, **publishable** key and asset URLs.
+The key is intentionally public; SELECT-only grants and published/verified RLS
+enforce the data boundary. Only explicit public columns pass `safeCrop()`.
+No admin credentials, private fields, TypeScript sources or source maps reach
+Shopify theme assets. The isolated CSS affects only `leaf-grow-calendar`.
+
+## Build and verify
+
+Use Node 24.15 or newer within the Node 24 release line.
 
 ```sh
 npm ci
-npm run dev
-npm run typecheck
-npm test
-npm run build
+npm run typecheck:shopify
+npm run build:shopify
+npm run check:shopify
 npx playwright install chromium
-npm run test:e2e
+npm run test:shopify
 ```
 
-Browser checks spawn an isolated read-only fixture server using the reviewed
-deployment snapshot. They need no production credentials. Set `BASE_URL` to
-check a deployed app instead. A local installed Chrome can be selected with
-`PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
+The build creates four optimized files in the theme's `assets/` directory and
+43 DE/EN page payloads in ignored `.native-build/pages.json`. The check command
+rebuilds and compares every committed asset, preventing source/artifact drift.
+Browser checks run an isolated read-only fixture, require no production key,
+and exercise real PDF downloads, local filtering, history, keyboard focus,
+mobile layout, no-JavaScript HTML and error/retry paths. A local browser may be
+selected with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
-## Production
+`native/pdf.ts` bundles pdf-lib in one separate ESM Shopify asset. It loads only
+when a reader requests a PDF and creates the document from the same validated
+record displayed on the page. Printed detail links point to native Shopify
+pages. A visible Blob link remains available after the automatic download
+attempt, including for browsers that open a PDF viewer. No PDF server or stored
+PDF version is required.
 
-- Vercel project: `leaferservice-grow-calendar`.
-- Team: `team_gSAjxEFdXT0AaJmlBR01f1po`.
-- Root: `apps/grow-calendar`; framework `nuxtjs`; Node `24.x`; region `fra1`.
-- Build: `npm ci` then `npm run build`.
-- Set the four variables in `.env.example` for preview and production.
-- No secret or service credential is needed. The publishable key is server-side
-  runtime configuration; public database access is SELECT-only with RLS.
-- The existing Hydrogen Vercel project is independent and must retain its setup.
+## Public data projection and updates
 
-The root DE/EN calendars canonicalize to the existing Shopify pages. Plant and
-month guides have independent localized canonical routes. The sitemap lists
-these guides only. Embedded presentations use `noindex,indexifembedded`.
-
-## Shopify entry point
-
-Page ID `gid://shopify/Page/701524902273`, handle `aussaatkalender`, retains the
-default Shopify page template. `deployment/shopify-page-de.html` and its English
-translation contain the iframe, a crawlable static overview, 30 plant links,
-12 month links, a useful no-JavaScript fallback and a direct standalone link.
-Generate them with `node deployment/render-shopify.mjs` after reviewing an export
-of the current public crop data. Deploy via PageUpdate and Shopify translations,
-then verify the actual DE/EN public pages. The snapshot is deployment provenance,
-not a second editable content source or a runtime data fallback.
-
-Only exact app-origin messages from the actual iframe may resize it or scroll
-to its heading on pathname navigation. Filters never scroll the host. The child
-accepts initialization only from its parent at the two intended Shopify origins.
-No customer data or cookies are exchanged. Sandbox permits user-initiated shop
-navigation and PDF downloads. Content measurement excludes viewport min-height
-to avoid resize feedback loops. Legacy `#maerz` etc. links select the correct month.
-
-## Crop editorial model
-
-`public.grow_calendar_crops` stores separate `start_indoor`, `sow_outdoors`,
+`public.grow_calendar_crops` stores distinct `start_indoor`, `sow_outdoors`,
 `transplant_outdoors`, `harvest_or_flowering` arrays and `harvest_kind`.
-Sources and DE/EN notes are mandatory for published entries. Empty arrays mean
-the method is not part of this plan. All windows are approximate conservative
-plans for temperate Central Europe; cultivar, seed packet and local conditions
-take priority. Flowers show flowering rather than seed maturity. Perennial and
-winter-harvest caveats live in each crop's notes. PDFs are generated from the
-same public records; changes appear within the five-minute data-cache window.
+Sources and DE/EN notes are mandatory for publication. Empty arrays mean a method
+is not part of this plan. Time windows are approximate for temperate Central
+Europe; cultivar, seed packet and local conditions take priority. Flowers show
+flowering rather than seed maturity.
 
-The two migration files mirror the already-applied remote history. The initial
-migration's broad default table grants are restricted by its follow-up migration.
-Do not manually replay the initial migration against the existing hosted table.
+`deployment/reviewed-crops.json` is the reviewed release export, including actual
+database timestamps, not a second editorial source. The native build creates
+an allowlisted public JSON snapshot and page HTML from it. If the live read
+fails, the page visibly identifies the last reviewed snapshot; if both reads
+fail, already published HTML stays readable. Successful live reads, including
+an empty publication list, take precedence over snapshots. A withdrawn detail
+loses its download and displays an unavailable state after revalidation.
 
-## Rollback
+For a content revision, edit and verify Supabase first, export the current public
+records into the reviewed release export, rebuild/check assets, and regenerate
+the Shopify page bodies and translations. **A data withdrawal must also update
+the stored Shopify projection** if it must disappear from no-JavaScript HTML
+and outage fallback immediately. Each page load revalidates live data; an
+already-open tab keeps the version it loaded, including its matching PDF.
 
-For a bad application release, promote the previous verified Vercel production
-deployment. Keep the Shopify route and its static fallback available. For a crop
-correction, set that specific crop's `is_published` to false in Supabase, correct
-and reverify its source-backed content, then republish; do not change products.
-To remove the embed, restore the previously read Shopify page body and its
-translation using a fresh content digest. Reverting this app requires no shop,
-DNS, cart or checkout migration. Recheck DE/EN after any rollback.
+## Publishing
+
+1. Review native source, generated assets and scoped theme changes in a PR.
+   Run native CI and existing repository/theme checks without weakening gates.
+2. Merge the reviewed head. Verify the GitHub-to-Shopify connection delivered
+   the exact new asset/Section/template bytes to the actual MAIN theme.
+3. Before the entry-page cutover, place generated DE/EN HTML in that page's
+   temporary `custom.grow_calendar_preview` JSON metafield. Preview it through
+   `/pages/aussaatkalender?view=grow-calendar`. The default page remains on its
+   existing template until explicitly switched. This alternate view is **not**
+   an exact-PR whole-theme preview and must not be labelled as one.
+4. Create the generated plant/month pages with the calendar template, native
+   SEO metafields and fresh-digest English translations. Check each public URL.
+5. Switch the existing calendar body/template and register the English body
+   using a newly read translation digest. Verify actual DE/EN pages, filters,
+   source data and PDF downloads. Remove the temporary preview projection.
+
+Only calendar-specific files and data are part of this release. Do not commit
+or publish unrelated pending theme edits. The native layout title/description
+emitter is limited to the exact `grow-calendar` page template.
+
+## Rollback and legacy app
+
+Keep the pre-cutover page body, template and translations in the release record.
+Restore them with fresh translation digests if native delivery fails. Reverting
+the page/template does not require any DNS, cart, checkout or customer migration.
+For a native code regression, revert the scoped GitHub change and verify actual
+Shopify file delivery. Do not remove shared Supabase tables or grants.
+
+The previous Nuxt/Vue app (`app/`, `server/`) and iframe generator
+(`deployment/render-shopify.mjs`) remain a legacy compatibility/rollback path.
+They are not the live Shopify entry point after cutover. Their old Vercel project
+is `leaferservice-grow-calendar`; the unrelated Hydrogen project must retain its
+setup. Existing Nuxt tests remain in CI until the compatibility path is retired.
+Do not use the old iframe generator for native page updates.
+
+The two database migrations mirror already-applied remote history. Do not replay
+the initial migration against the existing table; its follow-up restricts public
+roles to SELECT and enforces publication prerequisites.

@@ -3,7 +3,9 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "engines": { "node": "^24.15.0" },
+  "engines": {
+    "node": "^24.15.0"
+  },
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
@@ -11,7 +13,11 @@
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
     "test": "node --experimental-strip-types --test tests/calendar.test.ts",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:shopify": "node native/build.mjs",
+    "check:shopify": "node native/build.mjs --check",
+    "typecheck:shopify": "tsc -p native/tsconfig.json",
+    "test:shopify": "playwright test -c native/playwright.config.ts"
   },
   "dependencies": {
     "nuxt": "4.7.0",
@@ -22,6 +28,8 @@
     "@playwright/test": "1.58.2",
     "@types/node": "24.10.1",
     "typescript": "5.9.3",
-    "vue-tsc": "3.3.14"
+    "vue-tsc": "3.3.14",
+    "esbuild": "0.28.2",
+    "postcss": "8.5.33"
   }
 }

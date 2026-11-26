@@ -1,0 +1,37 @@
+{% comment %}
+  Shopify owns the page HTML and optimized assets. Supabase owns the reviewed
+  plant data. The preview projection is used only until this page is switched.
+{% endcomment %}
+{{ 'leaf-grow-calendar.css' | asset_url | stylesheet_tag }}
+<div
+  data-grow-calendar-config
+  data-supabase-url="{{ section.settings.supabase_url | escape }}"
+  data-publishable-key="{{ section.settings.publishable_key | escape }}"
+  data-snapshot-url="{{ 'leaf-grow-calendar-data.json' | asset_url }}"
+  data-pdf-url="{{ 'leaf-grow-calendar-pdf.js' | asset_url }}"
+  data-shop-url="{{ shop.secure_url }}"
+>
+  {% if page.content contains '<leaf-grow-calendar' %}
+    {{ page.content }}
+  {% elsif page.metafields.custom.grow_calendar_preview.value != blank %}
+    {% if request.locale.iso_code == 'en' %}
+      {{ page.metafields.custom.grow_calendar_preview.value.en }}
+    {% else %}
+      {{ page.metafields.custom.grow_calendar_preview.value.de }}
+    {% endif %}
+  {% else %}
+    {{ page.content }}
+  {% endif %}
+</div>
+<script src="{{ 'leaf-grow-calendar.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "LEAF Aussaatkalender",
+  "settings": [
+    { "type": "paragraph", "content": "Kalendertexte und Übersetzungen liegen in den Shopify-Seiten. Geprüfte Pflanzendaten werden aus Supabase veröffentlicht." },
+    { "type": "text", "id": "supabase_url", "label": "Öffentliche Supabase-URL", "default": "https://vbqimcwaxcydegqlkkgw.supabase.co" },
+    { "type": "text", "id": "publishable_key", "label": "Öffentlicher Supabase Publishable Key", "info": "Nur den öffentlichen Publishable Key verwenden. Er erlaubt ausschließlich das Lesen freigegebener Pflanzen." }
+  ]
+}
+{% endschema %}
