@@ -12,6 +12,20 @@ concurrency:
   group: grow-calendar-${{ github.ref }}
   cancel-in-progress: true
 jobs:
+  theme-quality:
+    name: Native calendar Theme Check
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: false
+      - run: gem install theme-check --no-document
+      - run: theme-check . --fail-level error
   native-shopify:
     name: Native Shopify build and browser checks
     runs-on: ubuntu-24.04
