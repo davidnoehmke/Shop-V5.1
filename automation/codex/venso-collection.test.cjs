@@ -7,7 +7,10 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '../..');
 const section = fs.readFileSync(path.join(root, 'sections/venso-brand-landing.liquid'), 'utf8');
 const template = JSON.parse(fs.readFileSync(path.join(root, 'templates/collection.venso.json'), 'utf8'));
-const schema = JSON.parse(section.match(/{% schema %}([\s\S]*?){% endschema %}/)[1]);
+const translations = ['de.default', 'en'].map(locale => {
+  const source = fs.readFileSync(path.join(root, 'locales', locale + '.json'), 'utf8');
+  return JSON.parse(source.replace(/^\s*\/\*[\s\S]*?\*\//, '')).sections['venso-brand-landing'];
+});
 
 test('VENSO collection is isolated from all other collection templates', () => {
   assert.equal(template.sections.venso.type, 'venso-brand-landing');
@@ -19,17 +22,17 @@ test('VENSO collection is isolated from all other collection templates', () => {
 test('VENSO landing shows real Shopify product media, prices and product URLs', () => {
   assert.match(section, /product\.featured_image \| image_url:/);
   assert.match(section, /product\.price \| money/);
-  assert.match(section, /href="{{ product\.url }}"/);
+  assert.match(section, /href="{% render 'leaf-localized-url', url: product\.url %}"/);
   assert.match(section, /paginate collection\.products by 24/);
   assert.doesNotMatch(section, /product\.status\s*==\s*'DRAFT'/);
 });
 
-test('VENSO landing has two languages and matching section-local translations', () => {
+test('VENSO landing has two languages and matching storefront translations', () => {
   const referenced = [...section.matchAll(/sections\.venso-brand-landing\.([a-z0-9_]+)/g)].map(match => match[1]);
   assert.ok(referenced.length >= 35);
   for (const key of referenced) {
-    assert.equal(typeof schema.locales.de[key], 'string', 'Missing German key ' + key);
-    assert.equal(typeof schema.locales.en[key], 'string', 'Missing English key ' + key);
+    assert.equal(typeof translations[0][key], 'string', 'Missing German key ' + key);
+    assert.equal(typeof translations[1][key], 'string', 'Missing English key ' + key);
   }
 });
 

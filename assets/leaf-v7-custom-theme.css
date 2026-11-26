@@ -135,7 +135,6 @@
 
 .product-card__media img,
 .main-product__image img {
-  will-change: transform;
   transition: transform .45s var(--ease-out), filter .3s ease;
 }
 
@@ -210,8 +209,8 @@
 :root {
   --heading-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --leaf-v7-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --radius: 0px;
-  --radius-large: 0px;
+  --radius: 10px;
+  --radius-large: 18px;
 }
 
 html,
@@ -243,14 +242,13 @@ button,
 .button,
 input,
 select,
-textarea,
-.shopify-payment-button__button,
+textarea {
+  border-radius: var(--radius);
+}
+
 .main-product__dock,
-.main-product__errors,
-.product-card,
-.collection-product-card,
-.featured__product {
-  border-radius: 0 !important;
+.main-product__errors {
+  border-radius: var(--radius-large);
 }
 
 /* Keep semantic circular elements circular: icons, dots and the studio floor shadow. */
@@ -259,14 +257,6 @@ textarea,
 .product-card__media::after,
 .main-product__image::after {
   border-radius: 50%;
-}
-
-/* Remove pill-style Shopify controls while preserving clear focus and tap targets. */
-.hero__buttons .button,
-.home-journey__filter,
-.home-journey__badge,
-.skip-link {
-  border-radius: 0 !important;
 }
 
 input,
@@ -308,7 +298,7 @@ picture,
 }
 
 
-/* V7.1 compact editorial commerce: lean header, square controls, quiet conversion cues. */
+/* Keep the navigation compact and distinguish primary purchase actions. */
 :root { --leaf-v7-control-line: #9aa09c; }
 
 .site-header__inner {
@@ -330,14 +320,13 @@ picture,
 .site-header__icon-action { min-height: 38px !important; }
 
 .button,
-.shopify-payment-button__button,
 .home-journey__filter,
 .leaf-editorial__purchase button,
 .main-product__form button[type="submit"],
 .main-product__dock button,
 .product-card__form button {
   border: 1px solid var(--leaf-v7-control-line) !important;
-  border-radius: 0 !important;
+  border-radius: var(--radius) !important;
   background: transparent !important;
   color: var(--text) !important;
   box-shadow: none !important;
@@ -356,6 +345,20 @@ picture,
   box-shadow: none !important;
   transform: none !important;
 }
+.leaf-editorial__purchase button:not(:disabled),
+.main-product__form button[name="add"]:not(:disabled),
+.main-product__dock button[name="add"]:not(:disabled),
+.product-card__form button[name="add"]:not(:disabled) {
+  border-color: var(--accent) !important;
+  background: var(--accent) !important;
+  color: #fff !important;
+}
+
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
 .home-journey__icon,
 .home-journey__badge,
 .site-header__desktop-panel,

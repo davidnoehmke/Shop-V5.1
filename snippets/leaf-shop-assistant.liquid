@@ -155,9 +155,8 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
   .leaf-shop-assistant__trigger {
     position: fixed;
     z-index: 70;
-    right: max(1.5rem, env(safe-area-inset-right));
     top: auto;
-    right: max(1rem, env(safe-area-inset-right));
+    right: max(1.5rem, env(safe-area-inset-right));
     bottom: max(1.5rem, env(safe-area-inset-bottom));
     display: flex;
     align-items: center;
@@ -602,6 +601,22 @@ Renders the global LEAF shop assistant trigger and non-blocking conversation pan
     color: var(--muted);
     font-size: .67rem;
     line-height: 1.4;
+  }
+
+  .leaf-shop-assistant :is(.leaf-shop-assistant__trigger, .leaf-shop-assistant__quick-actions, .leaf-shop-assistant__voice-stop) {
+    margin-bottom: var(--assistant-dock-offset, 0px);
+  }
+
+  @media (max-width: 749px) {
+    body:has(.ls-product__mobile-buy:not([hidden])) {
+      --assistant-dock-offset: 74px;
+    }
+  }
+
+  @media (max-width: 620px) {
+    body:has(.main-cart__mobile-checkout) {
+      --assistant-dock-offset: 78px;
+    }
   }
 
   @media (max-width: 700px) {

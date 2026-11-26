@@ -123,7 +123,7 @@ test('pro mixer is capped at four components across UI and locale copy', () => {
 test('mobile pro mixer keeps the pot above a readable vertical component list', () => {
   const liquid = fs.readFileSync('sections/leafer-substrate-selector.liquid', 'utf8');
   const potDesktop = liquid.indexOf('.leafer-substrate--home-usp .leafer-substrate__pot-slider { width: min(100%, 250px); height: 330px; }');
-  const responsive = liquid.indexOf('@media (max-width: 620px) {\n    .leafer-substrate__advanced-summary');
+  const responsive = liquid.search(/@media \(max-width: 620px\) \{\r?\n    \.leafer-substrate__advanced-summary/);
   assert.ok(potDesktop > -1 && responsive > potDesktop, 'mobile pot sizing must override the desktop homepage rule');
   const mobile = liquid.slice(responsive, liquid.indexOf('@media (max-width: 620px) and (max-height: 700px)', responsive));
   assert.match(mobile, /customizer-grid \{[^}]*grid-template-columns: minmax\(0, 1fr\)/);

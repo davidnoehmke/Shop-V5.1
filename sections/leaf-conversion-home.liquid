@@ -55,7 +55,7 @@
         <h2>{% if is_en %}{{ section.settings.products_title_en | escape }}{% else %}{{ section.settings.products_title_de | escape }}{% endif %}</h2>
         <a href="{% render 'leaf-localized-url', url: routes.all_products_collection_url %}">{% if is_en %}All products{% else %}Alle Produkte{% endif %} →</a>
       </div>
-      <div class="leaf-conversion__products">
+      <div class="leaf-conversion__products" id="HomeProducts-{{ section.id }}">
         {% for block in section.blocks %}
           {% if block.type == 'product' %}
             {% assign product = block.settings.product %}
@@ -129,6 +129,7 @@
         {% endfor %}
       </div>
     </div>
+    {% render 'leaf-shared-advisor', section_id: section.id, home_mode: true, world_blocks: section.blocks, products_anchor: 'HomeProducts-' %}
     <details class="leaf-conversion__advisor">
       <summary>{{ 'home_purchase.advisor' | t }}</summary>
       <p>{{ 'home_purchase.advisor_intro' | t }}</p>
@@ -144,12 +145,12 @@
     </nav>
   </div>
 </section>
-<style>
+{% stylesheet %}
   .leaf-conversion{padding:clamp(1.25rem,3vw,2.5rem) 0;background:var(--background,#faf9f5);color:var(--text,#24352b)}
-  .leaf-conversion__inner{display:grid;gap:clamp(1.5rem,3vw,2.25rem)}
-  .leaf-conversion__hero{max-width:850px}
+  .leaf-conversion__inner{display:grid;gap:clamp(1.75rem,4vw,3.25rem)}
+  .leaf-conversion__hero{max-width:62ch}
   .leaf-conversion__eyebrow{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;opacity:.7}
-  .leaf-conversion h1{font-size:clamp(1.9rem,4vw,3.3rem);line-height:1.12;letter-spacing:-.035em;margin:.55rem 0 1rem}
+  .leaf-conversion h1{font-size:clamp(1.9rem,4vw,3.3rem);line-height:1.08;letter-spacing:-.045em;margin:.55rem 0 1rem}
   .leaf-conversion h2{font-size:clamp(1.3rem,2vw,1.8rem);margin:0 0 1rem}
   .leaf-conversion p{line-height:1.65}
   .leaf-conversion__actions,.leaf-conversion__section-head{display:flex;align-items:center;flex-wrap:wrap;gap:1rem}
@@ -163,7 +164,7 @@
   .leaf-conversion__advisor .leaf-conversion__actions{margin-top:.5rem;gap:.5rem 1.25rem}
   .leaf-conversion__advisor .leaf-conversion__textlink{display:inline-flex;align-items:center;min-height:44px;font-size:.85rem}
   .leaf-conversion__categories,.leaf-conversion__products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
-  .leaf-conversion__category,.leaf-conversion__product{min-width:0;background:#fff;border:1px solid #e3e5dc;border-radius:.45rem;overflow:hidden;color:inherit;text-decoration:none}
+  .leaf-conversion__category,.leaf-conversion__product{min-width:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius-large);overflow:hidden;color:inherit;text-decoration:none}
   .leaf-conversion__category{display:flex;flex-direction:column;padding-bottom:1rem}
   .leaf-conversion__category-media,.leaf-conversion__product-media{display:block;position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--surface,#f3f0e9)}
   .leaf-conversion__category-media img,.leaf-conversion__product-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -183,6 +184,9 @@
   .leaf-conversion__category-title{font-weight:700;font-size:1.05rem;padding:.85rem .9rem .3rem}
   .leaf-conversion__category-desc{font-size:.85rem;opacity:.75;padding:0 .9rem;line-height:1.45}
   .leaf-conversion__arrow{padding:0 .9rem;margin-top:auto}
+  .leaf-conversion__category:focus-visible{outline-offset:4px}
+  .leaf-conversion__category:focus-visible .leaf-conversion__category-title{text-decoration:underline}
+  .leaf-conversion__products, #LeafAdvisor{scroll-margin-block-start:7rem}
   .leaf-conversion__product{display:flex;flex-direction:column}
   .leaf-conversion__product>a{color:inherit;text-decoration:none}
   .leaf-conversion__product h3{font-size:1rem;line-height:1.35;margin:.8rem 0 .4rem;padding:0}
@@ -190,7 +194,7 @@
   .leaf-conversion__product-bottom{display:flex;flex-direction:column;gap:.4rem;margin-top:auto;padding:0 .9rem 1rem}
   .leaf-conversion__price{font-weight:700}
   .leaf-conversion__product-bottom a{color:inherit;font-size:.85rem;text-underline-offset:3px}
-  .leaf-conversion :is(a,button):focus-visible{outline:3px solid #496dff;outline-offset:3px}
+  .leaf-conversion :is(a,button):focus-visible{outline:3px solid var(--accent);outline-offset:3px}
   @media(max-width:800px){.leaf-conversion__categories,.leaf-conversion__products{grid-template-columns:repeat(2,minmax(0,1fr))}}
   @media(max-width:600px){
     .leaf-conversion__inner{gap:1.25rem}
@@ -208,13 +212,13 @@
     .leaf-conversion__product-fit{font-size:.8rem;line-height:1.4}
     .leaf-conversion__form{gap:.35rem}
     #MainContent .leaf-conversion__form :is(select,button){min-height:44px;padding:.45rem .5rem;font-size:.8rem;line-height:1.25}
-    .leaf-conversion__product-bottom .leaf-conversion__costs{font-size:.75rem;min-height:28px;display:inline-flex;align-items:center}
+    .leaf-conversion__product-bottom .leaf-conversion__costs{font-size:.8rem;min-height:28px;display:inline-flex;align-items:center}
     .leaf-conversion__service{gap:.25rem 1.25rem;padding-top:.5rem}
     .leaf-conversion__service a{font-size:.8rem}
   }
-  @media(max-width:359px){.leaf-conversion__product{grid-template-columns:76px minmax(0,1fr);padding:.6rem;gap:.6rem}.leaf-conversion__purchase-actions{gap:.35rem}}
+  @media(max-width:359px){.leaf-conversion__product{grid-template-columns:76px minmax(0,1fr);padding:.6rem;gap:.6rem}.leaf-conversion__purchase-actions{grid-template-columns:1fr;gap:.35rem}}
   @media(max-width:420px){.leaf-conversion__categories,.leaf-conversion__products{gap:.65rem}.leaf-conversion__category-title,.leaf-conversion__product h3{font-size:.9rem}}
-</style>
+{% endstylesheet %}
 {% javascript %}
   document.addEventListener('change', (event) => {
     if (!(event.target instanceof HTMLSelectElement) || !event.target.matches('[data-home-variant]')) return;

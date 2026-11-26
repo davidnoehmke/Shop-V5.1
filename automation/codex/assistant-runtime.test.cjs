@@ -33,7 +33,7 @@ function runtime(key = '', vaultKey = '', datasets = {}) {
       return Response.json({ output_text: 'Bims hält die Mischung luftig. Welche Pflanze möchtest du umtopfen?' });
     }
   });
-  const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8').replace(/^import .*;\n/gm, '');
+  const source = fs.readFileSync('supabase/functions/storefront-assistant/index.ts', 'utf8').replace(/^import [^\r\n]*;\r?\n/gm, '');
   vm.runInContext(stripTypeScriptTypes(source), scope);
   return { requests, publicContext: scope.publicVoiceContext, send: body => handler(new Request('https://example.test', { method: 'POST', headers: { origin: 'https://leaferservice.com', 'content-type': 'application/json' }, body: JSON.stringify(body) })) };
 }
