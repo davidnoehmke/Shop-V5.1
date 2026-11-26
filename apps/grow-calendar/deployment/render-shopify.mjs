@@ -8,6 +8,8 @@ const escape=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;')
 for(const locale of ['de','en']){
   const de=locale==='de'
   const appUrl=origin+(de?'/':'/en')
+  const pageTitle=de?'Aussaatkalender: 30 Pflanzen & PDF-Pläne | LEAFerservice':'Sowing calendar: 30 plants & free PDFs | LEAFerservice'
+  const pageDescription=de?'Plane Aussaat, Vorziehen, Auspflanzen und Ernte für 30 Pflanzen. Mit Monatsfiltern, Anbauhinweisen und kostenlosen PDF-Pflanzplänen auf Deutsch und Englisch.':'Plan sowing, planting and harvesting for 30 plants. Explore monthly filters, growing tips and free plant PDFs in English and German.'
   const parentScript=`(function () {
     var root = document.getElementById('leaf-grow-calendar');
     if (!root || root.dataset.mounted) return;
@@ -15,8 +17,27 @@ for(const locale of ['de','en']){
     var frame = root.querySelector('iframe');
     var origin = '${origin}';
     var monthSlugs = ${JSON.stringify(monthSlugs)};
+    var linkedMonthPending = false;
+    // The host theme can omit native metadata when its former SEO app is absent.
+    // Preserve any existing metadata; add a fallback only for this calendar page.
+    if (!document.title.trim()) document.title = ${JSON.stringify(pageTitle)};
+    if (!document.querySelector('meta[name="description"]')) {
+      var description = document.createElement('meta');
+      description.name = 'description';
+      description.content = ${JSON.stringify(pageDescription)};
+      document.head.appendChild(description);
+    }
+    // Keep anchors for no-JavaScript readers, but avoid native fragment scrolling
+    // into the reference table once the interactive calendar handles the month.
+    root.querySelectorAll('.leaf-grow-month-links a[id]').forEach(function (link) { link.removeAttribute('id'); });
+    function revealCalendar() {
+      window.scrollTo({top:Math.max(0,frame.getBoundingClientRect().top+window.scrollY-110),behavior:'instant'});
+    }
     function handshake() { frame.contentWindow.postMessage({type:'leaf-grow-init'}, origin); }
-    frame.addEventListener('load', handshake);
+    frame.addEventListener('load', function () {
+      handshake();
+      if (linkedMonthPending) { linkedMonthPending = false; requestAnimationFrame(revealCalendar); }
+    });
     window.addEventListener('message', function (event) {
       if (event.origin !== origin || event.source !== frame.contentWindow || !event.data || typeof event.data !== 'object') return;
       if (event.data.type === 'leaf-grow-ready') { handshake(); return; }
@@ -25,9 +46,7 @@ for(const locale of ['de','en']){
         if (typeof height === 'number' && Number.isFinite(height) && height >= 240 && height <= 20000) frame.style.height = Math.ceil(height) + 'px';
       }
       if (event.data.type === 'leaf-grow-route') {
-        requestAnimationFrame(function () {
-          window.scrollTo({top:Math.max(0,frame.getBoundingClientRect().top+window.scrollY-110),behavior:'auto'});
-        });
+        requestAnimationFrame(revealCalendar);
       }
     });
     function openLinkedMonth() {
@@ -35,7 +54,10 @@ for(const locale of ['de','en']){
       var month=monthSlugs.indexOf(hash)+1;
       var query=new URLSearchParams(window.location.search).get('month');
       if (!month && /^(?:[1-9]|1[0-2])$/.test(query || '')) month=Number(query);
-      if (month) frame.src='${appUrl}?embedded=1&month='+month;
+      if (month) {
+        linkedMonthPending = true;
+        frame.src='${appUrl}?embedded=1&month='+month;
+      }
     }
     window.addEventListener('hashchange',openLinkedMonth);
     openLinkedMonth();
