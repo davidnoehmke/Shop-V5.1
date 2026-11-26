@@ -9,110 +9,6 @@
  */
 {
   "sections": {
-    "leaf_conversion": {
-      "type": "leaf-conversion-home",
-      "blocks": {
-        "cat_lighting": {
-          "type": "category",
-          "settings": {
-            "collection": "pflanzenbeleuchtung",
-            "title_de": "Pflanzenlicht",
-            "title_en": "Grow lights",
-            "intro_de": "Pflanzenlampen und Leuchten vergleichen.",
-            "intro_en": "Compare grow lights and plant lamps."
-          }
-        },
-        "cat_substrates": {
-          "type": "category",
-          "settings": {
-            "collection": "substratwelt-pflanzsubstrate-mischungen-zusatze",
-            "title_de": "Substrate",
-            "title_en": "Substrates",
-            "intro_de": "Fertige Mischungen und einzelne Bestandteile.",
-            "intro_en": "Ready-made mixes and individual components."
-          }
-        },
-        "cat_planters": {
-          "type": "category",
-          "settings": {
-            "collection": "pflanzgefasse",
-            "title_de": "Pflanzgefäße",
-            "title_en": "Planters",
-            "intro_de": "Töpfe und Pflanzgefäße für deinen Standort.",
-            "intro_en": "Choose pots and planters for your space."
-          }
-        },
-        "cat_seed": {
-          "type": "category",
-          "disabled": true,
-          "settings": {
-            "collection": "interieur-solutions",
-            "title_de": "Anzucht",
-            "title_en": "Propagation",
-            "intro_de": "Zubehör für Aussaat und Stecklinge.",
-            "intro_en": "Equipment for seeds and cuttings."
-          }
-        },
-        "prod_venso": {
-          "type": "product",
-          "settings": {
-            "product": "venso-sunlite-xl-25w-led-pflanzenlampe"
-          }
-        },
-        "prod_alocasia": {
-          "type": "product",
-          "settings": {
-            "product": "leafer-alocasia-mix"
-          }
-        },
-        "prod_elho": {
-          "type": "product",
-          "settings": {
-            "product": "elho-b-for-soft-round"
-          }
-        }
-      },
-      "block_order": [
-        "cat_lighting",
-        "cat_substrates",
-        "cat_planters",
-        "cat_seed",
-        "prod_venso",
-        "prod_alocasia",
-        "prod_elho"
-      ],
-      "settings": {
-        "show_hero_actions": true,
-        "hero_image": "shopify://shop_images/leaferservice-gemeinsam-pflanzen-hero-20261126.jpg",
-        "hero_image_alt_de": "Eine erwachsene Person und Kinder betrachten gemeinsam eine Pflanze an einem Holztisch in einem hellen, pflanzenreichen Raum.",
-        "hero_image_alt_en": "An adult and children explore a potted plant together at a wooden table in a bright room filled with plants.",
-        "hero_caption_de": "Pflanzen entdecken. Wissen teilen. Freude am Wachsen.",
-        "hero_caption_en": "Discover plants. Share knowledge. Enjoy watching them grow.",
-        "heading_emphasis_de": "grüner.",
-        "heading_emphasis_en": "greener.",
-        "primary_link": "/collections/all",
-        "secondary_link": "/pages/aussaatkalender",
-        "eyebrow_de": "Für dein Leben mit Pflanzen",
-        "eyebrow_en": "For your life with plants",
-        "heading_de": "Mach es dir",
-        "heading_en": "Make your world",
-        "intro_de": "Erde, Pflanzenlicht und passende Gefäße für alles, was bei dir wachsen soll. Entdecke, was zu deinen Pflanzen und zu dir passt.",
-        "intro_en": "Soil, grow lights and planters for everything you want to grow. Find what suits your plants and your life.",
-        "primary_cta_de": "Pflanzenbedarf entdecken",
-        "primary_cta_en": "Explore plant essentials",
-        "secondary_cta_de": "Dein Gartenjahr planen",
-        "secondary_cta_en": "Plan your growing year",
-        "categories_title_de": "Was brauchst du für deine Pflanzen?",
-        "categories_title_en": "Shop by plant care need",
-        "products_title_de": "Ausgewählte Produkte",
-        "products_title_en": "Selected products"
-      }
-    },
-    "leaf_led_finder": {
-      "type": "leaf-led-home-finder",
-      "disabled": true,
-      "settings": {}
-    },
     "leaf_worlds": {
       "type": "leaf-botanical-room",
       "blocks": {
@@ -207,9 +103,12 @@
         "scene_image": "shopify://shop_images/leaf-botanische-bibliothek-pflanzenraum-20261113.png",
         "scene_alt": "Pflanzen, dezentes Pflanzenlicht und Gefäße vor einem alten Holzregal mit botanischen Büchern.",
         "setup_url": "/collections/interieur-solutions",
-        "knowledge_blog": "leafers-nice2know-blog",
-        "compact_navigation": true
+        "knowledge_blog": "leafers-nice2know-blog"
       }
+    },
+    "leaf_led_finder": {
+      "type": "leaf-led-home-finder",
+      "settings": {}
     },
     "leaf_soil_globe": {
       "type": "leaf-soil-globe",
@@ -263,7 +162,6 @@
     },
     "home_guides": {
       "type": "home-guides",
-      "disabled": true,
       "settings": {
         "eyebrow": "Wissen passend zu deinem Projekt",
         "heading": "Verstehen, bevor du entscheidest",
@@ -309,30 +207,17 @@
         "pillar_fUjN8c",
         "pillar_xzHRaQ"
       ],
-      "disabled": true,
       "name": "LEAF Positionierung",
       "settings": {
         "eyebrow": "Alles für deine Pflanze, als System gedacht",
         "heading": "Pflanzenpflege im Zusammenhang verstehen",
         "text": "<p>Substrat, Gefäß, Licht und Wissen gehören zusammen. Entdecke passende Produktwelten und informiere dich, wie die Bereiche zusammenspielen.</p>"
       }
-    },
-    "leaf_christmas_2026": {
-      "type": "leaf-christmas",
-      "settings": {
-        "collection": "christmas-specials-weihnachtsgeschenke-fur-pflanzenliebhaber",
-        "heading_de": "Verschenke Wachstum – Christmas Specials",
-        "heading_en": "Give the gift of growth – Christmas specials",
-        "link_label_de": "Alle Geschenksets entdecken",
-        "link_label_en": "Explore all gift sets"
-      }
     }
   },
   "order": [
-    "leaf_conversion",
-    "leaf_christmas_2026",
-    "leaf_led_finder",
     "leaf_worlds",
+    "leaf_led_finder",
     "leaf_soil_globe",
     "trust",
     "home_guides",
