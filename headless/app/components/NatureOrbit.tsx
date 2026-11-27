@@ -111,7 +111,12 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
           if (!pointers.current.has(e.pointerId) || !gesture.current) return;
           pointers.current.set(e.pointerId, {x: e.clientX, y: e.clientY});
           const points = [...pointers.current.values()], start = gesture.current;
-          const dx = points[0].x - start.points[0].x, dy = points[0].y - start.points[0].y;
+          const center = (items: Point[]) => ({
+            x: items.reduce((sum, p) => sum + p.x, 0) / items.length,
+            y: items.reduce((sum, p) => sum + p.y, 0) / items.length,
+          });
+          const now = center(points), before = center(start.points);
+          const dx = now.x - before.x, dy = now.y - before.y;
           if (Math.hypot(dx, dy) > 5) start.moved = true;
           const degrees = 160 / e.currentTarget.clientWidth / start.camera.zoom;
           const zoom = points.length > 1 && start.points.length > 1 ?
@@ -151,7 +156,7 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
           <span className="nature-orbit__dot" /><span>{english && s.explorer_data.title_en || s.title_de}</span></a>;
       })}
     </div>
-    <aside className="nature-orbit__story" aria-live="polite">
+    <div role="complementary" className="nature-orbit__story" aria-live="polite">
       {selected ? <>
         {photo && /^\/nature\/[\w-]+\.webp$/.test(photo.path) && <img src={photo.path} alt={english ? photo.caption_en : photo.caption_de} />}
         <div><h2>{title}</h2><p>{summary}</p>
@@ -164,7 +169,7 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
         </div>
       </> : <div><h2>{location ? location.lat.toFixed(2) + '° · ' + location.lon.toFixed(2) + '°' : t('Die Welt unter deinen Fingern', 'The world at your fingertips')}</h2>
         <p>{t('Ziehen zum Drehen · Tippen zum Annähern · Zwei Finger zum Zoomen', 'Drag to rotate · Tap to approach · Pinch to zoom')}</p></div>}
-    </aside>
+    </div>
     <footer className="nature-orbit__source">
       <a href={imagery === 'daily' ? 'https://worldview.earthdata.nasa.gov/' : 'https://commons.wikimedia.org/wiki/File:Land_ocean_ice_2048.jpg'}>
         {imagery === 'daily' ? 'NASA GIBS · MODIS Terra · ' + date : 'NASA / Reto Stöckli · Blue Marble'}</a>

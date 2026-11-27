@@ -2,7 +2,7 @@ import type {OrbitCamera} from './orbit';
 
 export function orbitRenderer(canvas: HTMLCanvasElement) {
   const gl = canvas.getContext('webgl', {alpha: true, antialias: true, powerPreference: 'low-power'});
-  if (!gl) return null;
+  if (!gl) return softwareOrbitRenderer(canvas);
   function compile(type: number, code: string) {
     const shader = gl!.createShader(type)!;
     gl!.shaderSource(shader, code);
@@ -64,5 +64,51 @@ export function orbitRenderer(canvas: HTMLCanvasElement) {
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     },
     dispose() {gl.deleteTexture(texture); gl.deleteBuffer(buffer); gl.deleteProgram(program);},
+  };
+}
+
+
+// Canvas fallback retains the same geographic projection on devices without WebGL.
+function softwareOrbitRenderer(canvas: HTMLCanvasElement) {
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+  const resolution = 320;
+  canvas.width = canvas.height = resolution;
+  const frame = context.createImageData(resolution, resolution);
+  const rad = Math.PI / 180;
+  let map: ImageData | null = null;
+  let last = 0;
+  return {
+    image(image: HTMLImageElement) {
+      const surface = document.createElement('canvas');
+      surface.width = image.width; surface.height = image.height;
+      const source = surface.getContext('2d')!;
+      source.drawImage(image, 0, 0);
+      map = source.getImageData(0, 0, image.width, image.height);
+    },
+    draw(camera: OrbitCamera) {
+      if (!map || performance.now() - last < 33) return;
+      last = performance.now();
+      const sin = Math.sin(camera.lat*rad), cos = Math.cos(camera.lat*rad);
+      frame.data.fill(0);
+      for (let row=0; row<resolution; row++) {
+        const y = (1 - (row+.5)/resolution*2) / camera.zoom;
+        for (let col=0; col<resolution; col++) {
+          const x = ((col+.5)/resolution*2 - 1) / camera.zoom;
+          const r = 1-x*x-y*y;
+          if (r < 0) continue;
+          const z = Math.sqrt(r);
+          const lat = Math.asin(Math.max(-1, Math.min(1,y*cos+z*sin)));
+          const lon = camera.lon*rad + Math.atan2(x,z*cos-y*sin);
+          const u = Math.floor((lon/(2*Math.PI)+1.5)*map.width) % map.width;
+          const v = Math.max(0,Math.min(map.height-1,Math.floor((.5-lat/Math.PI)*map.height)));
+          const src = 4*(v*map.width+u), dst = 4*(row*resolution+col);
+          for (let c=0;c<3;c++) frame.data[dst+c] = map.data[src+c]*(.86+.14*z);
+          frame.data[dst+3] = 255;
+        }
+      }
+      context.putImageData(frame,0,0);
+    },
+    dispose() {map = null;},
   };
 }
