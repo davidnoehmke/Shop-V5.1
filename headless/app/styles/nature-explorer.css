@@ -115,3 +115,12 @@ body:has(.nature-shell) { min-height: 100dvh; }
   .nature-atlas__photo--earth img { height: auto; width: 76%; max-height: 90%; object-fit: contain; }
   .nature-atlas__card { padding-inline: var(--atlas-edge); }
 }
+.nature-globe { position: relative; height: min(82%, 77vw); aspect-ratio: 1; }
+.nature-atlas .nature-globe img, .nature-globe canvas { width: 100%; height: 100%; position: absolute; inset: 0; }
+.nature-globe canvas { touch-action: none; cursor: grab; border-radius: 50%; }
+.nature-globe canvas:active { cursor: grabbing; }
+.nature-globe__pin { position: absolute; transform: translate(-50%, -50%); width: 44px; height: 44px; display: grid; place-items: center; }
+.nature-globe__pin span { width: 16px; height: 16px; border-radius: 50%; border: 3px solid var(--leaf-olive); background: var(--leaf-cream); box-shadow: 0 0 0 4px var(--leaf-sage); }
+@media (min-width: 50rem), (orientation: landscape) and (max-height: 32rem) {
+  .nature-globe { width: min(82%, 70vh); height: auto; }
+}

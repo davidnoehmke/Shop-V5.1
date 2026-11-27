@@ -39,6 +39,9 @@ const additionalTables = {
   // 20261126010126_add_leaf_grow_calendar_crops.sql and
   // 20261126012102_restrict_grow_calendar_public_privileges.sql: public SELECT
   // behind RLS; preserve existing service_role ACLs without adding new grants.
+  // The explorer projections run with the caller's permissions on their RLS tables.
+  'public.ecosystem_public_regions': { rls: false, anon: ['SELECT'], authenticated: ['SELECT'] },
+  'public.ecosystem_public_hotspots': { rls: false, anon: ['SELECT'], authenticated: ['SELECT'] },
   'public.grow_calendar_crops': { rls: true, anon: ['SELECT'], authenticated: ['SELECT'] }
 };
 const functions = {
@@ -66,6 +69,20 @@ const fixtures = `
   create table public.collection_content(shopify_gid text primary key);
   create table public.product_readiness(product_gid text primary key);
   create table public.configurator_projects(id uuid primary key);
+  create table public.ecosystem_regions (
+    slug text primary key, title_de text, title_en text, biome text, center_lat float8, center_lon float8,
+    zoom_distance numeric, icon_key text, summary_de text, ecological_role_de text, source_citations jsonb, status text
+  );
+  create table public.ecosystem_hotspots (
+    slug text primary key, region_slug text, title_de text, latitude float8, longitude float8,
+    icon_key text, category text, teaser_de text, detail_de text, priority smallint, min_zoom numeric,
+    source_citations jsonb, related_paths jsonb, status text
+  );
+  alter table public.ecosystem_regions enable row level security;
+  alter table public.ecosystem_hotspots enable row level security;
+  create policy region_read on public.ecosystem_regions for select using (status = 'published');
+  create policy hotspot_read on public.ecosystem_hotspots for select using (status = 'published');
+  grant select on public.ecosystem_regions, public.ecosystem_hotspots to anon, authenticated;
   create table private.admin_bootstrap_config(id uuid primary key);
   set check_function_bodies = off;
 `;
@@ -90,6 +107,7 @@ async function replay({ legacy = false, omitCorrection = false } = {}) {
         // updates, projection calls, cron or data seeds against test fixtures.
         if (/^create\s+(or\s+replace\s+)?(schema|table|view|function)\b/i.test(sql) ||
             /^alter table\s+\S+\s+enable row level security/i.test(sql) ||
+            /^alter table public\.ecosystem_(regions|hotspots) add column if not exists explorer_data/i.test(sql) ||
             /^(grant|revoke|alter default privileges)\b/i.test(sql)) {
           await db.exec(sql);
         }
@@ -312,5 +330,22 @@ for (const legacy of [false, true]) test(`calendar ${legacy ? 'legacy' : 'strict
       await assert.rejects(insertCalendarRow(db, calendarRow(`invalid-${index}`, changes)), /check constraint/);
     await assert.rejects(db.exec("update public.grow_calendar_crops set is_published=true where slug='draft'"), /check constraint/);
     assert.equal(await scalar(db, "select count(*)::int from public.grow_calendar_crops where is_published"), 1);
+  } finally { await db.close(); }
+});
+
+
+test('the public explorer requires published, sourced parents and stations', async () => {
+  const db = await replay();
+  try {
+    await db.exec(`
+      insert into public.ecosystem_regions (slug,status,source_citations) values
+        ('live','published','[{}]'),('unverified','published','[]'),('draft','draft','[{}]');
+      insert into public.ecosystem_hotspots (slug,region_slug,status,source_citations) values
+        ('ok','live','published','[{}]'),('empty','live','published','[]'),('hidden','live','draft','[{}]'),
+        ('hidden-parent','draft','published','[{}]'),('unverified-parent','unverified','published','[{}]');
+      set role anon;
+    `);
+    assert.deepEqual((await db.query('select slug from public.ecosystem_public_regions')).rows, [{slug: 'live'}]);
+    assert.deepEqual((await db.query('select slug from public.ecosystem_public_hotspots')).rows, [{slug: 'ok'}]);
   } finally { await db.close(); }
 });

@@ -3,6 +3,7 @@ import type {Route} from './+types/pages.nature-explorer';
 import {publishedRegions, regionStations} from '~/lib/nature-explorer.server';
 import type {Photo} from '~/lib/nature-explorer.server';
 import {explorerUrl, isShopLearningPath} from '~/lib/nature-navigation';
+import {NatureGlobe} from '~/components/NatureGlobe';
 import styles from '~/styles/nature-explorer.css?url';
 
 export const links = () => [{rel: 'stylesheet', href: styles}];
@@ -78,8 +79,9 @@ export default function NatureExplorer() {
       <div className="nature-atlas__stage" key={(station?.slug ?? region?.slug ?? 'world') + String(more)}>
         {photo && /^\/nature\/[\w-]+\.webp$/.test(photo.path) && (
           <figure className={'nature-atlas__photo' + (!region ? ' nature-atlas__photo--earth' : '')}>
-            <img src={photo.path} alt={english ? photo.caption_en : photo.caption_de} fetchPriority="high" />
-            {nextUrl && !more && <Link className="nature-atlas__zoom" to={nextUrl}
+             {region ? <img src={photo.path} alt={english ? photo.caption_en : photo.caption_de} fetchPriority="high" /> :
+              <NatureGlobe regions={regions} english={english} />}
+            {region && nextUrl && !more && <Link className="nature-atlas__zoom" to={nextUrl}
               aria-label={t('Näher erkunden', 'Explore closer')}>＋</Link>}
             <figcaption>{english ? photo.caption_en : photo.caption_de}</figcaption>
           </figure>
@@ -96,6 +98,7 @@ export default function NatureExplorer() {
           {more && <div className="nature-atlas__refs">
             {details?.plot_id && <span>{details.plot_id} · {details.observed_on}</span>}
             {sources.filter((s) => https(s?.url)).map((s) => <a href={s.url} key={s.url}>{s.label || t('Fachquelle', 'Source')} ↗</a>)}
+            {!region && <a href="https://commons.wikimedia.org/wiki/File:Land_ocean_ice_2048.jpg">{t('Erdtextur', 'Globe texture')} · NASA / Reto Stöckli ↗</a>}
             {photo && <span>{t('Bild', 'Image')} · <a href={https(photo.source)}>{photo.credit}</a> · <a href={https(photo.license_url)}>{photo.license}</a> · WebP</span>}
           </div>}
           {!region && !more && regions.length > 1 && <form className="nature-atlas__select" action={link()}>
@@ -107,7 +110,7 @@ export default function NatureExplorer() {
             {path === '/products/leafer-substrat-konfigurator' ? t('Eigene Substratmischung planen', 'Plan your substrate mix') : path.split('/').pop()?.replaceAll('-', ' ')} ↗
           </Link>)}
           <nav className="nature-atlas__actions" aria-label={t('Erkunden', 'Explore')}>
-            {!more && nextUrl && <Link className="nature-atlas__next" to={nextUrl}>{next ? (english && next.explorer_data.title_en || next.title_de) :
+            {!more && nextUrl && <Link viewTransition className="nature-atlas__next" to={nextUrl}>{next ? (english && next.explorer_data.title_en || next.title_de) :
               (english && regions[0]?.title_en || regions[0]?.title_de)} →</Link>}
             {!more && region && !nextUrl && <Link className="nature-atlas__next" to={link()}>{t('Zur Welt', 'World view')} →</Link>}
             <Link className="nature-atlas__info" to={link(region?.slug, station?.slug, !more)}>

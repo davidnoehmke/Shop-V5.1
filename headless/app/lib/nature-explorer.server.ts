@@ -9,7 +9,7 @@ export type ExplorerData = {
   plot_id?: string; observed_on?: string;
 };
 export type Region = {
-  slug: string; title_de: string; title_en?: string; summary_de: string;
+  slug: string; center_lat: number; center_lon: number; title_de: string; title_en?: string; summary_de: string;
   source_citations: Citation[]; explorer_data: ExplorerData;
 };
 export type Station = {
@@ -32,7 +32,7 @@ async function rows<T>(env: Env, view: string, query: Record<string, string>): P
 
 export function publishedRegions(env: Env) {
   return rows<Region>(env, 'ecosystem_public_regions', {
-    select: 'slug,title_de,title_en,summary_de,source_citations,explorer_data', order: 'title_de,slug',
+    select: 'slug,center_lat,center_lon,title_de,title_en,summary_de,source_citations,explorer_data', order: 'title_de,slug',
   });
 }
 
