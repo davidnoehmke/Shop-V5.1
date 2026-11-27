@@ -3,7 +3,14 @@ export type Photo = {
   path: string; caption_de: string; caption_en: string; credit: string;
   source: string; license: string; license_url: string;
 };
+export type ZoomStage = {
+  id: string; min_zoom: number; label_de: string; label_en: string;
+  question_de: string; question_en: string; answer_de: string; answer_en: string;
+  source_citations: Citation[]; station_slug?: string;
+};
 export type ExplorerData = {
+  zoom_story?: ZoomStage[];
+
   media?: Photo; summary_en?: string; title_en?: string; teaser_en?: string; detail_en?: string;
   depth_cm?: [number, number]; ph?: number; horizon?: string; taxon?: string;
   plot_id?: string; observed_on?: string;

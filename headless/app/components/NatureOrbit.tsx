@@ -1,18 +1,22 @@
 import {useEffect, useRef, useState} from 'react';
 import {Link} from 'react-router';
+import {ZoomKnowledge} from './ZoomKnowledge';
+import {validStages, zoomKnowledge} from '~/lib/zoom-knowledge';
 import {orbitRenderer} from '~/lib/orbit-renderer';
 import {approachCamera, boundedCamera, orbitLocation, orbitPoint} from '~/lib/orbit';
 import type {OrbitCamera} from '~/lib/orbit';
-import type {Region, Station} from '~/lib/nature-explorer.server';
-import {isShopLearningPath} from '~/lib/nature-navigation';
+import type {Region, Station, ZoomStage} from '~/lib/nature-explorer.server';
 
-type Props = {regions: Region[]; stations: Station[]; date?: string; english: boolean; regionId?: string};
+type Props = {regions: Region[]; stations: Station[]; date?: string; english: boolean; regionId?: string; levelId?: string};
 type Point = {x: number; y: number};
 const distance = (points: Point[]) => Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
 
-export function NatureOrbit({regions, stations, date, english, regionId}: Props) {
+export function NatureOrbit({regions, stations, date, english, regionId, levelId}: Props) {
   const region = regions.find(r => r.slug === regionId);
-  const initial: OrbitCamera = {lat: region?.center_lat ?? 18, lon: region?.center_lon ?? -46, zoom: region ? 4 : 1};
+  const level = region && validStages(region).find(s => s.id === levelId);
+  const levelStation = stations.find(s => s.slug === level?.station_slug);
+  const initial: OrbitCamera = {lat: levelStation?.latitude ?? region?.center_lat ?? 18,
+    lon: levelStation?.longitude ?? region?.center_lon ?? -46, zoom: level ? level.min_zoom+.35 : region ? 2.35 : 1};
   const surface = useRef<HTMLCanvasElement>(null);
   const current = useRef(initial);
   const target = useRef(initial);
@@ -22,8 +26,8 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
   const [camera, setCamera] = useState(initial);
   const [ready, setReady] = useState(false);
   const [imagery, setImagery] = useState<'base' | 'loading' | 'daily' | 'fallback'>(date ? 'loading' : 'base');
-  const [selected, setSelected] = useState<Region | Station | null>(region ?? null);
-  const [location, setLocation] = useState<OrbitCamera | null>(null);
+  const [dock, setDock] = useState<'top' | 'bottom'>('bottom');
+  const [side, setSide] = useState<'left' | 'right'>('left');
   const t = (de: string, en: string) => english ? en : de;
 
   useEffect(() => {
@@ -73,10 +77,10 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
     };
   }, [date]);
 
-  function fly(lat: number, lon: number, zoom: number, item: Region | Station | null = null) {
+  function fly(lat: number, lon: number, zoom: number) {
     pauseUntil.current = performance.now() + 30000;
     target.current = boundedCamera({lat, lon, zoom});
-    setLocation(target.current); setSelected(item);
+
   }
   function resetGesture() {
     const points = [...pointers.current.values()];
@@ -87,13 +91,11 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
     const hit = orbitLocation((x - box.left)/box.width*2 - 1, 1 - (y - box.top)/box.height*2, current.current);
     if (hit) fly(hit.lat, hit.lon, current.current.zoom * 1.9);
   }
-  const metadata = selected?.explorer_data;
-  const title = selected ? (english && ('title_en' in selected ? selected.title_en : metadata?.title_en) || selected.title_de) : '';
-  const summary = selected ? ('teaser_de' in selected ? (english && metadata?.teaser_en || selected.teaser_de) :
-    (english && metadata?.summary_en || selected.summary_de)) : '';
-  const photo = metadata?.media;
-  const paths = selected && 'related_paths' in selected ? selected.related_paths.filter(isShopLearningPath) : [];
-  const activeRegion = selected && 'region_slug' in selected ? selected.region_slug : selected?.slug;
+  const activeRegion = zoomKnowledge(regions,camera).region?.slug;
+  function jump(destination: Region, stage: ZoomStage) {
+    const site = stations.find(s => s.slug === stage.station_slug && s.region_slug === destination.slug);
+    fly(site?.latitude ?? destination.center_lat,site?.longitude ?? destination.center_lon,stage.min_zoom+.35);
+  }
   return <article className="nature-orbit" aria-label="Nature Explorer">
     <header className="nature-orbit__heading"><Link to={english ? '/en' : '/'}>LEAFerservice ↗</Link>
       <h1>Nature Explorer</h1></header>
@@ -104,6 +106,8 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
           'Globe. Drag to rotate, tap to approach, pinch to zoom. Arrow keys rotate, plus and minus zoom, Escape resets.')}
         onPointerDown={e => {
           pauseUntil.current = performance.now() + 30000;
+          setDock(e.clientY > innerHeight*.55 ? 'top' : 'bottom');
+          setSide(e.clientX > innerWidth*.5 ? 'left' : 'right');
           pointers.current.set(e.pointerId, {x: e.clientX, y: e.clientY}); resetGesture();
           e.currentTarget.setPointerCapture(e.pointerId);
         }}
@@ -138,38 +142,26 @@ export function NatureOrbit({regions, stations, date, english, regionId}: Props)
           if (['+', '=', '-', 'Escape'].includes(e.key)) {
             e.preventDefault();
             if (e.key === 'Escape') fly(initial.lat, initial.lon, 1);
-            else fly(target.current.lat, target.current.lon, target.current.zoom * (e.key === '-' ? .7 : 1.4), selected);
+            else fly(target.current.lat, target.current.lon, target.current.zoom * (e.key === '-' ? .7 : 1.4));
           }
         }} />
-      {ready && regions.map(region => {
+      {ready && camera.zoom < 3.8 && regions.map(region => {
         const position = orbitPoint(region.center_lat, region.center_lon, camera);
         return position && <a href={'?region=' + region.slug + (date ? '&imagery=daily&date=' + date : '')}
           key={region.slug} className="nature-orbit__point" style={position}
-          onClick={e => {e.preventDefault(); fly(region.center_lat, region.center_lon, 4, region);}}>
+          onClick={e => {e.preventDefault(); fly(region.center_lat, region.center_lon, 2.35);}}>
           <span className="nature-orbit__dot" /><span>{english && region.title_en || region.title_de}</span></a>;
       })}
       {ready && camera.zoom > 3 && stations.filter(s => !activeRegion || s.region_slug === activeRegion).map((s, index) => {
         const position = orbitPoint(s.latitude, s.longitude, camera);
         return position && <a key={s.slug} href={'/pages/nature-explorer?region=' + s.region_slug + '&station=' + s.slug}
           className="nature-orbit__point nature-orbit__station" style={{...position, marginTop: (index * 38) + 'px'}}
-          onClick={e => {e.preventDefault(); fly(s.latitude, s.longitude, Math.max(6, camera.zoom), s);}}>
+          onClick={e => {e.preventDefault(); fly(s.latitude, s.longitude, (validStages(regions.find(r => r.slug===s.region_slug)!).find(level => level.station_slug===s.slug)?.min_zoom ?? 7)+.35);}}>
           <span className="nature-orbit__dot" /><span>{english && s.explorer_data.title_en || s.title_de}</span></a>;
       })}
     </div>
-    <div role="complementary" className="nature-orbit__story" aria-live="polite">
-      {selected ? <>
-        {photo && /^\/nature\/[\w-]+\.webp$/.test(photo.path) && <img src={photo.path} alt={english ? photo.caption_en : photo.caption_de} />}
-        <div><h2>{title}</h2><p>{summary}</p>
-          {metadata?.depth_cm && <p>{metadata.depth_cm.join('–')} cm · pH {metadata.ph}</p>}
-          {paths.map(path => <Link key={path} to={(english ? '/en' : '') + path}>{t('Eigene Mischung planen', 'Plan your mix')} ↗</Link>)}
-          <div className="nature-orbit__credits">
-            {selected.source_citations.map(s => /^https:\/\//.test(s.url) && <a key={s.url} href={s.url}>{s.label} ↗</a>)}
-            {photo && <span><a href={photo.source}>{photo.credit}</a> · <a href={photo.license_url}>{photo.license}</a> · WebP</span>}
-          </div>
-        </div>
-      </> : <div><h2>{location ? location.lat.toFixed(2) + '° · ' + location.lon.toFixed(2) + '°' : t('Die Welt unter deinen Fingern', 'The world at your fingertips')}</h2>
-        <p>{t('Ziehen zum Drehen · Tippen zum Annähern · Zwei Finger zum Zoomen', 'Drag to rotate · Tap to approach · Pinch to zoom')}</p></div>}
-    </div>
+    <ZoomKnowledge key={dock+side} regions={regions} stations={stations} camera={camera} english={english}
+      dock={dock} side={side} jump={jump} />
     <footer className="nature-orbit__source">
       <a href={imagery === 'daily' ? 'https://worldview.earthdata.nasa.gov/' : 'https://commons.wikimedia.org/wiki/File:Land_ocean_ice_2048.jpg'}>
         {imagery === 'daily' ? 'NASA GIBS · MODIS Terra · ' + date : 'NASA / Reto Stöckli · Blue Marble'}</a>
