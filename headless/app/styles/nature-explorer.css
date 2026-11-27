@@ -1,0 +1,117 @@
+body > main.nature-shell { margin: 0; padding: 0; max-width: none; }
+body:has(.nature-shell) { min-height: 100dvh; }
+.nature-atlas {
+  --atlas-edge: clamp(1rem, 4vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  min-height: 30rem;
+  height: 100svh;
+  height: 100dvh;
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+}
+.nature-atlas__bar, .nature-atlas__actions, .nature-atlas__metrics, .nature-atlas__select {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+.nature-atlas__bar {
+  flex: none;
+  justify-content: space-between;
+  padding: max(.25rem, env(safe-area-inset-top)) var(--atlas-edge) .25rem;
+  border-bottom: 1px solid var(--leaf-line);
+}
+.nature-atlas__bar a, .nature-atlas__actions a, .nature-atlas__shop, .nature-atlas__select button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: inherit;
+}
+.nature-atlas__bar a:first-child { min-width: 44px; font-size: 1.4rem; }
+.nature-atlas__bar a:nth-child(2) { font-weight: 650; letter-spacing: -.035em; }
+.nature-atlas__stage {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: minmax(5rem, 1fr) auto;
+}
+.nature-atlas__photo {
+  position: relative;
+  margin: 0;
+  min-height: 0;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--leaf-surface-sage);
+}
+.nature-atlas__photo img { width: 100%; height: 100%; object-fit: cover; animation: nature-arrive .4s ease-out; }
+.nature-atlas__photo:has(img[src$="profile.webp"]) img { object-fit: contain; }
+.nature-atlas__photo--earth {
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, var(--leaf-surface-sage), var(--leaf-sand));
+}
+.nature-atlas__photo--earth img {
+  width: auto;
+  height: min(82%, 78vw);
+  aspect-ratio: 1;
+  clip-path: circle(49%);
+}
+.nature-atlas__photo figcaption {
+  position: absolute;
+  left: var(--atlas-edge);
+  bottom: .65rem;
+  max-width: calc(100% - 2 * var(--atlas-edge));
+  padding: .2rem .55rem;
+  border-radius: .35rem;
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+  font-size: .74rem;
+}
+.nature-atlas__zoom {
+  position: absolute;
+  right: var(--atlas-edge);
+  top: .75rem;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  font-weight: 600;
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+  box-shadow: 0 2px 12px var(--leaf-shadow);
+}
+.nature-atlas__card {
+  padding: clamp(.8rem, 2vh, 2rem) var(--atlas-edge) max(.7rem, env(safe-area-inset-bottom));
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: clamp(.3rem, 1vh, .8rem);
+}
+.nature-atlas__card h1, .nature-atlas__card p { margin: 0; }
+.nature-atlas__card h1 { font-size: clamp(1.55rem, 6vw, 3.7rem); line-height: 1.04; letter-spacing: -.045em; text-wrap: balance; }
+.nature-atlas__card p { font-size: clamp(.95rem, 2.6vw, 1.18rem); line-height: 1.4; max-width: 55ch; }
+.nature-atlas__level { text-transform: uppercase; letter-spacing: .14em; font-size: .72rem; font-weight: 700; }
+.nature-atlas__metrics { flex-wrap: wrap; font-variant-numeric: tabular-nums; }
+.nature-atlas__refs { display: grid; gap: .35rem; font-size: .85rem; }
+.nature-atlas__refs a, .nature-atlas__shop, .nature-atlas__info { text-decoration: underline; text-underline-offset: .2em; }
+.nature-atlas__actions { flex-wrap: wrap; gap: .15rem .8rem; }
+.nature-atlas__actions .nature-atlas__next, .nature-atlas__select button {
+  padding: .5rem .85rem;
+  border: 0;
+  border-radius: .5rem;
+  background: var(--leaf-olive);
+  color: var(--leaf-cream);
+  font-weight: 600;
+}
+.nature-atlas__actions .nature-atlas__info { font-size: .88rem; }
+.nature-atlas__card:only-child { grid-row: 1 / -1; }
+@keyframes nature-arrive { from { transform: scale(.96); opacity: .75; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .nature-atlas__photo img { animation: none; } }
+@media (min-width: 50rem), (orientation: landscape) and (max-height: 32rem) {
+  .nature-atlas { min-height: 18rem; }
+  .nature-atlas__stage { grid-template-columns: 1.1fr 1fr; grid-template-rows: 1fr; }
+  .nature-atlas__photo--earth img { height: auto; width: 76%; max-height: 90%; object-fit: contain; }
+  .nature-atlas__card { padding-inline: var(--atlas-edge); }
+}

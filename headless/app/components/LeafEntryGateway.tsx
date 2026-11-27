@@ -87,6 +87,7 @@ export function LeafEntryGateway({locale, heroImage, stories = [], products = []
           <p className="leaf-entry__eyebrow">{text.knowledgeKicker}</p>
           <h2 id="leaf-entry-knowledge">{text.knowledgeTitle}</h2>
           <p>{text.knowledgeText}</p>
+          <Link className="leaf-entry__text-link" to={`${prefix}/pages/nature-explorer`} prefetch="intent">{locale === 'de' ? 'Natürliche Pflanzenstandorte erkunden' : 'Explore natural plant habitats'} →</Link>
           <Link className="leaf-entry__text-link" to={`${prefix}/blogs`} prefetch="intent">{text.knowledgeAction}<span aria-hidden="true">&rarr;</span></Link>
         </header>
         {stories.length > 0 ? <div className="leaf-entry__stories">
