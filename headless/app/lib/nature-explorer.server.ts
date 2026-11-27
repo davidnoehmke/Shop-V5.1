@@ -13,7 +13,7 @@ export type Region = {
   source_citations: Citation[]; explorer_data: ExplorerData;
 };
 export type Station = {
-  slug: string; region_slug: string; title_de: string; category: string;
+  slug: string; region_slug: string; latitude: number; longitude: number; title_de: string; category: string;
   teaser_de: string; detail_de: string; priority: number; source_citations: Citation[];
   related_paths: string[]; explorer_data: ExplorerData;
 };
@@ -38,7 +38,7 @@ export function publishedRegions(env: Env) {
 
 export function regionStations(env: Env, region: string) {
   return rows<Station>(env, 'ecosystem_public_hotspots', {
-    select: 'slug,region_slug,title_de,category,teaser_de,detail_de,priority,source_citations,related_paths,explorer_data',
+    select: 'slug,region_slug,latitude,longitude,title_de,category,teaser_de,detail_de,priority,source_citations,related_paths,explorer_data',
     region_slug: 'eq.' + region, order: 'priority,slug',
   });
 }

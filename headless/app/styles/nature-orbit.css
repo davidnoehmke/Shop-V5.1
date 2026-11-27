@@ -1,0 +1,35 @@
+body > main.nature-shell { margin: 0; padding: 0; max-width: none; }
+body:has(.nature-orbit) { background: var(--leaf-cream); }
+.nature-orbit { height: 100dvh; min-height: 28rem; position: relative; overflow: hidden; background: radial-gradient(ellipse at 50% 38%, var(--leaf-surface-sage), var(--leaf-cream) 68%); color: var(--leaf-ink); }
+.nature-orbit__heading { position: absolute; inset: max(1rem, env(safe-area-inset-top)) 1.2rem auto; display: flex; justify-content: space-between; align-items: center; z-index: 2; }
+.nature-orbit__heading h1 { font-size: .8rem; font-weight: 400; margin: 0; }
+.nature-orbit__heading a { min-height: 44px; display: inline-flex; align-items: center; font-size: .85rem; font-weight: 650; color: inherit; }
+.nature-orbit__sphere { position: absolute; width: min(95vw, 68dvh); height: min(95vw, 68dvh); left: 50%; top: 10%; transform: translateX(-50%); }
+.nature-orbit__canvas, .nature-orbit__fallback { position: absolute; width: 100%; height: 100%; inset: 0; }
+.nature-orbit__fallback { clip-path: circle(49%); }
+.nature-orbit__canvas { touch-action: none; cursor: grab; }
+.nature-orbit__canvas:active { cursor: grabbing; }
+.nature-orbit__point { position: absolute; transform: translate(-12px, -50%); display: flex; align-items: center; gap: .45rem; min-height: 44px; max-width: 80%; color: inherit; font-size: .76rem; font-weight: 600; }
+.nature-orbit__point > span:last-child { padding: .25rem .5rem; background: var(--leaf-cream); border-radius: .4rem; box-shadow: 0 2px 12px var(--leaf-shadow); }
+.nature-orbit__dot { width: 12px; height: 12px; border: 3px solid var(--leaf-olive); border-radius: 50%; background: var(--leaf-cream); flex: none; }
+.nature-orbit__station { font-size: .7rem; }
+.nature-orbit__story { position: absolute; bottom: max(4.2rem, calc(3rem + env(safe-area-inset-bottom))); left: 1.2rem; right: 1.2rem; display: flex; align-items: start; gap: .8rem; pointer-events: none; }
+.nature-orbit__story > div { padding: .6rem .8rem; border-radius: .6rem; background: color-mix(in srgb, var(--leaf-cream) 94%, transparent); max-width: 35rem; }
+.nature-orbit__story h2 { font-size: clamp(1.1rem, 4.8vw, 1.7rem); line-height: 1.12; margin: 0 0 .45rem; letter-spacing: -.035em; }
+.nature-orbit__story p { font-size: .85rem; line-height: 1.4; margin: 0 0 .3rem; }
+.nature-orbit__story img { width: 64px; max-height: 104px; object-fit: cover; border-radius: .4rem; }
+.nature-orbit__story a, .nature-orbit__source a { color: inherit; pointer-events: auto; text-decoration: underline; text-underline-offset: .2em; }
+.nature-orbit__story a { font-size: .8rem; }
+.nature-orbit__credits { display: flex; gap: .25rem .6rem; flex-wrap: wrap; font-size: .65rem; margin-top: .4rem; }
+.nature-orbit__credits a { font-size: inherit; }
+.nature-orbit__source { position: absolute; bottom: max(.9rem, env(safe-area-inset-bottom)); left: 1.2rem; right: 1.2rem; font-size: .65rem; display: flex; gap: .2rem; flex-direction: column; }
+@media (min-width: 52rem) {
+  .nature-orbit__sphere { width: 78dvh; height: 78dvh; top: 8%; }
+  .nature-orbit__story { left: 2.4rem; right: auto; max-width: 27rem; }
+  .nature-orbit__story > div { box-shadow: 0 4px 30px var(--leaf-shadow); }
+}
+@media (orientation: landscape) and (max-height: 32rem) {
+  .nature-orbit { min-height: 20rem; }
+  .nature-orbit__sphere { width: 80dvh; height: 80dvh; left: 70%; top: 8%; }
+  .nature-orbit__story { max-width: 45%; bottom: 3rem; }
+}

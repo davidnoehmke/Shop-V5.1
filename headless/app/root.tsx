@@ -1,5 +1,5 @@
 import {Suspense} from 'react';
-import {explorerPath, explorerUrl, isShopLearningPath} from '~/lib/nature-navigation';
+import {explorerUrl, isShopLearningPath} from '~/lib/nature-navigation';
 import {relatedStations} from '~/lib/nature-explorer.server';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
@@ -188,7 +188,7 @@ export default function App() {
   const {pathname} = useLocation();
   const data = useRouteLoaderData<RootLoader>('root');
 
-  if (pathname.replace(/^\/en(?=\/)/, '') === explorerPath) return <main className="nature-shell"><Outlet /></main>;
+  if (pathname.replace(/^\/en(?=\/)/, '').match(/^\/pages\/nature-(?:explorer|globe)$/)) return <main className="nature-shell"><Outlet /></main>;
 
   if (!data) {
     return <Outlet />;
