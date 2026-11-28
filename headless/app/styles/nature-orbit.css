@@ -213,7 +213,7 @@ body > main.nature-shell {
   font-size: 0.65rem;
   line-height: 1.5;
 }
-.zoom-knowledge > a {
+.zoom-knowledge__body > a {
   font-size: 0.82rem;
   display: inline-flex;
   align-items: center;
@@ -318,4 +318,50 @@ body > main.nature-shell {
   border: 1px solid var(--leaf-line);
   border-radius: 0.5rem;
   color: var(--leaf-ink);
+}
+
+.zoom-knowledge__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.zoom-knowledge__toolbar .zoom-knowledge__handle {
+  flex: 1;
+  min-width: 0;
+}
+.zoom-knowledge__toggle {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-width: 44px;
+  min-height: 44px;
+  flex: none;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--leaf-line);
+  border-radius: 0.65rem;
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+  cursor: pointer;
+  font-size: 1rem;
+}
+.zoom-knowledge__body[hidden] {
+  display: none;
+}
+.nature-orbit__story:has(.zoom-knowledge--minimized) {
+  width: fit-content;
+}
+.zoom-knowledge--minimized {
+  padding: 0.2rem;
+  border-radius: 0.85rem;
+}
+.zoom-knowledge--minimized .zoom-knowledge__handle {
+  display: none;
+}
+.zoom-knowledge--minimized .zoom-knowledge__toggle {
+  min-width: 9rem;
+  justify-content: space-between;
+  border: 0;
+  font-size: 0.85rem;
 }

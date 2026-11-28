@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useId, useRef, useState} from 'react';
 import {Link} from 'react-router';
 import type {CSSProperties} from 'react';
 import type {Region, Station, ZoomStage} from '~/lib/nature-explorer.server';
@@ -35,6 +35,8 @@ export function ZoomKnowledge({
     const timer = setTimeout(() => setContent(latest.current), 180);
     return () => clearTimeout(timer);
   }, [contentKey]);
+  const [minimized, setMinimized] = useState(false);
+  const contentId = useId();
   const [offset, setOffset] = useState({x: 0, y: 0});
   const panel = useRef<HTMLDivElement>(null);
   useEffect(() => setOffset({x: 0, y: 0}), [dock, side]);
@@ -85,150 +87,188 @@ export function ZoomKnowledge({
         } as CSSProperties
       }
     >
-      <div className="zoom-knowledge">
-        <div
-          className="zoom-knowledge__handle"
-          tabIndex={0}
-          role="button"
-          aria-label={t(
-            'Infobereich verschieben. Ziehen oder Pfeiltasten, Escape setzt zurück.',
-            'Move information panel. Drag or use arrow keys. Escape resets.',
-          )}
-          onPointerDown={(e) => {
-            drag.current = {
-              x: e.clientX,
-              y: e.clientY,
-              startX: offset.x,
-              startY: offset.y,
-              box: panel.current!.getBoundingClientRect(),
-            };
-            e.currentTarget.setPointerCapture(e.pointerId);
-          }}
-          onPointerMove={(e) => {
-            if (drag.current)
-              move(e.clientX - drag.current.x, e.clientY - drag.current.y);
-          }}
-          onPointerUp={() => {
-            drag.current = null;
-          }}
-          onPointerCancel={() => {
-            drag.current = null;
-          }}
-          onKeyDown={(e) => {
-            const delta = {
-              ArrowLeft: [-20, 0],
-              ArrowRight: [20, 0],
-              ArrowUp: [0, -20],
-              ArrowDown: [0, 20],
-            }[e.key];
-            if (['Escape', 'Enter', ' '].includes(e.key)) {
-              e.preventDefault();
-              setOffset({x: 0, y: 0});
-            }
-            if (delta) {
-              e.preventDefault();
+      <div
+        className={
+          'zoom-knowledge' + (minimized ? ' zoom-knowledge--minimized' : '')
+        }
+      >
+        <div className="zoom-knowledge__toolbar">
+          <div
+            className="zoom-knowledge__handle"
+            tabIndex={0}
+            role="button"
+            aria-label={t(
+              'Infobereich verschieben. Ziehen oder Pfeiltasten, Escape setzt zurück.',
+              'Move information panel. Drag or use arrow keys. Escape resets.',
+            )}
+            onPointerDown={(e) => {
               drag.current = {
-                x: 0,
-                y: 0,
+                x: e.clientX,
+                y: e.clientY,
                 startX: offset.x,
                 startY: offset.y,
                 box: panel.current!.getBoundingClientRect(),
               };
-              move(delta[0], delta[1]);
+              e.currentTarget.setPointerCapture(e.pointerId);
+            }}
+            onPointerMove={(e) => {
+              if (drag.current)
+                move(e.clientX - drag.current.x, e.clientY - drag.current.y);
+            }}
+            onPointerUp={() => {
               drag.current = null;
+            }}
+            onPointerCancel={() => {
+              drag.current = null;
+            }}
+            onKeyDown={(e) => {
+              const delta = {
+                ArrowLeft: [-20, 0],
+                ArrowRight: [20, 0],
+                ArrowUp: [0, -20],
+                ArrowDown: [0, 20],
+              }[e.key];
+              if (['Escape', 'Enter', ' '].includes(e.key)) {
+                e.preventDefault();
+                setOffset({x: 0, y: 0});
+              }
+              if (delta) {
+                e.preventDefault();
+                drag.current = {
+                  x: 0,
+                  y: 0,
+                  startX: offset.x,
+                  startY: offset.y,
+                  box: panel.current!.getBoundingClientRect(),
+                };
+                move(delta[0], delta[1]);
+                drag.current = null;
+              }
+            }}
+          >
+            <span>
+              {region ? t(region.title_de, region.title_en) + ' · ' : ''}
+              {stage
+                ? t(stage.label_de, stage.label_en)
+                : t('Entdecken', 'Explore')}
+            </span>
+            <span aria-hidden="true">⠿</span>
+          </div>
+          <button
+            type="button"
+            className="zoom-knowledge__toggle"
+            aria-expanded={!minimized}
+            aria-controls={contentId}
+            aria-label={
+              minimized
+                ? t('Infobox öffnen', 'Expand information')
+                : t('Infobox minimieren', 'Minimize information')
             }
-          }}
-        >
-          <span>
-            {region ? t(region.title_de, region.title_en) + ' · ' : ''}
-            {stage
-              ? t(stage.label_de, stage.label_en)
-              : t('Entdecken', 'Explore')}
-          </span>
-          <span aria-hidden="true">⠿</span>
+            onClick={() => {
+              setMinimized((value) => !value);
+              setOffset({x: 0, y: 0});
+            }}
+          >
+            {minimized && (
+              <span>
+                {stage
+                  ? t(stage.label_de, stage.label_en)
+                  : t('Wissen', 'Knowledge')}
+              </span>
+            )}
+            <span aria-hidden="true">{minimized ? '⌃' : '−'}</span>
+          </button>
         </div>
-        <div
-          aria-live="polite"
-          aria-atomic="true"
-          className="zoom-knowledge__answer"
-          key={(region?.slug ?? '') + stage?.id}
-        >
-          <h2>
-            {stage
-              ? t(stage.question_de, stage.question_en)
-              : t(
-                  'Was möchtest du verstehen?',
-                  'What would you like to understand?',
-                )}
-          </h2>
-          <p>
-            {stage
-              ? t(stage.answer_de, stage.answer_en)
-              : t(
-                  'Tippe einen Standort an und erkunde seine Zusammenhänge.',
-                  'Tap a site to explore its connections.',
-                )}
-          </p>
-          {station?.explorer_data.depth_cm && (
+        <div id={contentId} className="zoom-knowledge__body" hidden={minimized}>
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="zoom-knowledge__answer"
+            key={(region?.slug ?? '') + stage?.id}
+          >
+            <h2>
+              {stage
+                ? t(stage.question_de, stage.question_en)
+                : t(
+                    'Was möchtest du verstehen?',
+                    'What would you like to understand?',
+                  )}
+            </h2>
             <p>
-              {station.explorer_data.plot_id} ·{' '}
-              {station.explorer_data.depth_cm.join('–')} cm · pH{' '}
-              {station.explorer_data.ph?.toLocaleString(english ? 'en' : 'de', {
-                minimumFractionDigits: 1,
-              })}
+              {stage
+                ? t(stage.answer_de, stage.answer_en)
+                : t(
+                    'Tippe einen Standort an und erkunde seine Zusammenhänge.',
+                    'Tap a site to explore its connections.',
+                  )}
             </p>
+            {station?.explorer_data.depth_cm && (
+              <p>
+                {station.explorer_data.plot_id} ·{' '}
+                {station.explorer_data.depth_cm.join('–')} cm · pH{' '}
+                {station.explorer_data.ph?.toLocaleString(
+                  english ? 'en' : 'de',
+                  {
+                    minimumFractionDigits: 1,
+                  },
+                )}
+              </p>
+            )}
+          </div>
+          {photo && /^\/nature\/[\w-]+\.webp$/.test(photo.path) && (
+            <figure className="zoom-knowledge__photo">
+              <img
+                src={photo.path}
+                alt={t(photo.caption_de, photo.caption_en)}
+              />
+              <figcaption>
+                {t(photo.caption_de, photo.caption_en)} ·{' '}
+                <a href={photo.source}>{photo.credit}</a> ·{' '}
+                <a href={photo.license_url}>{photo.license}</a> · WebP
+              </figcaption>
+            </figure>
           )}
+          <nav
+            className="zoom-knowledge__jumps"
+            aria-label={t('Wissenssprünge', 'Knowledge jumps')}
+          >
+            {questions.map(({stage: s, destination}) => {
+              return (
+                <a
+                  key={destination.slug + '/' + s.id}
+                  href={'?region=' + destination.slug + '&level=' + s.id}
+                  aria-current={
+                    stage?.id === s.id && region?.slug === destination.slug
+                      ? 'step'
+                      : undefined
+                  }
+                  title={t(s.question_de, s.question_en)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOffset({x: 0, y: 0});
+                    jump(destination, s);
+                  }}
+                >
+                  {t(s.label_de, s.label_en)}
+                </a>
+              );
+            })}
+          </nav>
+          <div className="nature-orbit__credits">
+            {stage?.source_citations
+              .filter((s) => /^https:\/\//.test(s.url))
+              .map((s) => (
+                <a key={s.url} href={s.url}>
+                  {s.label} ↗
+                </a>
+              ))}
+          </div>
+          {station?.related_paths.filter(isShopLearningPath).map((path) => (
+            <Link key={path} to={(english ? '/en' : '') + path}>
+              {t('Eigene Mischung planen', 'Plan your mix')} ↗
+            </Link>
+          ))}
         </div>
-        {photo && /^\/nature\/[\w-]+\.webp$/.test(photo.path) && (
-          <figure className="zoom-knowledge__photo">
-            <img src={photo.path} alt={t(photo.caption_de, photo.caption_en)} />
-            <figcaption>
-              {t(photo.caption_de, photo.caption_en)} ·{' '}
-              <a href={photo.source}>{photo.credit}</a> ·{' '}
-              <a href={photo.license_url}>{photo.license}</a> · WebP
-            </figcaption>
-          </figure>
-        )}
-        <nav
-          className="zoom-knowledge__jumps"
-          aria-label={t('Wissenssprünge', 'Knowledge jumps')}
-        >
-          {questions.map(({stage: s, destination}) => {
-            return (
-              <a
-                key={destination.slug + '/' + s.id}
-                href={'?region=' + destination.slug + '&level=' + s.id}
-                aria-current={
-                  stage?.id === s.id && region?.slug === destination.slug
-                    ? 'step'
-                    : undefined
-                }
-                title={t(s.question_de, s.question_en)}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOffset({x: 0, y: 0});
-                  jump(destination, s);
-                }}
-              >
-                {t(s.label_de, s.label_en)}
-              </a>
-            );
-          })}
-        </nav>
-        <div className="nature-orbit__credits">
-          {stage?.source_citations
-            .filter((s) => /^https:\/\//.test(s.url))
-            .map((s) => (
-              <a key={s.url} href={s.url}>
-                {s.label} ↗
-              </a>
-            ))}
-        </div>
-        {station?.related_paths.filter(isShopLearningPath).map((path) => (
-          <Link key={path} to={(english ? '/en' : '') + path}>
-            {t('Eigene Mischung planen', 'Plan your mix')} ↗
-          </Link>
-        ))}
       </div>
     </div>
   );
