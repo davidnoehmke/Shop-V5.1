@@ -300,3 +300,22 @@ body > main.nature-shell {
     animation: none;
   }
 }
+
+.nature-orbit__heading a,
+.nature-orbit__heading h1 {
+  background: var(--leaf-cream);
+  border: 1px solid var(--leaf-line);
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+  color: var(--leaf-ink);
+  box-shadow: 0 3px 16px var(--leaf-shadow);
+}
+.nature-orbit__source {
+  width: fit-content;
+  max-width: calc(100% - 2.2rem);
+  padding: 0.35rem 0.55rem;
+  background: color-mix(in srgb, var(--leaf-cream) 96%, transparent);
+  border: 1px solid var(--leaf-line);
+  border-radius: 0.5rem;
+  color: var(--leaf-ink);
+}
