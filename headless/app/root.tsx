@@ -1,6 +1,10 @@
+import {Suspense} from 'react';
+import {explorerUrl, isShopLearningPath} from '~/lib/nature-navigation';
+import {relatedStations} from '~/lib/nature-explorer.server';
 import {Analytics, getShopAnalytics, useNonce} from '@shopify/hydrogen';
 import {
   Outlet,
+  Await, Link, useLocation,
   useRouteError,
   isRouteErrorResponse,
   type ShouldRevalidateFunction,
@@ -35,6 +39,8 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({
 
   const isEnglishPath = (url: URL) => /^\/en(?:\/|$)/.test(url.pathname);
   if (isEnglishPath(currentUrl) !== isEnglishPath(nextUrl)) return true;
+
+  if (currentUrl.pathname !== nextUrl.pathname && isShopLearningPath(nextUrl.pathname.replace(/^\/en(?=\/)/, ''))) return true;
 
   // revalidate when manually revalidating via useRevalidator
   if (currentUrl.toString() === nextUrl.toString()) return true;
@@ -74,6 +80,9 @@ export function links() {
 export async function loader(args: Route.LoaderArgs) {
   // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
+  const path = new URL(args.request.url).pathname;
+  const learningPath = path.replace(/^\/en(?=\/)/, '');
+  const natureLinks = isShopLearningPath(learningPath) ? relatedStations(args.context.env, learningPath) : [];
 
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
@@ -82,6 +91,8 @@ export async function loader(args: Route.LoaderArgs) {
 
   return {
     ...deferredData,
+    natureLinks,
+    naturePath: path,
     ...criticalData,
     publicStoreDomain: env.PUBLIC_STORE_DOMAIN,
     shop: getShopAnalytics({
@@ -174,7 +185,10 @@ export function Layout({children}: {children?: React.ReactNode}) {
 }
 
 export default function App() {
+  const {pathname} = useLocation();
   const data = useRouteLoaderData<RootLoader>('root');
+
+  if (pathname.replace(/^\/en(?=\/)/, '').match(/^\/pages\/nature-(?:explorer|globe)$/)) return <main className="nature-shell"><Outlet /></main>;
 
   if (!data) {
     return <Outlet />;
@@ -188,6 +202,16 @@ export default function App() {
     >
       <PageLayout {...data}>
         <Outlet />
+        {data.naturePath === pathname && isShopLearningPath(pathname.replace(/^\/en(?=\/)/, '')) && (
+          <Suspense fallback={null}>
+            <Await resolve={data.natureLinks}>
+              {(items) => items.length ? <nav className="page-shell" aria-label={pathname.startsWith('/en/') ? 'Habitat guide' : 'Standortwissen'}>
+                <h2>{pathname.startsWith('/en/') ? 'In the natural habitat' : 'Im natürlichen Lebensraum'}</h2>
+                <ul>{items.map(s => <li key={s.slug}><Link to={explorerUrl(pathname.startsWith('/en/'), s.region_slug, s.slug)}>{pathname.startsWith('/en/') && s.title_en || s.title_de}</Link></li>)}</ul>
+              </nav> : null}
+            </Await>
+          </Suspense>
+        )}
       </PageLayout>
       <LeafAssistant />
     </Analytics.Provider>
