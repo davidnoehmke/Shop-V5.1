@@ -275,6 +275,44 @@ export function NatureOrbit({
         <Link to={english ? '/en' : '/'}>LEAFerservice ↗</Link>
         <h1>Nature Explorer</h1>
       </header>
+      <details className="nature-orbit__discover">
+        <summary>{t('Leben im Extrem', 'Life at the extremes')}</summary>
+        <nav
+          aria-label={t('Spannende Wissenssprünge', 'Discover learning topics')}
+        >
+          {regions.map((destination) => {
+            const info = destination.explorer_data;
+            const stage = validStages(destination).find(
+              (s) => s.id === info.discovery_level,
+            );
+            if (!info.discovery_question_de || !stage) return null;
+            return (
+              <a
+                key={destination.slug}
+                href={'?region=' + destination.slug + '&level=' + stage.id}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.currentTarget.closest('details')!.open = false;
+                  jump(destination, stage);
+                }}
+              >
+                <span>
+                  {t(
+                    info.discovery_question_de,
+                    info.discovery_question_en ?? info.discovery_question_de,
+                  )}
+                </span>
+                <small>
+                  {t(
+                    destination.title_de,
+                    destination.title_en ?? destination.title_de,
+                  )}
+                </small>
+              </a>
+            );
+          })}
+        </nav>
+      </details>
       <div className="nature-orbit__sphere">
         <img
           className="nature-orbit__fallback"

@@ -186,6 +186,15 @@ export function ZoomKnowledge({
             className="zoom-knowledge__answer"
             key={(region?.slug ?? '') + stage?.id}
           >
+            {region?.explorer_data.location_scope ===
+              'representative_region' && (
+              <small>
+                {t(
+                  'Beispielhafte Lernregion',
+                  'Representative learning region',
+                )}
+              </small>
+            )}
             <h2>
               {stage
                 ? t(stage.question_de, stage.question_en)
@@ -264,7 +273,24 @@ export function ZoomKnowledge({
               ))}
           </div>
           {station?.related_paths.filter(isShopLearningPath).map((path) => (
-            <Link key={path} to={(english ? '/en' : '') + path}>
+            <Link
+              key={path}
+              prefetch="intent"
+              className="zoom-knowledge__continue"
+              to={
+                (english ? '/en' : '') +
+                path +
+                (path === '/products/leafer-substrat-konfigurator' &&
+                region &&
+                stage
+                  ? '?learn_region=' +
+                    region.slug +
+                    '&learn_level=' +
+                    stage.id +
+                    '#leaf-mix-studio'
+                  : '')
+              }
+            >
               {t('Eigene Mischung planen', 'Plan your mix')} ↗
             </Link>
           ))}

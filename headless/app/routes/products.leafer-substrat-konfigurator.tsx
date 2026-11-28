@@ -1,5 +1,6 @@
 import {useLoaderData} from 'react-router';
 import type {Route} from './+types/products.leafer-substrat-konfigurator';
+import {loadNatureHandoff} from '~/lib/nature-handoff.server';
 import {SubstrateConfigurator} from '~/components/SubstrateConfigurator';
 
 export const meta: Route.MetaFunction = () => [
@@ -12,22 +13,30 @@ export const meta: Route.MetaFunction = () => [
   {name: 'robots', content: 'noindex,nofollow'},
 ];
 
-export async function loader({context}: Route.LoaderArgs) {
+export async function loader({context, request}: Route.LoaderArgs) {
+  const handoffPromise = loadNatureHandoff(context.env, new URL(request.url));
   const data = await context.storefront.query(SUBSTRATE_CONFIGURATOR_QUERY, {
     cache: context.storefront.CacheShort(),
   });
-  if (!data.product?.id) throw new Response('Substrat-Konfigurator nicht gefunden', {status: 404});
+  if (!data.product?.id)
+    throw new Response('Substrat-Konfigurator nicht gefunden', {status: 404});
   return {
+    handoff: await handoffPromise,
     product: data.product,
     components: data.components?.products.nodes ?? [],
   };
 }
 
 export default function SubstrateConfiguratorRoute() {
-  const {product, components} = useLoaderData<typeof loader>();
+  const {product, components, handoff} = useLoaderData<typeof loader>();
   return (
     <div className="page-shell substrate-configurator-page">
-      <SubstrateConfigurator product={product} components={components} locale="de" />
+      <SubstrateConfigurator
+        product={product}
+        components={components}
+        handoff={handoff}
+        locale="de"
+      />
     </div>
   );
 }

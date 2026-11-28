@@ -365,3 +365,50 @@ body > main.nature-shell {
   border: 0;
   font-size: 0.85rem;
 }
+
+.nature-orbit__discover {
+  position: absolute;
+  z-index: 4;
+  right: 1rem;
+  top: max(4rem, calc(3.5rem + env(safe-area-inset-top)));
+  max-width: min(22rem, calc(100% - 2rem));
+  border: 1px solid var(--leaf-line);
+  border-radius: 1rem;
+  background: var(--leaf-cream);
+  color: var(--leaf-ink);
+  box-shadow: 0 6px 24px var(--leaf-shadow);
+}
+.nature-orbit__discover summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 650;
+}
+.nature-orbit__discover nav {
+  padding: 0 0.75rem 0.5rem;
+}
+.nature-orbit__discover a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-height: 56px;
+  padding: 0.65rem 0.25rem;
+  color: inherit;
+  border-top: 1px solid var(--leaf-line);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.nature-orbit__discover small,
+.zoom-knowledge__answer > small {
+  font-size: 0.7rem;
+}
+.zoom-knowledge__continue {
+  margin-top: 0.65rem;
+  padding: 0.65rem 0.9rem;
+  min-height: 44px !important;
+  border-radius: 0.65rem;
+  background: var(--leaf-olive);
+  color: var(--leaf-cream) !important;
+  text-decoration: none !important;
+}
