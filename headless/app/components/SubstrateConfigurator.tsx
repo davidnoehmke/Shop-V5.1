@@ -123,14 +123,14 @@ export function SubstrateConfigurator({
 
       <section id="leaf-mix-studio" className="substrate-configurator__commerce" aria-labelledby="substrate-variant-heading">
         <div>
-          {handoff && <aside className="substrate-learning-context" aria-label={isEnglish ? 'Your learning context' : 'Dein Lernkontext'}>
+          {handoff && <div role="note" className="substrate-learning-context" aria-label={isEnglish ? 'Your learning context' : 'Dein Lernkontext'}>
             <p className="page-eyebrow">Nature Explorer · {isEnglish ? handoff.title_en : handoff.title_de}</p>
             <p><strong>{isEnglish ? handoff.question_en : handoff.question_de}</strong></p>
             <p>{isEnglish ? 'Now choose your plant and pot. The soil profile provides context; the mix should suit your growing conditions.' : 'Wähle jetzt deine Pflanze und dein Gefäß. Das Bodenprofil liefert den Hintergrund; deine Mischung soll zu deinen Kulturbedingungen passen.'}</p>
             <Link to={(isEnglish ? '/en' : '') + '/pages/nature-globe?region=' + handoff.region + '&level=' + handoff.level}>
               {isEnglish ? '← Back to this learning point' : '← Zurück zu dieser Fundstelle'}
             </Link>
-          </aside>}
+          </div>}
           <p className="page-eyebrow">{isEnglish ? '1 · Base variant' : '1 · Basisvariante'}</p>
           <h2 id="substrate-variant-heading">{isEnglish ? 'Plant profile & volume' : 'Pflanzentyp & Menge'}</h2>
           <label>

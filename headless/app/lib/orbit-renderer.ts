@@ -125,6 +125,7 @@ export function orbitRenderer(canvas: HTMLCanvasElement) {
       gl.uniform1f(gl.getUniformLocation(program, 'hasDetail'), 1);
     },
     draw(camera: OrbitCamera) {
+      if (!canvas.clientWidth || !canvas.clientHeight) return;
       const scale = Math.min(
         devicePixelRatio,
         2,
@@ -212,7 +213,7 @@ function softwareOrbitRenderer(canvas: HTMLCanvasElement) {
       dirty = true;
     },
     draw(camera: OrbitCamera) {
-      if (!map) return;
+      if (!map || !canvas.clientWidth || !canvas.clientHeight) return;
       const now = performance.now();
       const moving =
         !Number.isFinite(previous.lat) ||
